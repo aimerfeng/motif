@@ -1,0 +1,26 @@
+{
+  "name": "@motif/export",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Turns a Motif item plus tuned values into downloadable code: a Vite starter, a shadcn registry item and an agent skill. Runs in the browser and in Node.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@motif/schema": "workspace:*",
+    "@motif/vendor": "workspace:*",
+    "fflate": "^0.8.3"
+  },
+  "devDependencies": {
+    "@motif/registry": "workspace:*",
+    "@types/node": "^24.19.0",
+    "esbuild": "^0.28.2",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.2"
+  }
+}

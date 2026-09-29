@@ -51,3 +51,59 @@
 @utility text-balance {
   text-wrap: balance;
 }
+
+/*
+ * 调参面板的滑杆：细轨道 + 已填充部分 + 推荐区间（safe）的淡色带。
+ * --fill / --safe-start / --safe-end 由组件按当前值写入。
+ */
+.motif-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+.motif-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background:
+    linear-gradient(to right, var(--color-ink) var(--fill), transparent var(--fill)),
+    linear-gradient(to right, transparent var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-end), transparent var(--safe-end)),
+    oklch(1 0 0 / 0.08);
+}
+.motif-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background:
+    linear-gradient(to right, var(--color-ink) var(--fill), transparent var(--fill)),
+    linear-gradient(to right, transparent var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-end), transparent var(--safe-end)),
+    oklch(1 0 0 / 0.08);
+}
+.motif-range::-webkit-slider-thumb {
+  appearance: none;
+  margin-top: -5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--color-ink);
+  box-shadow: 0 0 0 3px var(--color-canvas);
+  transition: transform 120ms var(--ease-out-soft);
+}
+.motif-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-ink);
+  box-shadow: 0 0 0 3px var(--color-canvas);
+}
+.motif-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.motif-range:focus-visible {
+  outline: none;
+}
+.motif-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--color-canvas), 0 0 0 5px var(--color-focus);
+}

@@ -28,23 +28,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: desktopChannel, viewport: { width: 1440, height: 900 } },
     },
   ],
-  webServer: [
-    {
-      command: 'pnpm --filter @motif/preview dev',
-      cwd: REPO_ROOT,
-      url: `${E2E.previewUrl}/runtime.html`,
-      env: { MOTIF_PREVIEW_PORT: String(E2E.previewPort) },
-      reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
-    },
-    {
-      // 生产构建 + next start：Next 16 不允许同一目录再起一个 dev 服务，而且这样测的就是上线后的行为。
-      command: `pnpm --filter @motif/web exec next build && pnpm --filter @motif/web exec next start -p ${E2E.webPort}`,
-      cwd: REPO_ROOT,
-      url: E2E.webUrl,
-      env: { NEXT_PUBLIC_MOTIF_PREVIEW_URL: E2E.previewUrl, MOTIF_NEXT_DIST: '.next-e2e' },
-      reuseExistingServer: !process.env.CI,
-      timeout: 300_000,
-    },
-  ],
+  // 一个进程负责全部服务：构建沙箱 → 构建站点 → 同时启动两者（见 support/start.ts）。
+  webServer: {
+    command: 'pnpm exec tsx e2e/support/start.ts',
+    cwd: REPO_ROOT,
+    url: E2E.webUrl,
+    reuseExistingServer: !process.env.CI,
+    timeout: 600_000,
+  },
 })

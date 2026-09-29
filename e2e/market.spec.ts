@@ -34,7 +34,7 @@ for (const item of published) {
 
     // 切换预设只发新的 props，预览保持挂载状态。
     if (item.manifest.presets.length > 0) {
-      await page.getByTestId(`presets-${item.manifest.slug}`).getByRole('button').nth(1).click()
+      await page.getByTestId('tune-panel').getByTestId('presets').getByRole('button').nth(1).click()
       await page.waitForTimeout(300)
       await expect(frame).toHaveAttribute('data-preview-state', 'mounted')
     }
