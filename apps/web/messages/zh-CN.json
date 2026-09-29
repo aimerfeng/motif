@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "Motif 母题",
+    "description": "开源的前端设计素材站：组件、动效、Shader 与 Agent Skill，零代码生成、微调、下载。"
+  },
+  "home": {
+    "tagline": "组件、动效、Shader 与 Agent Skill",
+    "lead": "从开源世界收集好看的前端效果，用 agent 零代码生成和微调，然后把代码或 Skill 带回你的项目。",
+    "status": "建设中"
+  },
+  "lab": {
+    "previewTitle": "预览沙箱实验"
+  }
+}

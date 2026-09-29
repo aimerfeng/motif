@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-canvas: oklch(0.985 0.002 90);
+  --color-ink: oklch(0.2 0.01 270);
+  --color-muted: oklch(0.52 0.01 270);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: ui-sans-serif, system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "Motif",
+    "description": "Open-source market of UI components, motion effects, shaders and agent skills. Generate and tune them with an agent, then take the code or skill home."
+  },
+  "home": {
+    "tagline": "Components, motion, shaders and agent skills",
+    "lead": "Well-crafted frontend effects gathered from open source. Generate and tune them with an agent, no code required, then take the code or the skill back to your project.",
+    "status": "Under construction"
+  },
+  "lab": {
+    "previewTitle": "Preview sandbox lab"
+  }
+}

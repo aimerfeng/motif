@@ -1,0 +1,26 @@
+{
+  "name": "@motif/vendor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@paper-design/shaders-react": "0.0.81",
+    "esbuild": "^0.28.2",
+    "motion": "^13.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.6",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.2"
+  }
+}

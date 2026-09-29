@@ -14,3 +14,8 @@ coverage/
 Thumbs.db
 # 上游仓库的本地克隆只用来读，不进版本库
 sources/_clones/
+*.tsbuildinfo
+next-env.d.ts
+test-results/
+playwright-report/
+.data/
