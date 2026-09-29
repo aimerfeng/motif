@@ -1,0 +1,28 @@
+{
+  "name": "@motif/skills",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Motif's agent skills: the hand-written library and one generated skill per market item, published to the repo's skills/ folder.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./validate": "./src/validate.ts"
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@motif/export": "workspace:*",
+    "@motif/registry": "workspace:*",
+    "@motif/schema": "workspace:*",
+    "@motif/vendor": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.6",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.2"
+  }
+}

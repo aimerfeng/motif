@@ -169,6 +169,9 @@ importers:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      '@motif/export':
+        specifier: workspace:*
+        version: link:packages/export
       '@motif/preview':
         specifier: workspace:*
         version: link:apps/preview
@@ -178,6 +181,9 @@ importers:
       '@motif/schema':
         specifier: workspace:*
         version: link:packages/schema
+      '@motif/vendor':
+        specifier: workspace:*
+        version: link:packages/vendor
       '@playwright/test':
         specifier: ^1.63.0
         version: 1.63.0
@@ -196,6 +202,9 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^7.1.1
         version: 7.1.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
+      fflate:
+        specifier: ^0.8.3
+        version: 0.8.3
       ffmpeg-static:
         specifier: ^5.3.0
         version: 5.3.0(supports-color@10.2.2)
@@ -278,6 +287,9 @@ importers:
       '@fontsource-variable/geist-mono':
         specifier: ^5.3.0
         version: 5.3.0
+      '@motif/export':
+        specifier: workspace:*
+        version: link:../../packages/export
       '@motif/preview':
         specifier: workspace:*
         version: link:../preview
@@ -287,6 +299,9 @@ importers:
       '@motif/schema':
         specifier: workspace:*
         version: link:../../packages/schema
+      '@motif/skills':
+        specifier: workspace:*
+        version: link:../../packages/skills
       next:
         specifier: 16.3.7
         version: 16.3.7(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.63.0)(@types/node@24.19.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -369,6 +384,34 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
+  packages/export:
+    dependencies:
+      '@motif/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@motif/vendor':
+        specifier: workspace:*
+        version: link:../vendor
+      fflate:
+        specifier: ^0.8.3
+        version: 0.8.3
+    devDependencies:
+      '@motif/registry':
+        specifier: workspace:*
+        version: link:../registry
+      '@types/node':
+        specifier: ^24.19.0
+        version: 24.19.0
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+
   packages/registry:
     dependencies:
       '@motif/checker':
@@ -411,6 +454,9 @@ importers:
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
       '@types/three':
         specifier: ^0.186.0
         version: 0.186.0
@@ -452,6 +498,34 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
     devDependencies:
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+
+  packages/skills:
+    dependencies:
+      '@motif/export':
+        specifier: workspace:*
+        version: link:../export
+      '@motif/registry':
+        specifier: workspace:*
+        version: link:../registry
+      '@motif/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@motif/vendor':
+        specifier: workspace:*
+        version: link:../vendor
+    devDependencies:
+      '@types/node':
+        specifier: ^24.13.6
+        version: 24.19.0
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
       typescript:
         specifier: ~6.0.3
         version: 6.0.3

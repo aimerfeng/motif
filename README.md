@@ -1,43 +1,66 @@
 # Motif 母题
 
-> 开源的前端设计素材站：组件、动效、Shader 与 Agent Skill 的市场，用 agent 零代码生成、微调，然后打包下载。
+> 开源的前端设计素材站：组件、动效、Shader 与 Agent Skill 的市场。实时调参，下载能直接运行的代码，或者把 Skill 交给你的 agent。
 
-**状态：** P0 基础设施完成（工作区、站点骨架、预览沙箱）。实施计划见 [docs/PLAN.md](./docs/PLAN.md)。
+**状态：** 市场、调参、导出与 Skill 库已可在本地使用（48 个效果、56 个 Skill）；Agent 工作台（Studio）开发中。实施计划见 [docs/PLAN.md](./docs/PLAN.md)。
 
-## 想做成什么样
+## 能做什么
 
-1. **项目市场（Market）**：从 GitHub 上许可证允许再分发的开源项目里整理组件、动效、WebGL/Shader 效果，每个条目都带实时预览、示例代码、来源和许可证。
-2. **Agent 工作台（Studio）**：用自然语言描述想要的效果，agent 从市场条目出发生成或改写组件，不用写代码。
-3. **微调（Tune）**：用可视化面板调颜色、速度、缓动、尺寸等参数，实时预览。
-4. **导出（Export）**：
-   - 下载成可以直接运行的项目（zip），
-   - 复制单个组件的源码，或者用 `shadcn` registry 命令安装，
-   - 把对应的 **Skill**（`SKILL.md`）复制到自己的项目里，让自己的 agent 也能做出同样的效果。
+1. **市场**：48 个从 MIT / Apache-2.0 开源项目整合、重新打磨的效果——网格渐变、流体模拟、液态金属、地球、边框光束、磁吸、动态岛……每个都能实时预览，标明来源、固定提交和许可证。
+2. **调参**：参数面板由条目定义自动生成（滑杆、颜色、调色板、缓动曲线、弹簧、随机种子），范围收紧到「拖到哪里都好看」；预设一键切换；参数写进链接可以分享。
+3. **导出**：代码视图随参数实时更新，所见即所得。
+   - 下载可运行的 Vite + React + Tailwind v4 项目（zip），
+   - 用 shadcn 安装到现有项目：`npx shadcn add <站点>/r/<效果>.json?v=<参数>`，
+   - 手动复制组件和共用的 `motif-runtime`。
+4. **Skill**：每个效果一份 Agent Skill（带你调好的参数），加上 8 个通用 Skill（设计总控、motion、微交互、排版、背景、着色器、滚动、3D）：
+
+   ```bash
+   npx skills add aimerfeng/motif --skill motif-design
+   npx skills add aimerfeng/motif --skill motif-mesh-gradient
+   ```
+
+5. **Agent 工作台**（开发中）：用自然语言描述想要的效果，agent 从市场条目出发生成或改写组件。
 
 ## 本地开发
 
-需要 Node 22+ 和 pnpm 12。
+需要 Node 22+、pnpm 12，以及 Microsoft Edge（端到端测试和截图用）。
 
 ```bash
 pnpm install
-pnpm dev      # 站点 http://localhost:3000，预览沙箱 http://127.0.0.1:4100
-pnpm verify   # 类型检查 + ESLint + 单元测试 + 构建
-pnpm e2e      # 端到端测试（本地用已安装的 Microsoft Edge）
+pnpm sources:sync   # 克隆上游仓库到 sources/_clones（只读，用来对照）
+pnpm dev            # 站点 http://localhost:3000，预览沙箱 http://127.0.0.1:4100
 ```
+
+| 命令 | 作用 |
+| --- | --- |
+| `pnpm verify` | 类型检查 + ESLint + 单元测试 + 构建（提交前必须通过） |
+| `pnpm e2e` | 端到端测试（构建后用已安装的 Edge 跑） |
+| `pnpm audit:items [slug]` | 检查条目：清单、依赖、许可证头、默认值区域、编译 |
+| `pnpm capture [slug]` | 生成海报与循环视频，并跑视觉闸门（帧率、空白、减少动态效果） |
+| `pnpm check:export <slug>` | 真正安装并构建导出的项目（需要联网） |
+| `pnpm skills:build` | 重新生成仓库根目录的 `skills/` |
+| `pnpm notices` | 重新生成 `THIRD_PARTY_NOTICES.md` |
+
+新增或修改效果请先读 [docs/authoring-items.md](./docs/authoring-items.md)。
 
 ## 目录
 
 | 路径 | 说明 |
 | --- | --- |
 | `apps/web` | 站点：Next.js 16 + Tailwind v4 + next-intl（中文默认，英文 `/en`） |
-| `apps/preview` | 预览沙箱：不透明源 iframe 里运行组件，依赖通过 import map 共享 |
+| `apps/preview` | 预览沙箱：不透明源 iframe 里运行组件，依赖通过 import map 共享；截图用的手动时钟 |
+| `packages/registry` | 市场条目（`items/<slug>/`）、检查与构建 |
+| `packages/schema` | 条目清单、参数定义、默认值区域 |
+| `packages/runtime` | 条目共用的 hooks（motif-runtime），导出时一并带走 |
+| `packages/compiler` | 条目与 agent 代码共用的编译（esbuild + Tailwind） |
+| `packages/checker` | 许可证、来源、依赖、无障碍规则 |
+| `packages/export` | 导出：Vite 项目、shadcn registry、SKILL.md |
+| `packages/skills` | 通用 Skill 源文件与 `skills/` 的生成 |
 | `packages/vendor` | 沙箱可用的第三方依赖清单和预打包 |
-| `e2e/` | Playwright 端到端测试 |
-| `docs/PLAN.md` | 实施计划 |
-| `docs/decisions/` | 技术决策记录 |
-| `docs/research/` | 上游开源项目调研：内容、许可证、能否再分发 |
-| `sources/` | 上游项目的来源登记（仓库、固定 commit、许可证） |
+| `skills/` | 生成的 Agent Skill（`npx skills add` 从这里安装） |
+| `sources/sources.json` | 上游来源登记（仓库、固定提交、许可证） |
+| `docs/` | 实施计划、技术决策、调研 |
 
 ## 许可证
 
-本仓库代码使用 [MIT](./LICENSE)。从上游项目整合进来的代码保留原许可证和署名，详见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。
+本仓库代码使用 [MIT](./LICENSE)。从上游项目整合进来的代码保留原许可证和署名，固定在审阅过的提交上，详见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。只整合许可证允许再分发的代码；Commons Clause、非商业、AGPL 或没有许可证的项目只做链接。

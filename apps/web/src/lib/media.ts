@@ -8,9 +8,9 @@ export interface ItemMedia {
 }
 
 // 缩略图与循环视频由 `pnpm capture` 生成到 public/media/<slug>/，随仓库提交。
-const PUBLIC_DIR = path.resolve(process.cwd(), 'public')
+const PUBLIC_DIR = path.resolve(/*turbopackIgnore: true*/ process.cwd(), 'public')
 
 export function mediaFor(slug: string): ItemMedia {
-  const file = (name: string) => (existsSync(path.join(PUBLIC_DIR, 'media', slug, name)) ? `/media/${slug}/${name}` : null)
+  const file = (name: string) => (existsSync(path.join(/*turbopackIgnore: true*/ PUBLIC_DIR, 'media', slug, name)) ? `/media/${slug}/${name}` : null)
   return { poster: file('poster.webp'), loopWebm: file('loop.webm'), loopMp4: file('loop.mp4') }
 }

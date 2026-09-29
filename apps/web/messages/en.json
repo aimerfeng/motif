@@ -13,10 +13,31 @@
     "home": "Motif home"
   },
   "home": {
-    "tagline": "Components, motion, shaders and agent skills",
-    "lead": "Well-crafted frontend effects gathered from open source. Generate and tune them with an agent, no code required, then take the code or the skill back to your project.",
-    "status": "Under construction",
-    "browse": "Browse the market"
+    "headline": "Beautiful motion, ready to take home",
+    "lead": "Components, motion and shaders picked from open source. Tune them live, download code that runs, or hand the skill to your agent.",
+    "browse": "Browse {count} effects",
+    "skills": "Agent skills",
+    "heroCaption": "Running above:",
+    "featured": "Featured",
+    "allEffects": "All {count} effects",
+    "howTitle": "Pick one, tune it, take it home",
+    "how": {
+      "pick": {
+        "title": "Pick an effect",
+        "body": "Every effect comes from an open-source project whose license allows redistribution, with a live preview and its source, license and changes on record."
+      },
+      "tune": {
+        "title": "Tune it until it’s right",
+        "body": "Every parameter has a range tightened so any value looks good. Presets give you genuinely different looks, and a link shares your values."
+      },
+      "take": {
+        "title": "Take the code or the skill",
+        "body": "Download a runnable Vite project, install into an existing app with shadcn, or download the skill so Claude Code, Codex or Cursor can build the same effect in your project."
+      }
+    },
+    "sourcesTitle": "Built on these open-source projects",
+    "sourcesBody": "Integrated code keeps its original license and copyright notices, pinned to the commits we reviewed. Thank you to their authors.",
+    "footer": "Motif is open source (MIT). Item data generated on {date}."
   },
   "market": {
     "title": "Effect market",
@@ -40,11 +61,11 @@
   },
   "item": {
     "back": "Market",
-    "presets": "Presets",
-    "defaultPreset": "Default",
     "tabs": {
       "code": "Code",
-      "license": "Source & license"
+      "license": "Source & license",
+      "install": "Install",
+      "skill": "Skill"
     },
     "facts": {
       "category": "Category",
@@ -77,7 +98,8 @@
       "note": "Integrated code keeps its upstream license and copyright notices. Motif’s own code is MIT licensed."
     },
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "tunedNote": "Highlighted lines hold your current values; copies and downloads include them"
   },
   "lab": {
     "previewTitle": "Preview sandbox lab"
@@ -97,5 +119,99 @@
       "lead": "How to use the market, tune effects, export code and skills, and contribute new effects."
     },
     "back": "Browse the market meanwhile"
+  },
+  "tune": {
+    "title": "Tune",
+    "reset": "Reset",
+    "share": "Copy link",
+    "linkCopied": "Link copied",
+    "presets": "Presets",
+    "defaultPreset": "Default",
+    "addColor": "Add a color",
+    "removeColor": "Remove the last color",
+    "shuffle": "New random seed",
+    "springDuration": "Duration",
+    "springBounce": "Bounce",
+    "groups": {
+      "look": "Look",
+      "color": "Color",
+      "motion": "Motion",
+      "layout": "Layout",
+      "interaction": "Interaction",
+      "grain": "Grain",
+      "tint": "Tint",
+      "text": "Text"
+    }
+  },
+  "export": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "starterTitle": "Download a runnable project",
+    "starterLead": "A Vite + React + Tailwind v4 project that shows this effect full screen with the values you tuned, plus the matching agent skill. Unzip, run npm install and npm run dev.",
+    "downloadStarter": "Download {name}",
+    "shadcnTitle": "Install into an existing project with shadcn",
+    "shadcnLead": "Run it in a project that already uses shadcn/ui. The component goes to components/motif/ and the shared motif-runtime to lib/.",
+    "manualTitle": "Copy by hand",
+    "manualLead": "Copy the component file (with your values baked in) into your project, and put the shared hooks in src/lib/motif-runtime.ts.",
+    "copyComponent": "Copy {file}",
+    "copyRuntime": "Copy motif-runtime.ts"
+  },
+  "skill": {
+    "title": "Hand this effect to your agent",
+    "lead": "A skill is a manual written for agents: when to use the effect, how to install it, the values you tuned and the rules not to break. Put it in your project and Claude Code, Codex, Cursor and other agents can build the same effect there.",
+    "download": "Download {name}",
+    "copy": "Copy SKILL.md",
+    "copied": "Copied"
+  },
+  "skills": {
+    "title": "Agent skills",
+    "lead": "Skills are manuals written for AI agents. Add them to a project and Claude Code, Codex, Cursor, Gemini CLI and other agents design interfaces and motion by Motif’s principles, or reuse effects from the market directly.",
+    "library": "General skills",
+    "copy": "Copy",
+    "copied": "Copied",
+    "show": "View",
+    "hide": "Hide",
+    "how": {
+      "install": "Install with one command",
+      "where": "Where they go",
+      "whereBody": "Claude Code reads .claude/skills/; Codex, Cursor and Gemini CLI read .agents/skills/. You can also drop the downloaded folder there.",
+      "items": "Every effect has its own skill",
+      "itemsBody": "Each of the {count} effects in the market ships a skill with its source and parameter notes. Tune an effect on its page and download it — the skill carries your values.",
+      "toMarket": "Open the market"
+    },
+    "names": {
+      "motif-design": {
+        "title": "Design and motion (start here)",
+        "summary": "Plans a small design system first — colors, type, spacing, motion personality — reviews it against the brief, builds, then runs an accessibility and performance gate. Includes an anti-slop checklist."
+      },
+      "motif-motion": {
+        "title": "Motion in React",
+        "summary": "Springs, entrances and exits, layout animations, staggered lists and gestures with motion (formerly Framer Motion), with reduced-motion handled correctly."
+      },
+      "motif-micro-interactions": {
+        "title": "Micro-interactions",
+        "summary": "Buttons, toggles, hold-to-confirm, success and error feedback, magnetic and tilt effects: when to animate, how much and how fast."
+      },
+      "motif-typography": {
+        "title": "Typography and text motion",
+        "summary": "Pairings, scales, line length, numerals, and accessible split-text reveals and animated numbers."
+      },
+      "motif-backgrounds": {
+        "title": "Backgrounds",
+        "summary": "Mesh and grain gradients, aurora, particles and grids: one per viewport, readable text, slow is premium, no banding."
+      },
+      "motif-shaders": {
+        "title": "Shader effects",
+        "summary": "Full-screen WebGL shaders done right: DPR caps, pausing offscreen, context loss, precision, budgets and static fallbacks."
+      },
+      "motif-scroll": {
+        "title": "Scroll motion",
+        "summary": "Scroll-triggered and scroll-linked motion: CSS scroll-driven animations, reveal-once, sticky scenes and the limits of parallax."
+      },
+      "motif-3d": {
+        "title": "3D on the web",
+        "summary": "Globes, hero objects and spatial backgrounds: the lightest tool, render on demand, color management, disposal and poster fallbacks."
+      }
+    }
   }
 }

@@ -6,7 +6,7 @@ import type { Locale } from '@/i18n/routing'
 import { mediaFor, type ItemMedia } from './media'
 
 // catalog.json 由预览沙箱的构建（pnpm build / pnpm dev）生成，站点只读。
-const CATALOG_FILE = path.resolve(process.cwd(), '../..', CATALOG_PATH)
+const CATALOG_FILE = path.resolve(/*turbopackIgnore: true*/ process.cwd(), '../..', CATALOG_PATH)
 
 export const getCatalog = cache(() => readCatalog(CATALOG_FILE))
 

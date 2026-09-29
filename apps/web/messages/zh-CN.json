@@ -13,10 +13,31 @@
     "home": "Motif 首页"
   },
   "home": {
-    "tagline": "组件、动效、Shader 与 Agent Skill",
-    "lead": "从开源世界收集好看的前端效果，用 agent 零代码生成和微调，然后把代码或 Skill 带回你的项目。",
-    "status": "建设中",
-    "browse": "浏览市场"
+    "headline": "把好看的动效，带回你的项目",
+    "lead": "从开源世界精选的组件、动效与着色器。实时调参，下载能直接运行的代码，或者把 Skill 交给你的 agent。",
+    "browse": "浏览 {count} 个效果",
+    "skills": "Agent Skills",
+    "heroCaption": "首屏正在运行的是",
+    "featured": "精选",
+    "allEffects": "全部 {count} 个效果",
+    "howTitle": "挑一个，调到刚好，带走",
+    "how": {
+      "pick": {
+        "title": "挑一个效果",
+        "body": "每个效果都来自许可证允许再分发的开源项目，实时预览，标明来源、许可证和改动。"
+      },
+      "tune": {
+        "title": "调到刚好",
+        "body": "面板上的每个参数都有收紧过的范围，拖到哪里都好看；预设给你几种完全不同的风格，链接能把参数分享出去。"
+      },
+      "take": {
+        "title": "带走代码或 Skill",
+        "body": "下载可运行的 Vite 项目、用 shadcn 装进现有项目，或者下载 Skill，让 Claude Code、Codex、Cursor 在你的项目里做出同样的效果。"
+      }
+    },
+    "sourcesTitle": "来自这些开源项目",
+    "sourcesBody": "整合的代码保留原来的许可证和版权声明，固定在审阅过的提交上。感谢这些作者。",
+    "footer": "Motif 是开源项目（MIT）。条目数据生成于 {date}。"
   },
   "market": {
     "title": "效果市场",
@@ -40,11 +61,11 @@
   },
   "item": {
     "back": "市场",
-    "presets": "预设",
-    "defaultPreset": "默认",
     "tabs": {
       "code": "代码",
-      "license": "来源与许可证"
+      "license": "来源与许可证",
+      "install": "安装",
+      "skill": "Skill"
     },
     "facts": {
       "category": "分类",
@@ -77,7 +98,8 @@
       "note": "整合的代码保留上游的许可证和版权声明。Motif 自己的代码使用 MIT 许可证。"
     },
     "copy": "复制",
-    "copied": "已复制"
+    "copied": "已复制",
+    "tunedNote": "高亮部分是当前参数，复制和下载都会带上"
   },
   "lab": {
     "previewTitle": "预览沙箱实验"
@@ -97,5 +119,99 @@
       "lead": "如何使用市场、调参、导出代码和 Skill，以及如何贡献新的效果。"
     },
     "back": "先去逛逛市场"
+  },
+  "tune": {
+    "title": "调参",
+    "reset": "重置",
+    "share": "复制链接",
+    "linkCopied": "链接已复制",
+    "presets": "预设",
+    "defaultPreset": "默认",
+    "addColor": "添加颜色",
+    "removeColor": "移除最后一个颜色",
+    "shuffle": "换一个随机种子",
+    "springDuration": "时长",
+    "springBounce": "回弹",
+    "groups": {
+      "look": "外观",
+      "color": "颜色",
+      "motion": "动效",
+      "layout": "布局",
+      "interaction": "交互",
+      "grain": "颗粒",
+      "tint": "着色",
+      "text": "文字"
+    }
+  },
+  "export": {
+    "copy": "复制",
+    "copied": "已复制",
+    "starterTitle": "下载可运行的项目",
+    "starterLead": "一个 Vite + React + Tailwind v4 项目，全屏展示这个效果，参数就是你现在调好的值，还附带对应的 Agent Skill。解压后 npm install、npm run dev 即可。",
+    "downloadStarter": "下载 {name}",
+    "shadcnTitle": "用 shadcn 安装到现有项目",
+    "shadcnLead": "在已经配置了 shadcn/ui 的项目里运行。组件装到 components/motif/，共用的 motif-runtime 装到 lib/。",
+    "manualTitle": "手动复制",
+    "manualLead": "复制组件文件（已写入当前参数），放进你的项目；共用的 hooks 放到 src/lib/motif-runtime.ts。",
+    "copyComponent": "复制 {file}",
+    "copyRuntime": "复制 motif-runtime.ts"
+  },
+  "skill": {
+    "title": "把这个效果交给你的 agent",
+    "lead": "Skill 是一份给 agent 看的说明书：什么时候用、怎么安装、你调好的参数、以及不能破坏的规则。放进项目后，Claude Code、Codex、Cursor 等 agent 就能在你的项目里做出同样的效果。",
+    "download": "下载 {name}",
+    "copy": "复制 SKILL.md",
+    "copied": "已复制"
+  },
+  "skills": {
+    "title": "Agent Skills",
+    "lead": "Skill 是写给 AI agent 的说明书。把它放进项目，Claude Code、Codex、Cursor、Gemini CLI 等 agent 就会按照 Motif 的设计原则做界面和动效，或者直接复用市场里的效果。",
+    "library": "通用 Skill",
+    "copy": "复制",
+    "copied": "已复制",
+    "show": "查看内容",
+    "hide": "收起",
+    "how": {
+      "install": "一条命令安装",
+      "where": "放在哪里",
+      "whereBody": "Claude Code 读取 .claude/skills/，Codex、Cursor、Gemini CLI 读取 .agents/skills/。也可以直接下载文件夹放进去。",
+      "items": "每个效果都有自己的 Skill",
+      "itemsBody": "市场里的 {count} 个效果各有一份 Skill，包含源码和参数说明；在效果详情页调好参数后下载，Skill 里就是你的参数。",
+      "toMarket": "去市场"
+    },
+    "names": {
+      "motif-design": {
+        "title": "总控：设计与动效",
+        "summary": "先规划一套小型设计系统（颜色、字体、间距、动效性格），自审后再实现，最后过无障碍与性能闸门。附反「AI 味」清单。"
+      },
+      "motif-motion": {
+        "title": "motion 动画实现",
+        "summary": "用 motion（原 Framer Motion）写弹簧、进出场、布局动画、交错列表和手势，并正确处理减少动态效果。"
+      },
+      "motif-micro-interactions": {
+        "title": "微交互",
+        "summary": "按钮、开关、长按确认、成功与错误反馈、磁吸与倾斜：什么时候该动、动多少、多快。"
+      },
+      "motif-typography": {
+        "title": "排版与文字动效",
+        "summary": "字体搭配、字阶、行长、数字对齐，以及保持可访问性的标题拆字动画与数字滚动。"
+      },
+      "motif-backgrounds": {
+        "title": "动态背景",
+        "summary": "网格渐变、颗粒、极光、粒子、网格：一屏一个、文字始终清晰、慢才高级、深色渐变防色带。"
+      },
+      "motif-shaders": {
+        "title": "着色器效果",
+        "summary": "WebGL 全屏着色器的正确写法：像素比上限、离屏暂停、上下文丢失、精度、性能预算与静态降级。"
+      },
+      "motif-scroll": {
+        "title": "滚动动效",
+        "summary": "滚动触发与滚动联动：CSS scroll-driven animations、只播一次的入场、粘性场景、视差的边界。"
+      },
+      "motif-3d": {
+        "title": "网页 3D",
+        "summary": "地球、主视觉物体与空间背景：选最轻的工具、按需渲染、色彩空间、资源释放与海报降级。"
+      }
+    }
   }
 }
