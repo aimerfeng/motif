@@ -1,0 +1,121 @@
+{
+  "$comment": "上游来源登记：只登记许可证允许再分发（A 级）的仓库。sha 固定到整合时检查过的提交；升级时改 sha、重跑 pnpm sources:sync 并重新审阅差异。",
+  "sources": [
+    {
+      "id": "paper-shaders",
+      "repo": "paper-design/shaders",
+      "sha": "43cd68db79fa0b1759f72ffc941b3238e2a3954c",
+      "spdx": "Apache-2.0",
+      "copyright": [
+        "Paper Shaders (https://shaders.paper.design)"
+      ],
+      "licenseFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "notes": "perlin-noise 与 voronoi 注明改编自 Shadertoy，授权链不明，不整合。"
+    },
+    {
+      "id": "magicui",
+      "repo": "magicuidesign/magicui",
+      "sha": "d7207e5692d14c00dceafa8488d6d01f197fa0e4",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) Magic UI"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ]
+    },
+    {
+      "id": "motion-primitives",
+      "repo": "ibelick/motion-primitives",
+      "sha": "120f64f6ca60348e251f929e9c81f11ccbe45eda",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 ibelick"
+      ],
+      "licenseFiles": [
+        "LICENCE.md"
+      ]
+    },
+    {
+      "id": "kokonutui",
+      "repo": "kokonut-labs/kokonutui",
+      "sha": "83eec6d982d400a18438001a8efdbac1f159dd43",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 kokonutUI"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "id": "cult-ui",
+      "repo": "nolly-studio/cult-ui",
+      "sha": "ee98a5dd2e319b63cc2e707dd968d6af04209b7e",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 Jordan-Gilliam"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ]
+    },
+    {
+      "id": "cobe",
+      "repo": "shuding/cobe",
+      "sha": "7e94076fa8c38707f4c9cd114ff4f7c5c880971e",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2021 Shu Ding"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ]
+    },
+    {
+      "id": "webgl-fluid",
+      "repo": "PavelDoGreat/WebGL-Fluid-Simulation",
+      "sha": "a2d292931f19d9b3b9f564e23e6c32729d2121c3",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2017 Pavel Dobryakov"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "只取 script.js 里的模拟代码；dat.gui、图标字体、logo 图片不取。"
+    },
+    {
+      "id": "gl-transitions",
+      "repo": "gl-transitions/gl-transitions",
+      "sha": "902218a1b63773ac0d0d9f491951da3392365bfe",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2017-present gl-transitions contributors"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "每个 transitions/*.glsl 文件头有自己的 Author/License，逐个保留。"
+    },
+    {
+      "id": "threeui",
+      "repo": "MengTo/threeui",
+      "sha": "68802d5428071ada5c20db8094b1649e6bb770ed",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2026 Meng To"
+      ],
+      "licenseFiles": [
+        "LICENSE",
+        "ASSET-LICENSES.md",
+        "FONT-LICENSES.md",
+        "THIRD_PARTY_NOTICES.md"
+      ],
+      "notes": "只取纯 WebGL / Canvas 组件代码。缩略图与预览视频不在 MIT 范围内；elements、brand-orbs 含品牌标记，不取；整页落地页不取。"
+    }
+  ]
+}

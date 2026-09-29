@@ -1,0 +1,38 @@
+{
+  "name": "@motif/registry",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "The Motif item catalog: item sources, checks and the build that feeds the preview sandbox and the site.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog.ts"
+  },
+  "scripts": {
+    "check": "tsx scripts/check.ts",
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "sync-defaults": "tsx scripts/sync-defaults.ts"
+  },
+  "dependencies": {
+    "@motif/checker": "workspace:*",
+    "@motif/compiler": "workspace:*",
+    "@motif/runtime": "workspace:*",
+    "@motif/schema": "workspace:*",
+    "@motif/vendor": "workspace:*",
+    "@paper-design/shaders-react": "0.0.81",
+    "cobe": "^2.0.1",
+    "motion": "^13.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.6",
+    "@types/react": "^19.3.0",
+    "@types/three": "^0.186.0",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.2"
+  }
+}

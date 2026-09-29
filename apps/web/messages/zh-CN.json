@@ -3,12 +3,99 @@
     "title": "Motif 母题",
     "description": "开源的前端设计素材站：组件、动效、Shader 与 Agent Skill，零代码生成、微调、下载。"
   },
+  "nav": {
+    "market": "市场",
+    "studio": "工作台",
+    "skills": "Skills",
+    "docs": "文档",
+    "github": "GitHub 仓库",
+    "language": "切换语言",
+    "home": "Motif 首页"
+  },
   "home": {
     "tagline": "组件、动效、Shader 与 Agent Skill",
     "lead": "从开源世界收集好看的前端效果，用 agent 零代码生成和微调，然后把代码或 Skill 带回你的项目。",
-    "status": "建设中"
+    "status": "建设中",
+    "browse": "浏览市场"
+  },
+  "market": {
+    "title": "效果市场",
+    "lead": "{count} 个效果，全部来自许可证允许再分发的开源项目。每一个都能实时预览、调参、下载代码或 Skill。",
+    "all": "全部",
+    "search": "搜索效果、标签",
+    "empty": "没有找到匹配的效果",
+    "categories": {
+      "background": "背景",
+      "shader": "Shader",
+      "text": "文字",
+      "button": "按钮",
+      "card": "卡片",
+      "cursor": "光标",
+      "navigation": "导航",
+      "layout": "布局",
+      "data": "数据",
+      "transition": "转场",
+      "3d": "3D"
+    }
+  },
+  "item": {
+    "back": "市场",
+    "presets": "预设",
+    "defaultPreset": "默认",
+    "tabs": {
+      "code": "代码",
+      "license": "来源与许可证"
+    },
+    "facts": {
+      "category": "分类",
+      "runtime": "技术",
+      "dependencies": "依赖",
+      "license": "许可证",
+      "source": "来源",
+      "reducedMotion": "减少动态效果时"
+    },
+    "reducedMotion": {
+      "static": "停在一帧静态画面",
+      "crossfade": "改为淡入淡出",
+      "slowed": "放慢播放",
+      "not-animated": "本身不动"
+    },
+    "noDependencies": "只需要 React",
+    "loading": "正在载入预览",
+    "previewError": "预览出错：{message}",
+    "hung": "预览没有响应，已重新载入",
+    "provenance": {
+      "upstream": "整合自开源项目",
+      "original": "Motif 原创",
+      "agent": "由 agent 生成",
+      "repo": "上游仓库",
+      "commit": "固定提交",
+      "files": "上游文件",
+      "copyright": "版权声明",
+      "origin": "更早的来源",
+      "modifications": "Motif 的改动",
+      "note": "整合的代码保留上游的许可证和版权声明。Motif 自己的代码使用 MIT 许可证。"
+    },
+    "copy": "复制",
+    "copied": "已复制"
   },
   "lab": {
     "previewTitle": "预览沙箱实验"
+  },
+  "upcoming": {
+    "soon": "即将上线",
+    "studio": {
+      "title": "工作台",
+      "lead": "用自然语言描述想要的效果，agent 从市场条目出发生成或改写组件，实时预览、调参、导出。"
+    },
+    "skills": {
+      "title": "Skills",
+      "lead": "每个效果都配一份 Agent Skill，复制到自己的项目里，让你的 agent 也能做出同样的效果。"
+    },
+    "docs": {
+      "title": "文档",
+      "lead": "如何使用市场、调参、导出代码和 Skill，以及如何贡献新的效果。"
+    },
+    "back": "先去逛逛市场"
   }
 }

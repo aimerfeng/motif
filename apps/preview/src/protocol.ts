@@ -13,10 +13,35 @@ export type PreviewProps = Record<string, JsonValue>
 /** 要挂载的模块：沙箱自己托管的 URL（预编译的条目），或者一段已编译的 ESM 代码（Studio 生成的代码）。 */
 export type ModuleRef = { kind: 'url'; url: string } | { kind: 'code'; code: string }
 
+/** 条目的样式表：沙箱托管的 URL（预编译条目），或者一段 CSS 文本（Studio 实时编译）。 */
+export type StyleRef = { kind: 'url'; url: string } | { kind: 'text'; text: string }
+
+export type PreviewTheme = 'dark' | 'light'
+
+/**
+ * real：正常播放。manual：沙箱接管 requestAnimationFrame / performance.now / Date.now，
+ * 只在收到 advance 时推进，截图和录屏时每一帧都可复现。
+ */
+export type PreviewClock = 'real' | 'manual'
+
+export interface MountMessage {
+  type: 'mount'
+  module: ModuleRef
+  exportName: string
+  props: PreviewProps
+  styles?: StyleRef
+  theme?: PreviewTheme
+  clock?: PreviewClock
+}
+
 export type HostMessage =
-  | { type: 'mount'; module: ModuleRef; exportName: string; props: PreviewProps }
+  | MountMessage
   | { type: 'props'; props: PreviewProps }
   | { type: 'ping'; seq: number }
+  /** manual 时钟：把时间推进到 to 毫秒并渲染这一帧。 */
+  | { type: 'advance'; to: number }
+  /** 用真实时钟测 ms 毫秒内的帧率。 */
+  | { type: 'measure'; ms: number }
 
 export type ErrorPhase = 'load' | 'render' | 'runtime'
 
@@ -25,6 +50,8 @@ export type SandboxMessage =
   | { type: 'mounted'; ms: number }
   | { type: 'error'; phase: ErrorPhase; message: string; stack?: string }
   | { type: 'pong'; seq: number }
+  | { type: 'advanced'; to: number }
+  | { type: 'measured'; fps: number; slowFrames: number }
 
 export interface Envelope<T> {
   protocol: typeof PREVIEW_PROTOCOL
@@ -44,6 +71,13 @@ function isEnvelope(data: unknown, nonce: string): data is Envelope<Record<strin
   return isRecord(data) && data.protocol === PREVIEW_PROTOCOL && data.nonce === nonce && isRecord(data.message)
 }
 
+function isStyleRef(value: unknown): value is StyleRef {
+  if (!isRecord(value)) return false
+  if (value.kind === 'url') return typeof value.url === 'string'
+  if (value.kind === 'text') return typeof value.text === 'string'
+  return false
+}
+
 function isModuleRef(value: unknown): value is ModuleRef {
   if (!isRecord(value)) return false
   if (value.kind === 'url') return typeof value.url === 'string'
@@ -55,14 +89,22 @@ export function readHostMessage(data: unknown, nonce: string): HostMessage | nul
   if (!isEnvelope(data, nonce)) return null
   const message = data.message
   switch (message.type) {
-    case 'mount':
-      return isModuleRef(message.module) && typeof message.exportName === 'string' && isRecord(message.props)
-        ? { type: 'mount', module: message.module, exportName: message.exportName, props: message.props as PreviewProps }
-        : null
+    case 'mount': {
+      if (!isModuleRef(message.module) || typeof message.exportName !== 'string' || !isRecord(message.props)) return null
+      const mount: MountMessage = { type: 'mount', module: message.module, exportName: message.exportName, props: message.props as PreviewProps }
+      if (isStyleRef(message.styles)) mount.styles = message.styles
+      if (message.theme === 'dark' || message.theme === 'light') mount.theme = message.theme
+      if (message.clock === 'real' || message.clock === 'manual') mount.clock = message.clock
+      return mount
+    }
     case 'props':
       return isRecord(message.props) ? { type: 'props', props: message.props as PreviewProps } : null
     case 'ping':
       return typeof message.seq === 'number' ? { type: 'ping', seq: message.seq } : null
+    case 'advance':
+      return typeof message.to === 'number' && Number.isFinite(message.to) ? { type: 'advance', to: message.to } : null
+    case 'measure':
+      return typeof message.ms === 'number' && message.ms > 0 ? { type: 'measure', ms: message.ms } : null
     default:
       return null
   }
@@ -85,6 +127,12 @@ export function readSandboxMessage(data: unknown, nonce: string): SandboxMessage
     }
     case 'pong':
       return typeof message.seq === 'number' ? { type: 'pong', seq: message.seq } : null
+    case 'advanced':
+      return typeof message.to === 'number' ? { type: 'advanced', to: message.to } : null
+    case 'measured':
+      return typeof message.fps === 'number' && typeof message.slowFrames === 'number'
+        ? { type: 'measured', fps: message.fps, slowFrames: message.slowFrames }
+        : null
     default:
       return null
   }

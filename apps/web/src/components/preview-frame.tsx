@@ -1,6 +1,16 @@
 'use client'
 
-import { envelope, readSandboxMessage, sandboxUrl, type HostMessage, type ModuleRef, type PreviewProps, type SandboxMessage } from '@motif/preview/protocol'
+import {
+  envelope,
+  readSandboxMessage,
+  sandboxUrl,
+  type HostMessage,
+  type ModuleRef,
+  type PreviewProps,
+  type PreviewTheme,
+  type SandboxMessage,
+  type StyleRef,
+} from '@motif/preview/protocol'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 export const PREVIEW_BASE = process.env.NEXT_PUBLIC_MOTIF_PREVIEW_URL ?? 'http://127.0.0.1:4100'
@@ -15,6 +25,8 @@ interface PreviewFrameProps {
   module: ModuleRef
   exportName?: string
   props?: PreviewProps
+  styles?: StyleRef
+  theme?: PreviewTheme
   title: string
   className?: string
   onStatus?: (status: PreviewStatus) => void
@@ -24,15 +36,20 @@ const HEARTBEAT_MS = 2000
 const HEARTBEAT_TIMEOUT_MS = 5000
 
 /** 在跨源、不透明源的沙箱 iframe 里挂载一个组件模块。模块变化时重新挂载，props 变化时只发新 props。 */
-export function PreviewFrame({ module, exportName = 'default', props = {}, title, className, onStatus }: PreviewFrameProps) {
+export function PreviewFrame({ module, exportName = 'default', props = {}, styles, theme, title, className, onStatus }: PreviewFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const nonce = useMemo(() => crypto.randomUUID(), [])
   const [src, setSrc] = useState<string | null>(null)
   const [status, setStatus] = useState<PreviewStatus>({ state: 'loading' })
   const [reloadKey, setReloadKey] = useState(0)
   const readyRef = useRef(false)
-  const latest = useRef({ module, exportName, props, onStatus })
-  latest.current = { module, exportName, props, onStatus }
+  const latest = useRef({ module, exportName, props, styles, theme, onStatus })
+  latest.current = { module, exportName, props, styles, theme, onStatus }
+
+  const mountMessage = (): HostMessage => {
+    const { module: mod, exportName: name, props: current, styles: css, theme: mode } = latest.current
+    return { type: 'mount', module: mod, exportName: name, props: current, ...(css ? { styles: css } : {}), ...(mode ? { theme: mode } : {}) }
+  }
 
   useEffect(() => {
     setSrc(sandboxUrl(PREVIEW_BASE, nonce, window.location.origin))
@@ -56,12 +73,10 @@ export function PreviewFrame({ module, exportName = 'default', props = {}, title
       if (!message) return
       lastPong = performance.now()
       switch (message.type) {
-        case 'ready': {
+        case 'ready':
           readyRef.current = true
-          const { module: mod, exportName: name, props: current } = latest.current
-          post({ type: 'mount', module: mod, exportName: name, props: current })
+          post(mountMessage())
           break
-        }
         case 'mounted':
           setStatus({ state: 'mounted', ms: message.ms })
           break
@@ -95,12 +110,13 @@ export function PreviewFrame({ module, exportName = 'default', props = {}, title
   }, [nonce])
 
   const moduleKey = module.kind === 'url' ? module.url : module.code
+  const stylesKey = styles ? (styles.kind === 'url' ? styles.url : styles.text) : ''
   useEffect(() => {
     if (!readyRef.current) return
     setStatus({ state: 'loading' })
-    post({ type: 'mount', module: latest.current.module, exportName: latest.current.exportName, props: latest.current.props })
+    post(mountMessage())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moduleKey, exportName])
+  }, [moduleKey, stylesKey, exportName, theme])
 
   const propsKey = JSON.stringify(props)
   useEffect(() => {

@@ -38,12 +38,13 @@ export default defineConfig({
       timeout: 120_000,
     },
     {
-      command: `pnpm --filter @motif/web exec next dev -p ${E2E.webPort}`,
+      // 生产构建 + next start：Next 16 不允许同一目录再起一个 dev 服务，而且这样测的就是上线后的行为。
+      command: `pnpm --filter @motif/web exec next build && pnpm --filter @motif/web exec next start -p ${E2E.webPort}`,
       cwd: REPO_ROOT,
       url: E2E.webUrl,
-      env: { NEXT_PUBLIC_MOTIF_PREVIEW_URL: E2E.previewUrl },
+      env: { NEXT_PUBLIC_MOTIF_PREVIEW_URL: E2E.previewUrl, MOTIF_NEXT_DIST: '.next-e2e' },
       reuseExistingServer: !process.env.CI,
-      timeout: 180_000,
+      timeout: 300_000,
     },
   ],
 })

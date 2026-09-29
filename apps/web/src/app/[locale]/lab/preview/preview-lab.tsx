@@ -22,9 +22,9 @@ export default function Broken() { throw new Error('intentional render failure')
 `
 
 const CASES: { id: string; module: ModuleRef; props?: Record<string, string | number> }[] = [
-  { id: 'motion-card', module: { kind: 'url', url: '/items/lab/motion-card.js' }, props: { label: 'Motif' } },
-  { id: 'three-spin', module: { kind: 'url', url: '/items/lab/three-spin.js' }, props: { color: '#7c6cff' } },
-  { id: 'paper-gradient', module: { kind: 'url', url: '/items/lab/paper-gradient.js' }, props: { speed: 0.6 } },
+  { id: 'motion-card', module: { kind: 'url', url: '/lab/motion-card.js' }, props: { label: 'Motif' } },
+  { id: 'three-spin', module: { kind: 'url', url: '/lab/three-spin.js' }, props: { color: '#7c6cff' } },
+  { id: 'paper-gradient', module: { kind: 'url', url: '/lab/paper-gradient.js' }, props: { speed: 0.6 } },
   { id: 'inline-code', module: { kind: 'code', code: INLINE_MODULE }, props: { text: '' } },
   { id: 'broken', module: { kind: 'code', code: BROKEN_MODULE } },
 ]

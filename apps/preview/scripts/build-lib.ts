@@ -2,6 +2,7 @@ import { readdir, writeFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type * as esbuild from 'esbuild'
+import { buildRegistry, formatFindings, type BuildRegistryResult } from '@motif/registry'
 import { buildVendor, VENDOR_IDS, type VendorManifest } from '@motif/vendor'
 
 export const PREVIEW_ROOT = fileURLToPath(new URL('..', import.meta.url))
@@ -22,13 +23,42 @@ export function sandboxBuildOptions(): esbuild.BuildOptions {
   }
 }
 
-export function runtimeOptions(): esbuild.BuildOptions {
+export function runtimeOptions(dist = DIST): esbuild.BuildOptions {
   return {
     ...sandboxBuildOptions(),
     entryPoints: [path.join(PREVIEW_ROOT, 'src/runtime/main.tsx')],
-    outfile: path.join(DIST, 'runtime.js'),
+    outfile: path.join(dist, 'runtime.js'),
   }
 }
+
+/** 截图宿主页面的脚本：跑在普通源里，不用 import map，直接打包。 */
+export function captureHostOptions(dist = DIST): esbuild.BuildOptions {
+  return {
+    entryPoints: [path.join(PREVIEW_ROOT, 'src/capture/host.ts')],
+    outfile: path.join(dist, 'capture.js'),
+    bundle: true,
+    format: 'esm',
+    platform: 'browser',
+    target: 'es2022',
+    logLevel: 'warning',
+  }
+}
+
+const CAPTURE_HTML = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Motif capture</title>
+    <link rel="icon" href="data:," />
+    <style>
+      html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      iframe { display: block; width: 100vw; height: 100vh; border: 0; }
+    </style>
+    <script type="module" src="/capture.js"></script>
+  </head>
+  <body></body>
+</html>
+`
 
 export async function labItemOptions(): Promise<esbuild.BuildOptions> {
   const labDir = path.join(PREVIEW_ROOT, 'src/lab')
@@ -36,7 +66,7 @@ export async function labItemOptions(): Promise<esbuild.BuildOptions> {
   return {
     ...sandboxBuildOptions(),
     entryPoints: files.map((file) => path.join(labDir, file)),
-    outdir: path.join(DIST, 'items/lab'),
+    outdir: path.join(DIST, 'lab'),
   }
 }
 
@@ -77,11 +107,26 @@ ${importMap}
 `
 }
 
-export async function writeRuntimeHtml(manifest: VendorManifest) {
-  await mkdir(DIST, { recursive: true })
-  await writeFile(path.join(DIST, 'runtime.html'), runtimeHtml(manifest))
+export async function writeRuntimeHtml(manifest: VendorManifest, dist = DIST) {
+  await mkdir(dist, { recursive: true })
+  await writeFile(path.join(dist, 'runtime.html'), runtimeHtml(manifest))
+  await writeFile(path.join(dist, 'capture.html'), CAPTURE_HTML)
 }
 
-export async function buildVendorInto(): Promise<VendorManifest> {
-  return buildVendor({ outDir: path.join(DIST, 'vendor') })
+export async function buildVendorInto(dist = DIST): Promise<VendorManifest> {
+  return buildVendor({ outDir: path.join(dist, 'vendor') })
+}
+
+/** 编译市场条目到 dist/items，并生成站点读取的 catalog.json。 */
+export async function buildItemsInto(manifest: VendorManifest, options: { minify: boolean; fresh?: boolean }): Promise<BuildRegistryResult> {
+  const result = await buildRegistry({
+    outDir: path.join(DIST, 'items'),
+    urlBase: '/items/',
+    minify: options.minify,
+    vendorVersions: manifest.versions,
+    fresh: options.fresh ?? false,
+  })
+  const report = formatFindings(result)
+  if (report) console.log(report)
+  return result
 }

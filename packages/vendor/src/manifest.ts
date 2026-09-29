@@ -20,6 +20,9 @@ export const VENDOR_ENTRIES: readonly VendorEntry[] = [
   { id: 'motion/react', pkg: 'motion', format: 'esm' },
   { id: 'three', pkg: 'three', format: 'esm' },
   { id: '@paper-design/shaders-react', pkg: '@paper-design/shaders-react', format: 'esm' },
+  { id: 'cobe', pkg: 'cobe', format: 'esm' },
+  // 条目共用的 hooks（cn、useFrameLoop …）；导出项目时会换成本地文件。
+  { id: '@motif/runtime', pkg: '@motif/runtime', format: 'esm' },
 ]
 
 export const VENDOR_IDS: readonly string[] = VENDOR_ENTRIES.map((entry) => entry.id)

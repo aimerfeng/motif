@@ -1,0 +1,66 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'border-beam',
+  status: 'published',
+  title: { 'zh-CN': '边框光束', en: 'Border Beam' },
+  summary: {
+    'zh-CN': '一束渐变光沿卡片边框匀速绕行，给定价卡、登录框、功能卡加一点「活着」的感觉。',
+    en: 'A gradient beam travels around a card’s border at a steady pace, bringing pricing cards, sign-in boxes and feature tiles to life.',
+  },
+  category: 'card',
+  tags: ['border', 'glow', 'card', 'beam', 'css offset-path'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'border-beam.tsx', export: 'BorderBeam' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'border-beam.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'size', type: 'number', label: { 'zh-CN': '光束长度', en: 'Beam length' }, default: 160, min: 20, max: 400, step: 1, unit: 'px', safe: [60, 240] },
+    { key: 'duration', type: 'number', label: { 'zh-CN': '绕一圈用时', en: 'Loop duration' }, default: 7, min: 1.5, max: 20, step: 0.1, unit: 's', safe: [4, 12] },
+    { key: 'colorFrom', type: 'color', label: { 'zh-CN': '光头颜色', en: 'Head color' }, default: '#ffaa40' },
+    { key: 'colorTo', type: 'color', label: { 'zh-CN': '光尾颜色', en: 'Tail color' }, default: '#9c40ff' },
+    { key: 'borderWidth', type: 'number', label: { 'zh-CN': '边框粗细', en: 'Border width' }, default: 2, min: 0.5, max: 6, step: 0.5, unit: 'px' },
+    { key: 'reverse', type: 'boolean', label: { 'zh-CN': '逆时针', en: 'Counter-clockwise' }, default: false },
+    {
+      key: 'initialOffset',
+      type: 'number',
+      label: { 'zh-CN': '起始位置', en: 'Start offset' },
+      hint: { 'zh-CN': '多个光束错开时用', en: 'Use it to stagger several beams' },
+      default: 0,
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+    },
+  ],
+  presets: [
+    { id: 'aurora', name: { 'zh-CN': '极光', en: 'Aurora' }, values: { colorFrom: '#34f5c5', colorTo: '#3b82f6', size: 160, duration: 9 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { colorFrom: '#ff6a3d', colorTo: '#ffd23f', size: 90, duration: 5 } },
+    { id: 'mono', name: { 'zh-CN': '素白', en: 'Mono' }, values: { colorFrom: '#ffffff', colorTo: '#8a8a99', size: 200, duration: 10, borderWidth: 1 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 2, posterTime: 1.1 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/border-beam.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; the delay and transition props were dropped in favor of initialOffset.',
+      'The beam stops at its start position when the user prefers reduced motion.',
+      'cn now comes from motif-runtime.',
+    ],
+    assets: [],
+  },
+})

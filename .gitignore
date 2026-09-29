@@ -19,3 +19,5 @@ next-env.d.ts
 test-results/
 playwright-report/
 .data/
+packages/registry/generated/
+.next-e2e/

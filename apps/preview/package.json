@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    "./protocol": "./src/protocol.ts"
+    "./protocol": "./src/protocol.ts",
+    "./server": "./scripts/server.ts",
+    "./build": "./scripts/build-lib.ts"
   },
   "scripts": {
     "dev": "tsx scripts/serve.ts --watch",
@@ -14,6 +16,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@motif/registry": "workspace:*",
     "@motif/vendor": "workspace:*",
     "@paper-design/shaders-react": "0.0.81",
     "motion": "^13.4.6",

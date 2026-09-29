@@ -1,6 +1,17 @@
 import { Component, type ComponentType, type ErrorInfo, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { envelope, readHostMessage, type ErrorPhase, type ModuleRef, type PreviewProps, type SandboxMessage } from '../protocol.ts'
+import {
+  envelope,
+  readHostMessage,
+  type ErrorPhase,
+  type MountMessage,
+  type ModuleRef,
+  type PreviewProps,
+  type PreviewTheme,
+  type SandboxMessage,
+  type StyleRef,
+} from '../protocol.ts'
+import { advanceTo, installManualClock, isManualClock, measureFrames } from './clock.ts'
 
 const hash = new URLSearchParams(location.hash.slice(1))
 const nonce = hash.get('nonce') ?? ''
@@ -65,20 +76,58 @@ async function loadModule(ref: ModuleRef): Promise<Record<string, unknown>> {
   }
 }
 
-async function mount(ref: ModuleRef, exportName: string, props: PreviewProps) {
+let styleElement: HTMLLinkElement | HTMLStyleElement | null = null
+
+/** 换上新条目的样式表；URL 形式要等样式加载完再渲染，避免先闪一下无样式的画面。 */
+async function applyStyles(ref: StyleRef | undefined): Promise<void> {
+  styleElement?.remove()
+  styleElement = null
+  if (!ref) return
+  if (ref.kind === 'text') {
+    const style = document.createElement('style')
+    style.textContent = ref.text
+    document.head.append(style)
+    styleElement = style
+    return
+  }
+  const url = new URL(ref.url, location.href)
+  if (url.origin !== ownOrigin) throw new Error(`refusing to load a stylesheet from another origin: ${url.href}`)
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = url.href
+  styleElement = link
+  await new Promise<void>((resolve, reject) => {
+    link.onload = () => resolve()
+    link.onerror = () => reject(new Error(`failed to load stylesheet ${url.href}`))
+    document.head.append(link)
+  })
+}
+
+function applyTheme(theme: PreviewTheme | undefined) {
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+  document.documentElement.style.colorScheme = theme ?? 'light'
+}
+
+async function mount({ module: ref, exportName, props, styles, theme, clock }: MountMessage) {
   const started = performance.now()
   const seq = ++mountSeq
   try {
-    const mod = await loadModule(ref)
+    // 手动时钟必须在条目模块（以及它第一次引入的 motion 等库）加载之前装好。
+    if (clock === 'manual') installManualClock()
+    applyTheme(theme)
+    const [mod] = await Promise.all([loadModule(ref), applyStyles(styles)])
     if (seq !== mountSeq) return
     const Comp = mod[exportName]
     if (typeof Comp !== 'function') throw new Error(`module has no component export named "${exportName}"`)
     current = { Comp: Comp as ComponentType<PreviewProps>, props, key: seq }
     renderFailed = false
     render()
-    requestAnimationFrame(() => {
+    const reportMounted = () => {
       if (seq === mountSeq && !renderFailed) send({ type: 'mounted', ms: Math.round(performance.now() - started) })
-    })
+    }
+    // 手动时钟下 rAF 不会自己触发，等 React 提交后直接报告。
+    if (isManualClock()) setTimeout(reportMounted, 0)
+    else requestAnimationFrame(reportMounted)
   } catch (error) {
     reportError('load', error)
   }
@@ -90,7 +139,7 @@ window.addEventListener('message', (event) => {
   if (!message) return
   switch (message.type) {
     case 'mount':
-      void mount(message.module, message.exportName, message.props)
+      void mount(message)
       break
     case 'props':
       if (current) {
@@ -100,6 +149,12 @@ window.addEventListener('message', (event) => {
       break
     case 'ping':
       send({ type: 'pong', seq: message.seq })
+      break
+    case 'advance':
+      void advanceTo(message.to, (error) => reportError('runtime', error)).then(() => send({ type: 'advanced', to: message.to }))
+      break
+    case 'measure':
+      void measureFrames(message.ms).then((result) => send({ type: 'measured', ...result }))
       break
   }
 })
