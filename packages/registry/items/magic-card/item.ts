@@ -1,0 +1,70 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'magic-card',
+  status: 'published',
+  title: { 'zh-CN': '魔法卡片', en: 'Magic Card' },
+  summary: {
+    'zh-CN': '指针经过时，卡片内部亮起一团跟随的聚光，边框同步点亮。可以切换成柔和的彩色光球。适合功能卡、定价卡和仪表盘面板。',
+    en: 'A spotlight follows the pointer across the card while the border lights up beneath it; switch to a soft blurred orb if you prefer. Made for feature tiles, pricing cards and dashboard panels.',
+  },
+  category: 'card',
+  tags: ['card', 'spotlight', 'hover', 'glow', 'border', 'pointer'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'magic-card.tsx', export: 'MagicCard' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'magic-card.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'mode',
+      type: 'select',
+      label: { 'zh-CN': '光效类型', en: 'Light style' },
+      default: 'gradient',
+      options: [
+        { value: 'gradient', label: { 'zh-CN': '聚光', en: 'Spotlight' } },
+        { value: 'orb', label: { 'zh-CN': '光球', en: 'Orb' } },
+      ],
+      group: 'look',
+    },
+    { key: 'gradientSize', type: 'number', label: { 'zh-CN': '边框光圈', en: 'Border light radius' }, hint: { 'zh-CN': '聚光模式下也是聚光半径', en: 'Also the spotlight radius in spotlight mode' }, default: 260, min: 100, max: 600, step: 10, unit: 'px', safe: [160, 400], group: 'look' },
+    { key: 'gradientColor', type: 'color', label: { 'zh-CN': '聚光颜色', en: 'Spotlight color' }, default: '#3b3577', group: 'look' },
+    { key: 'gradientOpacity', type: 'number', label: { 'zh-CN': '光强', en: 'Light intensity' }, default: 0.9, min: 0.1, max: 1, step: 0.05, safe: [0.4, 1], group: 'look' },
+    { key: 'gradientFrom', type: 'color', label: { 'zh-CN': '边框光起点色', en: 'Border light center' }, default: '#9e7aff', group: 'border' },
+    { key: 'gradientTo', type: 'color', label: { 'zh-CN': '边框光终点色', en: 'Border light edge' }, default: '#fe8bbb', group: 'border' },
+    { key: 'glowFrom', type: 'color', label: { 'zh-CN': '光球起点色', en: 'Orb from' }, default: '#ee4f27', group: 'orb' },
+    { key: 'glowTo', type: 'color', label: { 'zh-CN': '光球终点色', en: 'Orb to' }, default: '#6b21ef', group: 'orb' },
+    { key: 'glowSize', type: 'number', label: { 'zh-CN': '光球大小', en: 'Orb size' }, default: 360, min: 120, max: 700, step: 10, unit: 'px', safe: [220, 520], group: 'orb' },
+    { key: 'glowBlur', type: 'number', label: { 'zh-CN': '光球模糊', en: 'Orb blur' }, default: 60, min: 10, max: 140, step: 1, unit: 'px', safe: [30, 100], group: 'orb' },
+  ],
+  presets: [
+    { id: 'nebula', name: { 'zh-CN': '星云', en: 'Nebula' }, values: { mode: 'gradient', gradientColor: '#3b3577', gradientFrom: '#9e7aff', gradientTo: '#fe8bbb', gradientSize: 260 } },
+    { id: 'glacier', name: { 'zh-CN': '冰川', en: 'Glacier' }, values: { mode: 'gradient', gradientColor: '#123a4a', gradientFrom: '#5eead4', gradientTo: '#38bdf8', gradientSize: 300, gradientOpacity: 0.9 } },
+    { id: 'ember-orb', name: { 'zh-CN': '余烬光球', en: 'Ember Orb' }, values: { mode: 'orb', glowFrom: '#ff6a3d', glowTo: '#7c2df0', glowSize: 360, glowBlur: 70, gradientOpacity: 0.55, gradientFrom: '#ff8a5c', gradientTo: '#a06bff' } },
+    { id: 'mono-light', name: { 'zh-CN': '素光', en: 'Mono Light' }, values: { mode: 'gradient', gradientColor: '#33363f', gradientFrom: '#ffffff', gradientTo: '#8a8a99', gradientSize: 220, gradientOpacity: 0.85 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.8, posterTime: 0.45, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/magic-card.tsx', 'apps/www/registry/example/magic-card-demo.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; the orb mode reuses gradientOpacity as its intensity instead of a separate glowOpacity, and glowAngle is fixed at 90 degrees.',
+      'next-themes was removed: the orb uses multiply blending on light themes and screen blending under a .dark ancestor, decided by CSS.',
+      'Motif improvement: with prefers-reduced-motion the orb follows the pointer directly instead of through a spring. The effect only reacts to the pointer and never animates on its own.',
+    ],
+    assets: [],
+  },
+})

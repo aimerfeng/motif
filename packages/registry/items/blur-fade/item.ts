@@ -1,0 +1,70 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'blur-fade',
+  status: 'published',
+  title: { 'zh-CN': '模糊淡入', en: 'Blur Fade' },
+  summary: {
+    'zh-CN': '内容从模糊、半透明的状态轻轻滑入并聚焦，像镜头对上了焦。适合标题、卡片和整页内容的分层入场。',
+    en: 'Content drifts in out of a soft blur and snaps into focus, like a lens finding its subject. Ideal for staggered entrances of headlines, cards and whole sections.',
+  },
+  category: 'transition',
+  tags: ['blur', 'fade', 'entrance', 'reveal', 'stagger'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'blur-fade.tsx', export: 'BlurFade' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'blur-fade.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'text', type: 'text', label: { 'zh-CN': '标题文案', en: 'Headline' }, hint: { 'zh-CN': '只影响演示', en: 'Demo only' }, default: 'Craft the moments between screens', maxLength: 60 },
+    { key: 'duration', type: 'number', label: { 'zh-CN': '时长', en: 'Duration' }, default: 0.9, min: 0.2, max: 2.5, step: 0.05, unit: 's', safe: [0.5, 1.4], group: 'motion' },
+    { key: 'delay', type: 'number', label: { 'zh-CN': '延迟', en: 'Delay' }, hint: { 'zh-CN': '多个元素错开入场时用', en: 'Stagger several elements with it' }, default: 0, min: 0, max: 3, step: 0.05, unit: 's', group: 'motion' },
+    { key: 'ease', type: 'easing', label: { 'zh-CN': '缓动', en: 'Easing' }, default: [0.22, 1, 0.36, 1], group: 'motion' },
+    {
+      key: 'direction',
+      type: 'select',
+      label: { 'zh-CN': '入场方向', en: 'Direction' },
+      default: 'up',
+      options: [
+        { value: 'up', label: { 'zh-CN': '自下而上', en: 'Up' } },
+        { value: 'down', label: { 'zh-CN': '自上而下', en: 'Down' } },
+        { value: 'left', label: { 'zh-CN': '自右向左', en: 'Left' } },
+        { value: 'right', label: { 'zh-CN': '自左向右', en: 'Right' } },
+      ],
+      group: 'look',
+    },
+    { key: 'offset', type: 'number', label: { 'zh-CN': '位移距离', en: 'Travel distance' }, default: 16, min: 0, max: 80, step: 1, unit: 'px', safe: [6, 36], group: 'look' },
+    { key: 'blur', type: 'number', label: { 'zh-CN': '起始模糊', en: 'Start blur' }, default: 10, min: 0, max: 30, step: 1, unit: 'px', safe: [4, 18], group: 'look' },
+    { key: 'inView', type: 'boolean', label: { 'zh-CN': '进入视口时触发', en: 'Wait for viewport' }, hint: { 'zh-CN': '滚动到可见时才播放，只播一次', en: 'Plays once, when scrolled into view' }, default: false, group: 'trigger' },
+  ],
+  presets: [
+    { id: 'soft-focus', name: { 'zh-CN': '柔焦', en: 'Soft Focus' }, values: { duration: 0.9, offset: 16, blur: 10, direction: 'up' } },
+    { id: 'rise', name: { 'zh-CN': '浮起', en: 'Rise' }, values: { duration: 1.1, offset: 32, blur: 14, direction: 'up', ease: [0.16, 1, 0.3, 1] } },
+    { id: 'drift', name: { 'zh-CN': '横移', en: 'Drift' }, values: { duration: 0.8, offset: 44, blur: 6, direction: 'left', ease: [0.32, 0.72, 0, 1] } },
+    { id: 'lens-pull', name: { 'zh-CN': '拉焦', en: 'Lens Pull' }, values: { duration: 1.5, offset: 0, blur: 24, direction: 'up', ease: [0.4, 0, 0.2, 1] } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.3, posterTime: 0.65, loop: 5 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/blur-fade.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; blur is a number of pixels, the easing is a tunable cubic-bezier, and a text prop renders a fallback label when no children are given.',
+      'Removed the AnimatePresence exit, the custom variant prop and the inViewMargin prop to keep the API small.',
+      'Motif improvement: with prefers-reduced-motion the transition becomes a short opacity-only fade with no blur, travel or delay.',
+    ],
+    assets: [],
+  },
+})

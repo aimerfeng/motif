@@ -1,0 +1,69 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dock',
+  status: 'published',
+  title: { 'zh-CN': '放大坞', en: 'Dock' },
+  summary: {
+    'zh-CN': '指针经过时，图标按距离平滑放大，邻近的图标一起被带起，像 macOS 的程序坞。适合应用导航、工具栏和作品集的社交入口。',
+    en: 'Icons swell smoothly as the pointer nears them and pull their neighbors along, like the macOS dock. Great for app navigation, toolbars and portfolio link bars.',
+  },
+  category: 'navigation',
+  tags: ['dock', 'magnify', 'macos', 'toolbar', 'hover', 'spring'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'dock.tsx', export: 'Dock' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dock.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'iconSize', type: 'number', label: { 'zh-CN': '图标尺寸', en: 'Icon size' }, default: 48, min: 28, max: 72, step: 1, unit: 'px', safe: [36, 60], group: 'layout' },
+    { key: 'iconMagnification', type: 'number', label: { 'zh-CN': '放大后尺寸', en: 'Magnified size' }, default: 80, min: 40, max: 128, step: 1, unit: 'px', safe: [60, 104], group: 'interaction' },
+    { key: 'iconDistance', type: 'number', label: { 'zh-CN': '影响范围', en: 'Reach' }, hint: { 'zh-CN': '指针离图标多远时开始放大', en: 'How far from an icon the swell starts' }, default: 150, min: 60, max: 320, step: 1, unit: 'px', safe: [100, 220], group: 'interaction' },
+    { key: 'gap', type: 'number', label: { 'zh-CN': '图标间距', en: 'Gap' }, default: 8, min: 0, max: 24, step: 1, unit: 'px', safe: [4, 14], group: 'layout' },
+    { key: 'spring', type: 'spring', label: { 'zh-CN': '弹簧', en: 'Spring' }, default: { visualDuration: 0.28, bounce: 0.25 }, group: 'interaction' },
+    {
+      key: 'direction',
+      type: 'select',
+      label: { 'zh-CN': '对齐方向', en: 'Grow toward' },
+      default: 'bottom',
+      options: [
+        { value: 'bottom', label: { 'zh-CN': '向上生长（底部对齐）', en: 'Up (bottom aligned)' } },
+        { value: 'middle', label: { 'zh-CN': '居中', en: 'Centered' } },
+        { value: 'top', label: { 'zh-CN': '向下生长（顶部对齐）', en: 'Down (top aligned)' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'disableMagnification', type: 'boolean', label: { 'zh-CN': '关闭放大', en: 'Disable magnification' }, default: false, group: 'interaction' },
+  ],
+  presets: [
+    { id: 'classic', name: { 'zh-CN': '经典', en: 'Classic' }, values: { iconSize: 48, iconMagnification: 80, iconDistance: 150, gap: 8 } },
+    { id: 'jelly', name: { 'zh-CN': '果冻', en: 'Jelly' }, values: { iconSize: 44, iconMagnification: 96, iconDistance: 170, gap: 10, spring: { visualDuration: 0.4, bounce: 0.5 } } },
+    { id: 'compact', name: { 'zh-CN': '紧凑', en: 'Compact' }, values: { iconSize: 36, iconMagnification: 56, iconDistance: 100, gap: 6, spring: { visualDuration: 0.2, bounce: 0.1 } } },
+    { id: 'wide-swell', name: { 'zh-CN': '宽波', en: 'Wide Swell' }, values: { iconSize: 52, iconMagnification: 72, iconDistance: 260, gap: 12, spring: { visualDuration: 0.5, bounce: 0.15 } } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.6, posterTime: 3.4, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/dock.tsx', 'apps/www/registry/example/dock-demo.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; the spring is described by visualDuration + bounce and icon gap is a prop.',
+      'class-variance-authority and cloneElement were replaced by a React context, so DockIcon works when wrapped in other elements.',
+      'Pointer tracking uses pointer events and clientX (upstream used pageX, which drifts once the page scrolls); the icon padding was removed so tiles fill the icon box.',
+      'Motif improvement: with prefers-reduced-motion the magnification is switched off, leaving a plain toolbar.',
+    ],
+    assets: [],
+  },
+})

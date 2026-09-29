@@ -1,0 +1,62 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'retro-grid',
+  status: 'published',
+  title: { 'zh-CN': '复古网格', en: 'Retro Grid' },
+  summary: {
+    'zh-CN': '一张透视倾斜的无限网格从远处缓缓滚来，地平线泛着柔光，远处的线条自然合并、不闪烁。适合做首屏背景和区块分隔。',
+    en: 'A perspective grid rolls in from the horizon under a soft glow, its distant lines merging cleanly without shimmer. A hero background or section divider with a synthwave streak.',
+  },
+  category: 'background',
+  tags: ['grid', 'perspective', 'synthwave', 'retro', 'webgl', 'horizon'],
+  runtime: ['react', 'webgl'],
+  entry: { file: 'retro-grid.tsx', export: 'RetroGrid' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'retro-grid.tsx', role: 'component' },
+    { path: 'shaders.ts', role: 'shader' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'angle', type: 'number', label: { 'zh-CN': '倾斜角', en: 'Tilt' }, hint: { 'zh-CN': '越大越接近平躺，地平线越高', en: 'Higher values lay the plane flatter' }, default: 68, min: 40, max: 80, step: 1, unit: 'deg', safe: [55, 76], group: 'grid' },
+    { key: 'cellSize', type: 'number', label: { 'zh-CN': '格子大小', en: 'Cell size' }, default: 60, min: 30, max: 140, step: 1, unit: 'px', safe: [40, 100], group: 'grid' },
+    { key: 'lineWidth', type: 'number', label: { 'zh-CN': '线宽', en: 'Line width' }, default: 1, min: 0.5, max: 2.5, step: 0.1, unit: 'px', safe: [0.7, 1.6], group: 'grid' },
+    { key: 'lineColor', type: 'color', label: { 'zh-CN': '线条颜色', en: 'Line color' }, default: '#8b8bff', group: 'color' },
+    { key: 'opacity', type: 'number', label: { 'zh-CN': '线条不透明度', en: 'Line opacity' }, default: 0.6, min: 0.1, max: 1, step: 0.05, safe: [0.35, 0.9], group: 'color' },
+    { key: 'glowColor', type: 'color', label: { 'zh-CN': '地平线光晕', en: 'Horizon glow' }, default: '#5b21b6', group: 'color' },
+    { key: 'glowAmount', type: 'number', label: { 'zh-CN': '光晕强度', en: 'Glow strength' }, default: 0.6, min: 0, max: 1, step: 0.05, group: 'color' },
+    { key: 'fade', type: 'number', label: { 'zh-CN': '近处淡出', en: 'Near fade' }, hint: { 'zh-CN': '底部渐隐到背景色，让内容更易读', en: 'Fades the bottom into the background for legibility' }, default: 0.7, min: 0, max: 1, step: 0.05, group: 'color' },
+    { key: 'speed', type: 'number', label: { 'zh-CN': '滚动速度', en: 'Speed' }, default: 1, min: 0, max: 4, step: 0.1, unit: 'x', hint: { 'zh-CN': '每秒滚过的格数', en: 'Cells scrolled per second' }, safe: [0.3, 2], group: 'motion' },
+  ],
+  presets: [
+    { id: 'dusk', name: { 'zh-CN': '暮色', en: 'Dusk' }, values: { lineColor: '#8b8bff', glowColor: '#5b21b6', glowAmount: 0.6, angle: 68 } },
+    { id: 'synthwave', name: { 'zh-CN': '霓虹', en: 'Synthwave' }, values: { lineColor: '#ff5fd2', glowColor: '#c026d3', glowAmount: 0.75, angle: 72, cellSize: 70, speed: 1.5 } },
+    { id: 'terminal', name: { 'zh-CN': '终端', en: 'Terminal' }, values: { lineColor: '#4ade80', glowColor: '#166534', glowAmount: 0.45, angle: 64, cellSize: 44, speed: 0.5, lineWidth: 0.8 } },
+    { id: 'ice', name: { 'zh-CN': '冰原', en: 'Ice Sheet' }, values: { lineColor: '#7dd3fc', glowColor: '#0369a1', glowAmount: 0.55, angle: 74, cellSize: 90, speed: 0.5, opacity: 0.7 } },
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { lineColor: '#d4d4d8', glowColor: '#3f3f46', glowAmount: 0.4, angle: 66, opacity: 0.4, speed: 1 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: true, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 1, loop: 4 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/retro-grid.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'The upstream component at this commit renders the grid with a raytraced WebGL fragment shader; that shader is kept, with the line width and scroll offset turned into uniforms and the wall-clock scroll replaced by a scroll amount derived from the frame-loop time (so speed is measured in cells per second).',
+      'The WebGL boilerplate (program, context loss handling, resize, visibility pause) was replaced by the motif-runtime helpers; theme detection and the light/dark line colors were replaced by a single lineColor, and the container size is used as the shader viewport instead of the window size.',
+      'Added a horizon glow, a tunable near fade and a line width parameter; the static CSS fallback used when WebGL is unavailable no longer animates.',
+      'Motif improvement: with prefers-reduced-motion the grid is drawn once and stays still.',
+    ],
+    assets: [],
+  },
+})

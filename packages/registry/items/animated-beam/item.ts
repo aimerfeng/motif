@@ -1,0 +1,60 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'animated-beam',
+  status: 'published',
+  title: { 'zh-CN': '流光连线', en: 'Animated Beam' },
+  summary: {
+    'zh-CN': '一束渐变光沿着两个元素之间的连线流动，用来表现数据流、集成关系和「A 连接到 B」。适合集成图、架构图和功能介绍。',
+    en: 'A gradient pulse that travels along the line between two elements, showing data flowing from A to B. Perfect for integration maps, architecture diagrams and feature explainers.',
+  },
+  category: 'data',
+  tags: ['beam', 'connection', 'svg', 'integration', 'diagram', 'gradient'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'animated-beam.tsx', export: 'AnimatedBeam' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'animated-beam.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'curvature', type: 'number', label: { 'zh-CN': '弧度', en: 'Curvature' }, hint: { 'zh-CN': '正数向上弯，负数向下弯', en: 'Positive bows upward, negative downward' }, default: 0, min: -160, max: 160, step: 1, unit: 'px', safe: [-90, 90], group: 'path' },
+    { key: 'pathWidth', type: 'number', label: { 'zh-CN': '线宽', en: 'Line width' }, default: 2, min: 1, max: 6, step: 0.5, unit: 'px', group: 'path' },
+    { key: 'length', type: 'number', label: { 'zh-CN': '光束长度', en: 'Beam length' }, hint: { 'zh-CN': '占容器宽度的百分比', en: 'Percent of the container width' }, default: 16, min: 6, max: 40, step: 1, unit: '%', safe: [10, 26], group: 'beam' },
+    { key: 'pathOpacity', type: 'number', label: { 'zh-CN': '底线不透明度', en: 'Track opacity' }, default: 0.3, min: 0, max: 0.8, step: 0.05, group: 'path' },
+    { key: 'gradientStartColor', type: 'color', label: { 'zh-CN': '光头颜色', en: 'Head color' }, default: '#ffaa40', group: 'beam' },
+    { key: 'gradientStopColor', type: 'color', label: { 'zh-CN': '光尾颜色', en: 'Tail color' }, default: '#9c40ff', group: 'beam' },
+    { key: 'duration', type: 'number', label: { 'zh-CN': '单程用时', en: 'Duration' }, default: 4, min: 1.5, max: 10, step: 0.1, unit: 's', safe: [2.5, 6], group: 'motion' },
+    { key: 'repeatDelay', type: 'number', label: { 'zh-CN': '循环间隔', en: 'Pause between runs' }, default: 0.4, min: 0, max: 3, step: 0.1, unit: 's', group: 'motion' },
+    { key: 'ease', type: 'easing', label: { 'zh-CN': '缓动', en: 'Easing' }, default: [0.4, 0, 0.2, 1], group: 'motion' },
+    { key: 'reverse', type: 'boolean', label: { 'zh-CN': '反向', en: 'Reverse' }, default: false, group: 'motion' },
+  ],
+  presets: [
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { gradientStartColor: '#ffaa40', gradientStopColor: '#9c40ff', curvature: 0, ease: [0.4, 0, 0.2, 1] } },
+    { id: 'aurora-arc', name: { 'zh-CN': '极光弧线', en: 'Aurora Arc' }, values: { gradientStartColor: '#34f5c5', gradientStopColor: '#3b82f6', curvature: 60, duration: 4.8, pathOpacity: 0.25, ease: [0.5, 0, 0.5, 1] } },
+    { id: 'signal', name: { 'zh-CN': '信号', en: 'Signal' }, values: { gradientStartColor: '#f5f5f7', gradientStopColor: '#7c7cff', curvature: -50, duration: 3, pathWidth: 1.5, pathOpacity: 0.4, ease: [0.16, 1, 0.3, 1] } },
+    { id: 'hot-wire', name: { 'zh-CN': '热线', en: 'Hot Wire' }, values: { gradientStartColor: '#ff4d6d', gradientStopColor: '#ffd23f', duration: 2.4, pathWidth: 3, pathOpacity: 0.2, ease: [0.3, 0, 0.7, 1] } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.5, posterTime: 1.7, loop: 4.4 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/animated-beam.tsx', 'apps/www/registry/example/animated-beam-demo.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; repeatDelay and the easing are params (the default easing is a gentler ease-in-out than the upstream expo-out) and repeat is always infinite. The track color is the optional pathColor prop (default hex #8a8fa8 instead of the css keyword gray) and the beam length is a param.',
+      'The path is recomputed by a ResizeObserver watching the container and both endpoints, so it follows layout changes as well as window resizes.',
+      'Motif improvement: with prefers-reduced-motion the pulse is replaced by a static gradient line from start to end.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,59 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'particles',
+  status: 'published',
+  title: { 'zh-CN': '漂浮粒子', en: 'Particles' },
+  summary: {
+    'zh-CN': '细小的光点在背景里缓缓漂浮、明暗交替，随指针轻微位移，形成层次感。适合首屏、卡片和区块的氛围背景。',
+    en: 'Tiny specks of light drift and twinkle in the background, shifting slightly with the pointer for a sense of depth. An ambient layer for heroes, cards and sections.',
+  },
+  category: 'background',
+  tags: ['particles', 'canvas', 'ambient', 'stars', 'parallax', 'dust'],
+  runtime: ['react', 'canvas2d'],
+  entry: { file: 'particles.tsx', export: 'Particles' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'particles.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'quantity', type: 'number', label: { 'zh-CN': '数量', en: 'Quantity' }, default: 240, min: 10, max: 500, step: 5, safe: [60, 300], group: 'look' },
+    { key: 'size', type: 'number', label: { 'zh-CN': '大小', en: 'Size' }, default: 2, min: 0.5, max: 4, step: 0.1, unit: 'px', safe: [0.8, 2.4], group: 'look' },
+    { key: 'colors', type: 'palette', label: { 'zh-CN': '颜色', en: 'Colors' }, hint: { 'zh-CN': '每个粒子随机取其中一种', en: 'Each particle picks one at random' }, default: ['#ffffff', '#a5b4fc', '#f0abfc'], minItems: 1, maxItems: 5, group: 'look' },
+    { key: 'vx', type: 'number', label: { 'zh-CN': '横向漂移', en: 'Drift X' }, default: 0, min: -40, max: 40, step: 1, unit: 'px', hint: { 'zh-CN': '每秒像素，负数向左', en: 'Pixels per second, negative drifts left' }, safe: [-20, 20], group: 'motion' },
+    { key: 'vy', type: 'number', label: { 'zh-CN': '纵向漂移', en: 'Drift Y' }, default: -8, min: -40, max: 40, step: 1, unit: 'px', hint: { 'zh-CN': '每秒像素，负数向上', en: 'Pixels per second, negative drifts up' }, safe: [-24, 24], group: 'motion' },
+    { key: 'pointerPull', type: 'number', label: { 'zh-CN': '指针牵引', en: 'Pointer pull' }, hint: { 'zh-CN': '指针移动时粒子位移的幅度，0 为关闭', en: 'How far particles shift with the pointer; 0 turns it off' }, default: 1, min: 0, max: 3, step: 0.1, safe: [0.4, 2], group: 'interaction' },
+    { key: 'ease', type: 'number', label: { 'zh-CN': '跟随缓动', en: 'Pointer easing' }, hint: { 'zh-CN': '数值越大跟得越慢', en: 'Higher values follow more slowly' }, default: 50, min: 10, max: 150, step: 1, safe: [25, 100], group: 'interaction' },
+    { key: 'seed', type: 'seed', label: { 'zh-CN': '随机种子', en: 'Seed' }, default: 7, group: 'look' },
+  ],
+  presets: [
+    { id: 'stardust', name: { 'zh-CN': '星尘', en: 'Stardust' }, values: { quantity: 240, size: 2, colors: ['#ffffff', '#a5b4fc', '#f0abfc'], vx: 0, vy: -8 } },
+    { id: 'embers', name: { 'zh-CN': '余烬', en: 'Embers' }, values: { quantity: 90, size: 1.8, colors: ['#ff9f43', '#ff6b35', '#ffd166'], vx: 4, vy: -30, pointerPull: 0.6 } },
+    { id: 'snowfall', name: { 'zh-CN': '落雪', en: 'Snowfall' }, values: { quantity: 170, size: 1.6, colors: ['#ffffff', '#dbeafe'], vx: 6, vy: 22, pointerPull: 0.5 } },
+    { id: 'fireflies', name: { 'zh-CN': '萤火', en: 'Fireflies' }, values: { quantity: 55, size: 2.4, colors: ['#d9f99d', '#86efac', '#fde68a'], vx: 0, vy: -3, pointerPull: 2, ease: 80 } },
+    { id: 'plankton', name: { 'zh-CN': '浮游', en: 'Plankton' }, values: { quantity: 260, size: 0.9, colors: ['#67e8f9', '#a5f3fc', '#e0f2fe'], vx: 3, vy: -4, pointerPull: 1.2 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/particles.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region. The single color is a palette; vx/vy are in pixels per second and pointerPull replaces staticity; particle sizes are drawn around size, and a seeded random generator makes every run reproducible.',
+      'The simulation is time-based (frame-loop delta) instead of per-frame, so it runs the same at any refresh rate, pauses off-screen and when the tab is hidden, and sizing uses useCanvasSize with a DPR cap.',
+      'Motif improvement: with prefers-reduced-motion a single still frame is drawn and nothing moves.',
+    ],
+    assets: [],
+  },
+})

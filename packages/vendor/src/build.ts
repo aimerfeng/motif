@@ -27,6 +27,12 @@ export async function buildVendor(options: { outDir: string; basePath?: string; 
   await mkdir(outDir, { recursive: true })
 
   const entryById = new Map(VENDOR_ENTRIES.map((entry) => [entry.id, entry]))
+  const withDefault = new Set<string>()
+  await Promise.all(
+    VENDOR_ENTRIES.filter((entry) => entry.format === 'esm').map(async (entry) => {
+      if (await hasDefaultExport(entry.id)) withDefault.add(entry.id)
+    }),
+  )
 
   await esbuild.build({
     entryPoints: VENDOR_ENTRIES.map((entry) => ({ in: `${ENTRY_NAMESPACE}:${entry.id}`, out: vendorFileName(entry.id) })),
@@ -52,7 +58,7 @@ export async function buildVendor(options: { outDir: string; basePath?: string; 
           build.onLoad({ filter: /.*/, namespace: ENTRY_NAMESPACE }, (args) => {
             const entry = entryById.get(args.path)
             if (!entry) throw new Error(`unknown vendor entry: ${args.path}`)
-            return { contents: entryModule(entry), resolveDir: PACKAGE_ROOT, loader: 'js' }
+            return { contents: entryModule(entry, withDefault.has(entry.id)), resolveDir: PACKAGE_ROOT, loader: 'js' }
           })
         },
       },
@@ -70,10 +76,30 @@ export async function buildVendor(options: { outDir: string; basePath?: string; 
   return manifest
 }
 
-/** CommonJS 模块的具名导出要在 Node 里 require 一次再枚举，ESM 模块直接 `export *`。 */
-function entryModule(entry: VendorEntry): string {
+/**
+ * `export *` 不会再导出 default（ES 规范如此），只有默认导出的包（例如 cobe）会因此丢掉入口。
+ * 用一次不写文件的试打包判断模块有没有 default。
+ */
+async function hasDefaultExport(id: string): Promise<boolean> {
+  try {
+    await esbuild.build({
+      stdin: { contents: `export { default } from ${JSON.stringify(id)}`, resolveDir: PACKAGE_ROOT, loader: 'js' },
+      bundle: true,
+      write: false,
+      platform: 'browser',
+      format: 'esm',
+      logLevel: 'silent',
+    })
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** CommonJS 模块的具名导出要在 Node 里 require 一次再枚举；ESM 模块用 `export *`，有默认导出时再补上 default。 */
+function entryModule(entry: VendorEntry, hasDefault: boolean): string {
   const specifier = JSON.stringify(entry.id)
-  if (entry.format === 'esm') return `export * from ${specifier};\n`
+  if (entry.format === 'esm') return `export * from ${specifier};\n${hasDefault ? `export { default } from ${specifier};\n` : ''}`
 
   const exported = require(entry.id) as Record<string, unknown>
   const names = Object.keys(exported).filter((name) => name !== 'default' && IDENTIFIER.test(name))

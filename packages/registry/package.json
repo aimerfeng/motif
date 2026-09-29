@@ -12,7 +12,8 @@
     "check": "tsx scripts/check.ts",
     "lint": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
-    "sync-defaults": "tsx scripts/sync-defaults.ts"
+    "sync-defaults": "tsx scripts/sync-defaults.ts",
+    "notices": "tsx scripts/notices.ts"
   },
   "dependencies": {
     "@motif/checker": "workspace:*",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@types/node": "^24.13.6",
     "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
     "tsx": "^4.23.15",
     "typescript": "~6.0.3",

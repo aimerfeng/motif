@@ -1,0 +1,72 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'hold-button',
+  status: 'published',
+  title: { 'zh-CN': '长按确认按钮', en: 'Hold Button' },
+  summary: {
+    'zh-CN': '按住不放，颜色从左向右填满整个按钮，填满才会确认。用来挡住删除、注销这类不可撤销的危险操作。',
+    en: 'Press and hold: color sweeps across the button and the action only confirms once it is full. A calm guard for destructive, irreversible actions.',
+  },
+  category: 'button',
+  tags: ['button', 'hold', 'confirm', 'progress', 'destructive'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'hold-button.tsx', export: 'HoldButton' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'hold-button.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'holdDuration', type: 'number', group: 'interaction', label: { 'zh-CN': '需按住多久', en: 'Hold time' }, default: 1.6, min: 0.6, max: 4, step: 0.1, unit: 's', safe: [1, 2.5] },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '主色', en: 'Color' }, default: '#f43f5e' },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 14, min: 4, max: 28, step: 1, unit: 'px' },
+    { key: 'width', type: 'number', group: 'look', label: { 'zh-CN': '宽度', en: 'Width' }, default: 232, min: 160, max: 320, step: 4, unit: 'px' },
+    {
+      key: 'icon',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '图标', en: 'Icon' },
+      default: 'trash',
+      options: [
+        { value: 'trash', label: { 'zh-CN': '垃圾桶', en: 'Trash' } },
+        { value: 'power', label: { 'zh-CN': '电源', en: 'Power' } },
+        { value: 'lock', label: { 'zh-CN': '锁', en: 'Lock' } },
+      ],
+    },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '默认文案', en: 'Label' }, default: 'Hold to delete', maxLength: 24 },
+    { key: 'holdLabel', type: 'text', group: 'content', label: { 'zh-CN': '按住时文案', en: 'Holding label' }, default: 'Keep holding', maxLength: 24 },
+    { key: 'doneLabel', type: 'text', group: 'content', label: { 'zh-CN': '完成文案', en: 'Done label' }, default: 'Deleted', maxLength: 24 },
+  ],
+  presets: [
+    { id: 'danger', name: { 'zh-CN': '警报', en: 'Alarm' }, values: { color: '#f43f5e', icon: 'trash', label: 'Hold to delete', doneLabel: 'Deleted', holdDuration: 1.6 } },
+    { id: 'amber', name: { 'zh-CN': '琥珀', en: 'Amber' }, values: { color: '#f59e0b', icon: 'lock', label: 'Hold to lock', holdLabel: 'Locking…', doneLabel: 'Locked', holdDuration: 1.2, radius: 10 } },
+    { id: 'mint', name: { 'zh-CN': '薄荷', en: 'Mint' }, values: { color: '#34d399', icon: 'power', label: 'Hold to start', holdLabel: 'Starting…', doneLabel: 'Running', holdDuration: 1.4, radius: 28 } },
+    { id: 'ink', name: { 'zh-CN': '墨白', en: 'Ink' }, values: { color: '#e4e4e7', icon: 'power', label: 'Hold to power off', holdLabel: 'Powering off…', doneLabel: 'Off', holdDuration: 2, radius: 8 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 2.4, posterTime: 1.75, loop: 5 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kokonutui',
+      repo: 'kokonut-labs/kokonutui',
+      sha: '83eec6d982d400a18438001a8efdbac1f159dd43',
+      paths: ['components/kokonutui/hold-button.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 kokonutUI'],
+    },
+    modifications: [
+      'Replaced the shadcn Button, class-variance-authority variants and lucide icons with a plain button, one color parameter (color-mix tints) and inline SVG icons.',
+      'The fill is driven by a motion value and translated with transform instead of animating width; a glowing leading edge was added.',
+      'Holding now completes: the button switches to a done state, must be released before it can be held again, and resets after a moment. Pointer, touch and keyboard (Space/Enter) are supported.',
+      'An optional holding prop lets a parent drive the hold from outside (used by the demo autoplay).',
+      'Reduced motion removes the icon wobble and press squash; the progress fill itself is kept because it is the functional feedback.',
+      'framer-motion import path and cn now come from motion/react and motif-runtime.',
+    ],
+    assets: [],
+  },
+})

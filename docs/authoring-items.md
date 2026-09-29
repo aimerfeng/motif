@@ -96,6 +96,14 @@ export function Demo(props: BorderBeamProps) { … }
 - 组件类：放在 `bg-background` 上居中，配上真实、克制的内容（英文短文案即可）。不要 lorem ipsum，不要「Unlock your potential」这种空话，不要一堆渐变按钮。
 - 需要交互才会动的效果（磁吸、倾斜、聚光等）：演示里加一个「自动播放」，用 `useFrameLoop` 模拟一个缓慢移动的虚拟指针；用户真正移动指针时停止自动播放。组件本体不需要这段逻辑，这样海报和循环视频里也能看到效果。
 
+## 常见坑
+
+- **截图时只有 rAF 和 `performance.now` 被接管。** `setTimeout` / `setInterval` 仍然走真实时间，所以演示里「每隔几秒做一次」的节奏要用 `useFrameLoop` 给的 `time` 来算，否则海报和循环视频里看不到。
+- **IntersectionObserver 在截图时不确定。** 「进入视口才播放」类的参数，演示里默认关掉，改成按周期重播。
+- **`@theme` 里引用 `var()` 的动画要写 `@theme inline`**，否则变量在 `:root` 上解析，动画不会跑。
+- **横向滚动类组件（跑马灯、无限轮播）放进 grid/flex 时，父元素要加 `min-w-0`**，否则很宽的内部轨道会把布局撑爆。
+- 「减少动态效果」的检查认得 `useFrameLoop`、`usePrefersReducedMotion`、`useReducedMotion`、`prefers-reduced-motion`、`reducedMotion=` 和 Tailwind 的 `motion-reduce:` / `motion-safe:`。
+
 ## 来源与许可证
 
 仓库是公开的。只整合 `sources/sources.json` 里登记过的 A 级来源，固定在登记的 sha。

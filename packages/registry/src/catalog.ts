@@ -16,10 +16,19 @@ export interface CatalogItem {
   findings: Finding[]
 }
 
+export interface CatalogRuntime {
+  /** packages/runtime/src 下的 .ts 源码，导出时合成一个 motif-runtime.ts。 */
+  files: Record<string, string>
+  /** motif-runtime 的 npm 依赖及版本范围。 */
+  dependencies: Record<string, string>
+  themeCss: string
+}
+
 export interface Catalog {
   generatedAt: string
   /** vendor 包名 → 版本，导出项目时写进 package.json。 */
   vendor: Record<string, string>
+  runtime: CatalogRuntime
   items: CatalogItem[]
 }
 
@@ -30,7 +39,7 @@ export async function readCatalog(file: string): Promise<Catalog> {
   try {
     return JSON.parse(await readFile(file, 'utf8')) as Catalog
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return { generatedAt: '', vendor: {}, items: [] }
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return { generatedAt: '', vendor: {}, runtime: { files: {}, dependencies: {}, themeCss: '' }, items: [] }
     throw error
   }
 }

@@ -1,0 +1,60 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dynamic-island',
+  status: 'published',
+  title: { 'zh-CN': '灵动岛', en: 'Dynamic Island' },
+  summary: {
+    'zh-CN': '一颗会呼吸的黑色胶囊：在待机、音乐、耳机电量、来电之间用弹簧形变自然切换，内容跟着淡入淡出。适合做产品里的全局通知、进度和状态入口。',
+    en: 'A black capsule that morphs between idle, now playing, device battery and an incoming call on a spring, with the content blurring in and out. A home for global notifications, progress and status.',
+  },
+  category: 'navigation',
+  tags: ['dynamic island', 'notification', 'morph', 'spring', 'ios', 'status'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'dynamic-island.tsx', export: 'DynamicIsland' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dynamic-island.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '形变弹簧', en: 'Morph spring' }, default: { visualDuration: 0.55, bounce: 0.3 } },
+    { key: 'autoplay', type: 'boolean', group: 'motion', label: { 'zh-CN': '自动切换', en: 'Autoplay' }, hint: { 'zh-CN': '按顺序轮播各个状态；点击胶囊可手动切换', en: 'Cycles through the states; click the island to advance by hand' }, default: true },
+    { key: 'dwell', type: 'number', group: 'motion', label: { 'zh-CN': '每个状态停留', en: 'Time per state' }, default: 2, min: 1, max: 6, step: 0.1, unit: 's', safe: [1.6, 3.5] },
+    { key: 'scale', type: 'number', group: 'layout', label: { 'zh-CN': '整体缩放', en: 'Scale' }, default: 1, min: 0.7, max: 1.6, step: 0.05, unit: 'x', safe: [0.8, 1.4] },
+    { key: 'background', type: 'color', group: 'look', label: { 'zh-CN': '胶囊底色', en: 'Island color' }, default: '#000000' },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, default: '#30d158' },
+    { key: 'shine', type: 'boolean', group: 'look', label: { 'zh-CN': '边缘高光', en: 'Rim light' }, default: true },
+  ],
+  presets: [
+    { id: 'onyx', name: { 'zh-CN': '曜石', en: 'Onyx' }, values: { background: '#000000', accent: '#30d158', spring: { visualDuration: 0.55, bounce: 0.3 }, dwell: 2 } },
+    { id: 'jelly', name: { 'zh-CN': '果冻', en: 'Jelly' }, values: { background: '#0b0b12', accent: '#ff375f', spring: { visualDuration: 0.7, bounce: 0.55 }, dwell: 2.2 } },
+    { id: 'steel', name: { 'zh-CN': '钢蓝', en: 'Steel' }, values: { background: '#0f172a', accent: '#38bdf8', spring: { visualDuration: 0.45, bounce: 0.1 }, dwell: 1.8, shine: true } },
+    { id: 'snap', name: { 'zh-CN': '利落', en: 'Snap' }, values: { background: '#000000', accent: '#ffd60a', spring: { visualDuration: 0.35, bounce: 0.15 }, dwell: 1.5 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.8, posterTime: 5.8, loop: 10 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'cult-ui',
+      repo: 'nolly-studio/cult-ui',
+      sha: 'ee98a5dd2e319b63cc2e707dd968d6af04209b7e',
+      paths: ['apps/www/registry/default/ui/dynamic-island.tsx', 'apps/www/registry/default/example/dynamic-island-demo.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 Jordan-Gilliam'],
+    },
+    modifications: [
+      'Condensed the upstream provider, reducer and size presets into a single component: the island morphs its width, height and corner radius on a spring and cross-fades keyed scenes, keeping the upstream idea of size presets per state.',
+      'Replaced the upstream example scenes (compact, large, tall, long, medium) with five scenes: idle, now playing, timer, device battery and an incoming call, built from plain elements and inline SVG (no shadcn Button, Badge or lucide icons).',
+      'Dropped the squircle clip-path, screen-size breakpoints and the exported provider hooks; the sequence is driven by one frame loop from motif-runtime (autoplay) and by clicks.',
+      'Added parameters for spring, dwell time, scale, island color, accent and rim light.',
+      'Reduced motion shows the call scene as a still and swaps scenes without the morph; clicking still advances scenes.',
+      'framer-motion import path now comes from motion/react.',
+    ],
+    assets: [],
+  },
+})

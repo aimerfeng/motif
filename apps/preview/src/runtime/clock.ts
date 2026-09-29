@@ -16,6 +16,9 @@ let now = 0
 let nextId = 1
 let queue = new Map<number, FrameRequestCallback>()
 const epoch = Date.now()
+/** 上一次推进到的时间，用来估计新出现的动画是何时创建的。 */
+let previous = 0
+const animationBirth = new WeakMap<Animation, number>()
 
 export function installManualClock(): void {
   if (installed) return
@@ -53,10 +56,18 @@ export async function advanceTo(ms: number, onError: (error: unknown) => void): 
       onError(error)
     }
   }
+  // CSS 动画和 motion 交给浏览器的 Web Animations 按各自的起点计时：第一次见到时记下当时的手动时间，
+  // 之后跳到「距起点多久」，而不是绝对时间（否则后创建的淡入会直接跳到结束状态）。
   for (const animation of document.getAnimations()) {
+    let born = animationBirth.get(animation)
+    if (born === undefined) {
+      born = previous
+      animationBirth.set(animation, born)
+    }
     animation.pause()
-    animation.currentTime = ms
+    animation.currentTime = ms - born
   }
+  previous = ms
   await nextPaint()
 }
 

@@ -5,7 +5,7 @@ import { buildRegistry, formatFindings } from '../src/index.ts'
 
 const only = process.argv.slice(2)
 const started = performance.now()
-const all = await buildRegistry()
+const all = await buildRegistry({ writeCatalog: false })
 const result = only.length === 0 ? all : {
   catalog: { ...all.catalog, items: all.catalog.items.filter((item) => only.includes(item.manifest.slug)) },
   errors: all.errors.filter((error) => only.includes(error.slug)),

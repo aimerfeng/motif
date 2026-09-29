@@ -143,7 +143,7 @@ export function checkItem(item: ItemSource, context: CheckContext): Finding[] {
   // 会动的条目要处理「减少动态效果」。
   if (manifest.a11y.reducedMotion !== 'not-animated') {
     const handles = Object.values(item.files).some((text) =>
-      /useFrameLoop|usePrefersReducedMotion|useReducedMotion|prefers-reduced-motion|reducedMotion=/.test(text),
+      /useFrameLoop|usePrefersReducedMotion|useReducedMotion|prefers-reduced-motion|reducedMotion=|\bmotion-(?:reduce|safe):/.test(text),
     )
     if (!handles) add({ level: 'error', rule: 'a11y/reduced-motion', message: 'animated items must handle prefers-reduced-motion' })
   }

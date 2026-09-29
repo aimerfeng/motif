@@ -53,8 +53,9 @@ interface ItemReport {
 
 // ---- 图像工具 ----
 
+/** 亮度的标准差。先转成单通道（b-w 色彩空间）再统计：只 greyscale() 时 sharp 仍返回 3 个通道。 */
 async function lumaStdDev(png: Buffer): Promise<number> {
-  const { channels } = await sharp(png).greyscale().stats()
+  const { channels } = await sharp(png).toColourspace('b-w').stats()
   return channels[0]?.stdev ?? 0
 }
 

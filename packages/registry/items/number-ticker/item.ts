@@ -1,0 +1,72 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'number-ticker',
+  status: 'published',
+  title: { 'zh-CN': '数字滚动', en: 'Number Ticker' },
+  summary: {
+    'zh-CN': '数字用弹簧曲线从起点滚动到目标值，等宽数字不抖动。适合数据看板、统计条和落地页的关键指标。',
+    en: 'A number that springs from a start value to its target with tabular digits, so nothing jitters. Made for dashboards, stat rows and landing-page metrics.',
+  },
+  category: 'data',
+  tags: ['number', 'counter', 'stats', 'spring', 'metrics'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'number-ticker.tsx', export: 'NumberTicker' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'number-ticker.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'value', type: 'number', label: { 'zh-CN': '目标值', en: 'Target value' }, default: 12480, min: 0, max: 1000000, step: 1, group: 'value' },
+    { key: 'startValue', type: 'number', label: { 'zh-CN': '起始值', en: 'Start value' }, default: 0, min: 0, max: 1000000, step: 1, group: 'value' },
+    { key: 'decimalPlaces', type: 'number', label: { 'zh-CN': '小数位', en: 'Decimals' }, default: 0, min: 0, max: 4, step: 1, safe: [0, 2], group: 'value' },
+    { key: 'prefix', type: 'text', label: { 'zh-CN': '前缀', en: 'Prefix' }, default: '', maxLength: 4, group: 'value' },
+    { key: 'suffix', type: 'text', label: { 'zh-CN': '后缀', en: 'Suffix' }, default: '', maxLength: 4, group: 'value' },
+    { key: 'grouping', type: 'boolean', label: { 'zh-CN': '千分位分隔', en: 'Thousands separator' }, default: true, group: 'value' },
+    { key: 'spring', type: 'spring', label: { 'zh-CN': '弹簧', en: 'Spring' }, default: { visualDuration: 1.8, bounce: 0 }, group: 'motion' },
+    { key: 'delay', type: 'number', label: { 'zh-CN': '延迟', en: 'Delay' }, default: 0, min: 0, max: 3, step: 0.05, unit: 's', group: 'motion' },
+    {
+      key: 'direction',
+      type: 'select',
+      label: { 'zh-CN': '方向', en: 'Direction' },
+      hint: { 'zh-CN': '向下时从目标值滚回起始值', en: 'Down rolls from the target back to the start value' },
+      default: 'up',
+      options: [
+        { value: 'up', label: { 'zh-CN': '向上', en: 'Up' } },
+        { value: 'down', label: { 'zh-CN': '向下', en: 'Down' } },
+      ],
+      group: 'motion',
+    },
+    { key: 'startOnView', type: 'boolean', label: { 'zh-CN': '进入视口时开始', en: 'Start in viewport' }, default: false, group: 'motion' },
+  ],
+  presets: [
+    { id: 'calm', name: { 'zh-CN': '从容', en: 'Calm' }, values: { spring: { visualDuration: 1.8, bounce: 0 } } },
+    { id: 'snap', name: { 'zh-CN': '弹跳', en: 'Snap' }, values: { spring: { visualDuration: 1, bounce: 0.22 } } },
+    { id: 'slow-roll', name: { 'zh-CN': '缓行', en: 'Slow Roll' }, values: { spring: { visualDuration: 3, bounce: 0 }, value: 98450, grouping: true } },
+    { id: 'countdown', name: { 'zh-CN': '倒数', en: 'Countdown' }, values: { direction: 'down', value: 3600, spring: { visualDuration: 2.2, bounce: 0 } } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.7, posterTime: 3.6, loop: 5 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/number-ticker.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; the spring is described by visualDuration + bounce and prefix, suffix and thousands grouping were added.',
+      'The value is driven by motion animate() and React state instead of writing textContent, and starts on mount unless startOnView is set.',
+      'Fixed black/white text colors were replaced by theme tokens.',
+      'Motif improvement: with prefers-reduced-motion the final value is shown immediately.',
+    ],
+    assets: [],
+  },
+})

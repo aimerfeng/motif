@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto'
-import { mkdir, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { checkItem, type Finding, type SourceRecord } from '@motif/checker'
 import { compileItem } from '@motif/compiler'
 import type { ItemSource } from '@motif/schema'
 import { VENDOR_IDS } from '@motif/vendor'
-import { CATALOG_PATH, type Catalog, type CatalogItem } from './catalog.ts'
+import { CATALOG_PATH, type Catalog, type CatalogItem, type CatalogRuntime } from './catalog.ts'
 import { loadAllItems, loadSourceRecords, REPO_ROOT } from './load.ts'
 
 export interface BuildRegistryOptions {
@@ -28,6 +28,19 @@ export interface BuildRegistryResult {
 }
 
 const hash = (text: string) => createHash('sha256').update(text).digest('hex').slice(0, 10)
+
+/** motif-runtime 的源码与依赖，导出时内联进用户项目。 */
+export async function loadRuntime(): Promise<CatalogRuntime> {
+  const dir = path.join(REPO_ROOT, 'packages/runtime')
+  const src = path.join(dir, 'src')
+  const files: Record<string, string> = {}
+  for (const file of (await readdir(src)).filter((name) => name.endsWith('.ts')).sort()) {
+    files[file] = (await readFile(path.join(src, file), 'utf8')).replaceAll('\r\n', '\n')
+  }
+  const pkg = JSON.parse(await readFile(path.join(dir, 'package.json'), 'utf8')) as { dependencies?: Record<string, string> }
+  const themeCss = (await readFile(path.join(src, 'theme.css'), 'utf8')).replaceAll('\r\n', '\n')
+  return { files, dependencies: pkg.dependencies ?? {}, themeCss }
+}
 
 /** 检查并编译一个条目。 */
 export async function buildItem(item: ItemSource, sources: readonly SourceRecord[], options: BuildRegistryOptions): Promise<CatalogItem> {
@@ -61,8 +74,8 @@ export async function buildRegistry(options: BuildRegistryOptions = {}): Promise
     await mkdir(options.outDir, { recursive: true })
   }
 
-  const built = await Promise.all(items.map((item) => buildItem(item, sources, options)))
-  const catalog: Catalog = { generatedAt: new Date().toISOString(), vendor: options.vendorVersions ?? {}, items: built }
+  const [built, runtime] = await Promise.all([Promise.all(items.map((item) => buildItem(item, sources, options))), loadRuntime()])
+  const catalog: Catalog = { generatedAt: new Date().toISOString(), vendor: options.vendorVersions ?? {}, runtime, items: built }
   if (options.writeCatalog ?? true) await writeCatalog(catalog)
 
   const errors: BuildRegistryResult['errors'] = []

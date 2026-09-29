@@ -1,0 +1,60 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'background-paths',
+  status: 'published',
+  title: { 'zh-CN': '流线背景', en: 'Background Paths' },
+  summary: {
+    'zh-CN': '一束束渐变曲线像丝带般铺满画面，光点沿着曲线缓缓流动。适合作为首屏、发布页和空状态的安静背景。',
+    en: 'A fan of gradient curves spreads across the screen like silk ribbons, with streaks of light flowing along each line. A quiet backdrop for hero sections, launch pages and empty states.',
+  },
+  category: 'background',
+  tags: ['background', 'svg', 'paths', 'lines', 'gradient', 'flow'],
+  runtime: ['react', 'svg'],
+  entry: { file: 'background-paths.tsx', export: 'BackgroundPaths' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'background-paths.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'count', type: 'number', group: 'layout', label: { 'zh-CN': '曲线数量', en: 'Path count' }, default: 40, min: 12, max: 80, step: 2, safe: [24, 56] },
+    { key: 'amplitude', type: 'number', group: 'layout', label: { 'zh-CN': '起伏幅度', en: 'Wave amplitude' }, default: 1, min: 0.3, max: 2, step: 0.05, unit: 'x', safe: [0.6, 1.5] },
+    { key: 'mirror', type: 'boolean', group: 'layout', label: { 'zh-CN': '左右对称', en: 'Mirror' }, hint: { 'zh-CN': '再加一组从另一侧展开的曲线', en: 'Adds a second fan opening from the other side' }, default: true },
+    { key: 'strokeWidth', type: 'number', group: 'look', label: { 'zh-CN': '线条粗细', en: 'Stroke width' }, default: 1.5, min: 0.4, max: 3, step: 0.05, unit: 'x', safe: [0.8, 2.2] },
+    { key: 'baseOpacity', type: 'number', group: 'look', label: { 'zh-CN': '底线亮度', en: 'Base line opacity' }, default: 0.12, min: 0, max: 0.5, step: 0.01, safe: [0.04, 0.28] },
+    { key: 'colors', type: 'palette', group: 'look', label: { 'zh-CN': '渐变配色', en: 'Gradient colors' }, default: ['#8b5cf6', '#ec4899', '#38bdf8'], minItems: 2, maxItems: 4 },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '流动速度', en: 'Flow speed' }, default: 1, min: 0.2, max: 3, step: 0.05, unit: 'x', safe: [0.5, 1.8] },
+    { key: 'streak', type: 'number', group: 'motion', label: { 'zh-CN': '光点长度', en: 'Streak length' }, default: 16, min: 4, max: 45, step: 1, unit: '%', safe: [8, 30] },
+  ],
+  presets: [
+    { id: 'nebula', name: { 'zh-CN': '星云', en: 'Nebula' }, values: { colors: ['#8b5cf6', '#ec4899', '#38bdf8'], count: 40, mirror: true, streak: 16, speed: 1 } },
+    { id: 'tide', name: { 'zh-CN': '潮汐', en: 'Tide' }, values: { colors: ['#0ea5e9', '#2dd4bf', '#a7f3d0'], count: 32, mirror: false, amplitude: 1.4, streak: 24, speed: 0.7, baseOpacity: 0.16 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { colors: ['#f97316', '#ef4444', '#fbbf24'], count: 48, mirror: true, amplitude: 0.8, streak: 10, speed: 1.4, strokeWidth: 0.8 } },
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { colors: ['#e4e4e7', '#71717a', '#a1a1aa'], count: 56, mirror: true, amplitude: 0.6, streak: 12, speed: 0.6, baseOpacity: 0.1, strokeWidth: 0.7 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 2.2, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kokonutui',
+      repo: 'kokonut-labs/kokonutui',
+      sha: '83eec6d982d400a18438001a8efdbac1f159dd43',
+      paths: ['components/kokonutui/background-paths.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 kokonutUI'],
+    },
+    modifications: [
+      'Kept the upstream path generator (fan of bezier curves with layered sine waves) but made it deterministic and parameterized by count, amplitude and mirroring; ids come from useId instead of Math.random.',
+      'Replaced the vertical bobbing of each path with light streaks that flow along every curve (stroke-dashoffset on a pathLength-normalized copy), driven by one frame loop from motif-runtime with seamless periods.',
+      'Removed the title text, framer-motion entrance animations and the min-h-screen wrapper; the component now fills its parent and renders children on top.',
+      'Gradient colors are a palette parameter; added a soft radial glow and vignette.',
+      'Reduced motion renders a single static frame with the streaks spread along the lines.',
+    ],
+    assets: [],
+  },
+})
