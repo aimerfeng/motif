@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.next/
+out/
+build/
+coverage/
+.turbo/
+.vercel/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+# 上游仓库的本地克隆只用来读，不进版本库
+sources/_clones/
