@@ -95,6 +95,13 @@ export const ItemManifestSchema = z
     presets: z.array(PresetSchema),
     /** 用到的 vendor 模块（裸模块名）；版本由 vendor 清单统一决定。 */
     dependencies: z.array(z.string()),
+    /** 用到的字体（font-family 名，必须在 vendor 的字体清单里）；导出时安装对应的 Fontsource 包。 */
+    fonts: z.array(z.string()).optional(),
+    /**
+     * 写进这个条目 Skill 的专属说明（英文，给 agent 看）：什么时候用、必须遵守的规则。
+     * 设计风格和整站模板尤其需要——风格的规则（配色、边框、阴影、字体搭配）就是它的价值所在。
+     */
+    guidance: z.object({ use: z.array(z.string()).optional(), rules: z.array(z.string()).optional() }).optional(),
     perf: z.object({ webgl: z.boolean(), maxDpr: z.number().min(1).max(3) }),
     /** 用户开启「减少动态效果」时的表现。 */
     a11y: z.object({ reducedMotion: z.enum(['static', 'crossfade', 'slowed', 'not-animated']) }),
@@ -107,6 +114,8 @@ export const ItemManifestSchema = z
         posterTime: z.number().min(0).max(20).optional(),
         loop: z.number().min(0).max(12).optional(),
         zoom: z.number().min(1).max(3).optional(),
+        /** 整页类条目（模板、区块）：循环视频从页顶缓慢滚到页底，海报取页顶。 */
+        scroll: z.boolean().optional(),
       })
       .optional(),
     provenance: ProvenanceSchema,

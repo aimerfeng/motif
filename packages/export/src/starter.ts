@@ -1,5 +1,5 @@
 import type { ItemSource, ParamValues } from '@motif/schema'
-import { itemUrl, npmDependencies, rewriteRuntimeImport, usesRuntime, type ExportContext } from './context.ts'
+import { fontImports, itemUrl, npmDependencies, rewriteRuntimeImport, usesRuntime, type ExportContext } from './context.ts'
 import { bundleRuntime } from './runtime-bundle.ts'
 import { skillFiles, skillName } from './skill.ts'
 
@@ -108,7 +108,8 @@ createRoot(document.getElementById('root')!).render(
 `
 
   const styleImports = manifest.files.filter((file) => file.path.endsWith('.css')).map((file) => `@import './components/motif/${slug}/${file.path}';`)
-  files['src/index.css'] = ['@import "tailwindcss";', '@import "tw-animate-css";', "@import './motif-theme.css';", ...styleImports, ''].join('\n')
+  const fonts = fontImports(item).map((specifier) => `@import '${specifier}';`)
+  files['src/index.css'] = ['@import "tailwindcss";', '@import "tw-animate-css";', ...fonts, "@import './motif-theme.css';", ...styleImports, ''].join('\n')
   files['src/motif-theme.css'] = context.runtime.themeCss
 
   const runtimePathFrom = (file: string) => {

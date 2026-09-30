@@ -19,6 +19,8 @@ export interface SourceRecord {
 export interface CheckContext {
   sources: readonly SourceRecord[]
   vendorIds: readonly string[]
+  /** 可用字体的 font-family 名。 */
+  fonts?: readonly string[]
 }
 
 /** 不能出现在条目代码里的内容：外部 CDN / 统计脚本（国内不可达、会外传数据），以及许可证不允许的来源。 */
@@ -105,6 +107,19 @@ export function checkItem(item: ItemSource, context: CheckContext): Finding[] {
   }
   for (const dep of declared) {
     if (!used.has(dep)) add({ level: 'warning', rule: 'deps/unused', message: `"${dep}" is listed in dependencies but never imported` })
+  }
+
+  // 字体：声明的字体必须在字体清单里；代码里用到清单中的字体却没声明时提醒（导出时会漏装）。
+  if (context.fonts) {
+    const available = new Set(context.fonts)
+    const declared = new Set(manifest.fonts ?? [])
+    for (const family of declared) {
+      if (!available.has(family)) add({ level: 'error', rule: 'fonts/unavailable', message: `font "${family}" is not in the Motif font list` })
+    }
+    const code = Object.values(item.files).join('\n')
+    for (const family of available) {
+      if (!declared.has(family) && code.includes(family)) add({ level: 'error', rule: 'fonts/undeclared', message: `font "${family}" is used but not listed in fonts` })
+    }
   }
 
   // 来源：上游条目必须对应登记过的仓库和提交，每个代码文件带 SPDX 与版权头。

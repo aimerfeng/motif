@@ -5,7 +5,7 @@ import { itemRegistryItem } from './registry-item.ts'
 import { skillFiles, skillName } from './skill.ts'
 import { viteStarter } from './starter.ts'
 
-export { itemUrl, npmDependencies, rewriteRuntimeImport, usesRuntime, type ExportContext, type ExportInput } from './context.ts'
+export { fontImports, itemFonts, itemUrl, npmDependencies, rewriteRuntimeImport, usesRuntime, type ExportContext, type ExportInput } from './context.ts'
 export { bundleRuntime } from './runtime-bundle.ts'
 export { itemRegistryItem, runtimeRegistryItem, type RegistryItemJson } from './registry-item.ts'
 export { skillFiles, skillMarkdown, skillName } from './skill.ts'

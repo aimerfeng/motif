@@ -1,6 +1,6 @@
 import type { Category, ItemSource, Kind, ParamSpec, ParamValues } from '@motif/schema'
 import { printDefaults } from '@motif/schema'
-import { itemUrl, npmDependencies, usesRuntime, rewriteRuntimeImport, type ExportContext } from './context.ts'
+import { fontImports, itemUrl, npmDependencies, usesRuntime, rewriteRuntimeImport, type ExportContext } from './context.ts'
 import { bundleRuntime } from './runtime-bundle.ts'
 
 /** Skill 的目录名与 name 字段：统一 motif- 前缀，避免和用户自己的 skill 冲突。 */
@@ -132,7 +132,12 @@ export function skillMarkdown(item: ItemSource, values: ParamValues, context: Ex
   const name = skillName(manifest.slug)
   const license = manifest.provenance.upstream?.spdx ?? 'MIT'
   const deps = Object.keys(npmDependencies(item, context))
-  const guide = CATEGORY_GUIDE[manifest.category] ?? KIND_GUIDE[manifest.kind]
+  const base = CATEGORY_GUIDE[manifest.category] ?? KIND_GUIDE[manifest.kind]
+  // 条目自己的说明优先：用途替换通用用途，规则排在通用规则前面。
+  const guide: Guide = {
+    use: manifest.guidance?.use?.length ? manifest.guidance.use : base.use,
+    rules: [...(manifest.guidance?.rules ?? []), ...base.rules],
+  }
   const entry = manifest.entry
   const assetFiles = manifest.files.filter((file) => file.role !== 'demo' && file.role !== 'asset')
   const title = `${manifest.title.en} (${manifest.title['zh-CN']})`
@@ -175,6 +180,9 @@ export function skillMarkdown(item: ItemSource, values: ParamValues, context: Ex
     `1. ${deps.length ? `Install dependencies: \`npm install ${deps.join(' ')}\`.` : 'No extra dependencies beyond React.'}`,
     `2. Copy the files from \`assets/\` into \`src/components/motif/${manifest.slug}/\`${usesRuntime(item) ? ' (and `motif-runtime.ts` into `src/lib/`)' : ''}. Keep the license header comments.`,
     `3. The project needs Tailwind CSS v4. If it does not define the shadcn-style color tokens (\`--background\`, \`--foreground\`, \`--primary\` …), add \`assets/theme.css\` to the global stylesheet.`,
+    ...(fontImports(item).length > 0
+      ? [`   Fonts (self-hosted, OFL): add ${fontImports(item).map((specifier) => `\`@import '${specifier}';\``).join(', ')} to the global stylesheet.`]
+      : []),
     `4. Use it:`,
     '',
     '```tsx',

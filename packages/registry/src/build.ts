@@ -4,7 +4,7 @@ import path from 'node:path'
 import { checkItem, type Finding, type SourceRecord } from '@motif/checker'
 import { compileItem } from '@motif/compiler'
 import type { ItemSource } from '@motif/schema'
-import { VENDOR_IDS } from '@motif/vendor'
+import { FONT_FAMILIES, VENDOR_IDS } from '@motif/vendor'
 import { CATALOG_PATH, type Catalog, type CatalogItem, type CatalogRuntime } from './catalog.ts'
 import { loadAllItems, loadSourceRecords, REPO_ROOT } from './load.ts'
 
@@ -44,7 +44,7 @@ export async function loadRuntime(): Promise<CatalogRuntime> {
 
 /** 检查并编译一个条目。 */
 export async function buildItem(item: ItemSource, sources: readonly SourceRecord[], options: BuildRegistryOptions): Promise<CatalogItem> {
-  const findings = checkItem(item, { sources, vendorIds: VENDOR_IDS })
+  const findings = checkItem(item, { sources, vendorIds: VENDOR_IDS, fonts: FONT_FAMILIES })
   const compiled = await compileItem({ files: item.files, entry: item.manifest.demo.file, minify: options.minify ?? false })
   for (const diagnostic of compiled.diagnostics) {
     const location = diagnostic.file ? `${diagnostic.file}${diagnostic.line ? `:${diagnostic.line}` : ''}` : undefined

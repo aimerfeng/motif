@@ -3,7 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type * as esbuild from 'esbuild'
 import { buildRegistry, formatFindings, type BuildRegistryResult } from '@motif/registry'
-import { buildVendor, VENDOR_IDS, type VendorManifest } from '@motif/vendor'
+import { buildFonts, buildVendor, VENDOR_IDS, type VendorManifest } from '@motif/vendor'
 
 export const PREVIEW_ROOT = fileURLToPath(new URL('..', import.meta.url))
 export const DIST = path.join(PREVIEW_ROOT, 'dist')
@@ -92,6 +92,7 @@ export function runtimeHtml(manifest: VendorManifest): string {
     <meta http-equiv="Content-Security-Policy" content="${CSP}" />
     <title>Motif preview</title>
     <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/fonts/fonts.css" />
     <script type="importmap">
 ${importMap}
     </script>
@@ -113,8 +114,10 @@ export async function writeRuntimeHtml(manifest: VendorManifest, dist = DIST) {
   await writeFile(path.join(dist, 'capture.html'), CAPTURE_HTML)
 }
 
+/** vendor 模块与字体一起构建；字体包的版本并入清单，导出项目时一并写进 package.json。 */
 export async function buildVendorInto(dist = DIST): Promise<VendorManifest> {
-  return buildVendor({ outDir: path.join(dist, 'vendor') })
+  const [manifest, fontVersions] = await Promise.all([buildVendor({ outDir: path.join(dist, 'vendor') }), buildFonts({ outDir: path.join(dist, 'fonts') })])
+  return { ...manifest, versions: { ...manifest.versions, ...fontVersions } }
 }
 
 /** 编译市场条目到 dist/items，并生成站点读取的 catalog.json。 */

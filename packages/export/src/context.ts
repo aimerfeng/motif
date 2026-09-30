@@ -1,5 +1,5 @@
 import type { ItemSource, ParamValues } from '@motif/schema'
-import { VENDOR_ENTRIES } from '@motif/vendor/manifest'
+import { FONTS, VENDOR_ENTRIES, type FontEntry } from '@motif/vendor/manifest'
 
 /** 导出时需要的站点级信息（来自 catalog.json）。 */
 export interface ExportContext {
@@ -44,7 +44,21 @@ export function npmDependencies(item: ItemSource, context: ExportContext): Recor
     deps[pkg] = version ? `^${version}` : 'latest'
   }
   if (item.manifest.dependencies.includes(RUNTIME_ID)) Object.assign(deps, context.runtime.dependencies)
+  for (const font of itemFonts(item)) {
+    const version = context.vendor[font.pkg]
+    deps[font.pkg] = version ? `^${version}` : 'latest'
+  }
   return Object.fromEntries(Object.entries(deps).sort(([a], [b]) => a.localeCompare(b)))
+}
+
+/** 条目声明的字体（Fontsource 包）。 */
+export function itemFonts(item: ItemSource): FontEntry[] {
+  return (item.manifest.fonts ?? []).flatMap((family) => FONTS.filter((font) => font.family === family))
+}
+
+/** 字体需要在全局样式里引入的 CSS：`@fontsource-variable/geist` 或 `@fontsource/ibm-plex-mono/500.css`。 */
+export function fontImports(item: ItemSource): string[] {
+  return itemFonts(item).flatMap((font) => font.css.map((file) => (file === 'index.css' ? font.pkg : `${font.pkg}/${file}`)))
 }
 
 export function usesRuntime(item: ItemSource): boolean {

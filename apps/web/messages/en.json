@@ -163,7 +163,13 @@
     },
     "copy": "Copy",
     "copied": "Copied",
-    "tunedNote": "Highlighted lines hold your current values; copies and downloads include them"
+    "tunedNote": "Highlighted lines hold your current values; copies and downloads include them",
+    "viewport": {
+      "label": "Preview width",
+      "desktop": "Desktop",
+      "tablet": "Tablet",
+      "mobile": "Mobile"
+    }
   },
   "lab": {
     "previewTitle": "Preview sandbox lab"

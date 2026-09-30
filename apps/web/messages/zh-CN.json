@@ -163,7 +163,13 @@
     },
     "copy": "复制",
     "copied": "已复制",
-    "tunedNote": "高亮部分是当前参数，复制和下载都会带上"
+    "tunedNote": "高亮部分是当前参数，复制和下载都会带上",
+    "viewport": {
+      "label": "预览宽度",
+      "desktop": "桌面",
+      "tablet": "平板",
+      "mobile": "手机"
+    }
   },
   "lab": {
     "previewTitle": "预览沙箱实验"

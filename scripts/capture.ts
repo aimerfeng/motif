@@ -107,6 +107,23 @@ async function stepTo(page: Page, fromFrame: number, toSeconds: number, onFrame?
   }
 }
 
+/**
+ * 整页类条目：把沙箱里最大的可滚动容器滚到进度 progress（0–1，两端缓入缓出）。
+ * Playwright 可以直接在不透明源的 iframe 里执行脚本。
+ */
+async function scrollSandbox(page: Page, progress: number): Promise<void> {
+  const frame = page.frames().find((candidate) => candidate.url().includes('/runtime.html'))
+  if (!frame) return
+  const eased = progress < 0.5 ? 2 * progress * progress : 1 - (-2 * progress + 2) ** 2 / 2
+  await frame.evaluate((p) => {
+    const scrollers = [document.scrollingElement, ...Array.from(document.querySelectorAll<HTMLElement>('*'))].filter(
+      (element): element is HTMLElement => element instanceof HTMLElement && element.scrollHeight > element.clientHeight + 4 && /auto|scroll/.test(getComputedStyle(element).overflowY),
+    )
+    const target = scrollers.sort((a, b) => b.scrollHeight - a.scrollHeight)[0]
+    if (target) target.scrollTop = p * (target.scrollHeight - target.clientHeight)
+  }, eased)
+}
+
 async function encodeLoop(framesDir: string, outDir: string, loopSeconds: number) {
   if (!ffmpegPath) throw new Error('ffmpeg-static has no binary for this platform')
   // 无缝循环：取 [FADE, loop+FADE] 这一段，最后 FADE 秒与开头 [0, FADE] 交叉淡化，结尾正好接回开头。
@@ -182,7 +199,9 @@ async function captureItem(item: CatalogItem): Promise<ItemReport> {
       await mount(loopPage, item, 'manual', cssSize)
       const probes: Buffer[] = []
       const probeFrames = new Set([Math.round(FPS * 0.5), Math.round(FPS * Math.min(2, loopSeconds / 2)), Math.round(FPS * loopSeconds)])
+      const lastFrame = Math.round((loopSeconds + FADE) * FPS)
       await stepTo(loopPage, 0, loopSeconds + FADE, async (frame) => {
+        if (manifest.capture?.scroll) await scrollSandbox(loopPage, frame / lastFrame)
         const jpeg = await loopPage.screenshot({ type: 'jpeg', quality: 92 })
         await writeFile(path.join(framesDir, `f${String(frame).padStart(4, '0')}.jpg`), jpeg)
         if (probeFrames.has(frame)) probes.push(jpeg)

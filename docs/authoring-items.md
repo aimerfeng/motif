@@ -101,6 +101,36 @@ export function Demo(props: BorderBeamProps) { … }
 - 组件类：放在 `bg-background` 上居中，配上真实、克制的内容（英文短文案即可）。不要 lorem ipsum，不要「Unlock your potential」这种空话，不要一堆渐变按钮。
 - 需要交互才会动的效果（磁吸、倾斜、聚光等）：演示里加一个「自动播放」，用 `useFrameLoop` 模拟一个缓慢移动的虚拟指针；用户真正移动指针时停止自动播放。组件本体不需要这段逻辑，这样海报和循环视频里也能看到效果。
 
+## 不同层级的写法
+
+### 整站模板（template）与页面区块（section）
+
+- 演示铺满沙箱，内容放在一个可滚动的容器里：最外层 `h-full overflow-y-auto`。详情页会给它一个更高、可切换桌面 / 平板 / 手机宽度的预览，所以一定要做响应式（从 360px 到 1920px 都好看）。
+- `capture: { scroll: true, posterTime: 0.5, loop: 8 }`：海报取页顶，循环视频从页顶缓慢滚到页底。
+- 参数是「品牌化」的那几项：品牌名、主色、字体搭配（`select`）、圆角、首屏标题文案、深浅色等。文案用 `text` 参数，带 `maxLength`。
+- **没有二进制素材**（照片、插图、字体文件都不能放进条目）。配图用 CSS 渐变、SVG 构图、`@paper-design/shaders-react` 的着色器；头像用首字母 + 渐变；合作伙伴 logo 用虚构品牌的 SVG 字标。绝不能出现真实公司的 logo 或商标。
+- 文案具体、克制、可信：虚构但像真的产品名和数字。不要「Unlock your potential」这类空话（见 `motif-design` skill 的反 AI 味清单）。
+
+### 设计风格（style）
+
+- 一个风格条目 = 一套 token（CSS 变量）+ 用这套 token 写的几个基础组件（Button、Card、Input、Badge 等，放在同一个组件文件里导出）+ 一个「风格样张」演示页：色板、字阶、组件、一小段真实布局。
+- 参数调整风格的关键维度：主色、圆角、边框粗细、阴影偏移、字体搭配、密度。
+- **`guidance.rules` 必须写清这个风格的规则**（英文，给 agent 看）：配色比例、边框和阴影怎么用、字体搭配、动效性格、禁止事项。Skill 的价值就在这里。
+
+### 功能组件（component）
+
+- 加载、骨架屏、进度、通知、输入、开关、选项卡、菜单、弹窗、提示……先保证可用性（键盘、`role`/`aria-*`、焦点），动效在其上。
+- 同一类组件（例如一组 loader）可以做成一个条目，用 `select` 参数切换变体，只要它们共用同一套参数。
+- 小组件设 `capture.zoom`（1.6–2.4）。只在交互时才动的组件，演示里加「自动播放」。
+
+### 字体
+
+- 只能用 `packages/vendor/src/manifest.ts` 的 `FONTS` 里的字体（全部 OFL、自托管）。用到的字体写进清单的 `fonts`（font-family 名，例如 `'Space Grotesk Variable'`），检查器会核对，导出时自动安装。中文用系统字体栈。
+
+### 条目专属的 Skill 说明
+
+`guidance: { use?: string[], rules?: string[] }`（英文）会写进这个条目的 SKILL.md：`use` 替换通用的「什么时候用」，`rules` 排在通用规则之前。模板和风格必须写；其他条目有特别的注意事项时写。
+
 ## 常见坑
 
 - **截图时只有 rAF 和 `performance.now` 被接管。** `setTimeout` / `setInterval` 仍然走真实时间，所以演示里「每隔几秒做一次」的节奏要用 `useFrameLoop` 给的 `time` 来算，否则海报和循环视频里看不到。
