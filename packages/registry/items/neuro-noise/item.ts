@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '发光的细丝交织成神经网络般的纹理，像闪电、血管或星轨。适合科技感的背景。',
     en: 'Glowing filaments weave into a neural-network texture, like lightning, veins or star trails. A backdrop with a technical edge.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['neural', 'noise', 'lightning', 'shader', 'webgl', 'tech'],
   runtime: ['react', 'webgl2'],

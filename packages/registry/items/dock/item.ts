@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '指针经过时，图标按距离平滑放大，邻近的图标一起被带起，像 macOS 的程序坞。适合应用导航、工具栏和作品集的社交入口。',
     en: 'Icons swell smoothly as the pointer nears them and pull their neighbors along, like the macOS dock. Great for app navigation, toolbars and portfolio link bars.',
   },
+  kind: 'component',
   category: 'navigation',
   tags: ['dock', 'magnify', 'macos', 'toolbar', 'hover', 'spring'],
   runtime: ['react', 'motion'],

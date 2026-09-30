@@ -1,4 +1,4 @@
-import type { Category, ItemSource, ParamSpec, ParamValues } from '@motif/schema'
+import type { Category, ItemSource, Kind, ParamSpec, ParamValues } from '@motif/schema'
 import { printDefaults } from '@motif/schema'
 import { itemUrl, npmDependencies, usesRuntime, rewriteRuntimeImport, type ExportContext } from './context.ts'
 import { bundleRuntime } from './runtime-bundle.ts'
@@ -8,8 +8,56 @@ export function skillName(slug: string): string {
   return `motif-${slug}`.slice(0, 64)
 }
 
-/** 各分类的使用建议，写进每个条目 Skill 的「When to use」和「Rules」。 */
-const CATEGORY_GUIDE: Record<Category, { use: string[]; rules: string[] }> = {
+interface Guide {
+  use: string[]
+  rules: string[]
+}
+
+/** 各层级的默认建议；分类有更具体的建议时用分类的。写进每个条目 Skill 的「When to use」和「Rules」。 */
+const KIND_GUIDE: Record<Kind, Guide> = {
+  template: {
+    use: ['A starting point for a whole website or landing page. Adapt the copy, colors and sections to the product rather than shipping it as is.'],
+    rules: [
+      'Keep one signature moment per page; every other section stays calm.',
+      'Replace every placeholder text and image before shipping.',
+      'Keep the section order meaningful: promise → proof → details → action.',
+    ],
+  },
+  style: {
+    use: ['Give a product a coherent visual language: color tokens, typography, borders, shadows, radius and motion together.'],
+    rules: ['Apply the tokens everywhere; do not mix in components from another style.', 'Keep text contrast accessible even when the style is loud.'],
+  },
+  section: {
+    use: ['A building block for a page. Combine sections into a landing page or drop one into an existing page.'],
+    rules: ['Match container width and vertical rhythm with the neighbouring sections.', 'Headings say something specific about the product; avoid generic marketing phrases.'],
+  },
+  component: {
+    use: ['A functional UI control or state indicator.'],
+    rules: ['Keyboard and screen-reader behaviour must work; the animation sits on top of that.', 'Feedback starts within 100 ms of the interaction.'],
+  },
+  effect: {
+    use: ['A visual effect for moments that deserve attention.'],
+    rules: ['Use it sparingly: one such effect per viewport.'],
+  },
+}
+
+const CATEGORY_GUIDE: Partial<Record<Category, Guide>> = {
+  loader: {
+    use: ['Indeterminate waits longer than ~300 ms: fetching, processing, generating.'],
+    rules: ['Show it only after a short delay (~300 ms) so fast responses never flash a spinner.', 'Give it an accessible name (role="status" and a label); stop it under reduced motion or slow it right down.'],
+  },
+  skeleton: {
+    use: ['Placeholders that mirror the layout of content that is loading.'],
+    rules: ['Match the real layout so nothing jumps when content arrives.', 'Keep the shimmer subtle and slow; replace it with a static tint under reduced motion.'],
+  },
+  progress: {
+    use: ['Determinate work where the remaining amount is known: uploads, steps, installs.'],
+    rules: ['Never move backwards; ease the bar but keep it honest.', 'Expose value with role="progressbar" and aria-valuenow.'],
+  },
+  toast: {
+    use: ['Brief confirmation of an action the user just took, or a non-blocking error.'],
+    rules: ['Keep messages short and use the same verb as the action.', 'Toasts that contain actions must stay until dismissed and be reachable by keyboard.'],
+  },
   background: {
     use: ['Full-bleed hero or section backgrounds where slow ambient motion supports the headline.', 'Behind short, large text — not behind dense body copy, tables or forms.'],
     rules: ['Use at most one animated background per viewport.', 'Check text contrast against the lightest and darkest parts; add a scrim if needed.'],
@@ -84,7 +132,7 @@ export function skillMarkdown(item: ItemSource, values: ParamValues, context: Ex
   const name = skillName(manifest.slug)
   const license = manifest.provenance.upstream?.spdx ?? 'MIT'
   const deps = Object.keys(npmDependencies(item, context))
-  const guide = CATEGORY_GUIDE[manifest.category]
+  const guide = CATEGORY_GUIDE[manifest.category] ?? KIND_GUIDE[manifest.kind]
   const entry = manifest.entry
   const assetFiles = manifest.files.filter((file) => file.role !== 'demo' && file.role !== 'asset')
   const title = `${manifest.title.en} (${manifest.title['zh-CN']})`

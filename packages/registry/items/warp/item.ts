@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '方格、条纹或边缘线被层层漩涡卷曲，像流动的墨与丝绸。适合做大面积背景。',
     en: 'Checks, stripes or edges twisted through layered swirls, like drifting ink and silk. Made for large backdrops.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['swirl', 'warp', 'ink', 'shader', 'webgl', 'background'],
   runtime: ['react', 'webgl2'],

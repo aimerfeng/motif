@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '数值变化时，每一位数字像里程表一样单独滚动到新值，方向跟随涨跌。适合营收、用户数、倒计时这类会实时更新的指标。',
     en: 'When the value changes, each digit rolls to its new value like an odometer, in the direction the number moved. For revenue, user counts and timers that update live.',
   },
+  kind: 'component',
   category: 'data',
   tags: ['number', 'counter', 'odometer', 'digits', 'metric', 'spring'],
   runtime: ['react', 'motion'],

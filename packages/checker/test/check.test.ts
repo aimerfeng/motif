@@ -19,6 +19,7 @@ function item(overrides: Partial<ItemSource['manifest']> = {}, files: Record<str
       status: 'draft',
       title: { 'zh-CN': '光', en: 'Glow' },
       summary: { 'zh-CN': '光', en: 'Glow' },
+      kind: 'effect',
       category: 'background',
       tags: [],
       runtime: ['motion'],

@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一圈圈缓缓旋转的文字环，指针经过时字形溶解成飘散的尘埃，点击则把尘埃吸向一点。文案可自定义，深浅两种底色。适合做品牌页、作品集的氛围背景。',
     en: 'Concentric rings of your own text rotate slowly; the pointer dissolves glyphs into drifting dust and a click sucks it into a point. Dark and light surfaces. An atmospheric backdrop for brand and portfolio pages.',
   },
+  kind: 'effect',
   category: 'text',
   tags: ['typography', 'vortex', 'rings', 'particles', 'canvas2d', 'interactive', 'pointer', 'click'],
   runtime: ['react', 'canvas2d'],

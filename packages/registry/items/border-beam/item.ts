@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一束渐变光沿卡片边框匀速绕行，给定价卡、登录框、功能卡加一点「活着」的感觉。',
     en: 'A gradient beam travels around a card’s border at a steady pace, bringing pricing cards, sign-in boxes and feature tiles to life.',
   },
+  kind: 'effect',
   category: 'card',
   tags: ['border', 'glow', 'card', 'beam', 'css offset-path'],
   runtime: ['react', 'motion', 'css'],

@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '色带从中心向外旋转展开，像万花筒或旋转的糖纸。适合做活泼的背景或转场底图。',
     en: 'Bands of color unfurl outward from the center like a kaleidoscope or spinning candy wrapper. A lively backdrop or transition base.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['swirl', 'spiral', 'bands', 'shader', 'webgl', 'background'],
   runtime: ['react', 'webgl2'],

@@ -11,6 +11,7 @@ export default defineItem({
     'zh-CN': '十种精选的 WebGL 转场：扭曲、缩放、立方体、涟漪、波点……在几幅画面之间自动循环切换。适合做作品集切换、幻灯片和首屏轮播。',
     en: 'Ten hand-picked WebGL transitions (warps, zooms, cube, ripple, polka dots and more) that loop between a few slides on their own. Made for portfolio reels, slideshows and hero carousels.',
   },
+  kind: 'effect',
   category: 'transition',
   tags: ['transition', 'slideshow', 'carousel', 'webgl', 'shader', 'gl-transitions'],
   runtime: ['react', 'webgl', 'canvas2d'],

@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '指针靠近时，按钮、图标被轻轻吸向指针，离开后弹回原位。给工具栏、行动按钮加一点有手感的反馈。',
     en: 'Buttons and icons drift toward the pointer as it approaches, then spring back when it leaves. A tactile touch for toolbars and calls to action.',
   },
+  kind: 'effect',
   category: 'cursor',
   tags: ['magnetic', 'hover', 'pointer', 'button', 'spring', 'interactive'],
   runtime: ['react', 'motion'],

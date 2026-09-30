@@ -15,6 +15,7 @@ import {
 import type { ItemSource, ParamValues } from '@motif/schema'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState, type ReactNode } from 'react'
+import { SkillButton } from '@/components/skill-button'
 
 export type ExportData = Omit<ExportContext, 'origin'>
 
@@ -167,7 +168,7 @@ export function SkillPanel({ item, values, data }: { item: ItemSource; values: P
             {t('download', { name: `${name}.zip` })}
           </button>
           <button type="button" className={buttonSecondary} disabled={!markdown} onClick={() => void copy('skill', markdown)}>
-            {copied === 'skill' ? t('copied') : t('copy')}
+            {copied === 'skill' ? t('copied') : t('copyMarkdown')}
           </button>
         </div>
         <ul className="mt-4 space-y-1 text-[13px] text-ink-muted">
@@ -184,6 +185,34 @@ export function SkillPanel({ item, values, data }: { item: ItemSource; values: P
           {markdown}
         </pre>
       </Section>
+    </div>
+  )
+}
+
+/** 预览上方的快捷操作：复制带当前参数的 Skill、下载项目。 */
+export function QuickActions({ item, values, data }: { item: ItemSource; values: ParamValues; data: ExportData }) {
+  const t = useTranslations('export')
+  const context = useExportContext(data)
+  const [busy, setBusy] = useState(false)
+  if (!context) return <div className="h-9" />
+
+  const markdown = () => prepareExport(item, values).then(({ hash }) => skillMarkdown(item, values, context, { hash }))
+  const downloadStarter = async () => {
+    setBusy(true)
+    try {
+      const zip = await exportStarterZip(item, values, context)
+      download(zip.name, zip.data)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-2" data-testid="quick-actions">
+      <SkillButton source={{ markdown }} variant="primary" />
+      <button type="button" onClick={() => void downloadStarter()} disabled={busy} className={buttonSecondary}>
+        {t('downloadShort')}
+      </button>
     </div>
   )
 }

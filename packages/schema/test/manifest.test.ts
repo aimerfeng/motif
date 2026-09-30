@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ItemManifestSchema, type ItemManifest } from '../src/index.ts'
+import { CATEGORIES, ItemManifestSchema, type ItemManifest } from '../src/index.ts'
 
 const base: ItemManifest = {
   schemaVersion: 1,
@@ -7,6 +7,7 @@ const base: ItemManifest = {
   status: 'draft',
   title: { 'zh-CN': '示例', en: 'Demo' },
   summary: { 'zh-CN': '示例效果', en: 'A demo effect' },
+  kind: 'effect',
   category: 'background',
   tags: [],
   runtime: ['react'],
@@ -58,5 +59,17 @@ describe('ItemManifestSchema', () => {
     expect(result.success).toBe(false)
     const paths = result.error!.issues.map((issue) => issue.path.join('.'))
     expect(paths).toEqual(expect.arrayContaining(['entry.file', 'provenance.upstream']))
+  })
+})
+
+describe('kinds and categories', () => {
+  it('category names are unique across kinds', () => {
+    expect(new Set(CATEGORIES).size).toBe(CATEGORIES.length)
+  })
+
+  it('rejects a category from another kind', () => {
+    const result = ItemManifestSchema.safeParse({ ...base, kind: 'component' })
+    expect(result.success).toBe(false)
+    expect(result.error!.issues[0]!.message).toBe('category "background" does not belong to kind "component"')
   })
 })

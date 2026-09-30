@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '细小的光点在背景里缓缓漂浮、明暗交替，随指针轻微位移，形成层次感。适合首屏、卡片和区块的氛围背景。',
     en: 'Tiny specks of light drift and twinkle in the background, shifting slightly with the pointer for a sense of depth. An ambient layer for heroes, cards and sections.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['particles', 'canvas', 'ambient', 'stars', 'parallax', 'dust'],
   runtime: ['react', 'canvas2d'],

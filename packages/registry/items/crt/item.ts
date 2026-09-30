@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一块带曲率的老式显像管：扫描线、荧光点阵、色散和辉光俱全，屏幕上可以是终端启动日志、电影倒计时片头、信号故障蓝屏或 8 位街机标题画面。适合做复古科技、极客风格的背景。',
     en: 'A curved CRT tube with scanlines, phosphor triads, chromatic fringing and halation. The screen can show a terminal boot log, a film leader countdown, a signal-fault blue screen or an 8-bit arcade title. A backdrop for retro-tech and hacker aesthetics.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['crt', 'retro', 'scanlines', 'terminal', 'phosphor', 'glitch', 'vhs', 'pixel', 'webgl', 'canvas2d', 'background', 'variants'],
   runtime: ['react', 'webgl', 'canvas2d'],

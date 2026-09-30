@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '真正在 GPU 上求解的流体：彩色染料被不断搅动、卷成漩涡，带泛光。自己会流动，拖动指针还能亲手搅拌。适合做首屏或全屏背景。',
     en: 'A real Navier-Stokes fluid solved on the GPU: colored dye constantly stirred into curls and glowing with bloom. It flows on its own, and dragging the pointer stirs it by hand. Made for hero and full-screen backgrounds.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['fluid', 'simulation', 'webgl', 'ink', 'interactive', 'hero'],
   runtime: ['react', 'webgl2'],

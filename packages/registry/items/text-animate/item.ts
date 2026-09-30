@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '文字按词、按字或整段依次入场，十种动画可选：模糊上浮、滑入、缩放等。适合首屏标题、章节标题和引言。',
     en: 'Text that enters word by word, letter by letter or all at once, with ten animations from blur-rise to slide and scale. Made for hero headlines, section titles and pull quotes.',
   },
+  kind: 'effect',
   category: 'text',
   tags: ['text', 'stagger', 'reveal', 'headline', 'blur', 'typography'],
   runtime: ['react', 'motion'],

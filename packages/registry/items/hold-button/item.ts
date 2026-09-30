@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '按住不放，颜色从左向右填满整个按钮，填满才会确认。用来挡住删除、注销这类不可撤销的危险操作。',
     en: 'Press and hold: color sweeps across the button and the action only confirms once it is full. A calm guard for destructive, irreversible actions.',
   },
+  kind: 'component',
   category: 'button',
   tags: ['button', 'hold', 'confirm', 'progress', 'destructive'],
   runtime: ['react', 'motion'],

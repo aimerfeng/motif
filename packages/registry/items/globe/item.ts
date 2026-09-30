@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一颗缓缓自转的点阵地球，城市地标发光，飞线在大陆之间划过。可以用手拖动。适合放在产品首屏，讲「全球」和「网络」。',
     en: 'A slowly turning dot-matrix globe with glowing city markers and arcs flying between continents. Drag to spin it. Made for hero sections about reach and networks.',
   },
+  kind: 'effect',
   category: '3d',
   tags: ['globe', 'earth', 'webgl', 'map', 'hero', 'interactive'],
   runtime: ['react', 'webgl'],

@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '四种深色背景上的激光场景：穿过薄雾的光刃、消失点的辐射光阵、棱镜光圈和半调中继光束，指针会让光束轻轻偏转。适合做科技、发布会类首屏。',
     en: 'Four laser scenes on a dark field: a blade cutting through haze, a vanishing-point array, a prism aperture and a halftone relay beam, all nudged by the pointer. For tech and launch-event heroes.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['laser', 'beam', 'glow', 'haze', 'prism', 'halftone', 'webgl', 'background', 'interactive', 'variants'],
   runtime: ['react', 'webgl'],

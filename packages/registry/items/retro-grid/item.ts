@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一张透视倾斜的无限网格从远处缓缓滚来，地平线泛着柔光，远处的线条自然合并、不闪烁。适合做首屏背景和区块分隔。',
     en: 'A perspective grid rolls in from the horizon under a soft glow, its distant lines merging cleanly without shimmer. A hero background or section divider with a synthwave streak.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['grid', 'perspective', 'synthwave', 'retro', 'webgl', 'horizon'],
   runtime: ['react', 'webgl'],

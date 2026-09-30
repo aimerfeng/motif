@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '暗夜里悬着一颗由分形烟雾织成的能量球，边缘泛着柔和的辉光，背后有缓缓漂移的星点。适合做 AI、算力、网络类产品的首屏背景。',
     en: 'A sphere of fractal smoke floating in the dark, its rim wrapped in a soft glow and a slow field of stars drifting behind. A hero background for AI, compute and network products.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['orb', 'sphere', 'globe', 'fbm', 'smoke', 'glow', 'stars', 'webgl', 'canvas2d', 'background'],
   runtime: ['react', 'webgl', 'canvas2d'],

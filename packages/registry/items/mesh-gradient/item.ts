@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '几团颜色沿各自的轨迹缓慢游动，被有机噪声和漩涡揉在一起。适合做首屏或整块区域的背景。',
     en: 'Color spots drift along their own paths, blended by organic noise and a gentle swirl. Made for hero and section backgrounds.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['gradient', 'shader', 'webgl', 'hero', 'aurora'],
   runtime: ['react', 'webgl2'],

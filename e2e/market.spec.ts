@@ -16,7 +16,7 @@ test('市场列出所有已发布条目，并能切换到英文', async ({ page 
 
   await page.getByRole('button', { name: 'EN' }).click()
   await expect(page).toHaveURL(/\/en\/market$/)
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Effect market')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Market')
 })
 
 for (const item of published) {

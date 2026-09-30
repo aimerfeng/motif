@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '点击后从按钮中心迸出一圈彩色粒子和光晕，文案切换成完成状态。适合发送、收藏、提交这类需要一点仪式感的操作。',
     en: 'A click bursts colored sparks and a soft ring out of the button while the label flips to a done state. For send, save and submit actions that deserve a little ceremony.',
   },
+  kind: 'component',
   category: 'button',
   tags: ['button', 'particles', 'confetti', 'click', 'feedback'],
   runtime: ['react', 'motion'],

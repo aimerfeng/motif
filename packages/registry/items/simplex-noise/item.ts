@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '一层层等高线般的色带在噪声里缓缓变形，硬边或柔边都好看。适合做地形图、糖果色或印刷风背景。',
     en: 'Contour-like color bands morph slowly through noise, hard-edged or soft. For topographic, candy-colored or print-style backdrops.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['noise', 'contour', 'gradient', 'shader', 'webgl', 'pattern'],
   runtime: ['react', 'webgl2'],

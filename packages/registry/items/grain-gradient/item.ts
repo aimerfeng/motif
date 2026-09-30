@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '渐变里带着胶片般的颗粒，可以是柔和的角落光晕、波浪、圆点或水波纹。适合做有质感的首屏背景。',
     en: 'Gradients with a printed, film-like grain, shaped as soft corner glows, waves, dots or ripples. A textured backdrop for hero sections.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['gradient', 'grain', 'noise', 'shader', 'webgl', 'texture'],
   runtime: ['react', 'webgl2'],

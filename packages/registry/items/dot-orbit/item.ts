@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '规整的点阵里，每个点都绕着自己的小轨道公转，颜色逐层渐变。适合做有节奏感的科技背景。',
     en: 'In a tidy grid, every dot orbits its own tiny path while colors step through the palette. A rhythmic backdrop with a technical feel.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['dots', 'grid', 'orbit', 'pattern', 'shader', 'webgl'],
   runtime: ['react', 'webgl2'],

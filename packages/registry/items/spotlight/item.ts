@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一团柔和的光晕跟随指针在卡片上游走，移出时淡去。适合功能卡、定价卡和深色的内容面板。',
     en: 'A soft pool of light trails the pointer across a card and fades when it leaves. Made for feature cards, pricing tiles and dark content panels.',
   },
+  kind: 'effect',
   category: 'cursor',
   tags: ['spotlight', 'glow', 'pointer', 'hover', 'card', 'interactive'],
   runtime: ['react', 'motion', 'css'],

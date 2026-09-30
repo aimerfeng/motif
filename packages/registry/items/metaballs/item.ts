@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '一群彩色的球体靠近时互相融合、分开时又拉出细丝，像熔岩灯。适合做首屏背景。',
     en: 'Colorful blobs melt together when close and pull apart into strands, like a lava lamp. Made for hero backgrounds.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['metaballs', 'blobs', 'lava', 'shader', 'webgl', 'background'],
   runtime: ['react', 'webgl2'],

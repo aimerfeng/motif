@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一束束渐变曲线像丝带般铺满画面，光点沿着曲线缓缓流动。适合作为首屏、发布页和空状态的安静背景。',
     en: 'A fan of gradient curves spreads across the screen like silk ribbons, with streaks of light flowing along each line. A quiet backdrop for hero sections, launch pages and empty states.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['background', 'svg', 'paths', 'lines', 'gradient', 'flow'],
   runtime: ['react', 'svg'],

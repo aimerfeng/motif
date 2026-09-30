@@ -44,9 +44,14 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
             <Link href="/market" className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90">
               {t('browse', { count: items.length })}
             </Link>
-            <Link href="/skills" className="rounded-full border border-white/25 px-5 py-2.5 text-[14px] text-ink backdrop-blur-md transition-colors duration-150 hover:border-white/50">
-              {t('skills')}
-            </Link>
+            <a
+              href="https://github.com/aimerfeng/motif"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-white/25 px-5 py-2.5 text-[14px] text-ink backdrop-blur-md transition-colors duration-150 hover:border-white/50"
+            >
+              {t('github')}
+            </a>
           </div>
           {hero && (
             <p className="pointer-events-auto mt-10 text-[12.5px] text-ink/55">

@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '像敲响一口铜钟：青铜与铜绿的节线图案缓缓漂移，冲击环定时扩散，指针轻轻牵引，铸造火星从底部升起。适合做音频、品牌叙事类页面的背景。',
     en: 'Like a struck bronze bell: verdigris nodal lines drift across dark metal, shock rings ripple out on a timer, the pointer nudges the pattern and foundry embers rise. A backdrop for audio and brand-story pages.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['chladni', 'cymatics', 'metal', 'nodal', 'rings', 'embers', 'particles', 'webgl', 'background', 'interactive'],
   runtime: ['react', 'webgl', 'canvas2d'],

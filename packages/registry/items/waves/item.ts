@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '一排排起伏的线条，可以是平静的波纹，也可以缠成一团。适合做极简、印刷风的背景或分隔。',
     en: 'Rows of undulating lines, from calm ripples to tangled knots. For minimal, print-inspired backdrops and dividers.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['waves', 'lines', 'stripes', 'shader', 'webgl', 'print'],
   runtime: ['react', 'webgl2'],

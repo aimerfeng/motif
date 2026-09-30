@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '内容首尾相接无缝滚动，两端可以柔和淡出，支持横向、纵向、反向和悬停暂停。适合评价墙、合作伙伴和标签云。',
     en: 'Endless, seamless scrolling with soft faded edges, horizontal or vertical, reversible, pausing on hover. Made for testimonial walls, partner strips and tag clouds.',
   },
+  kind: 'component',
   category: 'layout',
   tags: ['marquee', 'ticker', 'scroll', 'testimonials', 'logos', 'infinite'],
   runtime: ['react', 'css'],

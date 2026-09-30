@@ -1,8 +1,27 @@
 import { z } from 'zod'
 import { checkParamValue, L10nSchema, ParamSpecSchema, type JsonValue } from './params.ts'
 
-export const CATEGORIES = ['background', 'shader', 'text', 'button', 'card', 'cursor', 'navigation', 'layout', 'data', 'transition', '3d'] as const
-export type Category = (typeof CATEGORIES)[number]
+/**
+ * 市场的层级，从大到小：整站模板、设计风格、页面区块、功能组件、视觉效果。
+ * 每个层级有自己的分类；分类名在所有层级里唯一（界面文案按分类名取）。
+ */
+export const KINDS = ['template', 'style', 'section', 'component', 'effect'] as const
+export type Kind = (typeof KINDS)[number]
+
+export const CATEGORIES_BY_KIND = {
+  template: ['landing', 'saas', 'portfolio', 'product', 'agency', 'blog', 'event', 'app'],
+  style: ['minimal', 'bold', 'retro', 'glass', 'editorial', 'technical', 'playful'],
+  section: ['hero', 'navbar', 'features', 'pricing', 'testimonials', 'logos', 'stats', 'faq', 'cta', 'footer', 'team', 'changelog', 'posts', 'contact', 'showcase', 'dashboard'],
+  component: ['loader', 'skeleton', 'progress', 'toast', 'button', 'input', 'toggle', 'tabs', 'menu', 'dialog', 'tooltip', 'badge', 'avatar', 'empty-state', 'navigation', 'data', 'layout'],
+  effect: ['background', 'shader', 'text', 'card', 'cursor', 'transition', '3d'],
+} as const satisfies Record<Kind, readonly string[]>
+
+export type Category = (typeof CATEGORIES_BY_KIND)[Kind][number]
+export const CATEGORIES: readonly Category[] = KINDS.flatMap((kind) => CATEGORIES_BY_KIND[kind])
+
+export function kindOfCategory(category: Category): Kind {
+  return KINDS.find((kind) => (CATEGORIES_BY_KIND[kind] as readonly string[]).includes(category))!
+}
 
 export const RUNTIMES = ['react', 'motion', 'css', 'svg', 'canvas2d', 'webgl', 'webgl2', 'three'] as const
 export type Runtime = (typeof RUNTIMES)[number]
@@ -57,7 +76,8 @@ export const ItemManifestSchema = z
     status: z.enum(['draft', 'published']),
     title: L10nSchema,
     summary: L10nSchema,
-    category: z.enum(CATEGORIES),
+    kind: z.enum(KINDS),
+    category: z.enum(CATEGORIES as [Category, ...Category[]]),
     tags: z.array(z.string()),
     runtime: z.array(z.enum(RUNTIMES)).min(1),
     /** 组件本体：导出给用户使用的文件和导出名。 */
@@ -92,6 +112,9 @@ export const ItemManifestSchema = z
     provenance: ProvenanceSchema,
   })
   .superRefine((manifest, ctx) => {
+    if (kindOfCategory(manifest.category) !== manifest.kind) {
+      ctx.addIssue({ code: 'custom', path: ['category'], message: `category "${manifest.category}" does not belong to kind "${manifest.kind}"` })
+    }
     const paths = new Set(manifest.files.map((file) => file.path))
     if (!paths.has(manifest.entry.file)) ctx.addIssue({ code: 'custom', path: ['entry', 'file'], message: 'entry file is not listed in files' })
     if (!paths.has(manifest.demo.file)) ctx.addIssue({ code: 'custom', path: ['demo', 'file'], message: 'demo file is not listed in files' })

@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '指针经过时，卡片内部亮起一团跟随的聚光，边框同步点亮。可以切换成柔和的彩色光球。适合功能卡、定价卡和仪表盘面板。',
     en: 'A spotlight follows the pointer across the card while the border lights up beneath it; switch to a soft blurred orb if you prefer. Made for feature tiles, pricing cards and dashboard panels.',
   },
+  kind: 'effect',
   category: 'card',
   tags: ['card', 'spotlight', 'hover', 'glow', 'border', 'pointer'],
   runtime: ['react', 'motion'],

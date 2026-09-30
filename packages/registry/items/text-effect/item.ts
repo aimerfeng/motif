@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '文字按词或按字依次浮现，可选模糊聚焦、上浮、缩放等入场方式，退场时反向收起。适合标题、引言和首屏文案。',
     en: 'Text reveals word by word or letter by letter with blur-focus, rise, scale or fade entrances, and folds back in reverse on exit. Made for headlines, quotes and hero copy.',
   },
+  kind: 'effect',
   category: 'text',
   tags: ['text', 'reveal', 'stagger', 'blur', 'headline', 'motion'],
   runtime: ['react', 'motion'],

@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '数字用弹簧曲线从起点滚动到目标值，等宽数字不抖动。适合数据看板、统计条和落地页的关键指标。',
     en: 'A number that springs from a start value to its target with tabular digits, so nothing jitters. Made for dashboards, stat rows and landing-page metrics.',
   },
+  kind: 'component',
   category: 'data',
   tags: ['number', 'counter', 'stats', 'spring', 'metrics'],
   runtime: ['react', 'motion'],

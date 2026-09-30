@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '一束束光线从画面外洒入，边缘泛着柔和的光晕。适合做发布页、活动页的舞台光。',
     en: 'Beams of light fall in from off-screen with a soft bloom along the edges. Stage lighting for launch and event pages.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['light', 'rays', 'beams', 'shader', 'webgl', 'hero'],
   runtime: ['react', 'webgl2'],

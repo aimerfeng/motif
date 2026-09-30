@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '内容首尾相接、匀速循环滚动，两端渐隐，悬停时平滑减速。适合客户标识墙、技术栈列表和评价跑马灯。',
     en: 'Content loops end to end at a steady pace with faded edges and eases down on hover. For logo walls, tech-stack strips and testimonial tickers.',
   },
+  kind: 'component',
   category: 'layout',
   tags: ['marquee', 'ticker', 'logos', 'loop', 'infinite', 'carousel'],
   runtime: ['react', 'css'],

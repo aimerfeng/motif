@@ -10,7 +10,6 @@ export function SiteHeader() {
   const links = [
     { href: '/market', label: t('market') },
     { href: '/studio', label: t('studio') },
-    { href: '/skills', label: t('skills') },
     { href: '/docs', label: t('docs') },
   ] as const
 

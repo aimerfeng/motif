@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '内容从模糊、半透明的状态轻轻滑入并聚焦，像镜头对上了焦。适合标题、卡片和整页内容的分层入场。',
     en: 'Content drifts in out of a soft blur and snaps into focus, like a lens finding its subject. Ideal for staggered entrances of headlines, cards and whole sections.',
   },
+  kind: 'effect',
   category: 'transition',
   tags: ['blur', 'fade', 'entrance', 'reveal', 'stagger'],
   runtime: ['react', 'motion'],

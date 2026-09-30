@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '流动的彩色光斑沿着边框游走、呼吸，汇成一圈发光的轮廓。适合给卡片、输入框或 AI 面板加一圈灵气。',
     en: 'Luminous color spots travel and breathe along the edge into a glowing contour. Gives cards, inputs and AI panels an alive outline.',
   },
+  kind: 'effect',
   category: 'card',
   tags: ['border', 'glow', 'card', 'shader', 'webgl', 'ai'],
   runtime: ['react', 'webgl2'],

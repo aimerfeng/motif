@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一条或几条带亮头的彗尾沿输入框、卡片的边框追逐绕行，可调数量、长度与颜色。适合提示词输入框、聚焦态和强调卡片。',
     en: 'One or several comet trails with bright heads chase each other around the border of an input or card, with adjustable count, length and color. Great for prompt boxes, focus states and highlighted cards.',
   },
+  kind: 'effect',
   category: 'card',
   tags: ['border', 'trail', 'comet', 'glow', 'input', 'focus', 'css offset-path'],
   runtime: ['react', 'motion', 'css'],

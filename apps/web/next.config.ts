@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
   // 工作区包直接导出 TS 源码，由 Next 编译。
   transpilePackages: ['@motif/preview', '@motif/registry', '@motif/schema', '@motif/export', '@motif/vendor', '@motif/skills'],
   reactStrictMode: true,
+  // Skill 不再单独成页：每个市场条目和筛选栏上都能直接复制。旧链接转到市场。
+  async redirects() {
+    return [
+      { source: '/skills', destination: '/market', permanent: false },
+      { source: '/:locale(en|zh-CN)/skills', destination: '/:locale/market', permanent: false },
+    ]
+  },
 }
 
 export default withNextIntl(nextConfig)

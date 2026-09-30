@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '青、靛、紫三条光带缓缓起伏，被一层 7px 点阵切碎成发光的网点，左侧留出暗区。适合做 SaaS 或开发工具首屏的背景。',
     en: 'Three cyan, indigo and purple light ribbons undulate through a glowing dot matrix, leaving the left side dark for copy. A hero background for SaaS and developer tools.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['ribbon', 'waves', 'dot matrix', 'glow', 'webgl', 'hero', 'dark'],
   runtime: ['react', 'webgl'],

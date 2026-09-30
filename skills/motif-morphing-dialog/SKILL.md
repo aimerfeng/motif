@@ -15,7 +15,7 @@ Tap a card and it springs open into a dialog, title and cover riding along while
 
 ## When to use
 
-- Moments that swap one image, slide or view for another.
+- A functional UI control or state indicator.
 
 ## Files
 
@@ -50,7 +50,8 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 
 ## Rules
 
-- Keep transitions under ~800 ms for UI; longer only for showcase sequences.
+- Keyboard and screen-reader behaviour must work; the animation sits on top of that.
+- Feedback starts within 100 ms of the interaction.
 - Respect `prefers-reduced-motion`: this component already holds a single still frame when it is set. Keep that behavior.
 - Animate only `transform`, `opacity` and other compositor-friendly properties; never use `transition: all`.
 - License: MIT. Keep the header comments in each file (originally from ibelick/motion-primitives).

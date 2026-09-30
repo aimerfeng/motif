@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一颗会呼吸的黑色胶囊：在待机、音乐、耳机电量、来电之间用弹簧形变自然切换，内容跟着淡入淡出。适合做产品里的全局通知、进度和状态入口。',
     en: 'A black capsule that morphs between idle, now playing, device battery and an incoming call on a spring, with the content blurring in and out. A home for global notifications, progress and status.',
   },
+  kind: 'component',
   category: 'navigation',
   tags: ['dynamic island', 'notification', 'morph', 'spring', 'ios', 'status'],
   runtime: ['react', 'motion'],

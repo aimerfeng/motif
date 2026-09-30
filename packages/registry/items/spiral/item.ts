@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '一条不断旋转的螺线铺满画面，线宽可以渐细，边缘可以带噪点。适合做催眠感或极简风的背景。',
     en: 'A single turning spiral fills the frame, with strokes that taper and edges that can turn grainy. For hypnotic or minimal backdrops.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['spiral', 'lines', 'minimal', 'shader', 'webgl', 'pattern'],
   runtime: ['react', 'webgl2'],

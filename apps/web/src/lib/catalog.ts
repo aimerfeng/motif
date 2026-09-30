@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { cache } from 'react'
 import { CATALOG_PATH, readCatalog, type CatalogItem } from '@motif/registry/catalog'
-import type { Category } from '@motif/schema'
+import type { Category, Kind } from '@motif/schema'
 import type { Locale } from '@/i18n/routing'
 import { mediaFor, type ItemMedia } from './media'
 
@@ -25,6 +25,7 @@ export interface ItemSummary {
   slug: string
   title: string
   summary: string
+  kind: Kind
   category: Category
   tags: string[]
   runtime: string[]
@@ -38,6 +39,7 @@ export function summarize(item: CatalogItem, locale: Locale): ItemSummary {
     slug: manifest.slug,
     title: manifest.title[locale],
     summary: manifest.summary[locale],
+    kind: manifest.kind,
     category: manifest.category,
     tags: manifest.tags,
     runtime: manifest.runtime,

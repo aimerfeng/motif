@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '画面中央一团光线步进渲染的液态金属，表面随噪声缓慢起伏，反射随指针偏转。适合做产品首屏的视觉焦点。',
     en: 'A ray-marched blob of liquid silver at the center, its surface slowly rippling with noise and its reflections following the pointer. A focal point for product heroes.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['raymarching', 'metal', 'chrome', 'webgl', 'hero', 'interactive'],
   runtime: ['react', 'webgl'],

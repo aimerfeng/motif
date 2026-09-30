@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '一束渐变光沿着两个元素之间的连线流动，用来表现数据流、集成关系和「A 连接到 B」。适合集成图、架构图和功能介绍。',
     en: 'A gradient pulse that travels along the line between two elements, showing data flowing from A to B. Perfect for integration maps, architecture diagrams and feature explainers.',
   },
+  kind: 'component',
   category: 'data',
   tags: ['beam', 'connection', 'svg', 'integration', 'diagram', 'gradient'],
   runtime: ['react', 'motion', 'svg'],

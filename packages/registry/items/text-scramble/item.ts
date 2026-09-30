@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '文字先是一串乱跳的字符，再逐个「解码」成正文，未解出的字符带着一点色彩。适合终端风标题、状态提示和悬停彩蛋。',
     en: 'Text starts as a churn of random glyphs and resolves into the real copy one character at a time, the unresolved ones tinted. Suits terminal-style headings, status lines and hover easter eggs.',
   },
+  kind: 'effect',
   category: 'text',
   tags: ['text', 'scramble', 'decode', 'terminal', 'hover', 'glitch'],
   runtime: ['react'],

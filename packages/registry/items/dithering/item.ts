@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '双色抖动网点勾勒出球体、水波或漩涡，带着复古位图的味道。适合做有个性的背景或像素风视觉。',
     en: 'Two-tone dither dots sketch spheres, ripples or swirls with a retro bitmap feel. For characterful backdrops and pixel-art visuals.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['dither', 'pixel', 'retro', 'bitmap', 'shader', 'webgl'],
   runtime: ['react', 'webgl2'],

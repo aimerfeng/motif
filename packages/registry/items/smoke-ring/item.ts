@@ -9,6 +9,7 @@ export default defineItem({
     "zh-CN": '一圈缓缓翻滚的烟雾光环，可以调成日冕、云环或一条细亮线。适合做发布页的主视觉。',
     en: 'A slowly churning ring of smoke that can be tuned into a solar corona, a cloud halo or a thin glowing line. A centerpiece for launch pages.',
   },
+  kind: 'effect',
   category: 'shader',
   tags: ['ring', 'smoke', 'glow', 'shader', 'webgl', 'hero'],
   runtime: ['react', 'webgl2'],

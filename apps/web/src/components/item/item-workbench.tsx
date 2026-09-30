@@ -9,7 +9,7 @@ import { TunePanel } from '@/components/tune/tune-panel'
 import { useTune, type TunePreset } from '@/components/tune/use-tune'
 import type { HighlightedFile } from '@/lib/code-tokens'
 import { CodeView } from './code-view'
-import { InstallPanel, SkillPanel, type ExportData } from './export-panels'
+import { InstallPanel, QuickActions, SkillPanel, type ExportData } from './export-panels'
 import { ItemTabs } from './item-tabs'
 
 interface ItemWorkbenchProps {
@@ -33,6 +33,9 @@ export function ItemWorkbench({ item, title, build, theme, defaults, presets, fi
 
   return (
     <>
+      <div className="mb-4 flex justify-end">
+        <QuickActions item={item} values={tune.values} data={exportData} />
+      </div>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="relative aspect-[16/10] self-start overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken">
           <PreviewFrame

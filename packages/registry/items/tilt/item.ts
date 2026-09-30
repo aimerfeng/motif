@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '卡片随指针位置在三维空间里微微倾斜，表面带一层跟随的高光，内部元素可以浮出层次。适合专辑、票券、商品和功能卡片。',
     en: 'A card leans toward the pointer in 3D with a soft glare that follows it, and inner elements can float above the surface. Suits album covers, tickets, product and feature cards.',
   },
+  kind: 'effect',
   category: 'card',
   tags: ['tilt', '3d', 'perspective', 'card', 'glare', 'hover', 'interactive'],
   runtime: ['react', 'motion', 'css'],

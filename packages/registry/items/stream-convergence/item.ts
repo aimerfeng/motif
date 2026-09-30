@@ -9,6 +9,7 @@ export default defineItem({
     'zh-CN': '三道红、绿、蓝色散分离的波前斜向穿过暗场，叠出紫罗兰色的流光，四角渐隐。适合做产品发布页或活动页的全屏背景。',
     en: 'Three chromatically split wavefronts sweep diagonally through a dark field and blend into violet streams, fading into a vignette. A full-bleed background for launches and event pages.',
   },
+  kind: 'effect',
   category: 'background',
   tags: ['waves', 'wavefront', 'chromatic', 'violet', 'vignette', 'webgl', 'hero'],
   runtime: ['react', 'webgl'],
