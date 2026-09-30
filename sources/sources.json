@@ -116,6 +116,687 @@
         "THIRD_PARTY_NOTICES.md"
       ],
       "notes": "只取纯 WebGL / Canvas 组件代码。缩略图与预览视频不在 MIT 范围内；elements、brand-orbs 含品牌标记，不取；整页落地页不取。"
+    },
+    {
+      "id": "uitripled",
+      "repo": "moumen-soliman/uitripled",
+      "sha": "05d18376db775072ed61d0cab8ea184f8f527429",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2026 uitripled"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Sections under packages/components/react-shadcn/src/components/sections/."
+    },
+    {
+      "id": "eldoraui",
+      "repo": "karthikmudunuri/eldoraui",
+      "sha": "6bb8fd211ecbdfa983f5780bead27d9f3890f20a",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) Mudunuri Bhaskara Karthikeya Varma"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Blocks under apps/www/registry/blocks/. Brand logos in logo clouds are replaced by invented wordmarks."
+    },
+    {
+      "id": "shadcn-ui",
+      "repo": "shadcn-ui/ui",
+      "sha": "08ab84f7d1952cc1f36055aa8931213a86b01bbd",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 shadcn"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Blocks and charts under apps/v4/registry/new-york-v4/. Avatars in public/ are not taken."
+    },
+    {
+      "id": "tremor-blocks",
+      "repo": "tremorlabs/tremor-blocks",
+      "sha": "b319e8d3d3678a4f60f4802f7e85bc1abc52d598",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 Tremor Labs, Inc."
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Dashboard panels; ported to Tailwind v4 and inline icons."
+    },
+    {
+      "id": "launch-ui",
+      "repo": "launch-ui/launch-ui",
+      "sha": "b0d4d5bce91d13523450416ce1797109076b2787",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 Mikolaj Dobrucki"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Section components; product screenshots and the Launch UI brand logos are not taken."
+    },
+    {
+      "id": "hyperui",
+      "repo": "markmead/hyperui",
+      "sha": "2b5aebbc50d2c9ac89650f51b554f53895b4803c",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) Mark Mead"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "HTML + Tailwind examples; Unsplash images are replaced by generated artwork."
+    },
+    {
+      "id": "astrowind",
+      "repo": "arthelokyo/astrowind",
+      "sha": "14e1a691f80548dcc36370847b1a02c0d0b12821",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 onWidget"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Astro widgets rewritten in React; images replaced."
+    },
+    {
+      "id": "saas-landing-template",
+      "repo": "gonzalochale/saas-landing-template",
+      "sha": "7bc36b2a7ae905314c6b7fc95e0168ce5bf0db49",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 Gonzalo Chalé"
+      ],
+      "licenseFiles": [
+        "license.txt"
+      ],
+      "notes": "Landing sections; partner logos replaced."
+    },
+    {
+      "id": "tailcast",
+      "repo": "matt765/Tailcast",
+      "sha": "85843e5feaa46bdee05e180cf0c76f12408d7557",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2022-2026 Mateusz Wyrębek"
+      ],
+      "licenseFiles": [
+        "license"
+      ],
+      "notes": "Astro landing rewritten in React; images replaced."
+    },
+    {
+      "id": "devportfolio",
+      "repo": "RyanFitzgerald/devportfolio",
+      "sha": "852d650fb0a8cf0c98f874af5a56a0a9b7d7d4b7",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 Ryan Fitzgerald"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Astro portfolio rewritten in React; personal content replaced."
+    },
+    {
+      "id": "app-landing",
+      "repo": "bohd4nx/app-landing",
+      "sha": "8bd07982803fffc3f247381493de492546287a1f",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024-2026 Bohdan (https://bohd4n.dev/)"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "App landing; store data fetching and screenshots removed."
+    },
+    {
+      "id": "startup-nextjs",
+      "repo": "NextJSTemplates/startup-nextjs",
+      "sha": "e730b6a99c77b96c835f11347231faa4f4e9f767",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 Next.js Templates"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Startup landing; all images replaced."
+    },
+    {
+      "id": "screwfast",
+      "repo": "mearashadowfax/ScrewFast",
+      "sha": "aa9da9ad278a2bdb005e04ab644a980543797157",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 Emil Gulamov"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Astro site rewritten in React; images replaced, GSAP swapped for motion."
+    },
+    {
+      "id": "astro-theme-cactus",
+      "repo": "chrismwilliams/astro-theme-cactus",
+      "sha": "728f1f4eeb80208398649261d7635f311cafa011",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2022 Chris Williams"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Terminal-flavored blog theme; fonts replaced with OFL fonts."
+    },
+    {
+      "id": "magicui-portfolio",
+      "repo": "magicuidesign/portfolio",
+      "sha": "5ef12e4c8bd0de3e22e89c2181ee77a35925ec8b",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 Dillion Verma"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Portfolio layout only; personal content, company logos and Fontshare fonts are not taken."
+    },
+    {
+      "id": "astro-paper",
+      "repo": "satnaing/astro-paper",
+      "sha": "35cfa7fbe0b897306d27670d3819e55d5205f3dd",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 Sat Naing"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Minimal blog theme rewritten in React; images replaced."
+    },
+    {
+      "id": "neobrutalism-components",
+      "repo": "ekmas/neobrutalism-components",
+      "sha": "3306a802724874a85f93079702b2795370a279d4",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 Samuel Breznjak"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Neo-brutalism tokens and components; profile pictures not taken."
+    },
+    {
+      "id": "8bitcn",
+      "repo": "TheOrcDev/8bitcn-ui",
+      "sha": "37031e37d6f68aad4b147ce699b70dba22af7841",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 8bitcn"
+      ],
+      "licenseFiles": [
+        "license.md"
+      ],
+      "notes": "8-bit style; Press Start 2P is self-hosted (OFL)."
+    },
+    {
+      "id": "nes-css",
+      "repo": "nostalgic-css/NES.css",
+      "sha": "b1cc9944aae3274461c747d7ad1cab31df45e78c",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2018 B.C.Rikko <https://github.com/BcRikko>"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Pixel border rules."
+    },
+    {
+      "id": "webtui",
+      "repo": "webtui/webtui",
+      "sha": "c8eaf2c10a08e33082602be353ec20affc43770e",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 WebTUI"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Terminal UI rules; gallery images not taken."
+    },
+    {
+      "id": "98-css",
+      "repo": "jdan/98.css",
+      "sha": "b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright 2020 Jordan Scales"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Classic desktop bevel rules; no Microsoft artwork."
+    },
+    {
+      "id": "xp-css",
+      "repo": "botoxparty/XP.css",
+      "sha": "376f42eb274361939eaad3b0943204c053ad26c4",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright 2020 Adam Hammad, Jordan Scales"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Classic desktop rules; no Microsoft artwork."
+    },
+    {
+      "id": "daisyui",
+      "repo": "saadeghi/daisyui",
+      "sha": "c51f50130ffefb293179e6fce8de7ad3f307e45f",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2020 Pouya Saadeghi"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Theme palettes from packages/daisyui/src/themes/."
+    },
+    {
+      "id": "tweakcn",
+      "repo": "jnsahaj/tweakcn",
+      "sha": "a3b47b37cba97dd637de517aab52c45ec0f83456",
+      "spdx": "Apache-2.0",
+      "copyright": [
+        "tweakcn (https://github.com/jnsahaj/tweakcn)"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Only neutral presets from utils/theme-presets.ts; brand presets are not taken."
+    },
+    {
+      "id": "catppuccin",
+      "repo": "catppuccin/catppuccin",
+      "sha": "d09787dd98ca6fba08af5ef2ae94a7e09f17daca",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2021 Catppuccin"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Palette values."
+    },
+    {
+      "id": "rose-pine",
+      "repo": "rose-pine/rose-pine-theme",
+      "sha": "781bb844aae0bcec2763b23a4c7d3cc6aede780c",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 Rosé Pine"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Palette values."
+    },
+    {
+      "id": "radix-colors",
+      "repo": "radix-ui/colors",
+      "sha": "dbdb85470547c7d34b9001f48fddb08ded335979",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2021-2022 Modulz",
+        "Copyright (c) 2022-Present WorkOS"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Color scales."
+    },
+    {
+      "id": "papercss",
+      "repo": "papercss/papercss",
+      "sha": "b341c1606fca5b3880307d779414f43a5ccbc9b6",
+      "spdx": "ISC",
+      "copyright": [
+        "Copyright (c) 2017–2018, Rhyne Vlaservich <rhyneav@gmail.com>"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Hand-drawn border rules."
+    },
+    {
+      "id": "tufte-css",
+      "repo": "edwardtufte/tufte-css",
+      "sha": "b5d7b7bbe5ce9c4c50fcfad4f19ee3646cfd7ae1",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2014 Dave Liepmann"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Editorial layout rules; ET Book font not taken."
+    },
+    {
+      "id": "retroui",
+      "repo": "Logging-Studio/RetroUI",
+      "sha": "d5fbc0e823bb66575f5372c3df03ee43be45c91b",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 Arif Hossain"
+      ],
+      "licenseFiles": [
+        "LICENCE.md"
+      ],
+      "notes": "Bold retro components."
+    },
+    {
+      "id": "ldrs",
+      "repo": "GriffinJohnston/ldrs",
+      "sha": "f759f65beb8ab4f4a1f010438072180693ca01ec",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2022 Griffin Johnston"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Loaders; ported to React components with reduced-motion handling."
+    },
+    {
+      "id": "spinkit",
+      "repo": "tobiasahlin/SpinKit",
+      "sha": "742a71277c49b69053b5beb9fad80d720840a2ab",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2020 Tobias Ahlin"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "CSS spinners."
+    },
+    {
+      "id": "css-loaders",
+      "repo": "lukehaas/css-loaders",
+      "sha": "c7fdf5ac73c71fec3142414adf8d592c7d2c6bf4",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2014 Luke Haas"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "CSS loaders."
+    },
+    {
+      "id": "whirl",
+      "repo": "jh3y/whirl",
+      "sha": "a43ebd524ca890e87d651e2530c5596ab1f0a563",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2019 Jhey Tompkins (jh3y)"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "CSS loading animations."
+    },
+    {
+      "id": "react-loading-skeleton",
+      "repo": "dvtng/react-loading-skeleton",
+      "sha": "f8b040dade9cfaad7e3e6fbc50243d79f508f1ca",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright 2023 David Tang"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Skeleton shimmer."
+    },
+    {
+      "id": "phantom-ui",
+      "repo": "Aejkatappaja/phantom-ui",
+      "sha": "ca8a4abd8dab504ad93ab78f71592ff819158e17",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2026 Aejkatappaja"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Skeleton loaders."
+    },
+    {
+      "id": "sonner",
+      "repo": "emilkowalski/sonner",
+      "sha": "8e4662b39255120b62138312058f5d77c0139a5e",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 Emil Kowalski"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Toast stacking and motion."
+    },
+    {
+      "id": "goey-toast",
+      "repo": "anl331/goey-toast",
+      "sha": "be6bd884c85d52cca930b09b425ef68858d1b63c",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2026 anl331"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Gooey toast."
+    },
+    {
+      "id": "react-hot-toast",
+      "repo": "timolins/react-hot-toast",
+      "sha": "e725d38e0faec05f7b8fb10644b616ef978d2f4d",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2020 Timo Lins"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Toast motion."
+    },
+    {
+      "id": "cmdk",
+      "repo": "pacocoursey/cmdk",
+      "sha": "dd2250ed608443e8f32bafc5fa2d1d07a3746aa3",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2022 Paco Coursey"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Command palette."
+    },
+    {
+      "id": "vaul",
+      "repo": "emilkowalski/vaul",
+      "sha": "3e97aac6a38e4481bade71d7233ed6002e80f9b0",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 Emil Kowalski"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Drawer."
+    },
+    {
+      "id": "base-ui",
+      "repo": "mui/base-ui",
+      "sha": "6a29b4b3b414251bf0ed23aa36e145d55e947c37",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2019 Material-UI SAS"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Unstyled component demos."
+    },
+    {
+      "id": "prompt-kit",
+      "repo": "ibelick/prompt-kit",
+      "sha": "5a9496635cc0e1bf7679fe2a9e35d9b36b99c08a",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 Julien Thibeaut"
+      ],
+      "licenseFiles": [
+        "LICENCE.md"
+      ],
+      "notes": "AI UI loaders and text shimmer."
+    },
+    {
+      "id": "elevenlabs-ui",
+      "repo": "elevenlabs/ui",
+      "sha": "23c31bd3088814215a8b5d0bfb56b327cad1a578",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 Eleven Labs Inc."
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Audio and agent UI components."
+    },
+    {
+      "id": "kibo",
+      "repo": "shadcnblocks/kibo",
+      "sha": "3d63cdb15b79d972e3dc38a10997987672f9b263",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2023 — Present shadcnblocks"
+      ],
+      "licenseFiles": [
+        "license.md"
+      ],
+      "notes": "Dropzone, rating and other components."
+    },
+    {
+      "id": "spell-ui",
+      "repo": "xxtomm/spell-ui",
+      "sha": "fffe96db7b67b44243bf35815916fdfc58fe5014",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 Spell UI"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Components."
+    },
+    {
+      "id": "smoothui",
+      "repo": "educlopez/smoothui",
+      "sha": "b6312bce2b6f2ed95d8a6e98a592857884f5ea9e",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 Eduardo Calvo"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Components; GSAP-based ones are not taken."
+    },
+    {
+      "id": "animata",
+      "repo": "codse/animata",
+      "sha": "36674e4e9cfdc0f237693d8b736a2bf41065ca1d",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) Animata"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Components and effects."
+    },
+    {
+      "id": "uselayouts",
+      "repo": "iurvish/uselayouts",
+      "sha": "678a478e30272d8101cea97bc6147e0df9dcd652",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 Urvish Mali"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "Layout components."
+    },
+    {
+      "id": "reui",
+      "repo": "keenthemes/reui",
+      "sha": "6e433ddaba3a4be38182c8c8883b6cc335183c42",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 Keenthemes Inc"
+      ],
+      "licenseFiles": [
+        "LICENSE.md"
+      ],
+      "notes": "Free components only; Pro content is not in the repo."
+    },
+    {
+      "id": "input-otp",
+      "repo": "guilhermerodz/input-otp",
+      "sha": "cf81845e59ff43c5885c66b4755085a36f071cc1",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2024 Guilherme Rodz"
+      ],
+      "licenseFiles": [
+        "LICENSE"
+      ],
+      "notes": "OTP input."
+    },
+    {
+      "id": "coss-origin",
+      "repo": "cosscom/coss",
+      "sha": "8423f18a8b4830e875def4a7400730f29cae1147",
+      "spdx": "MIT",
+      "copyright": [
+        "Copyright (c) 2025 coss.com",
+        "Originally Copyright (c) 2025 Origin UI"
+      ],
+      "licenseFiles": [
+        "apps/origin/LICENSE.md"
+      ],
+      "pathPrefixes": [
+        "apps/origin/"
+      ],
+      "notes": "The repository is AGPL-3.0 except apps/origin/, which carries its own MIT license. Only code under apps/origin/ may be integrated."
     }
   ]
 }

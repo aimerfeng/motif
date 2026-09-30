@@ -14,6 +14,8 @@ export interface SourceRecord {
   sha: string
   spdx: string
   copyright: string[]
+  /** 只有这些目录可以整合（仓库其余部分是别的许可证）。 */
+  pathPrefixes?: string[]
 }
 
 export interface CheckContext {
@@ -131,6 +133,14 @@ export function checkItem(item: ItemSource, context: CheckContext): Finding[] {
     } else {
       if (source.sha !== upstream.sha) add({ level: 'error', rule: 'provenance/sha', message: `sha differs from the pinned ${source.sha.slice(0, 7)}` })
       if (source.spdx !== upstream.spdx) add({ level: 'error', rule: 'provenance/spdx', message: `spdx ${upstream.spdx} differs from the registered ${source.spdx}` })
+      // 仓库只有部分目录是宽松许可时（例如 coss 只有 apps/origin/ 是 MIT），上游路径必须落在这些目录里。
+      if (source.pathPrefixes) {
+        for (const upstreamPath of upstream.paths) {
+          if (!source.pathPrefixes.some((prefix) => upstreamPath.startsWith(prefix))) {
+            add({ level: 'error', rule: 'provenance/path', message: `${upstreamPath} is outside the permissively licensed part of ${source.repo} (${source.pathPrefixes.join(', ')})` })
+          }
+        }
+      }
     }
     for (const file of manifest.files) {
       if (!LICENSED_ROLES.has(file.role)) continue

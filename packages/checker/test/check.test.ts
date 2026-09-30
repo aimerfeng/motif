@@ -91,3 +91,13 @@ describe('importsOf', () => {
     expect(importsOf(code)).toEqual(['a', 'b', './c', 'd', 'e'])
   })
 })
+
+describe('partially licensed sources', () => {
+  it('rejects upstream paths outside the permissive directories', () => {
+    const partial = { ...context, sources: [{ ...context.sources[0]!, pathPrefixes: ['apps/origin/'] }] }
+    const inside = checkItem(item(), { ...partial, sources: [{ ...partial.sources[0]!, pathPrefixes: ['glow'] }] })
+    expect(inside.map((finding) => finding.rule)).not.toContain('provenance/path')
+    const outside = checkItem(item(), partial)
+    expect(outside.map((finding) => finding.rule)).toContain('provenance/path')
+  })
+})
