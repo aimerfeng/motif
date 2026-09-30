@@ -138,6 +138,8 @@ export function Particles({ className, style, ...props }: ParticlesProps) {
   }
   const stepRef = useRef(step)
   stepRef.current = step
+  const resetRef = useRef(reset)
+  resetRef.current = reset
 
   useCanvasSize(canvasRef, {
     maxDpr: 2,
@@ -150,7 +152,7 @@ export function Particles({ className, style, ...props }: ParticlesProps) {
 
   // 种子变化时整体重新生成。
   useEffect(() => {
-    reset()
+    resetRef.current()
     stepRef.current(0)
   }, [options.seed])
 

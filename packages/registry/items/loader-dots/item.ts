@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-dots',
+  status: 'published',
+  title: { 'zh-CN': '圆点加载器', en: 'Dot Loaders' },
+  summary: {
+    'zh-CN': '五种圆点节奏：脉冲、波浪、弹跳、输入中、省略号。点数、间距、颜色和速度共用同一套参数，适合聊天里的「正在输入」、按钮里的处理中和列表底部的加载更多。',
+    en: 'Five dot rhythms: pulse, wave, bounce, typing and ellipsis, sharing count, spacing, color and speed. Made for chat typing indicators, buttons that are processing and load-more footers.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['loader', 'dots', 'typing', 'bounce', 'wave', 'loading', 'accessible'],
+  runtime: ['react', 'css'],
+  entry: { file: 'loader-dots.tsx', export: 'LoaderDots' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-dots.tsx', role: 'component' },
+    { path: 'loader-dots.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'pulse',
+      options: [
+        { value: 'pulse', label: { 'zh-CN': '脉冲', en: 'Pulse' } },
+        { value: 'wave', label: { 'zh-CN': '波浪', en: 'Wave' } },
+        { value: 'bounce', label: { 'zh-CN': '弹跳', en: 'Bounce' } },
+        { value: 'typing', label: { 'zh-CN': '输入中', en: 'Typing' } },
+        { value: 'ellipsis', label: { 'zh-CN': '省略号', en: 'Ellipsis' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'look', label: { 'zh-CN': '圆点直径', en: 'Dot size' }, default: 12, min: 4, max: 28, step: 1, unit: 'px', safe: [6, 20] },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '颜色', en: 'Color' }, default: '#8b5cf6' },
+    { key: 'count', type: 'number', group: 'layout', label: { 'zh-CN': '圆点数量', en: 'Dot count' }, default: 3, min: 2, max: 6, step: 1, safe: [3, 5] },
+    { key: 'spacing', type: 'number', group: 'layout', label: { 'zh-CN': '间距', en: 'Spacing' }, hint: { 'zh-CN': '相对圆点直径的倍数', en: 'As a multiple of the dot size' }, default: 0.7, min: 0.3, max: 1.6, step: 0.05, unit: 'x', safe: [0.5, 1.1] },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0.4, max: 2.5, step: 0.05, unit: 'x', safe: [0.7, 1.6] },
+    { key: 'delay', type: 'number', group: 'interaction', label: { 'zh-CN': '延迟出现', en: 'Show delay' }, hint: { 'zh-CN': '短请求不显示加载器，避免一闪而过', en: 'Skips the loader for quick requests so it never flashes' }, default: 0, min: 0, max: 1, step: 0.05, unit: 's' },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '读屏文案', en: 'Screen reader label' }, default: 'Loading', maxLength: 32 },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { variant: 'pulse', color: '#8b5cf6', count: 3, size: 12 } },
+    { id: 'confetti', name: { 'zh-CN': '彩屑', en: 'Confetti' }, values: { variant: 'bounce', color: '#f472b6', count: 4, size: 11, spacing: 0.8, speed: 1.1 } },
+    { id: 'tide', name: { 'zh-CN': '潮汐', en: 'Tide' }, values: { variant: 'wave', color: '#38bdf8', count: 5, size: 9, spacing: 0.6, speed: 0.9 } },
+    { id: 'whisper', name: { 'zh-CN': '低语', en: 'Whisper' }, values: { variant: 'typing', color: '#a1a1aa', count: 3, size: 8, spacing: 0.7, speed: 1 } },
+    { id: 'terminal', name: { 'zh-CN': '终端', en: 'Terminal' }, values: { variant: 'ellipsis', color: '#4ade80', count: 3, size: 7, spacing: 0.9, speed: 0.8 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use for very short or open-ended waits inside a small footprint: chat typing, a processing button, load-more footers.'],
+    rules: [
+      'Keep role="status" and the sr-only label; set label to what is happening (for example "Ava is typing").',
+      'Typing works best at 6-10 px dots in a neutral bubble; do not use more than 5 dots.',
+      'Set delay to about 0.2 s when the request is usually fast so the dots never flash.',
+    ],
+  },
+  capture: { zoom: 2, posterTime: 0.9, loop: 3 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'ldrs',
+      repo: 'GriffinJohnston/ldrs',
+      sha: 'f759f65beb8ab4f4a1f010438072180693ca01ec',
+      paths: ['src/elements/dotWave.scss', 'src/elements/dotPulse.scss', 'src/elements/bouncy.scss'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2022 Griffin Johnston'],
+    },
+    modifications: [
+      'Removed the Web Component shell and its pseudo-element dots: dot count is now a parameter and each dot carries its index as a custom property.',
+      'The pulse variant keeps the ldrs scale rhythm with a lower floor and opacity; wave, bounce (squash and stretch), typing and ellipsis are new keyframe sets built on the same size, gap and stagger variables.',
+      'Added a show delay driven by rAF and performance.now, role="status" with an sr-only label, aria-busy, and a reduced-motion state (graded static dots plus a slow opacity breathe), none of which upstream has.',
+    ],
+    assets: [],
+  },
+})

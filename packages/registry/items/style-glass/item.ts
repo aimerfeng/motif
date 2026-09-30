@@ -1,0 +1,81 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'style-glass',
+  status: 'published',
+  title: { 'zh-CN': '玻璃拟态', en: 'Glass' },
+  summary: {
+    'zh-CN': '磨砂玻璃面板叠在一片缓慢漂移的极光上：渐变填充、顶部镜面高光、渐变描边，带样张、六个基础组件和不支持模糊时的实色退路。适合产品官网、音乐与天气类应用、仪表盘。',
+    en: 'Frosted glass panels floating over a slowly drifting aurora: gradient fills, a specular top edge, gradient rims. Ships a style sheet, six primitives and a solid fallback when blur is unavailable. For product sites, media and weather apps, dashboards.',
+  },
+  kind: 'style',
+  category: 'glass',
+  tags: ['glassmorphism', 'frosted', 'liquid glass', 'backdrop-filter', 'aurora', 'translucent'],
+  runtime: ['react', 'css'],
+  entry: { file: 'style-glass.tsx', export: 'StyleGlass' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'style-glass.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '主色', en: 'Accent' }, hint: { 'zh-CN': '同时决定极光的三种色相', en: 'Also sets the three aurora hues' }, default: '#7c8cff' },
+    { key: 'radius', type: 'number', group: 'shape', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 22, min: 8, max: 40, step: 1, unit: 'px', safe: [14, 32] },
+    { key: 'borderWidth', type: 'number', group: 'shape', label: { 'zh-CN': '描边粗细', en: 'Rim width' }, default: 1, min: 0.5, max: 2, step: 0.5, unit: 'px', safe: [1, 1.5] },
+    { key: 'blur', type: 'number', group: 'glass', label: { 'zh-CN': '模糊半径', en: 'Blur' }, default: 26, min: 10, max: 48, step: 1, unit: 'px', safe: [18, 36] },
+    { key: 'depth', type: 'number', group: 'glass', label: { 'zh-CN': '阴影深度', en: 'Shadow depth' }, hint: { 'zh-CN': '0 是贴在背景上，1 是明显悬浮', en: '0 sits flat on the backdrop, 1 floats clearly above it' }, default: 0.6, min: 0, max: 1, step: 0.05, safe: [0.3, 0.9] },
+    {
+      key: 'fontPairing',
+      type: 'select',
+      group: 'type',
+      label: { 'zh-CN': '字体搭配', en: 'Font pairing' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist + Geist Mono', en: 'Geist + Geist Mono' } },
+        { value: 'jakarta', label: { 'zh-CN': 'Plus Jakarta Sans', en: 'Plus Jakarta Sans' } },
+        { value: 'outfit', label: { 'zh-CN': 'Outfit + Manrope', en: 'Outfit + Manrope' } },
+        { value: 'grotesk', label: { 'zh-CN': 'Space Grotesk + Manrope', en: 'Space Grotesk + Manrope' } },
+      ],
+    },
+    { key: 'dark', type: 'boolean', group: 'look', label: { 'zh-CN': '深色', en: 'Dark' }, default: true },
+  ],
+  presets: [
+    { id: 'aurora', name: { 'zh-CN': '极光', en: 'Aurora' }, values: { accent: '#7c8cff', radius: 22, borderWidth: 1, blur: 26, depth: 0.6, fontPairing: 'geist', dark: true } },
+    { id: 'frost', name: { 'zh-CN': '霜白', en: 'Frost' }, values: { accent: '#4f8bff', radius: 26, borderWidth: 1, blur: 30, depth: 0.5, fontPairing: 'jakarta', dark: false } },
+    { id: 'dusk-rose', name: { 'zh-CN': '暮玫', en: 'Dusk rose' }, values: { accent: '#ff7ab6', radius: 30, borderWidth: 1, blur: 24, depth: 0.7, fontPairing: 'outfit', dark: true } },
+    { id: 'obsidian', name: { 'zh-CN': '黑曜', en: 'Obsidian' }, values: { accent: '#3ddbb0', radius: 14, borderWidth: 1, blur: 38, depth: 0.85, fontPairing: 'grotesk', dark: true } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Plus Jakarta Sans Variable', 'Outfit Variable', 'Manrope Variable', 'Space Grotesk Variable'],
+  guidance: {
+    use: [
+      'Use for interfaces that float over rich imagery or colour: product marketing sites, media and weather widgets, dashboards with a wallpaper, mobile-style overlays.',
+      'Do not use where long-form reading, dense tables or strict accessibility contrast is the main job; glass lowers text contrast.',
+    ],
+    rules: [
+      'Glass needs something to refract. Always place panels over a colourful backdrop (the built-in aurora, an image, a gradient); on a flat colour it reads as a grey box.',
+      'Anatomy of a glass panel: a diagonal white gradient fill (about 15% to 4% alpha in dark, 78% to 36% in light), backdrop-filter blur 18 to 36px with saturate(175%), a 1px rim in white at 15% alpha, an inset 1px top highlight (the specular edge) and a gradient rim that is bright at the top-left and bottom-right corners. Never a flat rgba fill with a plain border.',
+      'One blur layer per stack. backdrop-filter does not see through another backdrop-filter, so children of a panel (buttons, inputs, tabs, badges) use translucent fills with inset highlights and no backdrop-filter of their own.',
+      'Depth comes from the shadow, tuned by one number: large, soft, tinted shadows (offset 30px, blur 70px, negative spread) plus a tight contact shadow. Never a hard or black drop shadow; in light mode tint shadows blue-violet, not grey.',
+      'Colour ratio: about 85% translucent neutrals and backdrop, 10% accent, 5% semantic colour. The accent is used for one filled primary action per view, focus rings, the active switch and small glows. Never fill a whole panel with the accent.',
+      'Primary buttons are glossy: a vertical accent gradient (lighter top), a 1px lighter border, an inset top highlight and a coloured glow shadow. Secondary buttons are glass fills; tertiary are ghost.',
+      'Text is white at 95% (dark) or deep indigo #12162f (light); secondary text 64% and captions 40% of that. Never put body text below 14px and keep it on the panel, not straight on the backdrop.',
+      'Type: a geometric or neo-grotesk sans; headings 600 weight with -0.035em tracking and 1.02 line height; small uppercase mono eyebrows at 0.14em tracking for labels and numbers.',
+      'Radius is generous and nested: cards use the base radius, controls 70% of it, small chips 45%. Pills for badges and the navigation bar.',
+      'Motion is slow and ambient (backdrop drift 26 to 38s, ease-in-out) plus quick springy feedback (200 to 350ms; tab thumbs and switches overshoot slightly). Nothing bounces on scroll. Honour prefers-reduced-motion and prefers-reduced-transparency.',
+      'Always ship the fallback: inside @supports not (backdrop-filter: blur(1px)) and under prefers-reduced-transparency, panels become solid tinted surfaces so content stays legible.',
+      'Forbidden: pure black or pure white panels, more than three aurora hues, blur above 48px, borders thicker than 2px, neon text glows, glass on glass beyond two levels.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'original',
+    modifications: [
+      'Original Motif design. The layered-highlight technique (gradient fill, inset specular edge, masked gradient rim) is standard CSS and was written from scratch; no upstream code is included.',
+    ],
+    assets: [],
+  },
+})

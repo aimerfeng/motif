@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-bars',
+  status: 'published',
+  title: { 'zh-CN': '条形加载器', en: 'Bar Loaders' },
+  summary: {
+    'zh-CN': '五种条形等待动画：均衡器、波浪、居中扩散、信号格和扫描线。柱数、粗细、颜色和速度共用，适合转写、上传、语音和任何「正在处理」的场景。',
+    en: 'Five bar-based waiting animations: equalizer, wave, center-out voice, signal steps and a sweeping line. Count, thickness, color and speed are shared, for transcription, uploads, voice and any processing state.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['loader', 'bars', 'equalizer', 'waveform', 'sweep', 'loading', 'accessible'],
+  runtime: ['react', 'css'],
+  entry: { file: 'loader-bars.tsx', export: 'LoaderBars' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-bars.tsx', role: 'component' },
+    { path: 'loader-bars.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'equalizer',
+      options: [
+        { value: 'equalizer', label: { 'zh-CN': '均衡器', en: 'Equalizer' } },
+        { value: 'wave', label: { 'zh-CN': '波浪', en: 'Wave' } },
+        { value: 'voice', label: { 'zh-CN': '居中扩散', en: 'Voice' } },
+        { value: 'signal', label: { 'zh-CN': '信号格', en: 'Signal' } },
+        { value: 'sweep', label: { 'zh-CN': '扫描线', en: 'Sweep' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'look', label: { 'zh-CN': '高度', en: 'Height' }, hint: { 'zh-CN': '扫描线的长度是它的 4 倍', en: 'The sweep line is four times as long' }, default: 32, min: 12, max: 72, step: 1, unit: 'px', safe: [18, 52] },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '颜色', en: 'Color' }, default: '#8b5cf6' },
+    { key: 'count', type: 'number', group: 'layout', label: { 'zh-CN': '柱子数量', en: 'Bar count' }, default: 5, min: 3, max: 9, step: 1, safe: [4, 7] },
+    { key: 'thickness', type: 'number', group: 'look', label: { 'zh-CN': '粗细', en: 'Thickness' }, default: 4, min: 2, max: 10, step: 0.5, unit: 'px', safe: [3, 6] },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0.4, max: 2.5, step: 0.05, unit: 'x', safe: [0.7, 1.6] },
+    { key: 'delay', type: 'number', group: 'interaction', label: { 'zh-CN': '延迟出现', en: 'Show delay' }, hint: { 'zh-CN': '短请求不显示加载器，避免一闪而过', en: 'Skips the loader for quick requests so it never flashes' }, default: 0, min: 0, max: 1, step: 0.05, unit: 's' },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '读屏文案', en: 'Screen reader label' }, default: 'Loading', maxLength: 32 },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { variant: 'equalizer', color: '#8b5cf6', count: 5, thickness: 4 } },
+    { id: 'aurora', name: { 'zh-CN': '极光', en: 'Aurora' }, values: { variant: 'voice', color: '#2dd4bf', count: 7, thickness: 3, size: 36, speed: 0.9 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { variant: 'wave', color: '#fb923c', count: 5, thickness: 5, speed: 1.1 } },
+    { id: 'beacon', name: { 'zh-CN': '灯塔', en: 'Beacon' }, values: { variant: 'signal', color: '#4ade80', count: 4, thickness: 6, size: 30 } },
+    { id: 'thread', name: { 'zh-CN': '细线', en: 'Thread' }, values: { variant: 'sweep', color: '#e4e4e7', thickness: 3, size: 24, speed: 1 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use for processing states with an audio, data or stream feel. The sweep variant is the compact indeterminate line for card or button footers; use progress-bar once progress is known.'],
+    rules: [
+      'Keep role="status" and the sr-only label; say what is being processed.',
+      'Keep 4-7 bars; fewer looks sparse and more looks like a chart.',
+      'Set delay to about 0.2 s for requests that are usually fast so the bars never flash.',
+    ],
+  },
+  capture: { zoom: 2.2, posterTime: 0.7, loop: 3 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'spinkit',
+      repo: 'tobiasahlin/SpinKit',
+      sha: '742a71277c49b69053b5beb9fad80d720840a2ab',
+      paths: ['spinkit.css'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2020 Tobias Ahlin'],
+    },
+    modifications: [
+      'Turned the fixed five-rect .sk-wave into a React component with a configurable bar count, thickness, height and speed, using rounded bars and per-bar custom properties.',
+      'Kept the wave variant close to SpinKit (scaleY 0.35 to 1 with a stagger); the equalizer, center-out voice, signal steps and sweep line are new keyframe sets in the same style.',
+      'Added a show delay driven by rAF and performance.now, role="status" with an sr-only label, aria-busy, and a reduced-motion state (static shape plus a slow opacity breathe), none of which upstream has.',
+    ],
+    assets: [],
+  },
+})

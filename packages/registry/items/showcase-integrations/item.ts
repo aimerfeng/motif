@@ -1,0 +1,98 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'showcase-integrations',
+  status: 'published',
+  title: { 'zh-CN': '集成展示', en: 'Integrations Showcase' },
+  summary: {
+    'zh-CN': '产品标识居中、虚构品牌方块沿虚线轨道缓慢环绕，另有居中与目录网格两种排法。适合「集成 / 生态」区块。',
+    en: 'A product mark at the center with invented brand tiles drifting along dashed orbits, plus centered and directory-grid layouts. Made for integration and ecosystem sections.',
+  },
+  kind: 'section',
+  category: 'showcase',
+  tags: ['integrations', 'orbit', 'ecosystem', 'partners', 'showcase'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'showcase-integrations.tsx', export: 'ShowcaseIntegrations' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'showcase-integrations.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'split',
+      options: [
+        { value: 'split', label: { 'zh-CN': '左文右轨道', en: 'Split' } },
+        { value: 'center', label: { 'zh-CN': '居中轨道', en: 'Centered orbit' } },
+        { value: 'grid', label: { 'zh-CN': '目录网格', en: 'Directory grid' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'tiles',
+      type: 'select',
+      label: { 'zh-CN': '方块配色', en: 'Tile colors' },
+      default: 'color',
+      options: [
+        { value: 'color', label: { 'zh-CN': '各自品牌色', en: 'Brand hues' } },
+        { value: 'mono', label: { 'zh-CN': '统一主色', en: 'Accent only' } },
+      ],
+      group: 'look',
+    },
+    { key: 'count', type: 'number', label: { 'zh-CN': '集成数量', en: 'Integrations' }, default: 10, min: 6, max: 12, step: 1, group: 'layout' },
+    { key: 'rings', type: 'number', label: { 'zh-CN': '轨道数', en: 'Orbit rings' }, default: 2, min: 1, max: 3, step: 1, group: 'layout' },
+    { key: 'speed', type: 'number', label: { 'zh-CN': '环绕速度', en: 'Orbit speed' }, default: 1, min: 0.2, max: 3, step: 0.1, unit: 'x', safe: [0.5, 2], group: 'motion' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Plugs into the tools you already pay for', maxLength: 60, group: 'content' },
+    { key: 'subheading', type: 'text', label: { 'zh-CN': '副标题', en: 'Subheading' }, default: 'Two-way sync with your billing, docs, chat and warehouse. Set up in minutes, no glue code.', maxLength: 120, group: 'content' },
+    { key: 'showLabels', type: 'boolean', label: { 'zh-CN': '始终显示名称', en: 'Always show names' }, default: false, group: 'look' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场与脉冲动画', en: 'Entrance & pulse' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', layout: 'split', tiles: 'color' } },
+    { id: 'monolith', name: { 'zh-CN': '单色', en: 'Monolith' }, values: { accent: '#34d399', layout: 'center', tiles: 'mono', rings: 3, count: 12, speed: 0.7 } },
+    { id: 'directory', name: { 'zh-CN': '名录', en: 'Directory' }, values: { accent: '#f472b6', layout: 'grid', tiles: 'color', count: 8, font: 'sans' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use to show the ecosystem around a product. Replace the BRANDS array and glyph paths with your own integrations.'],
+    rules: ['Never use real company logos or trademarks; keep tiles as invented wordmarks or neutral glyphs. Orbit positions are written straight to the DOM from the frame loop.'],
+  },
+  capture: { zoom: 1.1, posterTime: 2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'eldoraui',
+      repo: 'karthikmudunuri/eldoraui',
+      sha: '6bb8fd211ecbdfa983f5780bead27d9f3890f20a',
+      paths: ['apps/www/registry/blocks/cta-02/components/orbiting-circle.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Mudunuri Bhaskara Karthikeya Varma'],
+    },
+    modifications: [
+      'Replaced the CSS-keyframe orbit with positions computed from the runtime frame loop, so speed, ring count and reduced motion are all controllable.',
+      'Brand logos are replaced by twelve invented wordmarks with geometric SVG glyphs; added a centered orbit and a directory grid layout.',
+      'Added a pulsing product mark, tile color modes and a heading-font select; Tailwind v4 theme tokens throughout.',
+    ],
+    assets: [],
+  },
+})

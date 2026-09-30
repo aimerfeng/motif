@@ -1,0 +1,825 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2025 8bitcn
+ * Source: https://github.com/TheOrcDev/8bitcn-ui/blob/37031e3/components/ui/8bit/styles/retro.css
+ * Modified by Motif; see the item's provenance.
+ */
+
+.bit-root {
+  --bit-accent: #ef7d57;
+  --bit-accent-ink: #1a1c2c;
+  --bit-px: 4px;
+  --bit-depth: 4px;
+  --bit-density: 1;
+  --bit-head: 'Press Start 2P', ui-monospace, monospace;
+  --bit-body: 'VT323', ui-monospace, monospace;
+  --bit-fs: 1.4rem;
+  --bit-hs: 1;
+
+  /* Night palette (sweetie-16 flavored) */
+  --bit-bg: #1a1c2c;
+  --bit-surface: #262b44;
+  --bit-well: #141626;
+  --bit-ink: #f4f4f4;
+  --bit-line: #f4f4f4;
+  --bit-drop: #0b0c16;
+  --bit-muted: #94b0c2;
+  --bit-sun: #ffcd75;
+  --bit-pink: #f26e8c;
+  --bit-mint: #a7f070;
+  --bit-cyan: #73eff7;
+  --bit-danger: #b13e53;
+
+
+  background-color: var(--bit-bg);
+  background-image: linear-gradient(color-mix(in oklab, var(--bit-line) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--bit-line) 5%, transparent) 1px, transparent 1px);
+  background-size: 16px 16px;
+  color: var(--bit-ink);
+  font-family: var(--bit-body);
+  font-size: var(--bit-fs);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  font-synthesis: none;
+  -webkit-font-smoothing: none;
+}
+.bit-root[data-mode='day'] {
+  --bit-bg: #efe6cf;
+  --bit-surface: #fffdf4;
+  --bit-well: #e4d9bc;
+  --bit-ink: #1a1c2c;
+  --bit-line: #1a1c2c;
+  --bit-drop: #bcae8a;
+  --bit-muted: #566c86;
+  --bit-mint: #6cc24a;
+  --bit-cyan: #4cc9d6;
+}
+.bit-root[data-fontpairing='press-plex'] {
+  --bit-fs: 0.92rem;
+  --bit-body: 'IBM Plex Mono', ui-monospace, monospace;
+  line-height: 1.45;
+}
+.bit-root[data-fontpairing='vt-mono'] {
+  --bit-fs: 0.95rem;
+  --bit-hs: 1.9;
+  line-height: 1.4;
+}
+.bit-root[data-fontpairing='vt-mono'] .bit-display {
+  line-height: 0.95;
+}
+.bit-root[data-fontpairing='vt-mono'] .bit-title,
+.bit-root[data-fontpairing='vt-mono'] .bit-h2,
+.bit-root[data-fontpairing='vt-mono'] .bit-h3 {
+  line-height: 1.1;
+}
+.bit-root[data-mode='day'] .bit-section-num,
+.bit-root[data-mode='day'] .bit-mark {
+  color: var(--bit-danger);
+}
+.bit-root[data-mode='day'] .bit-mark {
+  text-shadow: calc(var(--bit-px) * 0.75) calc(var(--bit-px) * 0.75) 0 var(--bit-sun);
+}
+.bit-root :focus-visible {
+  outline: var(--bit-px) dotted var(--bit-sun);
+  outline-offset: calc(var(--bit-px) * 1.5);
+}
+
+/* The plate: fill + top light + bottom shade, drawn as a plus shape so corners stay notched. */
+.bit-btn,
+.bit-card,
+.bit-input,
+.bit-badge,
+.bit-tab,
+.bit-alert,
+.bit-switch-track,
+.bit-swatch,
+.bit-avatar,
+.bit-ratio,
+.bit-screen,
+.bit-ticket {
+  /* The notched pixel outline: four bars, corners left empty. */
+    --bit-edge:
+    0 calc(var(--bit-px) * -1) 0 0 var(--bit-line), 0 var(--bit-px) 0 0 var(--bit-line), calc(var(--bit-px) * -1) 0 0 0 var(--bit-line),
+    var(--bit-px) 0 0 0 var(--bit-line);
+  --bit-e: calc(var(--bit-px) * 2);
+  margin: var(--bit-px);
+  border: 0;
+  background:
+    linear-gradient(var(--bit-hi), var(--bit-hi)) var(--bit-px) 0 / calc(100% - var(--bit-e)) var(--bit-depth) no-repeat,
+    linear-gradient(var(--bit-shade), var(--bit-shade)) var(--bit-px) 100% / calc(100% - var(--bit-e)) var(--bit-depth) no-repeat,
+    linear-gradient(var(--bit-fill), var(--bit-fill)) 0 var(--bit-px) / 100% calc(100% - var(--bit-e)) no-repeat,
+    linear-gradient(var(--bit-fill), var(--bit-fill)) var(--bit-px) 0 / calc(100% - var(--bit-e)) 100% no-repeat;
+  box-shadow: var(--bit-edge), var(--bit-cast, 0 0 0 0 transparent);
+}
+.bit-card,
+.bit-alert,
+.bit-swatch,
+.bit-screen,
+.bit-ticket {
+  --bit-fill: var(--bit-surface);
+  --bit-hi: color-mix(in oklab, var(--bit-fill) 88%, white);
+  --bit-shade: color-mix(in oklab, var(--bit-fill) 78%, black);
+  --bit-cast: calc(var(--bit-px) * 2) calc(var(--bit-px) * 2) 0 0 var(--bit-drop);
+}
+
+/* Typography */
+.bit-title {
+  font-family: var(--bit-head);
+  font-size: calc(0.8rem * var(--bit-hs));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+.bit-display {
+  display: block;
+  font-family: var(--bit-head);
+  font-size: calc(clamp(1.5rem, 4.6vw, 2.7rem) * var(--bit-hs));
+  line-height: 1.3;
+  text-transform: uppercase;
+  text-shadow: calc(var(--bit-px) * 0.75) calc(var(--bit-px) * 0.75) 0 var(--bit-danger);
+}
+.bit-h2 {
+  font-family: var(--bit-head);
+  font-size: calc(1rem * var(--bit-hs));
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.bit-h3 {
+  font-family: var(--bit-head);
+  font-size: calc(0.8rem * var(--bit-hs));
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.bit-body,
+.bit-text {
+  font-size: var(--bit-fs);
+}
+.bit-lead {
+  max-width: 30rem;
+  font-size: calc(var(--bit-fs) * 1.15);
+  line-height: 1.2;
+}
+.bit-small,
+.bit-hint {
+  font-size: calc(var(--bit-fs) * 0.82);
+  color: var(--bit-muted);
+}
+.bit-muted {
+  color: var(--bit-muted);
+}
+.bit-tone-accent .bit-muted,
+.bit-tone-sun .bit-muted,
+.bit-tone-mint .bit-muted,
+.bit-tone-pink .bit-muted,
+.bit-tone-ink .bit-muted {
+  color: inherit;
+  opacity: 0.8;
+}
+.bit-meta {
+  font-family: var(--bit-head);
+  font-size: calc(0.55rem * var(--bit-hs));
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--bit-muted);
+}
+.bit-caret::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 0.85em;
+  margin-left: 0.2em;
+  background: currentColor;
+  animation: bit-blink 1s steps(1) infinite;
+}
+@keyframes bit-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.bit-mark {
+  color: var(--bit-sun);
+}
+
+/* Button */
+.bit-btn {
+  --bit-fill: var(--bit-accent);
+  --bit-hi: color-mix(in oklab, var(--bit-fill) 60%, white);
+  --bit-shade: color-mix(in oklab, var(--bit-fill) 60%, black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding: calc(0.95em * var(--bit-density)) calc(1.4em * var(--bit-density));
+  font-family: var(--bit-head);
+  font-size: calc(0.66rem * var(--bit-hs));
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--bit-accent-ink);
+  cursor: pointer;
+  transition: transform 80ms steps(2);
+}
+.bit-btn:hover:not(:disabled) {
+  --bit-fill: color-mix(in oklab, var(--bit-accent) 82%, white);
+}
+.bit-btn:active:not(:disabled) {
+  transform: translateY(var(--bit-px));
+  --bit-depth: 0px;
+}
+.bit-btn-secondary {
+  --bit-fill: var(--bit-surface);
+  --bit-hi: color-mix(in oklab, var(--bit-fill) 85%, white);
+  --bit-shade: color-mix(in oklab, var(--bit-fill) 70%, black);
+  color: var(--bit-ink);
+}
+.bit-btn-secondary:hover:not(:disabled) {
+  --bit-fill: color-mix(in oklab, var(--bit-surface) 80%, var(--bit-line));
+}
+.bit-btn-danger {
+  --bit-fill: var(--bit-danger);
+  color: #f4f4f4;
+}
+.bit-btn-danger:hover:not(:disabled) {
+  --bit-fill: color-mix(in oklab, var(--bit-danger) 82%, white);
+}
+.bit-btn-ghost {
+  background: none;
+  box-shadow: none;
+  color: var(--bit-ink);
+}
+.bit-btn-ghost:hover:not(:disabled) {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: var(--bit-px);
+  text-underline-offset: calc(var(--bit-px) * 1.2);
+}
+.bit-btn:disabled {
+  --bit-fill: #566c86;
+  --bit-hi: #566c86;
+  --bit-shade: #566c86;
+  color: #94b0c2;
+  cursor: not-allowed;
+}
+.bit-btn-sm {
+  font-size: calc(0.52rem * var(--bit-hs));
+}
+.bit-btn-lg {
+  font-size: calc(0.82rem * var(--bit-hs));
+}
+
+/* Card */
+.bit-card {
+  padding: calc(1.5rem * var(--bit-density));
+}
+.bit-tone-accent {
+  --bit-fill: var(--bit-accent);
+  color: var(--bit-accent-ink);
+}
+.bit-tone-sun {
+  --bit-fill: var(--bit-sun);
+  color: #1a1c2c;
+}
+.bit-tone-pink {
+  --bit-fill: var(--bit-pink);
+  color: #1a1c2c;
+}
+.bit-tone-mint {
+  --bit-fill: var(--bit-mint);
+  color: #1a1c2c;
+}
+.bit-tone-ink {
+  --bit-fill: var(--bit-line);
+  color: var(--bit-bg);
+}
+
+/* Badge */
+.bit-badge {
+  --bit-hi: transparent;
+  --bit-shade: transparent;
+  --bit-px: 2px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5em 0.9em;
+  font-family: var(--bit-head);
+  font-size: calc(0.5rem * var(--bit-hs));
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.bit-badge.bit-tone-default {
+  --bit-fill: var(--bit-surface);
+  color: var(--bit-ink);
+}
+.bit-badge.bit-tone-accent {
+  color: var(--bit-accent-ink);
+}
+.bit-badge.bit-tone-sun,
+.bit-badge.bit-tone-mint,
+.bit-badge.bit-tone-pink {
+  color: #1a1c2c;
+}
+
+/* Field */
+.bit-field {
+  display: grid;
+  gap: 0.55rem;
+}
+.bit-label {
+  font-family: var(--bit-head);
+  font-size: calc(0.55rem * var(--bit-hs));
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--bit-muted);
+}
+.bit-input {
+  --bit-fill: var(--bit-well);
+  --bit-hi: color-mix(in oklab, var(--bit-fill) 55%, black);
+  --bit-shade: transparent;
+  width: calc(100% - var(--bit-px) * 2);
+  padding: calc(0.75rem * var(--bit-density)) 1rem;
+  font: inherit;
+  color: var(--bit-ink);
+  caret-color: var(--bit-accent);
+}
+.bit-input::placeholder {
+  color: var(--bit-muted);
+}
+.bit-input:focus {
+  outline: none;
+  --bit-line: var(--bit-accent);
+}
+
+/* Tabs */
+.bit-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.bit-tab {
+  --bit-fill: var(--bit-surface);
+  --bit-hi: color-mix(in oklab, var(--bit-fill) 85%, white);
+  --bit-shade: color-mix(in oklab, var(--bit-fill) 70%, black);
+  padding: calc(0.8rem * var(--bit-density)) 1rem;
+  font-family: var(--bit-head);
+  font-size: calc(0.58rem * var(--bit-hs));
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--bit-ink);
+  cursor: pointer;
+}
+.bit-tab:hover {
+  --bit-fill: color-mix(in oklab, var(--bit-surface) 80%, var(--bit-line));
+}
+.bit-tab[aria-selected='true'] {
+  --bit-fill: var(--bit-accent);
+  --bit-hi: color-mix(in oklab, var(--bit-fill) 60%, white);
+  --bit-shade: color-mix(in oklab, var(--bit-fill) 60%, black);
+  color: var(--bit-accent-ink);
+}
+
+/* Alert */
+.bit-alert {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+}
+.bit-alert-icon svg {
+  display: none;
+}
+.bit-alert-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  font-family: var(--bit-head);
+  font-size: 0.75rem;
+  color: #1a1c2c;
+  background: var(--bit-cyan);
+  box-shadow: 0 0 0 var(--bit-px) var(--bit-line);
+  margin: var(--bit-px);
+}
+.bit-alert-info .bit-alert-icon::before {
+  content: 'i';
+}
+.bit-alert-success .bit-alert-icon {
+  background: var(--bit-mint);
+}
+.bit-alert-success .bit-alert-icon::before {
+  content: 'OK';
+  font-size: 0.6rem;
+}
+.bit-alert-warn .bit-alert-icon {
+  background: var(--bit-sun);
+}
+.bit-alert-warn .bit-alert-icon::before {
+  content: '!';
+}
+.bit-alert-title {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-family: var(--bit-head);
+  font-size: calc(0.6rem * var(--bit-hs));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+.bit-alert-text {
+  font-size: calc(var(--bit-fs) * 0.95);
+}
+
+/* Switch */
+.bit-switch-track {
+  --bit-fill: var(--bit-well);
+  --bit-hi: color-mix(in oklab, var(--bit-fill) 55%, black);
+  --bit-shade: transparent;
+  width: 4.4rem;
+  height: 2rem;
+}
+.bit-switch-track::before {
+  content: 'OFF';
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  margin-top: -0.3rem;
+  font-family: var(--bit-head);
+  font-size: 0.5rem;
+  line-height: 0.6rem;
+  color: var(--bit-muted);
+}
+.bit-switch-track::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--bit-px) * 1);
+  left: calc(var(--bit-px) * 1);
+  bottom: calc(var(--bit-px) * 1);
+  width: 1.4rem;
+  background: var(--bit-ink);
+  transition: transform 80ms steps(3);
+}
+.bit-switch input:checked + .bit-switch-track {
+  --bit-fill: color-mix(in oklab, var(--bit-mint) 70%, var(--bit-well));
+}
+.bit-switch input:checked + .bit-switch-track::before {
+  content: 'ON';
+  right: auto;
+  left: 0.7rem;
+  color: #1a1c2c;
+}
+.bit-switch input:checked + .bit-switch-track::after {
+  transform: translateX(2.3rem);
+  background: #1a1c2c;
+}
+.bit-switch input:focus-visible + .bit-switch-track {
+  outline: var(--bit-px) dotted var(--bit-sun);
+  outline-offset: calc(var(--bit-px) * 1.5);
+}
+.bit-switch-label {
+  font-size: calc(var(--bit-fs) * 1.05);
+}
+
+/* Sheet furniture */
+.bit-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: calc(2.5rem * var(--bit-density));
+  align-items: center;
+  padding-top: calc(1.25rem * var(--bit-density));
+}
+@media (max-width: 860px) {
+  .bit-hero {
+    grid-template-columns: 1fr;
+  }
+}
+.bit-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--bit-head);
+  font-size: calc(0.75rem * var(--bit-hs));
+  text-transform: uppercase;
+}
+.bit-screen {
+  --bit-fill: #0b0c16;
+  --bit-hi: transparent;
+  --bit-shade: transparent;
+  --bit-line: #f4f4f4;
+  position: relative;
+  aspect-ratio: 1 / 0.9;
+  overflow: hidden;
+  color: #f4f4f4;
+  isolation: isolate;
+}
+.bit-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(transparent 0 2px, rgb(0 0 0 / 0.28) 2px 4px);
+}
+.bit-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.bit-stars::before {
+  content: '';
+  position: absolute;
+  top: 14%;
+  left: 8%;
+  width: 4px;
+  height: 4px;
+  background: #f4f4f4;
+  box-shadow:
+    52px 40px #73eff7,
+    130px 8px #f4f4f4,
+    210px 62px #ffcd75,
+    290px 22px #f4f4f4,
+    350px 90px #73eff7,
+    24px 120px #f4f4f4,
+    170px 140px #f4f4f4,
+    330px 170px #ffcd75;
+}
+.bit-hud {
+  position: absolute;
+  top: 6%;
+  left: 5%;
+  right: 5%;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--bit-head);
+  font-size: calc(0.55rem * var(--bit-hs));
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+.bit-hud b {
+  display: block;
+  color: var(--bit-sun);
+  font-weight: 400;
+}
+.bit-fleet {
+  position: absolute;
+  top: 26%;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.1rem 1.4rem;
+  padding: 0 8%;
+}
+.bit-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 16%;
+  background:
+    repeating-linear-gradient(90deg, #257179 0 16px, #1f5f66 16px 32px) top / 100% 25% no-repeat,
+    linear-gradient(#3b5dc9 0 0) 0 25% / 100% 3px no-repeat,
+    repeating-linear-gradient(90deg, #29366f 0 16px, #233060 16px 32px);
+}
+.bit-ship {
+  position: absolute;
+  bottom: 16%;
+  left: 50%;
+  z-index: 2;
+  margin-left: -1.5rem;
+}
+.bit-lives {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+.bit-ticket {
+  padding: 0;
+}
+.bit-section {
+  margin-top: calc(4.5rem * var(--bit-density));
+}
+.bit-section-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: calc(1.6rem * var(--bit-density));
+}
+.bit-section-head::after {
+  content: '';
+  flex: 1;
+  min-width: 2rem;
+  height: var(--bit-px);
+  background: repeating-linear-gradient(90deg, var(--bit-line) 0 var(--bit-px), transparent var(--bit-px) calc(var(--bit-px) * 2));
+  opacity: 0.55;
+}
+.bit-section-num {
+  font-family: var(--bit-head);
+  font-size: calc(0.75rem * var(--bit-hs));
+  color: var(--bit-sun);
+}
+.bit-ratio {
+  --bit-fill: transparent;
+  --bit-hi: transparent;
+  --bit-shade: transparent;
+  display: flex;
+  height: 1.6rem;
+  margin-bottom: 1.1rem;
+  overflow: hidden;
+}
+.bit-ratio > span {
+  height: 100%;
+}
+.bit-swatch {
+  padding: calc(var(--bit-px) * 1.5);
+}
+.bit-swatch-chip {
+  height: 3.6rem;
+}
+.bit-swatch-label {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 0.35rem 0.4rem;
+  font-size: calc(var(--bit-fs) * 0.78);
+  line-height: 1.05;
+  color: var(--bit-muted);
+}
+.bit-swatch-label strong {
+  font-family: var(--bit-head);
+  font-size: calc(0.5rem * var(--bit-hs));
+  font-weight: 400;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--bit-ink);
+}
+.bit-plan {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.95rem * var(--bit-density));
+}
+.bit-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.bit-price-amount {
+  font-family: var(--bit-head);
+  font-size: calc(1.9rem * var(--bit-hs));
+  line-height: 1.2;
+}
+.bit-price-unit {
+  font-family: var(--bit-head);
+  font-size: calc(0.5rem * var(--bit-hs));
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.bit-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: calc(var(--bit-fs) * 1.02);
+}
+.bit-tick {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.05rem;
+  color: var(--bit-mint);
+  shape-rendering: crispEdges;
+}
+.bit-tone-accent .bit-tick,
+.bit-tone-sun .bit-tick,
+.bit-tone-mint .bit-tick,
+.bit-tone-pink .bit-tick {
+  color: currentColor;
+}
+.bit-avatar {
+  --bit-fill: var(--bit-pink);
+  --bit-hi: transparent;
+  --bit-shade: transparent;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 3.6rem;
+  height: 3.6rem;
+  font-family: var(--bit-head);
+  font-size: 0.8rem;
+  color: #1a1c2c;
+}
+.bit-footnote {
+  margin-top: calc(4.5rem * var(--bit-density));
+  padding-top: 1.25rem;
+  font-size: calc(var(--bit-fs) * 0.85);
+  text-align: center;
+  color: var(--bit-muted);
+  border-top: var(--bit-px) dotted var(--bit-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bit-caret::after {
+    animation: none;
+  }
+}
+
+/* Layout helpers used by the style sheet (demo) */
+.bit-root {
+  min-height: 100%;
+  box-sizing: border-box;
+}
+.bit-root *,
+.bit-root *::before,
+.bit-root *::after {
+  box-sizing: border-box;
+}
+.bit-root h1,
+.bit-root h2,
+.bit-root h3,
+.bit-root h4,
+.bit-root p {
+  margin: 0;
+}
+.bit-wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 48px) clamp(16px, 4vw, 40px) 88px;
+}
+.bit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: calc(1.5rem * var(--bit-density));
+  align-items: stretch;
+}
+.bit-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: calc(1.5rem * var(--bit-density));
+  align-items: start;
+}
+.bit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(0.75rem * var(--bit-density));
+}
+.bit-stack {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1rem * var(--bit-density));
+}
+.bit-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 132px), 1fr));
+  gap: calc(0.85rem * var(--bit-density));
+}
+.bit-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+.bit-scale {
+  display: grid;
+  gap: calc(1rem * var(--bit-density));
+}
+.bit-scale-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  align-items: baseline;
+  gap: 1rem;
+}
+@media (max-width: 520px) {
+  .bit-scale-row {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+.bit-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  position: relative;
+}
+.bit-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+.bit-switch-track {
+  flex: none;
+  position: relative;
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bit-root *,
+  .bit-root *::before,
+  .bit-root *::after {
+    transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
+}

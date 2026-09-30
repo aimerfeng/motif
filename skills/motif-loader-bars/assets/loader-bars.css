@@ -1,0 +1,167 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2020 Tobias Ahlin
+ * Source: https://github.com/tobiasahlin/SpinKit/blob/742a712/spinkit.css
+ * Modified by Motif; see the item's provenance.
+ */
+.mlb-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--mlb-color);
+}
+
+.mlb-visual {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--mlb-thick) * 0.7);
+  height: var(--mlb-size);
+}
+
+.mlb-bar {
+  display: block;
+  width: var(--mlb-thick);
+  height: 100%;
+  border-radius: 999px;
+  background: var(--mlb-color);
+  animation-duration: var(--mlb-dur);
+  animation-iteration-count: infinite;
+}
+
+/* 均衡器：每根柱子周期略有不同，看起来像真实的音频电平（SpinKit wave 的 scaleY 思路） */
+.mlb-equalizer .mlb-bar {
+  animation-name: mlb-eq;
+  animation-timing-function: ease-in-out;
+  animation-duration: calc(var(--mlb-dur) * var(--k));
+  animation-delay: calc(var(--mlb-dur) * var(--i) * -0.23);
+}
+@keyframes mlb-eq {
+  0%,
+  100% {
+    transform: scaleY(0.22);
+  }
+  35% {
+    transform: scaleY(1);
+  }
+  65% {
+    transform: scaleY(0.45);
+  }
+}
+
+/* 波浪：依次起伏，SpinKit wave 的 1.2s 节奏 */
+.mlb-wave .mlb-bar {
+  animation-name: mlb-wave;
+  animation-timing-function: ease-in-out;
+  animation-delay: calc(var(--mlb-dur) * (var(--i) - var(--mlb-n)) * 0.09);
+}
+@keyframes mlb-wave {
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.35);
+    opacity: 0.6;
+  }
+  20% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* 居中扩散：从中间向两侧传递，像声波 */
+.mlb-voice .mlb-bar {
+  animation-name: mlb-voice;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: calc(var(--mlb-dur) * var(--d) * -0.1 - var(--mlb-dur));
+}
+@keyframes mlb-voice {
+  0%,
+  100% {
+    transform: scaleY(0.2);
+  }
+  40% {
+    transform: scaleY(1);
+  }
+  70% {
+    transform: scaleY(0.2);
+  }
+}
+
+/* 信号格：高度固定成阶梯，亮度依次点亮再熄灭 */
+.mlb-signal {
+  align-items: flex-end;
+}
+.mlb-signal .mlb-bar {
+  height: calc(28% + 72% * var(--i) / max(var(--mlb-n) - 1, 1));
+  animation-name: mlb-signal;
+  animation-timing-function: ease-in-out;
+  animation-delay: calc(var(--mlb-dur) * var(--i) / var(--mlb-n) * -0.7);
+}
+@keyframes mlb-signal {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  45%,
+  60% {
+    opacity: 1;
+  }
+}
+
+/* 扫描线：一段亮条在轨道里往返滑过，适合放在卡片或按钮底部 */
+.mlb-sweep {
+  position: relative;
+  width: calc(var(--mlb-size) * 4);
+  height: var(--mlb-thick);
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--mlb-color) 18%, transparent);
+}
+.mlb-sweep-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  border-radius: inherit;
+  background: var(--mlb-color);
+  animation: mlb-sweep var(--mlb-dur) cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes mlb-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(263%);
+  }
+}
+
+/* 减少动态效果：定格为好看的静态形状，整体缓慢呼吸，仍然表示「进行中」。 */
+@media (prefers-reduced-motion: reduce) {
+  .mlb-visual {
+    animation: mlb-breathe 2.4s ease-in-out infinite;
+  }
+  .mlb-bar,
+  .mlb-sweep-bar {
+    animation: none !important;
+  }
+  .mlb-equalizer .mlb-bar,
+  .mlb-wave .mlb-bar,
+  .mlb-voice .mlb-bar {
+    transform: scaleY(calc(0.3 + var(--k, 1) * 0.5));
+  }
+  .mlb-signal .mlb-bar {
+    opacity: calc(0.35 + var(--i) * 0.65 / max(var(--mlb-n) - 1, 1));
+  }
+  .mlb-sweep-bar {
+    transform: translateX(80%);
+  }
+}
+@keyframes mlb-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

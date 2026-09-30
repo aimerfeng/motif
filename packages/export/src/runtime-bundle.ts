@@ -3,7 +3,7 @@
  * 做法很朴素：去掉模块之间的相对导入和 index 的再导出，合并、去重外部导入。
  * 这依赖 runtime 源码的书写约定（一个文件一个关注点，只从 react / clsx / tailwind-merge 导入），由测试守住。
  */
-const ORDER = ['cn.ts', 'reduced-motion.ts', 'visibility.ts', 'frame-loop.ts', 'canvas-size.ts', 'webgl.ts']
+const ORDER = ['cn.ts', 'css-vars.ts', 'reduced-motion.ts', 'visibility.ts', 'frame-loop.ts', 'canvas-size.ts', 'webgl.ts']
 const IMPORT = /^import\s+(type\s+)?\{([^}]*)\}\s+from\s+'([^']+)'\s*;?\s*$/
 
 export function bundleRuntime(files: Record<string, string>): string {

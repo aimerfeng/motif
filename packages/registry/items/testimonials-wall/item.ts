@@ -1,0 +1,108 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'testimonials-wall',
+  status: 'published',
+  title: { 'zh-CN': '好评墙', en: 'Wall of Love' },
+  summary: {
+    'zh-CN': '十二条客户评价排成三列，相邻两列反向缓缓滚动，上下柔和淡出；也可以切成两行横向滚动。头像是首字母渐变，没有任何图片。',
+    en: 'Twelve customer quotes in three columns that drift in opposite directions and fade at the edges, or two horizontal rows. Avatars are gradient initials, no images.',
+  },
+  kind: 'section',
+  category: 'testimonials',
+  tags: ['testimonials', 'wall of love', 'marquee', 'reviews', 'social proof'],
+  runtime: ['react', 'css'],
+  entry: { file: 'testimonials-wall.tsx', export: 'TestimonialsWall' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'testimonials-wall.tsx', role: 'component' },
+    { path: 'testimonials-wall.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'rating', type: 'text', label: { 'zh-CN': '评分文案', en: 'Rating line' }, default: '4.9 from 2,300 teams', maxLength: 32, group: 'content' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Engineers say it better than we do', maxLength: 60, group: 'content' },
+    {
+      key: 'subline',
+      type: 'text',
+      label: { 'zh-CN': '副标题', en: 'Subline' },
+      default: 'A few notes from the teams who run their releases on it every day.',
+      maxLength: 120,
+      group: 'content',
+    },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent color' }, default: '#f5a524', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist 无衬线', en: 'Geist sans' } },
+        { value: 'grotesk', label: { 'zh-CN': 'Space Grotesk', en: 'Space Grotesk' } },
+        { value: 'serif', label: { 'zh-CN': 'Instrument 衬线', en: 'Instrument serif' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '卡片圆角', en: 'Card radius' }, default: 18, min: 0, max: 30, step: 1, unit: 'px', safe: [6, 26], group: 'look' },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '排布', en: 'Layout' },
+      default: 'columns',
+      options: [
+        { value: 'columns', label: { 'zh-CN': '三列纵向', en: 'Three columns' } },
+        { value: 'rows', label: { 'zh-CN': '两行横向', en: 'Two rows' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'duration', type: 'number', label: { 'zh-CN': '滚动一轮用时', en: 'Loop duration' }, default: 60, min: 20, max: 140, step: 5, unit: 's', safe: [35, 90], group: 'motion' },
+    { key: 'pauseOnHover', type: 'boolean', label: { 'zh-CN': '悬停暂停', en: 'Pause on hover' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'amber-night', name: { 'zh-CN': '琥珀夜', en: 'Amber Night' }, values: {} },
+    { id: 'rose-rows', name: { 'zh-CN': '玫瑰长廊', en: 'Rose Gallery' }, values: { accent: '#fb7185', layout: 'rows', duration: 70, radius: 24 } },
+    { id: 'chalk', name: { 'zh-CN': '粉笔', en: 'Chalk' }, values: { tone: 'light', accent: '#0f766e', font: 'serif', radius: 14 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable', 'Space Grotesk Variable', 'Instrument Serif'],
+  guidance: {
+    rules: [
+      'Quotes are short (one to three sentences), specific and attributable to an invented person with a role and company. No generic praise.',
+      'Neighboring columns move in opposite directions; keep all rows at similar speed so the wall reads as calm, not busy.',
+      'Only some cards carry a metric chip; if every card has one, none of them stand out.',
+      'Never use real people, real company names or real avatars; avatars are gradient initials.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 3, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/marquee.tsx', 'apps/www/public/r/marquee.json'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Reimplemented the marquee as a two-copy track translated by -50% (vertical or horizontal), with per-column direction and speed, and composed it into a full testimonials section.',
+      'Cards, quotes, people and companies are invented; tweet-card and real avatars from the upstream site were not used. Avatars are gradient initials.',
+      'The keyframes live in testimonials-wall.css; animation stops under prefers-reduced-motion and the second copy is hidden from assistive technology.',
+    ],
+    assets: [],
+  },
+})

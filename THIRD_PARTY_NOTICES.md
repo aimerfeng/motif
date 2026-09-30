@@ -20,7 +20,7 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`d7207e5`](https://github.com/magicuidesign/magicui/tree/d7207e5692d14c00dceafa8488d6d01f197fa0e4)
 - Copyright (c) Magic UI
-- Used by: `animated-beam`, `blur-fade`, `border-beam`, `dock`, `magic-card`, `marquee`, `number-ticker`, `particles`, `retro-grid`, `text-animate`
+- Used by: `animated-beam`, `blur-fade`, `border-beam`, `dock`, `magic-card`, `marquee`, `number-ticker`, `particles`, `retro-grid`, `stats-metric-tiles`, `testimonials-wall`, `text-animate`
 
 ### ibelick/motion-primitives
 
@@ -41,7 +41,7 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`ee98a5d`](https://github.com/nolly-studio/cult-ui/tree/ee98a5dd2e319b63cc2e707dd968d6af04209b7e)
 - Copyright (c) 2023 Jordan-Gilliam
-- Used by: `dynamic-island`
+- Used by: `dynamic-island`, `hero-dithering-orb`
 
 ### shuding/cobe
 
@@ -72,6 +72,283 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - Copyright (c) 2026 Meng To
 - Used by: `bell-field`, `crt`, `energy-orb`, `laser`, `liquid-form`, `ribbon-field`, `stream-convergence`, `typography-vortex`
 - Upstream-declared origins: Neuform export; HTML Pages + Neuform export; ThreeUI original variants + preserved Neuform export; Neuform export (as declared by threeui); the simplex noise is Ashima Arts’ MIT-licensed webgl-noise.; Sable V1
+
+### moumen-soliman/uitripled
+
+- License: MIT
+- Commit: [`05d1837`](https://github.com/moumen-soliman/uitripled/tree/05d18376db775072ed61d0cab8ea184f8f527429)
+- Copyright (c) 2026 uitripled
+- Used by: `changelog-timeline`, `contact-newsletter`, `features-tabbed-showcase`, `hero-glowy-waves`, `posts-list`, `pricing-usage-slider`, `stats-counters`, `team-grid`
+
+### karthikmudunuri/eldoraui
+
+- License: MIT
+- Commit: [`6bb8fd2`](https://github.com/karthikmudunuri/eldoraui/tree/6bb8fd211ecbdfa983f5780bead27d9f3890f20a)
+- Copyright (c) Mudunuri Bhaskara Karthikeya Varma
+- Used by: `cta-ripple-panel`, `features-bento-grid`, `footer-giant-wordmark`, `logos-cloud`, `showcase-integrations`
+
+### shadcn-ui/ui
+
+- License: MIT
+- Commit: [`08ab84f`](https://github.com/shadcn-ui/ui/tree/08ab84f7d1952cc1f36055aa8931213a86b01bbd)
+- Copyright (c) 2023 shadcn
+- Used by: `dashboard-area-chart`, `dashboard-kpi-cards`
+
+### tremorlabs/tremor-blocks
+
+- License: MIT
+- Commit: [`b319e8d`](https://github.com/tremorlabs/tremor-blocks/tree/b319e8d3d3678a4f60f4802f7e85bc1abc52d598)
+- Copyright (c) 2025 Tremor Labs, Inc.
+- Used by: `dashboard-activity-feed`, `dashboard-data-table`, `dashboard-usage-billing`
+
+### launch-ui/launch-ui
+
+- License: MIT
+- Commit: [`b0d4d5b`](https://github.com/launch-ui/launch-ui/tree/b0d4d5bce91d13523450416ce1797109076b2787)
+- Copyright (c) 2024 Mikolaj Dobrucki
+- Used by: `faq-accordion`, `hero-product-glow`, `navbar-floating-menu`, `pricing-three-tier`, `saas-dashboard-landing`
+
+### markmead/hyperui
+
+- License: MIT
+- Commit: [`2b5aebb`](https://github.com/markmead/hyperui/tree/2b5aebbc50d2c9ac89650f51b554f53895b4803c)
+- Copyright (c) Mark Mead
+- Used by: `features-steps`
+
+### gonzalochale/saas-landing-template
+
+- License: MIT
+- Commit: [`7bc36b2`](https://github.com/gonzalochale/saas-landing-template/tree/7bc36b2a7ae905314c6b7fc95e0168ce5bf0db49)
+- Copyright (c) 2024 Gonzalo Chalé
+- Used by: `support-inbox-landing`
+
+### matt765/Tailcast
+
+- License: MIT
+- Commit: [`85843e5`](https://github.com/matt765/Tailcast/tree/85843e5feaa46bdee05e180cf0c76f12408d7557)
+- Copyright (c) 2022-2026 Mateusz Wyrębek
+- Used by: `studio-agency-site`
+
+### RyanFitzgerald/devportfolio
+
+- License: MIT
+- Commit: [`852d650`](https://github.com/RyanFitzgerald/devportfolio/tree/852d650fb0a8cf0c98f874af5a56a0a9b7d7d4b7)
+- Copyright (c) 2025 Ryan Fitzgerald
+- Used by: `devfolio-site`
+
+### bohd4nx/app-landing
+
+- License: MIT
+- Commit: [`8bd0798`](https://github.com/bohd4nx/app-landing/tree/8bd07982803fffc3f247381493de492546287a1f)
+- Copyright (c) 2024-2026 Bohdan (https://bohd4n.dev/)
+- Used by: `mobile-app-landing`
+
+### NextJSTemplates/startup-nextjs
+
+- License: MIT
+- Commit: [`e730b6a`](https://github.com/NextJSTemplates/startup-nextjs/tree/e730b6a99c77b96c835f11347231faa4f4e9f767)
+- Copyright (c) 2023 Next.js Templates
+- Used by: `tidepool-startup-landing`
+
+### mearashadowfax/ScrewFast
+
+- License: MIT
+- Commit: [`aa9da9a`](https://github.com/mearashadowfax/ScrewFast/tree/aa9da9ad278a2bdb005e04ab644a980543797157)
+- Copyright (c) 2024 Emil Gulamov
+- Used by: `ferrant-product-site`
+
+### magicuidesign/portfolio
+
+- License: MIT
+- Commit: [`5ef12e4`](https://github.com/magicuidesign/portfolio/tree/5ef12e4c8bd0de3e22e89c2181ee77a35925ec8b)
+- Copyright (c) 2024 Dillion Verma
+- Used by: `dockfolio-site`
+
+### satnaing/astro-paper
+
+- License: MIT
+- Commit: [`35cfa7f`](https://github.com/satnaing/astro-paper/tree/35cfa7fbe0b897306d27670d3819e55d5205f3dd)
+- Copyright (c) 2023 Sat Naing
+- Used by: `paper-blog-site`
+
+### ekmas/neobrutalism-components
+
+- License: MIT
+- Commit: [`3306a80`](https://github.com/ekmas/neobrutalism-components/tree/3306a802724874a85f93079702b2795370a279d4)
+- Copyright (c) 2023 Samuel Breznjak
+- Used by: `style-neobrutalism`
+
+### TheOrcDev/8bitcn-ui
+
+- License: MIT
+- Commit: [`37031e3`](https://github.com/TheOrcDev/8bitcn-ui/tree/37031e37d6f68aad4b147ce699b70dba22af7841)
+- Copyright (c) 2025 8bitcn
+- Used by: `style-8bit`
+
+### webtui/webtui
+
+- License: MIT
+- Commit: [`c8eaf2c`](https://github.com/webtui/webtui/tree/c8eaf2c10a08e33082602be353ec20affc43770e)
+- Copyright (c) 2025 WebTUI
+- Used by: `style-terminal`
+
+### jdan/98.css
+
+- License: MIT
+- Commit: [`b1d7a90`](https://github.com/jdan/98.css/tree/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a)
+- Copyright 2020 Jordan Scales
+- Used by: `style-classic-desktop`
+
+### saadeghi/daisyui
+
+- License: MIT
+- Commit: [`c51f501`](https://github.com/saadeghi/daisyui/tree/c51f50130ffefb293179e6fce8de7ad3f307e45f)
+- Copyright (c) 2020 Pouya Saadeghi
+- Used by: `style-luxury`, `style-synthwave`
+
+### jnsahaj/tweakcn
+
+- License: Apache-2.0
+- Commit: [`a3b47b3`](https://github.com/jnsahaj/tweakcn/tree/a3b47b37cba97dd637de517aab52c45ec0f83456)
+- tweakcn (https://github.com/jnsahaj/tweakcn)
+- Used by: `style-claymorphism`
+
+### catppuccin/catppuccin
+
+- License: MIT
+- Commit: [`d09787d`](https://github.com/catppuccin/catppuccin/tree/d09787dd98ca6fba08af5ef2ae94a7e09f17daca)
+- Copyright (c) 2021 Catppuccin
+- Used by: `style-soft-pastel`
+
+### rose-pine/rose-pine-theme
+
+- License: MIT
+- Commit: [`781bb84`](https://github.com/rose-pine/rose-pine-theme/tree/781bb844aae0bcec2763b23a4c7d3cc6aede780c)
+- Copyright (c) 2023 Rosé Pine
+- Used by: `style-dusk`
+- Upstream-declared origins: Palette values are those published at https://rosepinetheme.com/palette (linked from the upstream README).
+
+### radix-ui/colors
+
+- License: MIT
+- Commit: [`dbdb854`](https://github.com/radix-ui/colors/tree/dbdb85470547c7d34b9001f48fddb08ded335979)
+- Copyright (c) 2021-2022 Modulz
+- Copyright (c) 2022-Present WorkOS
+- Used by: `style-swiss`
+
+### papercss/papercss
+
+- License: ISC
+- Commit: [`b341c16`](https://github.com/papercss/papercss/tree/b341c1606fca5b3880307d779414f43a5ccbc9b6)
+- Copyright (c) 2017–2018, Rhyne Vlaservich <rhyneav@gmail.com>
+- Used by: `style-hand-drawn`
+
+### edwardtufte/tufte-css
+
+- License: MIT
+- Commit: [`b5d7b7b`](https://github.com/edwardtufte/tufte-css/tree/b5d7b7bbe5ce9c4c50fcfad4f19ee3646cfd7ae1)
+- Copyright (c) 2014 Dave Liepmann
+- Used by: `style-editorial`
+
+### Logging-Studio/RetroUI
+
+- License: MIT
+- Commit: [`d5fbc0e`](https://github.com/Logging-Studio/RetroUI/tree/d5fbc0e823bb66575f5372c3df03ee43be45c91b)
+- Copyright (c) 2024 Arif Hossain
+- Used by: `style-retro-bold`
+
+### GriffinJohnston/ldrs
+
+- License: MIT
+- Commit: [`f759f65`](https://github.com/GriffinJohnston/ldrs/tree/f759f65beb8ab4f4a1f010438072180693ca01ec)
+- Copyright (c) 2022 Griffin Johnston
+- Used by: `loader-dots`, `loader-orbits`
+- Upstream-declared origins: The chase and fading-tick variants follow SpinKit (Copyright (c) 2020 Tobias Ahlin, MIT), tobiasahlin/SpinKit@742a712 spinkit.css.
+
+### tobiasahlin/SpinKit
+
+- License: MIT
+- Commit: [`742a712`](https://github.com/tobiasahlin/SpinKit/tree/742a71277c49b69053b5beb9fad80d720840a2ab)
+- Copyright (c) 2020 Tobias Ahlin
+- Used by: `loader-bars`
+
+### dvtng/react-loading-skeleton
+
+- License: MIT
+- Commit: [`f8b040d`](https://github.com/dvtng/react-loading-skeleton/tree/f8b040dade9cfaad7e3e6fbc50243d79f508f1ca)
+- Copyright 2023 David Tang
+- Used by: `skeleton-shimmer`
+
+### emilkowalski/sonner
+
+- License: MIT
+- Commit: [`8e4662b`](https://github.com/emilkowalski/sonner/tree/8e4662b39255120b62138312058f5d77c0139a5e)
+- Copyright (c) 2023 Emil Kowalski
+- Used by: `toast-stack`
+
+### anl331/goey-toast
+
+- License: MIT
+- Commit: [`be6bd88`](https://github.com/anl331/goey-toast/tree/be6bd884c85d52cca930b09b425ef68858d1b63c)
+- Copyright (c) 2026 anl331
+- Used by: `toast-gooey`
+
+### pacocoursey/cmdk
+
+- License: MIT
+- Commit: [`dd2250e`](https://github.com/pacocoursey/cmdk/tree/dd2250ed608443e8f32bafc5fa2d1d07a3746aa3)
+- Copyright (c) 2022 Paco Coursey
+- Used by: `input-search-command`
+
+### emilkowalski/vaul
+
+- License: MIT
+- Commit: [`3e97aac`](https://github.com/emilkowalski/vaul/tree/3e97aac6a38e4481bade71d7233ed6002e80f9b0)
+- Copyright (c) 2023 Emil Kowalski
+- Used by: `dialog-drawer`
+
+### ibelick/prompt-kit
+
+- License: MIT
+- Commit: [`5a94966`](https://github.com/ibelick/prompt-kit/tree/5a9496635cc0e1bf7679fe2a9e35d9b36b99c08a)
+- Copyright (c) 2025 Julien Thibeaut
+- Used by: `loader-text-shimmer`
+
+### shadcnblocks/kibo
+
+- License: MIT
+- Commit: [`3d63cdb`](https://github.com/shadcnblocks/kibo/tree/3d63cdb15b79d972e3dc38a10997987672f9b263)
+- Copyright (c) 2023 — Present shadcnblocks
+- Used by: `avatar-stack`, `badge-status`, `input-dropzone`, `input-rating`
+
+### xxtomm/spell-ui
+
+- License: MIT
+- Commit: [`fffe96d`](https://github.com/xxtomm/spell-ui/tree/fffe96db7b67b44243bf35815916fdfc58fe5014)
+- Copyright (c) 2025 Spell UI
+- Used by: `button-copy`
+
+### educlopez/smoothui
+
+- License: MIT
+- Commit: [`b6312bc`](https://github.com/educlopez/smoothui/tree/b6312bce2b6f2ed95d8a6e98a592857884f5ea9e)
+- Copyright (c) 2024 Eduardo Calvo
+- Used by: `input-floating-label`, `loader-ai-thinking`, `tabs-animated`, `toggle-spring`, `tooltip-spring`
+- Upstream-declared origins: The shimmering status line follows prompt-kit text-shimmer (Copyright (c) 2025 Julien Thibeaut, MIT).
+
+### iurvish/uselayouts
+
+- License: MIT
+- Commit: [`678a478`](https://github.com/iurvish/uselayouts/tree/678a478e30272d8101cea97bc6147e0df9dcd652)
+- Copyright (c) 2025 Urvish Mali
+- Used by: `menu-dropdown`, `toggle-segmented`
+
+### guilhermerodz/input-otp
+
+- License: MIT
+- Commit: [`cf81845`](https://github.com/guilhermerodz/input-otp/tree/cf81845e59ff43c5885c66b4755085a36f071cc1)
+- Copyright (c) 2024 Guilherme Rodz
+- Used by: `input-otp`
 
 ## Bundled runtimes and fonts
 

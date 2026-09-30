@@ -1,0 +1,83 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-orbits',
+  status: 'published',
+  title: { 'zh-CN': '轨道加载器', en: 'Orbit Loaders' },
+  summary: {
+    'zh-CN': '五种绕圈的等待动画：伸缩圆弧、追逐点、渐隐刻度、轨道双点、脉冲涟漪。共用尺寸、颜色、粗细和速度，支持延迟出现与读屏文案，开启减少动态效果时改为缓慢呼吸。',
+    en: 'Five circular waiting animations: stretching arc, chasing dots, fading ticks, orbiting pair and pulsing ripples. One set of size, color, thickness and speed controls, an optional show delay, a screen-reader label, and a slow breathing fallback for reduced motion.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['loader', 'spinner', 'ring', 'orbit', 'loading', 'accessible'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'loader-orbits.tsx', export: 'LoaderOrbits' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-orbits.tsx', role: 'component' },
+    { path: 'loader-orbits.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'ring',
+      options: [
+        { value: 'ring', label: { 'zh-CN': '伸缩圆弧', en: 'Stretching arc' } },
+        { value: 'chase', label: { 'zh-CN': '追逐点', en: 'Chase' } },
+        { value: 'fade', label: { 'zh-CN': '渐隐刻度', en: 'Fading ticks' } },
+        { value: 'orbit', label: { 'zh-CN': '轨道双点', en: 'Orbit pair' } },
+        { value: 'pulsar', label: { 'zh-CN': '脉冲涟漪', en: 'Pulsar' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'look', label: { 'zh-CN': '尺寸', en: 'Size' }, default: 44, min: 16, max: 96, step: 1, unit: 'px', safe: [20, 72] },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '颜色', en: 'Color' }, default: '#8b5cf6' },
+    { key: 'thickness', type: 'number', group: 'look', label: { 'zh-CN': '粗细', en: 'Thickness' }, hint: { 'zh-CN': '圆弧描边、圆点直径和刻度宽度都随它变化', en: 'Scales the arc stroke, dot diameter and tick width' }, default: 4, min: 2, max: 7, step: 0.5, unit: 'px', safe: [3, 5.5] },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0.4, max: 2.5, step: 0.05, unit: 'x', safe: [0.7, 1.6] },
+    { key: 'delay', type: 'number', group: 'interaction', label: { 'zh-CN': '延迟出现', en: 'Show delay' }, hint: { 'zh-CN': '短请求不显示加载器，避免一闪而过', en: 'Skips the loader for quick requests so it never flashes' }, default: 0, min: 0, max: 1, step: 0.05, unit: 's' },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '读屏文案', en: 'Screen reader label' }, default: 'Loading', maxLength: 32 },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { variant: 'ring', color: '#8b5cf6', thickness: 4, speed: 1 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { variant: 'chase', color: '#fb923c', thickness: 4.5, speed: 1.1 } },
+    { id: 'lagoon', name: { 'zh-CN': '潟湖', en: 'Lagoon' }, values: { variant: 'pulsar', color: '#22d3ee', thickness: 3.5, speed: 0.9 } },
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { variant: 'fade', color: '#e4e4e7', thickness: 4, speed: 1 } },
+    { id: 'twin', name: { 'zh-CN': '双星', en: 'Twin' }, values: { variant: 'orbit', color: '#34d399', thickness: 4, speed: 1.2 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use for short, indeterminate waits (roughly 1-10 s). For known progress use progress-bar or progress-ring; for content-shaped waits prefer skeleton-shimmer.'],
+    rules: [
+      'Keep role="status" and the sr-only label; change the label text to say what is loading.',
+      'Set delay to about 0.2 s for requests that are usually fast so the loader never flashes.',
+      'Do not remove the prefers-reduced-motion block in the CSS: it freezes the shape and breathes the opacity instead.',
+    ],
+  },
+  capture: { zoom: 2.2, posterTime: 0.6, loop: 3 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'ldrs',
+      repo: 'GriffinJohnston/ldrs',
+      sha: 'f759f65beb8ab4f4a1f010438072180693ca01ec',
+      paths: ['src/elements/ring2.scss', 'src/elements/orbit.scss', 'src/elements/pulsar.scss'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2022 Griffin Johnston'],
+      origin: 'The chase and fading-tick variants follow SpinKit (Copyright (c) 2020 Tobias Ahlin, MIT), tobiasahlin/SpinKit@742a712 spinkit.css.',
+    },
+    modifications: [
+      'Removed the Web Component shell; each variant is plain React markup styled by one CSS file driven by size, color, thickness and speed custom properties.',
+      'The ring is an SVG arc whose dash length and offset animate (pathLength 100) with a track underneath; orbit keeps the ldrs left-right pass with depth scaling but replaces its 21 keyframes with four sine-eased ones.',
+      'Pulsar was redrawn as two expanding outlined ripples and a core dot; chase and fading ticks were rebuilt from the SpinKit idea with per-dot custom properties.',
+      'Added a show delay driven by rAF and performance.now, role="status" with an sr-only label, aria-busy, and a reduced-motion state (static pose plus a slow opacity breathe), none of which upstream has.',
+    ],
+    assets: [],
+  },
+})

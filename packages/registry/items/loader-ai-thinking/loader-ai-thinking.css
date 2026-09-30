@@ -1,0 +1,239 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2024 Eduardo Calvo
+ * Source: https://github.com/educlopez/smoothui/blob/b6312bc/packages/smoothui/components/ai-loader/index.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+.mla-root {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: 15px;
+  line-height: 1.3;
+  color: var(--mla-text);
+  min-height: calc(var(--mla-size) * 1.2);
+}
+
+/* ---- 图形 ---- */
+.mla-mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--mla-size);
+  height: var(--mla-size);
+  color: var(--mla-color);
+}
+
+/* spark：四角星缓慢旋转并呼吸，带一点辉光 */
+.mla-spark-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 calc(var(--mla-size) * 0.3) color-mix(in oklab, var(--mla-color) 65%, transparent));
+  animation: mla-spark calc(var(--mla-dur) * 2) ease-in-out infinite;
+}
+@keyframes mla-spark {
+  0% {
+    transform: rotate(0deg) scale(0.78);
+  }
+  50% {
+    transform: rotate(90deg) scale(1);
+  }
+  100% {
+    transform: rotate(180deg) scale(0.78);
+  }
+}
+
+/* orb：渐变小球呼吸，外圈涟漪向外扩散 */
+.mla-orb-core {
+  width: 62%;
+  height: 62%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in oklab, var(--mla-color) 55%, white), var(--mla-color) 60%, color-mix(in oklab, var(--mla-color) 70%, black));
+  box-shadow: 0 0 calc(var(--mla-size) * 0.5) color-mix(in oklab, var(--mla-color) 55%, transparent);
+  animation: mla-orb var(--mla-dur) ease-in-out infinite;
+}
+.mla-orb-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--mla-color);
+  opacity: 0;
+  animation: mla-ring calc(var(--mla-dur) * 1.6) cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+@keyframes mla-orb {
+  0%,
+  100% {
+    transform: scale(0.85);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes mla-ring {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+/* dots：三点依次亮起（smoothui ai-loader 的 dots：错开 cycle/6、缓入缓出） */
+.mla-dots {
+  gap: calc(var(--mla-size) * 0.16);
+  display: inline-flex;
+  width: auto;
+}
+.mla-dot {
+  width: calc(var(--mla-size) * 0.3);
+  height: calc(var(--mla-size) * 0.3);
+  border-radius: 50%;
+  background: currentColor;
+  animation: mla-dot var(--mla-dur) cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+  animation-delay: calc(var(--i) * var(--mla-dur) / 6);
+}
+@keyframes mla-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* bar：一段亮条在细轨里来回扫过 —— 只表示「在动」，不冒充进度 */
+.mla-bar {
+  width: calc(var(--mla-size) * 3.2);
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--mla-color) 20%, transparent);
+}
+.mla-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  border-radius: inherit;
+  background: var(--mla-color);
+  animation: mla-bar calc(var(--mla-dur) * 1.4) cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+}
+@keyframes mla-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(295%);
+  }
+}
+
+/* ---- 文案：渐变流光 + 换句时淡入 ---- */
+.mla-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6em;
+  font-weight: 500;
+}
+.mla-text {
+  color: transparent;
+  background-image: linear-gradient(
+    100deg,
+    var(--mla-text) 0%,
+    var(--mla-text) 34%,
+    color-mix(in oklab, var(--mla-text) 30%, white) 50%,
+    var(--mla-text) 66%,
+    var(--mla-text) 100%
+  );
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: mla-shimmer calc(var(--mla-dur) * 2) linear infinite;
+}
+.mla-in {
+  animation:
+    mla-shimmer calc(var(--mla-dur) * 2) linear infinite,
+    mla-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes mla-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+@keyframes mla-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+.mla-elapsed {
+  font-size: 0.82em;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--mla-text) 55%, transparent);
+}
+
+/* 减少动态效果：图形和文字不再移动，图形整体缓慢呼吸；换句只淡入淡出，不位移。 */
+@media (prefers-reduced-motion: reduce) {
+  .mla-spark-svg,
+  .mla-orb-core,
+  .mla-orb-ring,
+  .mla-bar-fill,
+  .mla-dot {
+    animation: none;
+  }
+  .mla-mark {
+    animation: mla-breathe 2.6s ease-in-out infinite;
+  }
+  .mla-orb-ring {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  .mla-bar-fill {
+    transform: translateX(80%);
+  }
+  .mla-dot:nth-child(1) {
+    opacity: 0.4;
+  }
+  .mla-dot:nth-child(2) {
+    opacity: 0.7;
+  }
+  .mla-text {
+    animation: none;
+    color: var(--mla-text);
+    background: none;
+  }
+  .mla-in {
+    animation: mla-fade 0.3s ease both;
+  }
+}
+@keyframes mla-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes mla-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

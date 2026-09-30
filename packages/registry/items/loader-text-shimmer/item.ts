@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-text-shimmer',
+  status: 'published',
+  title: { 'zh-CN': '文字流光', en: 'Text Shimmer' },
+  summary: {
+    'zh-CN': '一道高光从文字上扫过，用来表示「正在思考」「正在生成」。也可以换成逐字起伏或整体呼吸。适合 AI 对话、步骤日志和任何用一句话说明等待原因的地方。',
+    en: 'A band of light sweeps across the text to say "thinking" or "generating". Switch to a per-letter wave or a whole-line pulse. For AI chats, step logs and any wait that deserves one honest sentence.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['text', 'shimmer', 'ai', 'thinking', 'loading', 'status', 'accessible'],
+  runtime: ['react', 'css'],
+  entry: { file: 'loader-text-shimmer.tsx', export: 'LoaderTextShimmer' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-text-shimmer.tsx', role: 'component' },
+    { path: 'loader-text-shimmer.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'text', type: 'text', group: 'content', label: { 'zh-CN': '文案', en: 'Text' }, default: 'Thinking through your request', maxLength: 48 },
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'sweep',
+      options: [
+        { value: 'sweep', label: { 'zh-CN': '高光扫过', en: 'Sweep' } },
+        { value: 'wave', label: { 'zh-CN': '逐字起伏', en: 'Wave' } },
+        { value: 'pulse', label: { 'zh-CN': '整体呼吸', en: 'Pulse' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'look', label: { 'zh-CN': '字号', en: 'Font size' }, default: 20, min: 12, max: 48, step: 1, unit: 'px', safe: [14, 32] },
+    { key: 'duration', type: 'number', group: 'motion', label: { 'zh-CN': '一轮用时', en: 'Cycle time' }, default: 2.6, min: 1, max: 6, step: 0.1, unit: 's', safe: [1.8, 4] },
+    { key: 'spread', type: 'number', group: 'motion', label: { 'zh-CN': '高光宽度', en: 'Band width' }, hint: { 'zh-CN': '只对「高光扫过」生效；范围与 prompt-kit 一致，限制在 5–45', en: 'Sweep only; clamped to 5-45 like prompt-kit' }, default: 16, min: 5, max: 45, step: 1, safe: [10, 28] },
+    { key: 'baseColor', type: 'color', group: 'look', label: { 'zh-CN': '底色', en: 'Base color' }, default: '#71717a' },
+    { key: 'highlightColor', type: 'color', group: 'look', label: { 'zh-CN': '高光色', en: 'Highlight' }, default: '#fafafa' },
+    { key: 'angle', type: 'number', group: 'look', label: { 'zh-CN': '高光角度', en: 'Angle' }, default: 100, min: 60, max: 120, step: 1, unit: 'deg', safe: [80, 110] },
+    { key: 'delay', type: 'number', group: 'interaction', label: { 'zh-CN': '延迟出现', en: 'Show delay' }, default: 0, min: 0, max: 1, step: 0.05, unit: 's' },
+  ],
+  presets: [
+    { id: 'moonlight', name: { 'zh-CN': '月光', en: 'Moonlight' }, values: { variant: 'sweep', baseColor: '#71717a', highlightColor: '#fafafa', duration: 2.6 } },
+    { id: 'amber', name: { 'zh-CN': '琥珀', en: 'Amber' }, values: { variant: 'sweep', baseColor: '#78716c', highlightColor: '#fbbf24', duration: 2.2, spread: 20, text: 'Refining the draft' } },
+    { id: 'aurora', name: { 'zh-CN': '极光', en: 'Aurora' }, values: { variant: 'wave', baseColor: '#52525b', highlightColor: '#5eead4', duration: 2.4, text: 'Generating ideas' } },
+    { id: 'violet', name: { 'zh-CN': '紫罗兰', en: 'Violet' }, values: { variant: 'pulse', baseColor: '#6d5bb5', highlightColor: '#ddd6fe', duration: 2, text: 'Thinking' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use for one-line status text during an open-ended wait, especially AI reasoning or generation. Pair with a short list of steps when the wait is long.'],
+    rules: [
+      'Keep the text specific ("Comparing pricing tiers") rather than generic ("Loading").',
+      'The sweep highlight needs contrast against the background: choose highlightColor far from baseColor and check on light themes too.',
+      'The visible text is aria-hidden and mirrored in an sr-only live region; keep role="status".',
+    ],
+  },
+  capture: { zoom: 2, posterTime: 1.2, loop: 3 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'prompt-kit',
+      repo: 'ibelick/prompt-kit',
+      sha: '5a9496635cc0e1bf7679fe2a9e35d9b36b99c08a',
+      paths: ['components/prompt-kit/text-shimmer.tsx', 'app/globals.css'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Julien Thibeaut'],
+    },
+    modifications: [
+      'Replaced the Tailwind arbitrary-animation classes and CSS variables of the shadcn theme with a small CSS file driven by explicit base, highlight, angle and duration parameters.',
+      'Kept the upstream idea of a gradient clipped to the text with its position animated, and the spread clamp of 5-45.',
+      'Added the wave (per-letter color and lift) and pulse variants, a show delay, an sr-only live region with the plain text, and a reduced-motion state (steady text with a slow opacity breathe).',
+    ],
+    assets: [],
+  },
+})

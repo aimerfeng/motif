@@ -69,7 +69,10 @@ function MagneticInner({ children, className, style, ...props }: MagneticProps) 
       const dx = event.clientX - (rect.left + rect.width / 2)
       const dy = event.clientY - (rect.top + rect.height / 2)
       const distance = Math.hypot(dx, dy)
-      if (!inside || distance > range) return reset()
+      if (!inside || distance > range) {
+        reset()
+        return
+      }
       // 越靠近中心吸力越强，边缘处平滑过渡到 0。
       const pull = intensity * (1 - distance / range)
       x.set(dx * pull)

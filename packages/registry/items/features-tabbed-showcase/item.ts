@@ -1,0 +1,106 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'features-tabbed-showcase',
+  status: 'published',
+  title: { 'zh-CN': '标签切换功能展示', en: 'Tabbed Feature Showcase' },
+  summary: {
+    'zh-CN': '左边是四条功能，带一条走完就切换的进度线；右边是一块渐变舞台，随之切换成收件箱、回复编辑器、路由匹配和 SLA 报表这些用 JSX 画的产品界面。',
+    en: 'Four features on the left with a progress line that advances on its own; on the right a gradient stage swaps between JSX-drawn product screens: inbox, reply composer, routing and SLA report.',
+  },
+  kind: 'section',
+  category: 'features',
+  tags: ['features', 'tabs', 'showcase', 'autoplay', 'product ui', 'saas'],
+  runtime: ['react', 'css'],
+  entry: { file: 'features-tabbed-showcase.tsx', export: 'FeaturesTabbedShowcase' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'features-tabbed-showcase.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'eyebrow', type: 'text', label: { 'zh-CN': '小标题', en: 'Eyebrow' }, default: 'The support desk', maxLength: 28, group: 'content' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Answer faster without sounding like a bot', maxLength: 64, group: 'content' },
+    {
+      key: 'subline',
+      type: 'text',
+      label: { 'zh-CN': '副标题', en: 'Subline' },
+      default: 'Relay keeps the customer’s history next to the reply box, so agents spend their time on people, not tabs.',
+      maxLength: 150,
+      group: 'content',
+    },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent color' }, default: '#38bdf8', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist 无衬线', en: 'Geist sans' } },
+        { value: 'grotesk', label: { 'zh-CN': 'Space Grotesk', en: 'Space Grotesk' } },
+        { value: 'serif', label: { 'zh-CN': 'Instrument 衬线', en: 'Instrument serif' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '舞台圆角', en: 'Stage radius' }, default: 26, min: 0, max: 40, step: 1, unit: 'px', safe: [10, 32], group: 'look' },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '舞台位置', en: 'Stage side' },
+      default: 'right',
+      options: [
+        { value: 'right', label: { 'zh-CN': '在右', en: 'Right' } },
+        { value: 'left', label: { 'zh-CN': '在左', en: 'Left' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'autoplay', type: 'boolean', label: { 'zh-CN': '自动切换', en: 'Autoplay' }, default: true, group: 'motion' },
+    { key: 'dwell', type: 'number', label: { 'zh-CN': '每项停留', en: 'Time per feature' }, default: 4.5, min: 2, max: 12, step: 0.5, unit: 's', safe: [3, 8], group: 'motion' },
+  ],
+  presets: [
+    { id: 'harbor', name: { 'zh-CN': '港湾', en: 'Harbor' }, values: {} },
+    { id: 'apricot', name: { 'zh-CN': '杏子', en: 'Apricot' }, values: { accent: '#fb923c', font: 'serif', layout: 'left' } },
+    { id: 'daylight', name: { 'zh-CN': '日光', en: 'Daylight' }, values: { tone: 'light', accent: '#4f46e5', radius: 16, font: 'grotesk' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable', 'Space Grotesk Variable', 'Instrument Serif'],
+  guidance: {
+    rules: [
+      'Exactly one feature is open at a time; the open one shows its description and the progress line.',
+      'Every stage panel is JSX or SVG at the same width, so switching never changes the stage height.',
+      'Keep four to five features. Tabs are real buttons (role=tab) and clicking one restarts the autoplay timer from it.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 1, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/feature-cards-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'Reworked the card block into a tabbed showcase with an accordion list and a stage; the upstream layout was kept only as a starting point and the code and copy are new.',
+      'Autoplay and the progress line run on the Motif frame loop (time-driven, paused offscreen, single frame under reduced motion), not on timers.',
+      'framer-motion and lucide replaced by CSS transitions and inline SVG; avatars are gradient initials.',
+    ],
+    assets: [],
+  },
+})

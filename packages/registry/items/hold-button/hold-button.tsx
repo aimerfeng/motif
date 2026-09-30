@@ -46,7 +46,7 @@ export function HoldButton({ className, style, holding, onComplete, ...props }: 
   const timer = useMotionValue(0)
   const [pressed, setPressed] = useState(false)
   const [done, setDone] = useState(false)
-  const active = pressed || !!holding
+  const active = pressed || Boolean(holding)
   const running = useRef<AnimationPlaybackControls | null>(null)
   const needsRelease = useRef(false)
   const completeRef = useRef(onComplete)

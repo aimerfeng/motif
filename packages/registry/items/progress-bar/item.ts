@@ -1,0 +1,71 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'progress-bar',
+  status: 'published',
+  title: { 'zh-CN': '进度条', en: 'Progress Bar' },
+  summary: {
+    'zh-CN': '确定进度的条形指示器：填充用弹簧平滑推进，数字同步滚动，有渐变、条纹、分段和发光四种样式。value 留空就是不确定进度的扫描。带完整的 progressbar 语义。',
+    en: 'A determinate progress bar: the fill glides on a spring with the number in step, in gradient, striped, segmented or glowing styles. Leave value empty for an indeterminate sweep. Full progressbar semantics included.',
+  },
+  kind: 'component',
+  category: 'progress',
+  tags: ['progress', 'bar', 'upload', 'determinate', 'indeterminate', 'accessible'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'progress-bar.tsx', export: 'ProgressBar' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'progress-bar.tsx', role: 'component' },
+    { path: 'progress-bar.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'gradient',
+      options: [
+        { value: 'gradient', label: { 'zh-CN': '渐变', en: 'Gradient' } },
+        { value: 'solid', label: { 'zh-CN': '纯色', en: 'Solid' } },
+        { value: 'striped', label: { 'zh-CN': '条纹', en: 'Striped' } },
+        { value: 'segmented', label: { 'zh-CN': '分段', en: 'Segmented' } },
+        { value: 'glow', label: { 'zh-CN': '发光', en: 'Glow' } },
+      ],
+    },
+    { key: 'thickness', type: 'number', group: 'look', label: { 'zh-CN': '粗细', en: 'Thickness' }, default: 10, min: 4, max: 24, step: 1, unit: 'px', safe: [6, 16] },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '主色', en: 'Color' }, default: '#8b5cf6' },
+    { key: 'colorEnd', type: 'color', group: 'look', label: { 'zh-CN': '渐变终点色', en: 'Gradient end' }, hint: { 'zh-CN': '渐变、条纹、发光样式使用', en: 'Used by gradient, striped and glow' }, default: '#ec4899' },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, hint: { 'zh-CN': '大于等于粗细的一半就是胶囊形', en: 'At or above half the thickness it becomes a pill' }, default: 24, min: 0, max: 24, step: 1, unit: 'px' },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '推进弹簧', en: 'Fill spring' }, hint: { 'zh-CN': '进度条不建议回弹，bounce 保持很小', en: 'Progress should not overshoot; keep bounce small' }, default: { visualDuration: 0.6, bounce: 0 } },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '标签 / 读屏文案', en: 'Label' }, default: 'Uploading', maxLength: 32 },
+    { key: 'showLabel', type: 'boolean', group: 'content', label: { 'zh-CN': '显示标签', en: 'Show label' }, default: true },
+    { key: 'showValue', type: 'boolean', group: 'content', label: { 'zh-CN': '显示百分比', en: 'Show percent' }, default: true },
+  ],
+  presets: [
+    { id: 'orchid', name: { 'zh-CN': '兰花', en: 'Orchid' }, values: { variant: 'gradient', color: '#8b5cf6', colorEnd: '#ec4899', thickness: 10 } },
+    { id: 'lagoon', name: { 'zh-CN': '潟湖', en: 'Lagoon' }, values: { variant: 'glow', color: '#0ea5e9', colorEnd: '#2dd4bf', thickness: 8 } },
+    { id: 'barber', name: { 'zh-CN': '理发店', en: 'Barber' }, values: { variant: 'striped', color: '#f97316', colorEnd: '#fbbf24', thickness: 14 } },
+    { id: 'cells', name: { 'zh-CN': '电量格', en: 'Cells' }, values: { variant: 'segmented', color: '#4ade80', thickness: 12, label: 'Charging' } },
+    { id: 'ink', name: { 'zh-CN': '墨白', en: 'Ink' }, values: { variant: 'solid', color: '#e4e4e7', thickness: 6, radius: 3 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use only when real progress is known (uploads, installs, multi-step flows). Leave value undefined for an honest indeterminate sweep; for unknown waits without a bar use a loader-* item.'],
+    rules: [
+      'Pass value as 0-100; the component clamps and animates it. Do not animate the value yourself.',
+      'Keep the label meaningful: it is the accessible name and the screen-reader text on completion.',
+      'Do not use bounce above 0.3 on a spring: a progress fill that overshoots looks like a bug.',
+    ],
+  },
+  capture: { zoom: 2, posterTime: 4, loop: 10 },
+  provenance: {
+    kind: 'original',
+    modifications: [],
+    assets: [],
+  },
+})

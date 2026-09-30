@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dashboard-usage-billing',
+  status: 'published',
+  title: { 'zh-CN': '用量与账单', en: 'Usage & Billing Panel' },
+  summary: {
+    'zh-CN': '按额度变色的用量进度条、临近上限的提醒、下次账单明细和近六个月花费柱图。适合设置页的「计费」标签。',
+    en: 'Usage meters that change color near the limit, an approaching-limit notice, the next invoice breakdown and a six-month spend chart. Made for a settings page billing tab.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'billing', 'usage', 'progress', 'settings'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'dashboard-usage-billing.tsx', export: 'DashboardUsageBilling' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dashboard-usage-billing.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'split',
+      options: [
+        { value: 'split', label: { 'zh-CN': '左右分栏', en: 'Split' } },
+        { value: 'stacked', label: { 'zh-CN': '上下堆叠', en: 'Stacked' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'density',
+      type: 'select',
+      label: { 'zh-CN': '内边距', en: 'Density' },
+      default: 'comfortable',
+      options: [
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+        { value: 'comfortable', label: { 'zh-CN': '舒适', en: 'Comfortable' } },
+        { value: 'spacious', label: { 'zh-CN': '宽松', en: 'Spacious' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'planName', type: 'text', label: { 'zh-CN': '套餐名', en: 'Plan name' }, default: 'Team', maxLength: 14, group: 'content' },
+    { key: 'seed', type: 'number', label: { 'zh-CN': '数据种子', en: 'Data seed' }, default: 5, min: 1, max: 999, step: 1, group: 'content' },
+    { key: 'warnAt', type: 'number', label: { 'zh-CN': '预警阈值', en: 'Warning threshold' }, hint: { 'zh-CN': '超过后进度条变为琥珀色', en: 'Bars turn amber above it' }, default: 80, min: 50, max: 95, step: 1, unit: '%', group: 'content' },
+    { key: 'showInvoice', type: 'boolean', label: { 'zh-CN': '显示账单', en: 'Show invoice' }, default: true, group: 'content' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', layout: 'split' } },
+    { id: 'verdant', name: { 'zh-CN': '青野', en: 'Verdant' }, values: { accent: '#34d399', layout: 'stacked', planName: 'Scale', seed: 14 } },
+    { id: 'rose', name: { 'zh-CN': '蔷薇', en: 'Rosewater' }, values: { accent: '#f472b6', layout: 'split', density: 'spacious', planName: 'Studio', seed: 27 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.1, posterTime: 3, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: ['src/content/components/billing-usage/billing-usage-01.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Expanded the usage tiles into animated meters with a warning threshold, a limit notice, an invoice breakdown and a six-month spend chart.',
+      'Data is invented and seed-driven; numbers count up and bars grow with motion, with a reduced-motion path.',
+      'Ported to Tailwind v4 theme tokens with an accent variable; icons are inline SVG.',
+    ],
+    assets: [],
+  },
+})

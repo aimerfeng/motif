@@ -1,0 +1,15 @@
+/* 条纹：叠加层向右平移正好一个条纹周期（16px 的 45° 条纹，水平周期为 16√2），无缝循环，只动 transform。 */
+.mpb-stripes {
+  animation: mpb-stripes 0.9s linear infinite;
+}
+@keyframes mpb-stripes {
+  to {
+    transform: translateX(var(--mpb-period));
+  }
+}
+/* 减少动态效果：条纹静止，进度本身仍然更新。 */
+@media (prefers-reduced-motion: reduce) {
+  .mpb-stripes {
+    animation: none;
+  }
+}

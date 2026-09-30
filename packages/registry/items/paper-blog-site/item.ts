@@ -1,0 +1,85 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'paper-blog-site',
+  status: 'published',
+  title: { 'zh-CN': '纸页博客', en: 'Paper Blog' },
+  summary: {
+    'zh-CN': '极简博客首页：排版为先的首屏、带渐变封面的精选文章、可搜索可按标签筛选的文章列表、按年归档和作者简介。读起来像一本小册子，深浅色都舒服。',
+    en: 'A minimal, typography-first blog home: an editorial hero, featured essays with generated covers, a post list you can search and filter by tag, a yearly archive and an author note. Reads like a small printed booklet, in light or dark.',
+  },
+  kind: 'template',
+  category: 'blog',
+  tags: ['blog', 'minimal', 'writing', 'search', 'tags', 'archive', 'dark-mode'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'paper-blog-site.tsx', export: 'PaperBlogSite' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'paper-blog-site.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'name', type: 'text', label: { 'zh-CN': '站点名', en: 'Site name' }, default: 'Small Hours', maxLength: 24, group: 'content' },
+    { key: 'headline', type: 'text', label: { 'zh-CN': '首屏标题文案', en: 'Headline' }, default: 'Notes on building software that stays out of the way.', maxLength: 80, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, hint: { 'zh-CN': '标题链接、标签、焦点环；深色模式下自动提亮', en: 'Title links, tags and focus rings; lightened automatically in dark mode' }, default: '#1c6fb8', group: 'look' },
+    {
+      key: 'fontPair',
+      type: 'select',
+      label: { 'zh-CN': '字体搭配', en: 'Font pairing' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': 'Newsreader 衬线 + Geist', en: 'Newsreader serif + Geist' } },
+        { value: 'mono', label: { 'zh-CN': 'JetBrains Mono 全等宽', en: 'JetBrains Mono throughout' } },
+        { value: 'sans', label: { 'zh-CN': 'Geist 无衬线', en: 'Geist sans' } },
+        { value: 'literary', label: { 'zh-CN': 'Fraunces + Newsreader', en: 'Fraunces + Newsreader' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 8, min: 0, max: 20, step: 1, unit: 'px', safe: [2, 14], group: 'look' },
+    { key: 'dark', type: 'boolean', label: { 'zh-CN': '深色模式', en: 'Dark mode' }, hint: { 'zh-CN': '页眉的月亮按钮也能切换', en: 'The header moon button toggles it too' }, default: false, group: 'look' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'ink-blue', name: { 'zh-CN': '蓝黑墨水', en: 'Ink Blue' }, values: { accent: '#1c6fb8', fontPair: 'serif', radius: 8, dark: false } },
+    { id: 'terminal-ember', name: { 'zh-CN': '终端余烬', en: 'Terminal Ember' }, values: { accent: '#ff6b01', fontPair: 'mono', radius: 4, dark: true } },
+    { id: 'salon', name: { 'zh-CN': '沙龙', en: 'Salon' }, values: { accent: '#a3324f', fontPair: 'literary', radius: 2, dark: false } },
+    { id: 'quiet-sans', name: { 'zh-CN': '静音无衬线', en: 'Quiet Sans' }, values: { accent: '#0f8b6d', fontPair: 'sans', radius: 14, dark: true } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Newsreader Variable', 'Geist Variable', 'JetBrains Mono Variable', 'Fraunces Variable', 'Geist Mono Variable'],
+  guidance: {
+    use: [
+      'A blog or writing home page for an individual or a small publication: hero, featured posts, filterable recent posts, archive and author note.',
+      'Adapt it by editing POSTS, TAGS and the author copy. Posts are plain data; wire them to a CMS or MDX collection without changing markup.',
+    ],
+    rules: [
+      'Reading comes first: content column is 48rem max, body text is at least 16px with 1.6+ line-height, and the page has no imagery except generated covers on featured posts.',
+      'One accent color. Titles are accent-colored links with a dashed underline on hover; tags, focus rings and the active nav item use the same accent. Never use two accents.',
+      'The accent text color (--accent-text) is derived per theme so links keep contrast on both backgrounds; use it for text and use --accent for fills.',
+      'Dates and read time are shown in the UI font at 12px; headings use the head font at weight 500–600, never bold 800.',
+      'Search and tag filters are client-side and must stay keyboard operable (aria-pressed on tag buttons, a labelled search input).',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'astro-paper',
+      repo: 'satnaing/astro-paper',
+      sha: '35cfa7fbe0b897306d27670d3819e55d5205f3dd',
+      paths: ['src/pages/index.astro', 'src/components/Header.astro', 'src/components/Card.astro', 'src/components/Footer.astro', 'src/components/Socials.astro', 'src/components/Tag.astro', 'src/pages/archives/index.astro'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 Sat Naing'],
+    },
+    modifications: [
+      'Astro pages and components rewritten as one React 19 + Tailwind v4 component; the header, hero, featured, recent posts, archive and footer structure, the dashed-underline title links and the accent-driven theme follow the upstream.',
+      'Demo posts, author and copy are invented; the upstream sample content, screenshots and OG images are not used.',
+      'Added client-side search, tag filtering, generated SVG covers for featured posts and an author block; the theme toggle is built into the header.',
+      'Theming is driven by accent, font pairing (upstream is monospace only), radius and a dark flag via CSS variables.',
+    ],
+    assets: [],
+  },
+})

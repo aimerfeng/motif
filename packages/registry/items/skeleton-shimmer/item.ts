@@ -1,0 +1,92 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'skeleton-shimmer',
+  status: 'published',
+  title: { 'zh-CN': '骨架屏流光', en: 'Skeleton Shimmer' },
+  summary: {
+    'zh-CN': '和真实内容同形的骨架屏：一道高光扫过整张卡片，加载完成后骨架淡出、内容带着模糊淡入，两层叠在同一格里，高度不会跳动。适合资料卡、列表和文章。',
+    en: 'A skeleton that matches the real content: one highlight sweeps across the whole card, then the skeleton fades out as content blurs in. Both layers share one grid cell so nothing jumps. For profile cards, lists and articles.',
+  },
+  kind: 'component',
+  category: 'skeleton',
+  tags: ['skeleton', 'shimmer', 'loading', 'placeholder', 'card', 'cls', 'accessible'],
+  runtime: ['react', 'css'],
+  entry: { file: 'skeleton-shimmer.tsx', export: 'SkeletonShimmer' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'skeleton-shimmer.tsx', role: 'component' },
+    { path: 'skeleton-shimmer.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'animation',
+      type: 'select',
+      group: 'motion',
+      label: { 'zh-CN': '动画', en: 'Animation' },
+      default: 'shimmer',
+      options: [
+        { value: 'shimmer', label: { 'zh-CN': '流光', en: 'Shimmer' } },
+        { value: 'pulse', label: { 'zh-CN': '脉冲', en: 'Pulse' } },
+        { value: 'breathe', label: { 'zh-CN': '呼吸', en: 'Breathe' } },
+      ],
+    },
+    { key: 'duration', type: 'number', group: 'motion', label: { 'zh-CN': '一轮用时', en: 'Cycle time' }, default: 1.6, min: 0.8, max: 3.5, step: 0.1, unit: 's', safe: [1.2, 2.4] },
+    { key: 'stagger', type: 'number', group: 'motion', label: { 'zh-CN': '相邻块错开', en: 'Stagger' }, hint: { 'zh-CN': '相邻骨架块的动画错开多久，让高光像扫过整张卡片', en: 'Delay between neighboring blocks so the light sweeps across the card' }, default: 0.12, min: 0, max: 0.4, step: 0.01, unit: 's', safe: [0.05, 0.2] },
+    { key: 'direction', type: 'select', group: 'motion', label: { 'zh-CN': '方向', en: 'Direction' }, default: 'ltr', options: [{ value: 'ltr', label: { 'zh-CN': '从左到右', en: 'Left to right' } }, { value: 'rtl', label: { 'zh-CN': '从右到左', en: 'Right to left' } }] },
+    { key: 'baseColor', type: 'color', group: 'look', label: { 'zh-CN': '底色', en: 'Base color' }, hint: { 'zh-CN': '带透明度的灰色，深浅主题都能用', en: 'A translucent grey that works on light and dark themes' }, default: '#94949e2e' },
+    { key: 'highlightColor', type: 'color', group: 'look', label: { 'zh-CN': '高光色', en: 'Highlight' }, default: '#a1a1ab59' },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '默认圆角', en: 'Corner radius' }, default: 8, min: 0, max: 20, step: 1, unit: 'px', safe: [4, 14] },
+    {
+      key: 'reveal',
+      type: 'select',
+      group: 'motion',
+      label: { 'zh-CN': '内容出现', en: 'Reveal' },
+      default: 'blur',
+      options: [
+        { value: 'blur', label: { 'zh-CN': '模糊淡入', en: 'Blur in' } },
+        { value: 'rise', label: { 'zh-CN': '上浮淡入', en: 'Rise in' } },
+        { value: 'fade', label: { 'zh-CN': '淡入', en: 'Fade' } },
+      ],
+    },
+  ],
+  presets: [
+    { id: 'slate', name: { 'zh-CN': '板岩', en: 'Slate' }, values: { animation: 'shimmer', duration: 1.6, baseColor: '#94949e2e', highlightColor: '#a1a1ab59', reveal: 'blur' } },
+    { id: 'frost', name: { 'zh-CN': '霜白', en: 'Frost' }, values: { animation: 'shimmer', duration: 1.3, baseColor: '#93c5fd1f', highlightColor: '#bfdbfe59', radius: 10, stagger: 0.16, reveal: 'rise' } },
+    { id: 'dusk', name: { 'zh-CN': '暮色', en: 'Dusk' }, values: { animation: 'shimmer', duration: 2, baseColor: '#a78bfa1f', highlightColor: '#c4b5fd47', direction: 'rtl', reveal: 'fade' } },
+    { id: 'quiet', name: { 'zh-CN': '安静', en: 'Quiet' }, values: { animation: 'breathe', duration: 1.8, baseColor: '#94949e2e', radius: 6, reveal: 'fade' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use for content-shaped waits (cards, lists, articles) where the layout is known. For unknown or tiny waits use a loader-* item instead.'],
+    rules: [
+      'Build the skeleton with the same paddings and sizes as the real content; the stacked-grid layout hides small differences but not large ones.',
+      'Leave loading true until the data is really there; do not flash the skeleton for requests under about 200 ms.',
+      'Skeleton blocks are aria-hidden; keep the sr-only status label and aria-busy on the container.',
+      'Keep base and highlight translucent greys so the skeleton works on both light and dark surfaces.',
+    ],
+  },
+  capture: { zoom: 1.6, posterTime: 1.1, loop: 9 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'react-loading-skeleton',
+      repo: 'dvtng/react-loading-skeleton',
+      sha: 'f8b040dade9cfaad7e3e6fbc50243d79f508f1ca',
+      paths: ['src/skeleton.css', 'src/Skeleton.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright 2023 David Tang'],
+    },
+    modifications: [
+      'Kept the ::after gradient that slides with translateX and the 1.5 s ease-in-out feel; the gradient is now transparent to highlight to transparent over a translucent base so it works on any surface.',
+      'Blocks take an index and stagger their highlight by it, so a whole card shimmers as one sweep.',
+      'Added a SkeletonShimmer container that stacks the skeleton and the real content in one grid cell and cross-fades them with an optional blur or rise, an inert content layer while loading, aria-busy and an sr-only status label.',
+      'Replaced the upstream text-measuring wrapper (which needs a generic React component tree) with explicit Skeleton blocks the caller sizes to match the content; added pulse and breathe modes, a direction option and a reduced-motion state (no sweep, slow opacity breathe, plain fades).',
+    ],
+    assets: [],
+  },
+})

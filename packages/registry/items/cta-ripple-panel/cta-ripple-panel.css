@@ -1,0 +1,28 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Mudunuri Bhaskara Karthikeya Varma
+ * Source: https://github.com/karthikmudunuri/eldoraui/blob/6bb8fd2/apps/www/registry/blocks/cta-03/components/ripple-bg.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+@keyframes crp-ripple {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: var(--crp-o);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.88);
+    opacity: calc(var(--crp-o) * 0.55);
+  }
+}
+
+.crp-ring {
+  animation: crp-ripple var(--crp-dur) ease-in-out infinite;
+}
+
+/* 减少动态效果时圆环静止。 */
+@media (prefers-reduced-motion: reduce) {
+  .crp-ring {
+    animation: none;
+  }
+}

@@ -1,0 +1,95 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'contact-newsletter',
+  status: 'published',
+  title: { 'zh-CN': '联系表单 / 订阅框', en: 'Contact & Newsletter' },
+  summary: {
+    'zh-CN': '两栏联系区（信息 + 表单）与居中的订阅框二选一，表单本地可提交并显示成功状态，背景光斑缓慢漂移。',
+    en: 'A two-column contact section with details and a working form, or a centered newsletter signup. The form submits locally with a success state and soft glows drift behind.',
+  },
+  kind: 'section',
+  category: 'contact',
+  tags: ['contact', 'form', 'newsletter', 'subscribe', 'signup'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'contact-newsletter.tsx', export: 'ContactNewsletter' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'contact-newsletter.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'variant',
+      type: 'select',
+      label: { 'zh-CN': '类型', en: 'Variant' },
+      default: 'contact',
+      options: [
+        { value: 'contact', label: { 'zh-CN': '联系表单', en: 'Contact form' } },
+        { value: 'newsletter', label: { 'zh-CN': '订阅框', en: 'Newsletter' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'density',
+      type: 'select',
+      label: { 'zh-CN': '上下留白', en: 'Vertical spacing' },
+      default: 'comfortable',
+      options: [
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+        { value: 'comfortable', label: { 'zh-CN': '舒适', en: 'Comfortable' } },
+        { value: 'spacious', label: { 'zh-CN': '宽松', en: 'Spacious' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, hint: { 'zh-CN': '留空则使用当前类型的默认文案', en: 'Leave empty for the variant’s default copy' }, default: '', maxLength: 48, group: 'content' },
+    { key: 'subheading', type: 'text', label: { 'zh-CN': '副标题', en: 'Subheading' }, default: '', maxLength: 160, group: 'content' },
+    { key: 'buttonLabel', type: 'text', label: { 'zh-CN': '按钮文案', en: 'Button label' }, default: '', maxLength: 20, group: 'content' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场与光斑动画', en: 'Entrance & glow motion' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', font: 'serif', variant: 'contact' } },
+    { id: 'dispatch', name: { 'zh-CN': '来信', en: 'Dispatch' }, values: { accent: '#f472b6', font: 'serif', variant: 'newsletter' } },
+    { id: 'signal', name: { 'zh-CN': '信号', en: 'Signal' }, values: { accent: '#34d399', font: 'grotesk', variant: 'contact', density: 'compact' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use as the closing contact section of a landing page, or the newsletter variant above a footer. Wire the form by replacing the submit handler; it never sends data on its own.'],
+    rules: ['Keep the form to four fields at most. The button text color is derived from the accent luminance, so any accent works.'],
+  },
+  capture: { zoom: 1.1, posterTime: 3, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/contact-form-section.tsx', 'packages/components/react-shadcn/src/components/sections/newsletter-signup-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'Merged the contact form and newsletter blocks into one section with a variant switch.',
+      'Added a local submit flow with sending and success states, topic chips, an accent-aware button color and drifting glow blobs.',
+      'framer-motion replaced by motion/react; icons are inline SVG; copy is invented; reduced motion stops the drift.',
+    ],
+    assets: [],
+  },
+})

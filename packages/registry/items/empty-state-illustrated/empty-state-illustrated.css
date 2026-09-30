@@ -1,0 +1,87 @@
+/* 插画的动效：只在带 .mes-animated 的 svg 里生效（float 参数打开时）；全部只动 transform 和 opacity。 */
+.mes-animated .mes-float,
+.mes-animated .mes-scan,
+.mes-animated .mes-twinkle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.mes-animated .mes-float {
+  animation: mes-float 4.2s ease-in-out infinite alternate;
+}
+@keyframes mes-float {
+  from {
+    transform: translateY(2px);
+  }
+  to {
+    transform: translateY(-7px);
+  }
+}
+
+/* 放大镜像在纸上来回找东西 */
+.mes-animated .mes-scan {
+  transform-origin: 30% 40%;
+  animation: mes-scan 3.8s ease-in-out infinite alternate;
+}
+@keyframes mes-scan {
+  from {
+    transform: translate(-9px, 3px) rotate(-5deg);
+  }
+  to {
+    transform: translate(5px, -4px) rotate(4deg);
+  }
+}
+
+.mes-animated .mes-twinkle {
+  animation: mes-twinkle 2.6s ease-in-out infinite alternate;
+}
+@keyframes mes-twinkle {
+  from {
+    opacity: 0.15;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 离线：斜线从左上划到右下，停一会儿，再淡出重来 */
+.mes-animated .mes-slash,
+.mes-animated .mes-slash-halo {
+  stroke-dasharray: 140;
+  animation: mes-slash 5s ease-in-out infinite;
+}
+@keyframes mes-slash {
+  0% {
+    stroke-dashoffset: 140;
+    opacity: 1;
+  }
+  22%,
+  86% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* 减少动态效果：插画完全静止。 */
+@media (prefers-reduced-motion: reduce) {
+  .mes-animated .mes-float,
+  .mes-animated .mes-scan,
+  .mes-animated .mes-twinkle,
+  .mes-animated .mes-slash,
+  .mes-animated .mes-slash-halo {
+    animation: none;
+  }
+  .mes-animated .mes-twinkle {
+    opacity: 0.7;
+  }
+  .mes-animated .mes-slash,
+  .mes-animated .mes-slash-halo {
+    stroke-dasharray: none;
+  }
+}

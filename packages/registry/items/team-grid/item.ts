@@ -1,0 +1,96 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'team-grid',
+  status: 'published',
+  title: { 'zh-CN': '团队成员', en: 'Team Grid' },
+  summary: {
+    'zh-CN': '首字母渐变头像加姓名、职位和一句话简介，卡片、居中、名册三种排法。没有任何位图素材。',
+    en: 'Gradient initial avatars with name, role and a one-line bio in card, centered or roster layouts. No bitmap assets anywhere.',
+  },
+  kind: 'section',
+  category: 'team',
+  tags: ['team', 'about', 'people', 'avatars'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'team-grid.tsx', export: 'TeamGrid' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'team-grid.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'cards',
+      options: [
+        { value: 'cards', label: { 'zh-CN': '卡片', en: 'Cards' } },
+        { value: 'centered', label: { 'zh-CN': '居中头像', en: 'Centered' } },
+        { value: 'roster', label: { 'zh-CN': '名册', en: 'Roster' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'columns', type: 'number', label: { 'zh-CN': '列数', en: 'Columns' }, hint: { 'zh-CN': '名册版式忽略此项', en: 'Ignored by the roster layout' }, default: 4, min: 2, max: 4, step: 1, group: 'layout' },
+    { key: 'members', type: 'number', label: { 'zh-CN': '成员数', en: 'Members' }, default: 8, min: 2, max: 8, step: 1, safe: [4, 8], group: 'content' },
+    {
+      key: 'avatarShape',
+      type: 'select',
+      label: { 'zh-CN': '头像形状', en: 'Avatar shape' },
+      default: 'squircle',
+      options: [
+        { value: 'squircle', label: { 'zh-CN': '圆角方形', en: 'Squircle' } },
+        { value: 'circle', label: { 'zh-CN': '圆形', en: 'Circle' } },
+      ],
+      group: 'look',
+    },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'The people behind Halcyon', maxLength: 40, group: 'content' },
+    { key: 'subheading', type: 'text', label: { 'zh-CN': '副标题', en: 'Subheading' }, default: 'Forty-one people across nine time zones, shipping small and often.', maxLength: 90, group: 'content' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', font: 'serif', layout: 'cards' } },
+    { id: 'gathering', name: { 'zh-CN': '聚会', en: 'Gathering' }, values: { accent: '#f472b6', font: 'sans', layout: 'centered', avatarShape: 'circle', columns: 4 } },
+    { id: 'register', name: { 'zh-CN': '名册', en: 'Register' }, values: { accent: '#34d399', font: 'grotesk', layout: 'roster', members: 6 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use on an About or Company page. Replace the TEAM array with real names, roles and short bios; avatars are generated from initials.'],
+    rules: ['Do not add photos. Keep bios to one or two lines so cards stay the same height.'],
+  },
+  capture: { scroll: true, posterTime: 1.6, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/team-section-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'Rewrote the member cards around generated initial avatars (hash-based gradients with a highlight) instead of image slots.',
+      'Added centered and roster layouts, an avatar-shape switch and a heading-font select; the social icons are two inline SVGs.',
+      'framer-motion replaced by motion/react with a reduced-motion path; all people and copy are invented.',
+    ],
+    assets: [],
+  },
+})

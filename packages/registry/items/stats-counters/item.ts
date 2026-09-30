@@ -1,0 +1,97 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'stats-counters',
+  status: 'published',
+  title: { 'zh-CN': '数据统计条', en: 'Stats Counters' },
+  summary: {
+    'zh-CN': '四个关键数字自零滚动到目标值：横排分隔、带迷你柱图的卡片、左文右环形进度三种版式，标题字体可选衬线。',
+    en: 'Four headline numbers that roll up from zero, as a divided row, cards with mini bars, or a text-plus-rings split. Pair with an editorial serif for a calmer feel.',
+  },
+  kind: 'section',
+  category: 'stats',
+  tags: ['stats', 'metrics', 'counter', 'numbers', 'social proof'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'stats-counters.tsx', export: 'StatsCounters' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'stats-counters.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '数字与标题字体', en: 'Number & heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'variant',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'row',
+      options: [
+        { value: 'row', label: { 'zh-CN': '横排分隔', en: 'Divided row' } },
+        { value: 'tiles', label: { 'zh-CN': '卡片', en: 'Tiles' } },
+        { value: 'split', label: { 'zh-CN': '左文右环', en: 'Split with rings' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'density',
+      type: 'select',
+      label: { 'zh-CN': '上下留白', en: 'Vertical spacing' },
+      default: 'comfortable',
+      options: [
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+        { value: 'comfortable', label: { 'zh-CN': '舒适', en: 'Comfortable' } },
+        { value: 'spacious', label: { 'zh-CN': '宽松', en: 'Spacious' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Numbers we’re quietly proud of', maxLength: 48, group: 'content' },
+    { key: 'subheading', type: 'text', label: { 'zh-CN': '副标题', en: 'Subheading' }, default: 'Measured across every workspace on Halcyon, refreshed each morning.', maxLength: 100, group: 'content' },
+    { key: 'duration', type: 'number', label: { 'zh-CN': '滚动时长', en: 'Count duration' }, default: 1.8, min: 0.6, max: 4, step: 0.1, unit: 's', safe: [1, 3], group: 'motion' },
+    { key: 'showTrend', type: 'boolean', label: { 'zh-CN': '显示趋势', en: 'Show trends' }, default: true, group: 'content' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', font: 'serif', variant: 'row' } },
+    { id: 'ledger', name: { 'zh-CN': '账本', en: 'Ledger' }, values: { accent: '#34d399', font: 'grotesk', variant: 'tiles' } },
+    { id: 'halo', name: { 'zh-CN': '光环', en: 'Halo' }, values: { accent: '#f472b6', font: 'sans', variant: 'split', duration: 2.4 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use under a hero or above pricing as social proof. Replace the STATS array with real, verifiable numbers.'],
+    rules: ['Keep it to four figures with short labels. Numbers use tabular figures so they never jitter while counting.'],
+  },
+  capture: { zoom: 1.1, posterTime: 3.5, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/stats-counter-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'Rebuilt the counter block with motion animate() count-ups, invented metrics with formatting and trend chips.',
+      'Added tiles and ring layouts with hand-drawn SVG progress rings and mini bars, plus a heading/number font select.',
+      'framer-motion replaced by motion/react; the final values are shown immediately when reduced motion is on.',
+    ],
+    assets: [],
+  },
+})

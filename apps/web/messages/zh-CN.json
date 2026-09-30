@@ -36,7 +36,9 @@
     "sourcesTitle": "来自这些开源项目",
     "sourcesBody": "整合的代码保留原来的许可证和版权声明，固定在审阅过的提交上。感谢这些作者。",
     "footer": "Motif 是开源项目（MIT）。条目数据生成于 {date}。",
-    "github": "在 GitHub 上查看"
+    "github": "在 GitHub 上查看",
+    "levelsTitle": "从整站到一个按钮",
+    "levelsLead": "整站模板、设计风格、页面区块、功能组件、视觉效果：大到一整个网站，小到一个加载动画，都能预览、调参、下载，或者复制 Skill。"
   },
   "market": {
     "title": "市场",

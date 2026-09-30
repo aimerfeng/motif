@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dashboard-kpi-cards',
+  status: 'published',
+  title: { 'zh-CN': '指标卡（带迷你图）', en: 'KPI Cards with Sparklines' },
+  summary: {
+    'zh-CN': '四张指标卡：数字滚动、迷你曲线自左向右描出，涨跌用语义色标注。适合 SaaS 后台与数据看板的顶部概览。',
+    en: 'Four metric cards with rolling numbers, sparklines that draw in from the left and semantic up/down deltas. Built for the top of a SaaS or analytics dashboard.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'kpi', 'sparkline', 'metrics', 'svg chart'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'dashboard-kpi-cards.tsx', export: 'DashboardKpiCards' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dashboard-kpi-cards.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'chart',
+      type: 'select',
+      label: { 'zh-CN': '迷你图类型', en: 'Chart type' },
+      default: 'area',
+      options: [
+        { value: 'area', label: { 'zh-CN': '面积', en: 'Area' } },
+        { value: 'line', label: { 'zh-CN': '折线', en: 'Line' } },
+        { value: 'bars', label: { 'zh-CN': '柱状', en: 'Bars' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'density',
+      type: 'select',
+      label: { 'zh-CN': '密度', en: 'Density' },
+      default: 'comfortable',
+      options: [
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+        { value: 'comfortable', label: { 'zh-CN': '舒适', en: 'Comfortable' } },
+        { value: 'spacious', label: { 'zh-CN': '宽松', en: 'Spacious' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'seed', type: 'number', label: { 'zh-CN': '数据种子', en: 'Data seed' }, hint: { 'zh-CN': '同一个种子生成同一组数据', en: 'The same seed always yields the same data' }, default: 7, min: 1, max: 999, step: 1, group: 'content' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Overview', maxLength: 28, group: 'content' },
+    { key: 'period', type: 'text', label: { 'zh-CN': '时间范围文案', en: 'Period label' }, default: 'Last 30 days', maxLength: 22, group: 'content' },
+    { key: 'showDelta', type: 'boolean', label: { 'zh-CN': '显示涨跌幅', en: 'Show deltas' }, default: true, group: 'content' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', chart: 'area', density: 'comfortable' } },
+    { id: 'verdant', name: { 'zh-CN': '青野', en: 'Verdant' }, values: { accent: '#34d399', chart: 'line', density: 'comfortable', seed: 21 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { accent: '#fb923c', chart: 'bars', density: 'spacious', seed: 42 } },
+    { id: 'rose', name: { 'zh-CN': '蔷薇', en: 'Rosewater' }, values: { accent: '#f472b6', chart: 'area', density: 'compact', seed: 3 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use at the top of an analytics or admin page as the KPI strip, above charts and tables.'],
+    rules: ['Charts are hand-drawn SVG paths; do not add a chart library. Keep the accent to one hue and use emerald/rose only for deltas.'],
+  },
+  capture: { zoom: 1.15, posterTime: 3, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'shadcn-ui',
+      repo: 'shadcn-ui/ui',
+      sha: '08ab84f7d1952cc1f36055aa8931213a86b01bbd',
+      paths: ['apps/v4/registry/new-york-v4/blocks/dashboard-01/components/section-cards.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 shadcn'],
+    },
+    modifications: [
+      'Rebuilt the card row with an invented, seed-driven dataset and tabular numbers instead of static strings.',
+      'Sparklines are hand-drawn SVG paths (area, line or bars) revealed with motion; icons are inline SVG.',
+      'Added accent, density and chart-type params, count-up numbers and a reduced-motion path.',
+    ],
+    assets: [],
+  },
+})

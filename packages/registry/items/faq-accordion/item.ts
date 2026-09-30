@@ -1,0 +1,106 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'faq-accordion',
+  status: 'published',
+  title: { 'zh-CN': '常见问题手风琴', en: 'FAQ Accordion' },
+  summary: {
+    'zh-CN': '左边标题和一张「找真人聊聊」小卡，右边六个问答，展开时高度平滑过渡、加号转成叉号并点亮主色。键盘可用，支持单开或多开。',
+    en: 'Heading and a small “talk to a person” card on the left, six questions on the right that open with a smooth height transition while the plus turns into an accent-filled cross. Keyboard-friendly, single or multi open.',
+  },
+  kind: 'section',
+  category: 'faq',
+  tags: ['faq', 'accordion', 'questions', 'support', 'disclosure'],
+  runtime: ['react', 'css'],
+  entry: { file: 'faq-accordion.tsx', export: 'FaqAccordion' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'faq-accordion.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Questions teams ask before they switch', maxLength: 60, group: 'content' },
+    {
+      key: 'subline',
+      type: 'text',
+      label: { 'zh-CN': '副标题', en: 'Subline' },
+      default: 'The short answers. For anything else, a person will reply.',
+      maxLength: 110,
+      group: 'content',
+    },
+    { key: 'contact', type: 'text', label: { 'zh-CN': '联系卡文案', en: 'Contact card text' }, default: 'Still unsure? Ask the team', maxLength: 36, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent color' }, default: '#34d399', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist 无衬线', en: 'Geist sans' } },
+        { value: 'grotesk', label: { 'zh-CN': 'Space Grotesk', en: 'Space Grotesk' } },
+        { value: 'serif', label: { 'zh-CN': 'Instrument 衬线', en: 'Instrument serif' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '联系卡圆角', en: 'Card radius' }, default: 18, min: 0, max: 30, step: 1, unit: 'px', safe: [6, 26], group: 'look' },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'split',
+      options: [
+        { value: 'split', label: { 'zh-CN': '左标题右问答', en: 'Split' } },
+        { value: 'centered', label: { 'zh-CN': '居中单列', en: 'Centered' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'allowMultiple', type: 'boolean', label: { 'zh-CN': '允许多个同时展开', en: 'Allow several open' }, default: false, group: 'behavior' },
+    { key: 'firstOpen', type: 'boolean', label: { 'zh-CN': '默认展开第一项', en: 'First item open' }, default: true, group: 'behavior' },
+  ],
+  presets: [
+    { id: 'mint', name: { 'zh-CN': '薄荷', en: 'Mint' }, values: {} },
+    { id: 'plum', name: { 'zh-CN': '李子', en: 'Plum' }, values: { accent: '#c084fc', font: 'grotesk', layout: 'centered' } },
+    { id: 'notebook', name: { 'zh-CN': '笔记本', en: 'Notebook' }, values: { tone: 'light', accent: '#d9480f', font: 'serif', allowMultiple: true } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable', 'Space Grotesk Variable', 'Instrument Serif'],
+  guidance: {
+    rules: [
+      'Questions are written the way customers ask them, answers start with the answer (Yes, No, or the number) in one to three sentences.',
+      'Use six to eight questions ordered by how often they are asked; put pricing and data questions first.',
+      'Each trigger is a real button with aria-expanded and the panel is a labelled region; keep that if you restyle.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'launch-ui',
+      repo: 'launch-ui/launch-ui',
+      sha: 'b0d4d5bce91d13523450416ce1797109076b2787',
+      paths: ['components/sections/faq/default.tsx', 'components/ui/accordion.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Mikolaj Dobrucki'],
+    },
+    modifications: [
+      'Replaced the Radix accordion with a native button + grid-template-rows disclosure that keeps aria-expanded, aria-controls and region roles.',
+      'New questions and answers, a contact card with gradient-initial avatars, a split and a centered layout, single or multi open, tone, accent and font params.',
+      'Only opacity and grid rows transition; lucide icons replaced by inline SVG.',
+    ],
+    assets: [],
+  },
+})

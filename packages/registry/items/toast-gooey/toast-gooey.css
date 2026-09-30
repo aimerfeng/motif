@@ -1,0 +1,29 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 anl331
+ * Source: https://github.com/anl331/goey-toast/blob/be6bd88/src/components/GooeyToast.css
+ * Modified by Motif; see the item's provenance.
+ */
+.mtg-spin {
+  animation: mtg-rotate 0.9s linear infinite;
+}
+@keyframes mtg-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* 减少动态效果：加载图标不再旋转，改为缓慢呼吸。 */
+@media (prefers-reduced-motion: reduce) {
+  .mtg-spin {
+    animation: mtg-breathe 2.4s ease-in-out infinite;
+  }
+}
+@keyframes mtg-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

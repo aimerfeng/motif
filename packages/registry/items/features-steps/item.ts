@@ -1,0 +1,87 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'features-steps',
+  status: 'published',
+  title: { 'zh-CN': '使用步骤', en: 'How It Works Steps' },
+  summary: {
+    'zh-CN': '三或四步的「如何使用」：横排、产品导览、左右交错三种版式，当前步骤自动推进并配有自绘的示意窗。',
+    en: 'A three or four step how-it-works section in horizontal, product-tour or zigzag layouts. The active step advances on its own, each with a hand-drawn preview window.',
+  },
+  kind: 'section',
+  category: 'features',
+  tags: ['steps', 'how it works', 'onboarding', 'process', 'tour'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'features-steps.tsx', export: 'FeaturesSteps' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'features-steps.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'tour',
+      options: [
+        { value: 'tour', label: { 'zh-CN': '产品导览', en: 'Product tour' } },
+        { value: 'horizontal', label: { 'zh-CN': '横排', en: 'Horizontal' } },
+        { value: 'zigzag', label: { 'zh-CN': '左右交错', en: 'Zigzag' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'steps', type: 'number', label: { 'zh-CN': '步骤数', en: 'Steps' }, default: 4, min: 3, max: 4, step: 1, group: 'content' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'From raw data to a shared dashboard in an afternoon', maxLength: 72, group: 'content' },
+    { key: 'subheading', type: 'text', label: { 'zh-CN': '副标题', en: 'Subheading' }, default: 'Four steps, no consultants, no pipeline to babysit.', maxLength: 90, group: 'content' },
+    { key: 'showMocks', type: 'boolean', label: { 'zh-CN': '显示示意窗', en: 'Show previews' }, hint: { 'zh-CN': '导览版式始终显示', en: 'The tour layout always shows them' }, default: true, group: 'layout' },
+    { key: 'autoplay', type: 'boolean', label: { 'zh-CN': '自动推进', en: 'Auto-advance' }, default: true, group: 'motion' },
+    { key: 'interval', type: 'number', label: { 'zh-CN': '每步停留', en: 'Step duration' }, default: 4, min: 2, max: 8, step: 0.5, unit: 's', safe: [3, 6], group: 'motion' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', font: 'serif', layout: 'tour' } },
+    { id: 'relay', name: { 'zh-CN': '接力', en: 'Relay' }, values: { accent: '#34d399', font: 'grotesk', layout: 'horizontal', steps: 3, interval: 3 } },
+    { id: 'zigzag', name: { 'zh-CN': '折线', en: 'Switchback' }, values: { accent: '#f472b6', font: 'sans', layout: 'zigzag', autoplay: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use below the hero to explain the product in three or four steps. Replace STEPS and the four Mock windows with your own flow.'],
+    rules: ['Keep step titles to four words or fewer and bodies to two lines. Mocks are abstract wireframes, not screenshots.'],
+  },
+  capture: { zoom: 1.1, posterTime: 1.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'hyperui',
+      repo: 'markmead/hyperui',
+      sha: '2b5aebbc50d2c9ac89650f51b554f53895b4803c',
+      paths: ['public/examples/application/steps/1.html'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Mark Mead'],
+    },
+    modifications: [
+      'Rebuilt the plain HTML stepper as a React section with three layouts, numbered nodes and a connector line that fills as steps advance.',
+      'Added an auto-advancing step clock built on the runtime frame loop, click-to-jump, and four hand-drawn preview windows.',
+      'Tailwind v4 theme tokens with an accent variable; icons inline SVG; reduced motion freezes on the first step.',
+    ],
+    assets: [],
+  },
+})

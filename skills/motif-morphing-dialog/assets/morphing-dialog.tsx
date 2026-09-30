@@ -67,14 +67,20 @@ export type MorphingDialogProps = Partial<typeof defaults> & {
 
 /** 根组件：提供状态和弹簧。可以直接受控（open / onOpenChange），演示里就用它做自动播放。 */
 export function MorphingDialog({ children, open, onOpenChange, ...props }: MorphingDialogProps) {
-  const options = { ...defaults, ...props }
+  const resolved = { ...defaults, ...props }
+  const { radius, triggerRadius, backdropOpacity, backdropBlur, closeOnOutsideClick } = resolved
+  const { visualDuration, bounce } = resolved.spring
+  // 每次渲染都会新建 resolved，按具体取值缓存 options，避免上下文无谓变化。
+  const options = useMemo<DialogOptions>(
+    () => ({ spring: { visualDuration, bounce }, radius, triggerRadius, backdropOpacity, backdropBlur, closeOnOutsideClick }),
+    [visualDuration, bounce, radius, triggerRadius, backdropOpacity, backdropBlur, closeOnOutsideClick],
+  )
   const [innerOpen, setInnerOpen] = useState(false)
   const isOpen = open ?? innerOpen
   const uniqueId = useId()
   const triggerRef = useRef<HTMLButtonElement>(null)
   const userDriven = useRef(false)
   const reducedMotion = useReducedMotion()
-  const { visualDuration, bounce } = options.spring
 
   const setOpen = useCallback(
     (next: boolean, fromUser = false) => {
@@ -87,8 +93,7 @@ export function MorphingDialog({ children, open, onOpenChange, ...props }: Morph
 
   const context = useMemo(
     () => ({ isOpen, setOpen, uniqueId, triggerRef, options, userDriven }),
-    // options 是每次渲染新建的对象，按具体取值比较。
-    [isOpen, setOpen, uniqueId, options.spring.visualDuration, options.spring.bounce, options.radius, options.triggerRadius, options.backdropOpacity, options.backdropBlur, options.closeOnOutsideClick],
+    [isOpen, setOpen, uniqueId, options],
   )
 
   return (
@@ -174,10 +179,12 @@ export function MorphingDialogContent({ children, className, style }: MorphingDi
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const trigger = triggerRef.current
-    if (userDriven.current) containerRef.current?.querySelector<HTMLElement>(FOCUSABLE)?.focus({ preventScroll: true })
+    // 关闭时要读取「最新」的 userDriven（而不是打开时的值），所以在清理函数里通过读取器取值。
+    const isUserDriven = () => userDriven.current
+    if (isUserDriven()) containerRef.current?.querySelector<HTMLElement>(FOCUSABLE)?.focus({ preventScroll: true })
     return () => {
       document.body.style.overflow = previousOverflow
-      if (userDriven.current) trigger?.focus({ preventScroll: true })
+      if (isUserDriven()) trigger?.focus({ preventScroll: true })
     }
   }, [isOpen, triggerRef, userDriven])
 

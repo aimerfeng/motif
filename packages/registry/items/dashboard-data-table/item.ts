@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dashboard-data-table',
+  status: 'published',
+  title: { 'zh-CN': '状态数据表', en: 'Status Data Table' },
+  summary: {
+    'zh-CN': '带状态徽章、筛选标签、搜索和排序的数据表，首字母渐变头像，行错峰淡入。适合账单、订单、用户列表。',
+    en: 'A data table with status badges, filter tabs, search and sortable columns, gradient initial avatars and staggered row entrance. Fits invoices, orders and user lists.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'table', 'badge', 'invoice', 'sortable'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'dashboard-data-table.tsx', export: 'DashboardDataTable' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dashboard-data-table.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'badge',
+      type: 'select',
+      label: { 'zh-CN': '徽章样式', en: 'Badge style' },
+      default: 'soft',
+      options: [
+        { value: 'soft', label: { 'zh-CN': '柔和底色', en: 'Soft' } },
+        { value: 'dot', label: { 'zh-CN': '圆点', en: 'Dot' } },
+        { value: 'outline', label: { 'zh-CN': '描边', en: 'Outline' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'density',
+      type: 'select',
+      label: { 'zh-CN': '行高', en: 'Row density' },
+      default: 'comfortable',
+      options: [
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+        { value: 'comfortable', label: { 'zh-CN': '舒适', en: 'Comfortable' } },
+        { value: 'spacious', label: { 'zh-CN': '宽松', en: 'Spacious' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'rows', type: 'number', label: { 'zh-CN': '行数', en: 'Rows' }, default: 7, min: 4, max: 12, step: 1, safe: [5, 9], group: 'content' },
+    { key: 'seed', type: 'number', label: { 'zh-CN': '数据种子', en: 'Data seed' }, default: 4, min: 1, max: 999, step: 1, group: 'content' },
+    { key: 'title', type: 'text', label: { 'zh-CN': '标题', en: 'Title' }, default: 'Recent invoices', maxLength: 30, group: 'content' },
+    { key: 'subtitle', type: 'text', label: { 'zh-CN': '副标题', en: 'Subtitle' }, default: 'Payments across every workspace, newest first.', maxLength: 64, group: 'content' },
+    { key: 'showAvatars', type: 'boolean', label: { 'zh-CN': '显示头像', en: 'Show avatars' }, default: true, group: 'look' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', badge: 'soft', density: 'comfortable' } },
+    { id: 'ledger', name: { 'zh-CN': '账本', en: 'Ledger' }, values: { accent: '#34d399', badge: 'dot', density: 'compact', rows: 9, showAvatars: false } },
+    { id: 'spotlight', name: { 'zh-CN': '聚光', en: 'Spotlight' }, values: { accent: '#f472b6', badge: 'outline', density: 'spacious', rows: 6, seed: 12 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.1, posterTime: 3, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: ['src/content/components/tables/table-01.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Ported to Tailwind v4 theme tokens with an accent variable; remixicon icons replaced by inline SVG.',
+      'Added invented seed-driven rows, status filter tabs with counts, search, sortable columns and three badge styles.',
+      'Rows enter with a staggered motion animation, disabled under prefers-reduced-motion.',
+    ],
+    assets: [],
+  },
+})

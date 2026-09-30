@@ -1,0 +1,50 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/public/r/marquee.json
+ * Modified by Motif; see the item's provenance.
+ */
+@keyframes tw-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes tw-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tw-track {
+  will-change: transform;
+}
+
+.tw-vertical {
+  animation: tw-up var(--tw-dur) linear infinite;
+}
+
+.tw-horizontal {
+  animation: tw-left var(--tw-dur) linear infinite;
+}
+
+.tw-reverse {
+  animation-direction: reverse;
+}
+
+.tw-wall:hover .tw-pausable .tw-track {
+  animation-play-state: paused;
+}
+
+/* 减少动态效果时停止滚动。 */
+@media (prefers-reduced-motion: reduce) {
+  .tw-track {
+    animation: none;
+  }
+}

@@ -1,0 +1,101 @@
+import { defineItem } from '@motif/schema'
+
+const option = (value: string, zh: string, en: string) => ({ value, label: { 'zh-CN': zh, en } })
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'style-dusk',
+  status: 'published',
+  title: { 'zh-CN': '暮色', en: 'Dusk' },
+  summary: {
+    'zh-CN': '基于 Rosé Pine 的极简风格：发丝线代替阴影，衬线标题里一个斜体强调词，页面顶端一抹暮光。三个变体（Main、Moon、Dawn），适合写作、阅读、笔记和个人站点。',
+    en: 'A minimal style on the Rosé Pine palette: hairlines instead of shadows, one italic accent word in a serif headline, a faint dusk glow at the top of the page. Three variants (Main, Moon, Dawn), for writing, reading, notes and personal sites.',
+  },
+  kind: 'style',
+  category: 'minimal',
+  tags: ['rose pine', 'minimal', 'serif', 'dark', 'hairline', 'calm'],
+  runtime: ['react', 'css'],
+  entry: { file: 'style-dusk.tsx', export: 'StyleDusk' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'style-dusk.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '变体', en: 'Variant' },
+      hint: { 'zh-CN': 'Main 与 Moon 是深色，Dawn 是浅色', en: 'Main and Moon are dark; Dawn is light' },
+      default: 'main',
+      options: [option('main', 'Main（深）', 'Main (dark)'), option('moon', 'Moon（稍亮的深色）', 'Moon (softer dark)'), option('dawn', 'Dawn（浅）', 'Dawn (light)')],
+    },
+    {
+      key: 'accent',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '强调色', en: 'Accent' },
+      default: 'iris',
+      options: [option('iris', '鸢尾 Iris', 'Iris'), option('rose', '玫瑰 Rose', 'Rose'), option('foam', '浪沫 Foam', 'Foam'), option('gold', '金 Gold', 'Gold'), option('pine', '松 Pine', 'Pine'), option('love', '绯 Love', 'Love')],
+    },
+    { key: 'radius', type: 'number', group: 'shape', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 10, min: 0, max: 20, step: 1, unit: 'px', safe: [4, 14] },
+    { key: 'borderWidth', type: 'number', group: 'shape', label: { 'zh-CN': '线条粗细', en: 'Line weight' }, default: 1, min: 0.5, max: 2, step: 0.5, unit: 'px', safe: [1, 1.5] },
+    { key: 'depth', type: 'number', group: 'shape', label: { 'zh-CN': '浮层阴影', en: 'Raised shadow' }, hint: { 'zh-CN': '只影响「悬浮」卡片；普通卡片永远没有阴影', en: 'Only affects raised cards; ordinary cards never cast one' }, default: 0.35, min: 0, max: 1, step: 0.05, safe: [0.2, 0.7] },
+    {
+      key: 'fontPairing',
+      type: 'select',
+      group: 'type',
+      label: { 'zh-CN': '字体搭配', en: 'Font pairing' },
+      default: 'serif',
+      options: [option('serif', 'Newsreader + Inter Tight', 'Newsreader + Inter Tight'), option('instrument', 'Instrument Serif + Geist', 'Instrument Serif + Geist'), option('sans', 'Inter Tight（纯无衬线）', 'Inter Tight (sans only)'), option('plex', 'IBM Plex Sans + Mono', 'IBM Plex Sans + Mono')],
+    },
+  ],
+  presets: [
+    { id: 'twilight', name: { 'zh-CN': '薄暮', en: 'Twilight' }, values: { variant: 'main', accent: 'iris', radius: 10, borderWidth: 1, depth: 0.35, fontPairing: 'serif' } },
+    { id: 'moonrise', name: { 'zh-CN': '月升', en: 'Moonrise' }, values: { variant: 'moon', accent: 'rose', radius: 12, borderWidth: 1, depth: 0.5, fontPairing: 'instrument' } },
+    { id: 'first-light', name: { 'zh-CN': '晨光', en: 'First light' }, values: { variant: 'dawn', accent: 'pine', radius: 8, borderWidth: 1, depth: 0.3, fontPairing: 'serif' } },
+    { id: 'evergreen', name: { 'zh-CN': '常青', en: 'Evergreen' }, values: { variant: 'main', accent: 'foam', radius: 4, borderWidth: 1, depth: 0.2, fontPairing: 'plex' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Newsreader Variable', 'Inter Tight Variable', 'Instrument Serif', 'Geist Variable', 'Geist Mono Variable', 'IBM Plex Sans Variable', 'IBM Plex Mono'],
+  guidance: {
+    use: [
+      'Use for writing tools, reading apps, note-taking, journals, portfolios and documentation that should feel calm and literate.',
+      'Avoid for high-energy marketing pages or dense data dashboards; the restraint that makes it elegant costs it visual punch.',
+    ],
+    rules: [
+      'Palette is Rosé Pine (Main, Moon or Dawn), used through named tokens: base for the page, surface for cards, overlay for raised or inset elements, highlight-med for hairlines, muted/subtle/text for type. Never invent colours.',
+      'Colour ratio: 90% base/surface/text, 8% one accent, 2% semantic (foam success, gold warning, love danger). Use one accent per page; iris is the default.',
+      'Depth comes from lines, not shadows. Cards are a surface fill with a 1px highlight-med border. Only one raised element per viewport (a popover, an editor mock) may use the soft shadow, and it must also switch to overlay fill and highlight-high border.',
+      'Radius is small and constant (10px for controls, 15px for cards). Never pill-shaped except badges and switches.',
+      'Type: a text serif (Newsreader or Instrument Serif) at regular 400 weight for headings with -0.02em tracking; a neutral sans at 15px for UI; mono at 12px uppercase with 0.12em tracking for labels and numbers. Put one italic accent-coloured word in a hero headline, and nowhere else.',
+      'Spacing is generous: 64px+ between sections, hairline rules (1px highlight-med) to separate them instead of coloured bands, a narrow reading measure (max 34rem for paragraphs).',
+      'Buttons: one filled accent button per view (text in base colour, weight 600); secondary buttons are overlay fill with a highlight-high border; tertiary are ghost or underlined links. No gradients, no glow.',
+      'Badges are hairline pills with a single 6px coloured dot; only the dot carries colour. Alerts have a 2px coloured bar on the left edge and outline icons at 1.8px stroke.',
+      'The dusk glow at the top of the page is one radial gradient of the accent at 24% alpha plus a faint rose bloom at the top right. Do not add more gradients elsewhere.',
+      'Motion is minimal and quiet: 180 to 340ms eases, the tab underline glides, switches slide. No bounce, no parallax, no autoplay. Respect prefers-reduced-motion.',
+      'Forbidden: drop shadows on regular cards, saturated fills, gradients on controls, uppercase body text, emoji, more than one italic word per headline.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'rose-pine',
+      repo: 'rose-pine/rose-pine-theme',
+      sha: '781bb844aae0bcec2763b23a4c7d3cc6aede780c',
+      paths: ['README.md'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 Rosé Pine'],
+      origin: 'Palette values are those published at https://rosepinetheme.com/palette (linked from the upstream README).',
+    },
+    modifications: [
+      'Palette values for Main, Moon and Dawn are the published Rosé Pine colours, unchanged.',
+      'The tokens, primitives, dusk glow and style sheet are original Motif design built on that palette.',
+    ],
+    assets: [],
+  },
+})

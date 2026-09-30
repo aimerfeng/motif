@@ -1,0 +1,108 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'hero-product-glow',
+  status: 'published',
+  title: { 'zh-CN': '光晕产品首屏', en: 'Product Glow Hero' },
+  summary: {
+    'zh-CN': '居中大标题在主色光晕里，下方是一个用纯 JSX 和 SVG 画出来的仪表盘产品截图，折线会自己画出来。SaaS 官网最常用、也最稳的首屏。',
+    en: 'A centered headline lit by an accent glow, with a product dashboard drawn in pure JSX and SVG rising underneath, its chart line drawing itself. The dependable first screen for a SaaS site.',
+  },
+  kind: 'section',
+  category: 'hero',
+  tags: ['hero', 'saas', 'dashboard mockup', 'glow', 'gradient text', 'launch ui'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'hero-product-glow.tsx', export: 'HeroProductGlow' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'hero-product-glow.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'brand', type: 'text', label: { 'zh-CN': '品牌名', en: 'Brand name' }, default: 'Ledgerline', maxLength: 18, group: 'content' },
+    { key: 'headline', type: 'text', label: { 'zh-CN': '主标题', en: 'Headline' }, default: 'Invoices that get paid before you follow up', maxLength: 70, group: 'content' },
+    {
+      key: 'subline',
+      type: 'text',
+      label: { 'zh-CN': '副标题', en: 'Subline' },
+      default: 'Ledgerline reconciles every payment as it lands and nudges late clients for you. Teams collect 9 days faster on average.',
+      maxLength: 160,
+      group: 'content',
+    },
+    { key: 'badge', type: 'text', label: { 'zh-CN': '徽章文案', en: 'Badge text' }, default: 'Now syncing with 40+ banks', maxLength: 36, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent color' }, default: '#7c6cff', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist 无衬线', en: 'Geist sans' } },
+        { value: 'grotesk', label: { 'zh-CN': 'Space Grotesk', en: 'Space Grotesk' } },
+        { value: 'serif', label: { 'zh-CN': 'Instrument 衬线', en: 'Instrument serif' } },
+      ],
+      group: 'look',
+    },
+    { key: 'glow', type: 'number', label: { 'zh-CN': '光晕强度', en: 'Glow strength' }, default: 0.8, min: 0, max: 1, step: 0.05, safe: [0.4, 1], group: 'look' },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '按钮圆角', en: 'Button radius' }, default: 10, min: 0, max: 28, step: 1, unit: 'px', safe: [4, 20], group: 'look' },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '布局', en: 'Layout' },
+      default: 'centered',
+      options: [
+        { value: 'centered', label: { 'zh-CN': '居中', en: 'Centered' } },
+        { value: 'split', label: { 'zh-CN': '左文右图（透视）', en: 'Split, tilted' } },
+      ],
+      group: 'layout',
+    },
+  ],
+  presets: [
+    { id: 'violet-hour', name: { 'zh-CN': '紫夜', en: 'Violet Hour' }, values: {} },
+    { id: 'signal', name: { 'zh-CN': '信号', en: 'Signal' }, values: { accent: '#22c55e', font: 'grotesk', brand: 'Tally', layout: 'split' } },
+    { id: 'linen', name: { 'zh-CN': '亚麻', en: 'Linen' }, values: { tone: 'light', accent: '#e4572e', font: 'serif', glow: 0.55, brand: 'Ledger & Co' } },
+    { id: 'cobalt', name: { 'zh-CN': '钴蓝', en: 'Cobalt' }, values: { accent: '#3b82f6', glow: 1, radius: 28 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Space Grotesk Variable', 'Instrument Serif'],
+  guidance: {
+    use: ['Use as the top of a SaaS landing page when the product has a UI worth showing. Replace the mockup contents with your own product screens (keep them JSX/SVG, no screenshots).'],
+    rules: [
+      'One accent color drives the glow, chart, active nav and primary button; do not add a second brand color.',
+      'Keep the mockup at least 60% of the section width so it reads as the product, and let it bleed into the bottom fade.',
+      'Headline in one to two lines; the gradient text needs enough contrast against the background.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 1.8, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'launch-ui',
+      repo: 'launch-ui/launch-ui',
+      sha: 'b0d4d5bce91d13523450416ce1797109076b2787',
+      paths: ['components/sections/hero/default.tsx', 'components/ui/glow.tsx', 'components/ui/mockup.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Mikolaj Dobrucki'],
+    },
+    modifications: [
+      'Kept the structure (badge, gradient headline, two buttons, glowing mockup) but rewrote it with inline-style tokens, a light/dark tone, a split layout and content params.',
+      'The dashboard screenshot images were replaced by a mockup built in JSX and SVG; the GitHub logo, siteConfig and shadcn Button/Badge were removed.',
+      'The glow is drawn with color-mix radial gradients driven by the accent param; the chart line draws itself with motion and is static when reduced motion is preferred.',
+    ],
+    assets: [],
+  },
+})

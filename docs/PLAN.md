@@ -152,6 +152,21 @@ Each item gets 3–5 presets, a bilingual title and description, reduced-motion 
 
 **Out of scope for now:** user accounts and user-published market items (needs a database and moderation), production deployment and filings, and the real production model key. These wait for the user's decision.
 
+## Scope change (2026-09-30): market levels and skills on every item
+
+The user asked for two changes to the business logic after P3:
+
+1. **The market is not only effects.** It spans five levels, from large to small: whole-site **templates**, design **styles**, page **sections**, functional **components** (loaders, skeletons, progress, toasts, inputs, toggles, tabs, menus, dialogs …) and visual **effects**. Good-looking, permissively licensed sources from GitHub go into every level.
+2. **Skills belong to the content.** Every item has a "copy skill" button (card and detail page, with tuned values on the detail page); the general skills are offered in the market filter bar per level and category. There is no separate Skills page (`/skills` redirects to the market).
+
+Delivered so far:
+- Schema `kind` + per-kind categories; the 48 existing items are split into components and effects.
+- Market level tabs, category chips, general-skill buttons, URL-synced filters; `/skill/<name>.md|zip` routes.
+- Page-like previews (taller, scrollable, desktop/tablet/mobile widths) and `capture.scroll` for templates, sections and styles.
+- 20 self-hosted OFL fonts; manifest `fonts` (checked, installed on export) and `guidance` (item-specific skill rules).
+- 52 more upstream sources pinned (research in `docs/research/{templates-styles,sections-blocks,functional-components}.md`); partially licensed repos are restricted by path.
+- In progress: ~70 new items across styles, templates, sections and components, imported by parallel agents.
+
 ## Verification (end to end)
 
 1. `pnpm verify` is green: types, ESLint, Vitest (schema, bake, checker, param mapping, agent with MockLanguageModelV4 plus scripted runs), and build.

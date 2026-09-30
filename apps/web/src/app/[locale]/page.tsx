@@ -1,4 +1,4 @@
-import { defaultsOf } from '@motif/schema'
+import { defaultsOf, KINDS } from '@motif/schema'
 import { getTranslations } from 'next-intl/server'
 import { HeroStage } from '@/components/home/hero-stage'
 import { ItemCard } from '@/components/market/item-card'
@@ -19,6 +19,13 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     .slice(0, 6)
     .map((item) => summarize(item, locale))
   const sources = [...new Map(items.flatMap((item) => (item.manifest.provenance.upstream ? [[item.manifest.provenance.upstream.repo, item.manifest.provenance.upstream.spdx] as const] : []))).entries()]
+  // 按层级浏览：每个有内容的层级一张卡，封面取该层级里第一个精选条目（没有就取第一个）。
+  const levels = KINDS.flatMap((kind) => {
+    const inKind = items.filter((item) => item.manifest.kind === kind)
+    if (inKind.length === 0) return []
+    const cover = FEATURED.map((slug) => inKind.find((item) => item.manifest.slug === slug)).find((item) => item !== undefined) ?? inKind[0]!
+    return [{ kind, count: inKind.length, poster: mediaFor(cover.manifest.slug).poster }]
+  })
 
   const heroValues = hero ? { ...defaultsOf(hero.manifest.params), ...(hero.manifest.presets.find((preset) => preset.id === HERO.preset)?.values ?? {}) } : {}
 
@@ -75,6 +82,29 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
           {featured.map((item) => (
             <li key={item.slug}>
               <ItemCard item={item} categoryLabel={tm(`categories.${item.category}`)} />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mx-auto mt-24 max-w-[1400px] px-5 sm:px-8">
+        <h2 className="font-display text-[32px] leading-tight font-semibold tracking-[-0.03em]">{t('levelsTitle')}</h2>
+        <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-pretty text-ink-muted">{t('levelsLead')}</p>
+        <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
+          {levels.map((level) => (
+            <li key={level.kind}>
+              <Link href={`/market?kind=${level.kind}`} className="group block">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken transition-[border-color] duration-200 group-hover:border-line-strong">
+                  {level.poster && (
+                    // 海报是预先生成的 webp。
+                    <img src={level.poster} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-500 ease-(--ease-out-soft) group-hover:scale-[1.03]" />
+                  )}
+                </div>
+                <div className="mt-3 flex items-baseline justify-between gap-3 px-0.5">
+                  <span className="text-[15px] font-medium">{tm(`kinds.${level.kind}`)}</span>
+                  <span className="font-mono text-[12px] text-ink-faint tabular-nums">{level.count}</span>
+                </div>
+              </Link>
             </li>
           ))}
         </ul>

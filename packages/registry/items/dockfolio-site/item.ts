@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dockfolio-site',
+  status: 'published',
+  title: { 'zh-CN': '程序坞作品集', en: 'Dockfolio' },
+  summary: {
+    'zh-CN': '窄栏个人主页：逐词模糊淡入的问候、可展开的经历列表、渐变封面的项目卡，底部悬浮一个会放大的图标坞，里面还带深浅色切换。安静、耐看，适合设计工程师。',
+    en: 'A narrow-column personal page: a headline that blurs in word by word, expandable work history, gradient-cover project cards and a floating magnifying dock with a built-in theme toggle. Quiet, tidy, built for designer-engineers.',
+  },
+  kind: 'template',
+  category: 'portfolio',
+  tags: ['portfolio', 'personal', 'dock', 'blur-fade', 'single-column', 'dark-mode'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'dockfolio-site.tsx', export: 'DockfolioSite' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'dockfolio-site.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'name', type: 'text', label: { 'zh-CN': '姓名 / 品牌', en: 'Name / brand' }, default: 'Noa Lindqvist', maxLength: 28, group: 'content' },
+    { key: 'headline', type: 'text', label: { 'zh-CN': '首屏标题文案', en: 'Headline' }, hint: { 'zh-CN': '逐词模糊淡入', en: 'Blurs in word by word' }, default: 'Product engineer who sweats the last ten percent of every interface.', maxLength: 100, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, hint: { 'zh-CN': '只用在状态点、时间线、下划线和封面渐变上', en: 'Used sparingly: status dot, timeline, underline and cover gradients' }, default: '#e0672a', group: 'look' },
+    {
+      key: 'fontPair',
+      type: 'select',
+      label: { 'zh-CN': '字体搭配', en: 'Font pairing' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist', en: 'Geist' } },
+        { value: 'manrope', label: { 'zh-CN': 'Manrope', en: 'Manrope' } },
+        { value: 'jakarta', label: { 'zh-CN': 'Plus Jakarta + Inter Tight', en: 'Plus Jakarta + Inter Tight' } },
+        { value: 'editorial', label: { 'zh-CN': 'Instrument Serif + Geist', en: 'Instrument Serif + Geist' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 16, min: 0, max: 28, step: 1, unit: 'px', safe: [8, 24], group: 'look' },
+    { key: 'dark', type: 'boolean', label: { 'zh-CN': '深色模式', en: 'Dark mode' }, hint: { 'zh-CN': '坞里的太阳/月亮按钮也能切换', en: 'The dock’s sun/moon button toggles it too' }, default: false, group: 'look' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '模糊淡入', en: 'Blur-fade entrances' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'paper-orange', name: { 'zh-CN': '橙纸', en: 'Paper Orange' }, values: { accent: '#e0672a', fontPair: 'geist', radius: 16, dark: false } },
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { accent: '#8b93ff', fontPair: 'manrope', radius: 12, dark: true } },
+    { id: 'gallery', name: { 'zh-CN': '画廊', en: 'Gallery' }, values: { accent: '#c2410c', fontPair: 'editorial', radius: 6, dark: false } },
+    { id: 'lagoon', name: { 'zh-CN': '潟湖', en: 'Lagoon' }, values: { accent: '#0891b2', fontPair: 'jakarta', radius: 24, dark: true } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Manrope Variable', 'Plus Jakarta Sans Variable', 'Inter Tight Variable', 'Instrument Serif'],
+  guidance: {
+    use: [
+      'A calm personal portfolio for a designer-engineer, indie maker or consultant: intro, about, work history, education, skills, projects, talks, contact, with a floating dock for navigation.',
+      'Adapt it by editing the JOBS, SCHOOLS, SKILLS, PROJECTS and SPRINTS arrays and the name/headline params. Keep the single 42rem column; the layout is the point.',
+    ],
+    rules: [
+      'Stay monochrome: text, borders and buttons are --fg/--bg/--mut/--line. The accent appears only in small places (status dot, timeline dots, link underline, cover gradients).',
+      'Every section fades in with BlurFade (blur 6px, 8px rise, 0.5s); the hero headline blurs in word by word. Do not add other entrance effects.',
+      'The dock is the only navigation: keep five links plus the theme toggle, and keep it centered at the bottom of the viewport with a backdrop blur.',
+      'Logos are generated monograms on a gradient circle and project covers are SVG/gradient compositions; never add photos, real logos or brand marks.',
+      'Work and education rows are expandable buttons (aria-expanded); keep them keyboard operable.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui-portfolio',
+      repo: 'magicuidesign/portfolio',
+      sha: '5ef12e4c8bd0de3e22e89c2181ee77a35925ec8b',
+      paths: ['src/app/page.tsx', 'src/components/navbar.tsx', 'src/components/section/work-section.tsx', 'src/components/section/projects-section.tsx', 'src/components/section/hackathons-section.tsx', 'src/components/section/contact-section.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Dillion Verma'],
+    },
+    modifications: [
+      'Only the page layout and section order were taken; every piece of personal content, company logo and Fontshare font was replaced (invented person, monogram logos, Motif-available fonts).',
+      'Next.js, shadcn/ui, lucide and react-markdown were dropped: the dock, blur-fade, accordion rows, badges and icons are re-implemented with React 19, motion and Tailwind v4.',
+      'The dock is a self-contained motion implementation (distance-based spring magnification) with a built-in light/dark toggle.',
+      'Project cards get generated SVG/gradient covers instead of screenshots; the hackathon list became a talks timeline.',
+      'Theming is driven by accent, font pairing, radius and a dark flag via CSS variables.',
+    ],
+    assets: [],
+  },
+})

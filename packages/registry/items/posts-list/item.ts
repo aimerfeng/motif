@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'posts-list',
+  status: 'published',
+  title: { 'zh-CN': '文章列表', en: 'Posts List' },
+  summary: {
+    'zh-CN': '带自绘封面的文章卡片网格，首篇通栏；也可切成封面列表或纯文字目录，并支持按分类筛选。封面全部由 SVG 生成。',
+    en: 'An article grid with generated SVG covers and a featured first post. Switch to a cover list or a text-only index, with category filtering built in.',
+  },
+  kind: 'section',
+  category: 'posts',
+  tags: ['blog', 'posts', 'articles', 'journal', 'editorial'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'posts-list.tsx', export: 'PostsList' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'posts-list.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'grid',
+      options: [
+        { value: 'grid', label: { 'zh-CN': '卡片网格', en: 'Card grid' } },
+        { value: 'list', label: { 'zh-CN': '封面列表', en: 'Cover list' } },
+        { value: 'index', label: { 'zh-CN': '文字目录', en: 'Text index' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'count', type: 'number', label: { 'zh-CN': '文章数', en: 'Posts' }, default: 6, min: 3, max: 6, step: 1, group: 'content' },
+    { key: 'seed', type: 'number', label: { 'zh-CN': '封面种子', en: 'Cover seed' }, hint: { 'zh-CN': '换一个种子得到不同的封面构图', en: 'A different seed redraws every cover' }, default: 8, min: 1, max: 999, step: 1, group: 'look' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Notes from the studio', maxLength: 36, group: 'content' },
+    { key: 'subheading', type: 'text', label: { 'zh-CN': '副标题', en: 'Subheading' }, default: 'Engineering write-ups, design thinking and the occasional post-mortem.', maxLength: 90, group: 'content' },
+    { key: 'showCovers', type: 'boolean', label: { 'zh-CN': '显示封面', en: 'Show covers' }, default: true, group: 'layout' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', font: 'serif', layout: 'grid' } },
+    { id: 'gazette', name: { 'zh-CN': '晨报', en: 'Gazette' }, values: { accent: '#fb923c', font: 'serif', layout: 'index', showCovers: false } },
+    { id: 'tidal', name: { 'zh-CN': '潮汐', en: 'Tidal' }, values: { accent: '#2dd4bf', font: 'grotesk', layout: 'list', seed: 31, count: 4 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use for a blog or journal landing section. Replace the POSTS array with real entries; covers are generated from the accent and seed.'],
+    rules: ['Keep titles under two lines and excerpts to two lines. Do not add stock photography to the covers.'],
+  },
+  capture: { scroll: true, posterTime: 1.6, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/blog-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'Replaced image covers with seed-driven generated SVG compositions (orbs, rings, dot field, waves) tinted by the accent.',
+      'Added a featured first card, cover-list and text-index layouts, category filtering and a heading-font select.',
+      'framer-motion replaced by motion/react; invented articles and authors; reduced motion disables the entrance.',
+    ],
+    assets: [],
+  },
+})

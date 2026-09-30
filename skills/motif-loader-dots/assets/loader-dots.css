@@ -1,0 +1,159 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2022 Griffin Johnston
+ * Source: https://github.com/GriffinJohnston/ldrs/blob/f759f65/src/elements/dotWave.scss
+ * Modified by Motif; see the item's provenance.
+ */
+.mld-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--mld-color);
+  /* 波浪和弹跳会向上越过基线，预留空间避免撑开布局时抖动。 */
+  min-height: calc(var(--mld-size) * 1.4);
+}
+
+.mld-visual {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mld-gap);
+  height: var(--mld-size);
+}
+
+.mld-dot {
+  display: block;
+  width: var(--mld-size);
+  height: var(--mld-size);
+  border-radius: 50%;
+  background: var(--mld-color);
+  /* 每个点错开循环的一小段；点数多时错得更密，整体节奏不变。 */
+  --step: calc(var(--mld-dur) * 0.55 / max(var(--mld-n), 3));
+  animation-duration: var(--mld-dur);
+  animation-iteration-count: infinite;
+  animation-delay: calc(var(--i) * var(--step) - var(--mld-dur));
+}
+
+/* 脉冲：缩放 + 明暗（ldrs dotWave 的缩放节奏） */
+.mld-pulse .mld-dot {
+  animation-name: mld-pulse;
+  animation-timing-function: ease-in-out;
+}
+@keyframes mld-pulse {
+  0%,
+  100% {
+    transform: scale(0.35);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 波浪：只在循环前半段起伏，后半段休息，节奏更像呼吸 */
+.mld-wave .mld-dot {
+  animation-name: mld-wave;
+}
+@keyframes mld-wave {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.55;
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  25% {
+    transform: translateY(calc(var(--mld-size) * -0.85));
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+  }
+}
+
+/* 弹跳：落地压扁、起跳拉长 */
+.mld-bounce .mld-dot {
+  transform-origin: 50% 100%;
+  animation-name: mld-bounce;
+}
+@keyframes mld-bounce {
+  0% {
+    transform: translateY(0) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  22% {
+    transform: translateY(calc(var(--mld-size) * -1.1)) scale(0.92, 1.1);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0);
+  }
+  42% {
+    transform: translateY(0) scale(1.18, 0.82);
+    animation-timing-function: ease-out;
+  }
+  55%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+/* 输入中：小幅上浮 + 明暗，接近聊天软件的「对方正在输入」 */
+.mld-typing .mld-dot {
+  animation-name: mld-typing;
+  animation-timing-function: ease-in-out;
+}
+@keyframes mld-typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  30% {
+    transform: translateY(calc(var(--mld-size) * -0.3));
+    opacity: 0.95;
+  }
+}
+
+/* 省略号：圆点一个个出现，然后一起淡出 */
+.mld-ellipsis .mld-dot {
+  animation-name: mld-ellipsis;
+  animation-timing-function: steps(1, end);
+  animation-delay: calc(var(--i) * var(--mld-dur) / (var(--mld-n) + 1) - var(--mld-dur));
+}
+@keyframes mld-ellipsis {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* 减少动态效果：定格为亮度渐变的一排点，整体缓慢呼吸，仍然表示「进行中」。 */
+@media (prefers-reduced-motion: reduce) {
+  .mld-visual {
+    animation: mld-breathe 2.4s ease-in-out infinite;
+  }
+  .mld-dot {
+    animation: none !important;
+    transform: none !important;
+    opacity: calc(0.35 + var(--i) * 0.65 / max(var(--mld-n) - 1, 1));
+  }
+}
+@keyframes mld-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

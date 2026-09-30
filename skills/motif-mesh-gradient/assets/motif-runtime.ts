@@ -1,13 +1,24 @@
 // motif-runtime: hooks shared by Motif components (https://github.com/aimerfeng/motif, MIT).
 // Generated from packages/runtime/src; edit there, not here.
 import { clsx, type ClassValue } from 'clsx'
-import { useEffect, useRef, useState, useSyncExternalStore, type RefObject } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type RefObject } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 // ---- cn.ts ----
 /** 合并 className，后面的 Tailwind 工具类覆盖前面冲突的（与 shadcn 的 cn 相同）。 */
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs))
+}
+
+// ---- css-vars.ts ----
+export type CSSVariables = Record<`--${string}`, string | number | undefined>
+
+/**
+ * 把 CSS 自定义属性（`--accent` 等）和普通样式合成一个 style 对象。
+ * React 的 CSSProperties 不认识自定义属性，这里集中做唯一一次类型转换，组件里不必再写双重断言。
+ */
+export function cssVars(variables: CSSVariables, style?: CSSProperties): CSSProperties {
+  return { ...style, ...variables } as CSSProperties
 }
 
 // ---- reduced-motion.ts ----

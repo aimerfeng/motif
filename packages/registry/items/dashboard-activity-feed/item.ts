@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dashboard-activity-feed',
+  status: 'published',
+  title: { 'zh-CN': '活动流', en: 'Activity Feed' },
+  summary: {
+    'zh-CN': '发布、合并、评论、告警一条时间线：图标节点、连线自上而下描出，可按类别筛选。也可切成带头像的紧凑列表。',
+    en: 'Deploys, merges, comments and alerts on one timeline: icon nodes, a rail that draws downward and category filters. Switch to a compact avatar list when space is tight.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'activity', 'timeline', 'feed', 'notifications'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'dashboard-activity-feed.tsx', export: 'DashboardActivityFeed' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dashboard-activity-feed.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'timeline',
+      options: [
+        { value: 'timeline', label: { 'zh-CN': '时间线', en: 'Timeline' } },
+        { value: 'list', label: { 'zh-CN': '头像列表', en: 'Avatar list' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'density',
+      type: 'select',
+      label: { 'zh-CN': '间距', en: 'Density' },
+      default: 'comfortable',
+      options: [
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+        { value: 'comfortable', label: { 'zh-CN': '舒适', en: 'Comfortable' } },
+        { value: 'spacious', label: { 'zh-CN': '宽松', en: 'Spacious' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'count', type: 'number', label: { 'zh-CN': '条目数', en: 'Entries' }, default: 6, min: 3, max: 8, step: 1, group: 'content' },
+    { key: 'seed', type: 'number', label: { 'zh-CN': '数据种子', en: 'Data seed' }, default: 3, min: 1, max: 999, step: 1, group: 'content' },
+    { key: 'title', type: 'text', label: { 'zh-CN': '标题', en: 'Title' }, default: 'Activity', maxLength: 28, group: 'content' },
+    { key: 'live', type: 'boolean', label: { 'zh-CN': '显示「实时」标记', en: 'Show live badge' }, default: true, group: 'content' },
+    { key: 'animate', type: 'boolean', label: { 'zh-CN': '入场动画', en: 'Entrance animation' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜曲', en: 'Nocturne' }, values: { accent: '#7c8cff', layout: 'timeline' } },
+    { id: 'roster', name: { 'zh-CN': '花名册', en: 'Roster' }, values: { accent: '#38bdf8', layout: 'list', density: 'compact', count: 7, seed: 9 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { accent: '#fb923c', layout: 'timeline', density: 'spacious', count: 5, seed: 17 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.15, posterTime: 3, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: ['src/content/components/onboarding-feed/onboarding-feed-01.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Rewrote the feed as an activity timeline with invented, seed-shuffled events, inline chips, quotes and diff stats.',
+      'Added a timeline/avatar-list layout switch, category filters, staggered entrance and a self-drawing rail with motion.',
+      'Ported to Tailwind v4 theme tokens; icons are inline SVG paths; prefers-reduced-motion disables the entrance and the live ping.',
+    ],
+    assets: [],
+  },
+})

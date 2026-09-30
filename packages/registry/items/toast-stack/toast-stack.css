@@ -1,0 +1,61 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2023 Emil Kowalski
+ * Source: https://github.com/emilkowalski/sonner/blob/8e4662b/src/styles.css
+ * Modified by Motif; see the item's provenance.
+ */
+/* 加载图标：十二根短条依次淡出，和 sonner 的加载态一致 */
+.mts-spinner {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+.mts-bar {
+  position: absolute;
+  top: -3.9%;
+  left: -10%;
+  width: 24%;
+  height: 8%;
+  border-radius: 6px;
+  background: currentColor;
+  transform: rotate(calc(var(--i) * 30deg + 0.0001deg)) translate(146%);
+  animation: mts-fade 1.2s linear infinite;
+  animation-delay: calc((var(--i) - 12) * 0.1s);
+}
+/* 短条的原点在容器中心，围绕中心分布（和 sonner 相同的写法） */
+.mts-bars {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+}
+@keyframes mts-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.15;
+  }
+}
+
+/* 减少动态效果：加载图标定格，明暗缓慢呼吸；toast 的出现与消失在组件里改为淡入淡出。 */
+@media (prefers-reduced-motion: reduce) {
+  .mts-bar {
+    animation: none;
+    opacity: 0.6;
+  }
+  .mts-spinner {
+    animation: mts-breathe 2.4s ease-in-out infinite;
+  }
+}
+@keyframes mts-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

@@ -39,6 +39,7 @@ export default defineConfig([
       'packages/*/src/**/*.{ts,tsx}',
       'packages/*/test/**/*.{ts,tsx}',
       'packages/*/scripts/**/*.ts',
+      'packages/registry/items/**/*.{ts,tsx}',
       'e2e/**/*.ts',
     ],
     extends: [js.configs.recommended, tseslint.configs.recommendedTypeChecked],

@@ -447,8 +447,8 @@ function uniformsOf(gl: GL, program: WebGLProgram): Record<string, WebGLUniformL
 export function createFluidEngine(canvas: HTMLCanvasElement, getConfig: () => FluidConfig): FluidEngine | null {
   const attributes: WebGLContextAttributes = { alpha: false, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false, powerPreference: 'high-performance' }
   let context = canvas.getContext('webgl2', attributes) as GL | null
-  const isWebGL2 = !!context
-  if (!context) context = canvas.getContext('webgl', attributes) as unknown as GL | null
+  const isWebGL2 = Boolean(context)
+  if (!context) context = canvas.getContext('webgl', attributes) as GL | null
   if (!context) return null
   const gl: GL = context
 
@@ -470,7 +470,7 @@ export function createFluidEngine(canvas: HTMLCanvasElement, getConfig: () => Fl
   if (!formatRGBA || !formatRG || !formatR) return null
 
   // 没有线性过滤时：染料降到较低分辨率，关掉泛光。
-  const bloomAvailable = !!linearFiltering
+  const bloomAvailable = Boolean(linearFiltering)
   const filtering = linearFiltering ? gl.LINEAR : gl.NEAREST
 
   const build = (fragment: string, keywords: string[] = []) => {

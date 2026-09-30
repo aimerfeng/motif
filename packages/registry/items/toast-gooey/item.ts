@@ -1,0 +1,81 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'toast-gooey',
+  status: 'published',
+  title: { 'zh-CN': '水滴通知', en: 'Gooey Toast' },
+  summary: {
+    'zh-CN': '一颗胶囊从顶部落下，再从下面像水滴一样拉开，长出带说明和按钮的主体；过一会儿收回胶囊退场。轮廓是一条会变形的 SVG 路径，弹簧带一点过冲。适合成功、失败、更新提示这类需要一句话加一个动作的通知。',
+    en: 'A pill drops in from the top, then stretches like a drop of water into a body with a description and an action, and folds back before leaving. The outline is a morphing SVG path on an overshooting spring. For success, failure and update notices that need one line and one action.',
+  },
+  kind: 'component',
+  category: 'toast',
+  tags: ['toast', 'notification', 'gooey', 'morph', 'svg', 'spring', 'feedback', 'accessible'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'toast-gooey.tsx', export: 'ToastGooey' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'toast-gooey.tsx', role: 'component' },
+    { path: 'toast-gooey.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'align',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '对齐', en: 'Align' },
+      default: 'center',
+      options: [
+        { value: 'center', label: { 'zh-CN': '居中', en: 'Center' } },
+        { value: 'left', label: { 'zh-CN': '靠左', en: 'Left' } },
+        { value: 'right', label: { 'zh-CN': '靠右', en: 'Right' } },
+      ],
+    },
+    { key: 'width', type: 'number', group: 'layout', label: { 'zh-CN': '展开宽度', en: 'Expanded width' }, default: 320, min: 260, max: 440, step: 4, unit: 'px', safe: [280, 380] },
+    { key: 'fill', type: 'color', group: 'look', label: { 'zh-CN': '填充色', en: 'Fill' }, hint: { 'zh-CN': '文字颜色会按明暗自动切换', en: 'Text color switches automatically with brightness' }, default: '#18181b' },
+    { key: 'bounce', type: 'number', group: 'motion', label: { 'zh-CN': '弹性', en: 'Bounce' }, hint: { 'zh-CN': '0.05 几乎不回弹，0.8 非常 Q 弹', en: '0.05 is nearly flat, 0.8 is very bouncy' }, default: 0.4, min: 0.05, max: 0.8, step: 0.05, safe: [0.2, 0.6] },
+    { key: 'expandDelay', type: 'number', group: 'motion', label: { 'zh-CN': '落地后展开等待', en: 'Expand delay' }, default: 0.5, min: 0.1, max: 1.5, step: 0.1, unit: 's', safe: [0.3, 0.9] },
+    { key: 'hold', type: 'number', group: 'interaction', label: { 'zh-CN': '展开停留', en: 'Hold time' }, hint: { 'zh-CN': '悬停或聚焦时暂停计时', en: 'The timer pauses on hover and focus' }, default: 2.8, min: 1.5, max: 8, step: 0.1, unit: 's', safe: [2, 5] },
+    { key: 'richColors', type: 'boolean', group: 'look', label: { 'zh-CN': '按类型着色', en: 'Rich colors' }, default: false },
+    { key: 'border', type: 'boolean', group: 'look', label: { 'zh-CN': '描边', en: 'Border' }, default: true },
+  ],
+  presets: [
+    { id: 'obsidian', name: { 'zh-CN': '黑曜石', en: 'Obsidian' }, values: { fill: '#18181b', bounce: 0.4, richColors: false, border: true } },
+    { id: 'jelly', name: { 'zh-CN': '果冻', en: 'Jelly' }, values: { fill: '#1e1b4b', bounce: 0.7, richColors: true, expandDelay: 0.4 } },
+    { id: 'milk', name: { 'zh-CN': '牛奶', en: 'Milk' }, values: { fill: '#fafafa', bounce: 0.25, richColors: false, border: true } },
+    { id: 'corner', name: { 'zh-CN': '角落', en: 'Corner' }, values: { fill: '#0f172a', align: 'right', width: 300, bounce: 0.3, richColors: true } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use for occasional, friendly notices with one action. Use toast-stack when many notices can arrive at once.'],
+    rules: [
+      'Controlled: pass one toast at a time via the toast prop and clear it in onDismiss; change the toast id to replay the drop and morph.',
+      'Keep the title to a few words (it lives in the pill) and the description to one or two lines.',
+      'The visible text is aria-hidden and mirrored in an sr-only live region (assertive for errors); keep it.',
+      'Put the component at the top of a position: relative container; it does not position itself.',
+    ],
+  },
+  capture: { zoom: 2, posterTime: 2.4, loop: 10.4 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'goey-toast',
+      repo: 'anl331/goey-toast',
+      sha: 'be6bd884c85d52cca930b09b425ef68858d1b63c',
+      paths: ['src/components/GooeyToast.tsx', 'src/presets.ts'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 anl331'],
+    },
+    modifications: [
+      'Reimplemented as a standalone component: upstream is a layer on top of sonner (toast store, stacking, timers via the sonner DOM); this one has no sonner dependency and shows one controlled toast.',
+      'Ported the morph geometry (pill on top, body grown underneath with quadratic necks, centered and corner-anchored variants) and the idea of driving one t value with a spring; the path is written straight to the DOM on every change.',
+      'Replaced upstream icons, phase state machine, presets and theming with inline stroke icons, an rAF timeline (drop, expand after a delay, hold, collapse) that pauses on hover and focus, a fill color with automatic text contrast, optional rich colors, and left, center or right alignment (right is a mirrored path).',
+      'Added an sr-only live region (assertive for errors) and a reduced-motion state (fades only, no morph overshoot).',
+    ],
+    assets: [],
+  },
+})

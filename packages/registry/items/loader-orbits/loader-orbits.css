@@ -1,0 +1,238 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2022 Griffin Johnston
+ * Copyright (c) 2020 Tobias Ahlin
+ * Source: https://github.com/GriffinJohnston/ldrs/blob/f759f65/src/elements/orbit.scss
+ * Modified by Motif; see the item's provenance.
+ */
+.mlo-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mlo-size);
+  height: var(--mlo-size);
+  flex-shrink: 0;
+  color: var(--mlo-color);
+}
+
+.mlo-visual {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- ring：圆弧一边旋转一边伸缩（ldrs ring2 的 SVG 描边思路） ---- */
+.mlo-ring-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: mlo-spin calc(var(--mlo-dur) * 1.6) linear infinite;
+}
+.mlo-arc {
+  animation: mlo-arc var(--mlo-dur) cubic-bezier(0.45, 0.05, 0.35, 0.95) infinite;
+}
+@keyframes mlo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes mlo-arc {
+  0% {
+    stroke-dasharray: 4 96;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 66 34;
+    stroke-dashoffset: -22;
+  }
+  100% {
+    stroke-dasharray: 4 96;
+    stroke-dashoffset: -100;
+  }
+}
+
+/* ---- chase：六个点依次追逐（SpinKit chase 的节奏） ---- */
+.mlo-chase {
+  animation: mlo-spin calc(var(--mlo-dur) * 1.25) linear infinite;
+}
+.mlo-chase-dot {
+  position: absolute;
+  inset: 0;
+  transform: rotate(calc(var(--i) * 60deg));
+  animation: mlo-chase var(--mlo-dur) ease-in-out infinite both;
+  animation-delay: calc(var(--mlo-dur) * var(--i) * 0.05 - var(--mlo-dur) * 0.55);
+}
+.mlo-chase-dot::before {
+  content: '';
+  display: block;
+  width: var(--mlo-dot);
+  height: var(--mlo-dot);
+  margin-inline: auto;
+  border-radius: 50%;
+  background: var(--mlo-color);
+  animation: mlo-chase-scale var(--mlo-dur) ease-in-out infinite both;
+  animation-delay: inherit;
+}
+@keyframes mlo-chase {
+  80%,
+  100% {
+    transform: rotate(calc(var(--i) * 60deg + 360deg));
+  }
+}
+@keyframes mlo-chase-scale {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.4);
+  }
+}
+
+/* ---- fade：十二根刻度依次亮起 ---- */
+.mlo-tick {
+  position: absolute;
+  inset: 0;
+  transform: rotate(calc(var(--i) * 30deg));
+}
+.mlo-tick::before {
+  content: '';
+  display: block;
+  width: calc(var(--mlo-thick) * 0.72);
+  height: 27%;
+  margin-inline: auto;
+  border-radius: 999px;
+  background: var(--mlo-color);
+  opacity: 0.12;
+  animation: mlo-tick var(--mlo-dur) linear infinite both;
+  animation-delay: calc(var(--mlo-dur) * (var(--i) - 12) / 12);
+}
+@keyframes mlo-tick {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.12;
+  }
+}
+
+/* ---- orbit：两点绕着看不见的轴左右穿行，远小近大（ldrs orbit） ---- */
+.mlo-orbit {
+  display: grid;
+  place-items: center;
+}
+.mlo-orbit-dot {
+  --d: calc(var(--mlo-dot) * 1.6);
+  grid-area: 1 / 1;
+  width: var(--d);
+  height: var(--d);
+  border-radius: 50%;
+  background: var(--mlo-color);
+  animation: mlo-orbit var(--mlo-dur) linear infinite;
+}
+.mlo-orbit-dot-b {
+  animation-delay: calc(var(--mlo-dur) / -2);
+}
+@keyframes mlo-orbit {
+  0% {
+    transform: translateX(calc(var(--mlo-size) * 0.25)) scale(0.74);
+    opacity: 0.65;
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  25% {
+    transform: translateX(0) scale(0.47);
+    opacity: 0.3;
+    animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+  }
+  50% {
+    transform: translateX(calc(var(--mlo-size) * -0.25)) scale(0.74);
+    opacity: 0.65;
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  75% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+  }
+  100% {
+    transform: translateX(calc(var(--mlo-size) * 0.25)) scale(0.74);
+    opacity: 0.65;
+  }
+}
+
+/* ---- pulsar：两圈涟漪从中心扩散并淡出 ---- */
+.mlo-pulse-ring,
+.mlo-pulse-core {
+  position: absolute;
+  border-radius: 50%;
+}
+.mlo-pulse-ring {
+  inset: 0;
+  border: calc(var(--mlo-thick) * 0.5) solid var(--mlo-color);
+  transform: scale(0.15);
+  opacity: 0;
+  animation: mlo-pulse var(--mlo-dur) cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+.mlo-pulse-ring-b {
+  animation-delay: calc(var(--mlo-dur) / -2);
+}
+.mlo-pulse-core {
+  inset: 38%;
+  background: var(--mlo-color);
+}
+@keyframes mlo-pulse {
+  0% {
+    transform: scale(0.15);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/*
+ * 减少动态效果：图形定格在一个好看的静止姿态，整体缓慢呼吸，
+ * 让人仍然知道「正在加载」，而不是误以为卡死。
+ */
+@media (prefers-reduced-motion: reduce) {
+  .mlo-visual,
+  .mlo-visual *,
+  .mlo-visual *::before {
+    animation: none !important;
+  }
+  .mlo-visual {
+    animation: mlo-breathe 2.4s ease-in-out infinite !important;
+  }
+  .mlo-chase-dot::before {
+    opacity: calc(0.25 + var(--i) * 0.15);
+  }
+  .mlo-tick::before {
+    opacity: calc(0.15 + var(--i) * 0.075);
+  }
+  .mlo-orbit-dot {
+    transform: translateX(calc(var(--mlo-size) * 0.25));
+  }
+  .mlo-orbit-dot-b {
+    transform: translateX(calc(var(--mlo-size) * -0.25));
+  }
+  .mlo-pulse-ring {
+    transform: scale(0.62);
+    opacity: 0.7;
+  }
+  .mlo-pulse-ring-b {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+}
+@keyframes mlo-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

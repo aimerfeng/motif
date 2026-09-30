@@ -201,7 +201,7 @@ export function DynamicIsland({ className, style, ...props }: DynamicIslandProps
               animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', transition: { delay: reduced ? 0 : 0.12, duration: reduced ? 0.15 : 0.32, ease: 'easeOut' } }}
               exit={reduced ? { opacity: 0, transition: { duration: 0.1 } } : { opacity: 0, scale: 0.9, filter: 'blur(10px)', transition: { duration: 0.16 } }}
             >
-              <Scene id={scene.id} accent={accent} still={!!reduced} seconds={seconds} />
+              <Scene id={scene.id} accent={accent} still={Boolean(reduced)} seconds={seconds} />
             </motion.div>
           </AnimatePresence>
         </motion.button>

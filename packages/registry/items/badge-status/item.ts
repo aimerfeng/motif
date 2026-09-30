@@ -1,0 +1,102 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'badge-status',
+  status: 'published',
+  title: { 'zh-CN': '脉冲状态徽章', en: 'Pulsing Status Badge' },
+  summary: {
+    'zh-CN': '带呼吸光环的状态徽章：在线、忙碌、离开、离线、直播、同步中。状态变化时颜色平滑过渡，文案上下滑动替换，读屏软件会播报。适合服务健康页、成员列表和直播标记。',
+    en: 'A status badge with a breathing halo: online, busy, away, offline, live, syncing. Color morphs and the label slides when the state changes, and screen readers announce it. Made for service health pages, member lists and live markers.',
+  },
+  kind: 'component',
+  category: 'badge',
+  tags: ['badge', 'status', 'presence', 'pulse', 'live', 'indicator', 'a11y'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'badge-status.tsx', export: 'BadgeStatus' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'badge-status.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'status',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '状态', en: 'Status' },
+      default: 'online',
+      options: [
+        { value: 'online', label: { 'zh-CN': '在线', en: 'Online' } },
+        { value: 'busy', label: { 'zh-CN': '忙碌', en: 'Do not disturb' } },
+        { value: 'away', label: { 'zh-CN': '离开', en: 'Away' } },
+        { value: 'offline', label: { 'zh-CN': '离线', en: 'Offline' } },
+        { value: 'live', label: { 'zh-CN': '直播中', en: 'Live' } },
+        { value: 'syncing', label: { 'zh-CN': '同步中', en: 'Syncing' } },
+      ],
+    },
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'soft',
+      options: [
+        { value: 'soft', label: { 'zh-CN': '柔和底色', en: 'Soft' } },
+        { value: 'outline', label: { 'zh-CN': '描边', en: 'Outline' } },
+        { value: 'solid', label: { 'zh-CN': '实心', en: 'Solid' } },
+      ],
+    },
+    {
+      key: 'size',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '尺寸', en: 'Size' },
+      default: 'md',
+      options: [
+        { value: 'sm', label: { 'zh-CN': '小', en: 'Small' } },
+        { value: 'md', label: { 'zh-CN': '中', en: 'Medium' } },
+        { value: 'lg', label: { 'zh-CN': '大', en: 'Large' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, hint: { 'zh-CN': '999 即胶囊', en: '999 gives a full pill' }, default: 999, min: 4, max: 999, step: 1, unit: 'px', safe: [6, 999] },
+    { key: 'pulse', type: 'number', group: 'motion', label: { 'zh-CN': '脉冲周期', en: 'Pulse period' }, default: 1.8, min: 0.8, max: 3.2, step: 0.1, unit: 's', safe: [1.2, 2.6] },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '切换弹簧', en: 'Switch spring' }, default: { visualDuration: 0.36, bounce: 0.2 } },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '自定义文案', en: 'Custom label' }, hint: { 'zh-CN': '留空则使用状态名', en: 'Leave empty for the default name' }, default: '', maxLength: 18 },
+  ],
+  presets: [
+    { id: 'mint-soft', name: { 'zh-CN': '薄荷', en: 'Mint Soft' }, values: { status: 'online', variant: 'soft', size: 'md', radius: 999 } },
+    { id: 'on-air', name: { 'zh-CN': '直播中', en: 'On Air' }, values: { status: 'live', variant: 'solid', size: 'md', radius: 6, pulse: 1.4 } },
+    { id: 'quiet-outline', name: { 'zh-CN': '素描边', en: 'Quiet Outline' }, values: { status: 'away', variant: 'outline', size: 'sm', radius: 8, pulse: 2.4 } },
+    { id: 'sync-large', name: { 'zh-CN': '同步中', en: 'Syncing' }, values: { status: 'syncing', variant: 'soft', size: 'lg', radius: 14, spring: { visualDuration: 0.5, bounce: 0.35 } } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  guidance: {
+    use: ['Use for a single, current state of an entity (service, person, stream, sync job). For counts or categories use a plain badge.'],
+    rules: [
+      'Change the status prop to update the badge in place; it is role="status" with aria-live="polite", so the text change is announced. Always keep the text, never rely on the dot color alone.',
+      'Use the label prop for domain wording ("Building", "Deploying") and keep it under two words.',
+      'One pulsing badge per row is plenty. Use offline or away (no pulse) for inactive entities so the eye goes to the live ones.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.7, posterTime: 3.6, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kibo',
+      repo: 'shadcnblocks/kibo',
+      sha: '3d63cdb15b79d972e3dc38a10997987672f9b263',
+      paths: ['packages/status/index.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 — Present shadcnblocks'],
+    },
+    modifications: [
+      'Replaced the shadcn Badge and group-variant classes with a single component driven by a status prop, using an animated --sc color variable (soft, outline, solid).',
+      'Swapped the CSS animate-ping for motion-driven pulses (double ring for live, slow ring for busy), added a spinner for syncing, hollow dots for away and offline, and a sliding, blurred label swap with layout animation.',
+      'Added six statuses, three sizes, radius, pulse period, spring and a custom label; role="status" announces changes. Reduced motion stops pulses, spinner and slides.',
+    ],
+    assets: [],
+  },
+})

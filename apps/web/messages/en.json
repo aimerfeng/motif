@@ -36,7 +36,9 @@
     "sourcesTitle": "Built on these open-source projects",
     "sourcesBody": "Integrated code keeps its original license and copyright notices, pinned to the commits we reviewed. Thank you to their authors.",
     "footer": "Motif is open source (MIT). Item data generated on {date}.",
-    "github": "View on GitHub"
+    "github": "View on GitHub",
+    "levelsTitle": "From a whole site to a single button",
+    "levelsLead": "Templates, styles, sections, components and effects: from an entire website down to one loading animation, everything can be previewed, tuned, downloaded, or copied as a skill."
   },
   "market": {
     "title": "Market",

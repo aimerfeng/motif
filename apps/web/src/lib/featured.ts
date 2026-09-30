@@ -6,26 +6,33 @@ export const HERO = { slug: 'mesh-gradient', preset: 'nocturne' }
 
 export const FEATURED: readonly string[] = [
   'fluid-simulation',
+  'mobile-app-landing',
+  'style-synthwave',
   'globe',
+  'ferrant-product-site',
+  'style-8bit',
+  'hero-glowy-waves',
   'liquid-form',
-  'mesh-gradient',
-  'god-rays',
-  'typography-vortex',
+  'toast-gooey',
+  'saas-dashboard-landing',
+  'style-swiss',
   'dock',
-  'laser',
-  'image-transitions',
-  'neuro-noise',
+  'showcase-integrations',
+  'style-claymorphism',
+  'typography-vortex',
+  'input-search-command',
+  'god-rays',
   'dynamic-island',
-  'border-beam',
 ]
 
-const CATEGORY_ORDER = ['background', 'shader', '3d', 'text', 'card', 'button', 'navigation', 'cursor', 'data', 'layout', 'transition']
+const KIND_ORDER = ['template', 'style', 'section', 'component', 'effect']
 
-export function marketOrder(a: { slug: string; category: string }, b: { slug: string; category: string }): number {
+export function marketOrder(a: { slug: string; kind: string; category: string }, b: { slug: string; kind: string; category: string }): number {
   const fa = FEATURED.indexOf(a.slug)
   const fb = FEATURED.indexOf(b.slug)
   if (fa !== -1 || fb !== -1) return (fa === -1 ? Infinity : fa) - (fb === -1 ? Infinity : fb)
-  const ca = CATEGORY_ORDER.indexOf(a.category)
-  const cb = CATEGORY_ORDER.indexOf(b.category)
-  return ca !== cb ? ca - cb : a.slug.localeCompare(b.slug)
+  const ka = KIND_ORDER.indexOf(a.kind)
+  const kb = KIND_ORDER.indexOf(b.kind)
+  if (ka !== kb) return ka - kb
+  return a.category !== b.category ? a.category.localeCompare(b.category) : a.slug.localeCompare(b.slug)
 }

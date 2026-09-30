@@ -54,7 +54,7 @@ vec2 coverUv(vec2 uv) {
 vec4 getFromColor(vec2 uv) { return texture2D(uFrom, coverUv(vec2(uv.x, 1.0 - uv.y))); }
 vec4 getToColor(vec2 uv) { return texture2D(uTo, coverUv(vec2(uv.x, 1.0 - uv.y))); }
 
-${transition.glsl.replace(/[^\x00-\x7f]/g, '')}
+${transition.glsl.replace(/[^\p{ASCII}]/gu, '')}
 
 void main() {
   gl_FragColor = transition(_uv);

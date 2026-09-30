@@ -148,7 +148,10 @@ export function ParticleButton({ className, style, burstKey, onClick, ...props }
     const start = performance.now()
     let frame = 0
     const tick = (now: number) => {
-      if (now - start >= holdSeconds * 1000) return setDone(false)
+      if (now - start >= holdSeconds * 1000) {
+        setDone(false)
+        return
+      }
       frame = requestAnimationFrame(tick)
     }
     frame = requestAnimationFrame(tick)

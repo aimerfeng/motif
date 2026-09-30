@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-ai-thinking',
+  status: 'published',
+  title: { 'zh-CN': 'AI 思考中', en: 'AI Thinking' },
+  summary: {
+    'zh-CN': '一个小图形加一句会流光、会轮换的状态文案，等待超过两秒后再显示已用时间。四种图形：星芒、光球、三点、扫描条。适合 AI 对话和任何长耗时的生成任务。',
+    en: 'A small mark plus a shimmering status line that rotates through messages and shows elapsed seconds once the wait passes two. Four marks: spark, orb, dots and sweep bar. For AI chats and any long-running generation.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['ai', 'thinking', 'loader', 'status', 'elapsed', 'chat', 'accessible'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'loader-ai-thinking.tsx', export: 'LoaderAiThinking' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-ai-thinking.tsx', role: 'component' },
+    { path: 'loader-ai-thinking.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '图形', en: 'Mark' },
+      default: 'spark',
+      options: [
+        { value: 'spark', label: { 'zh-CN': '星芒', en: 'Spark' } },
+        { value: 'orb', label: { 'zh-CN': '光球', en: 'Orb' } },
+        { value: 'dots', label: { 'zh-CN': '三点', en: 'Dots' } },
+        { value: 'bar', label: { 'zh-CN': '扫描条', en: 'Sweep bar' } },
+      ],
+    },
+    { key: 'messages', type: 'text', group: 'content', label: { 'zh-CN': '状态文案', en: 'Messages' }, hint: { 'zh-CN': '用 | 分隔，会依次轮换', en: 'Separate with |; they rotate in order' }, default: 'Thinking|Reading your sources|Drafting a reply', maxLength: 120 },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '图形颜色', en: 'Mark color' }, default: '#a78bfa' },
+    { key: 'textColor', type: 'color', group: 'look', label: { 'zh-CN': '文字颜色', en: 'Text color' }, default: '#a1a1aa' },
+    { key: 'size', type: 'number', group: 'look', label: { 'zh-CN': '图形尺寸', en: 'Mark size' }, default: 18, min: 12, max: 40, step: 1, unit: 'px', safe: [14, 28] },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0.5, max: 2, step: 0.05, unit: 'x', safe: [0.7, 1.5] },
+    { key: 'interval', type: 'number', group: 'motion', label: { 'zh-CN': '换句间隔', en: 'Message interval' }, default: 2.6, min: 1.5, max: 8, step: 0.1, unit: 's', safe: [2, 5] },
+    { key: 'showElapsed', type: 'boolean', group: 'content', label: { 'zh-CN': '显示已用时间', en: 'Show elapsed time' }, hint: { 'zh-CN': '等待超过 2 秒后出现', en: 'Appears after two seconds' }, default: true },
+    { key: 'delay', type: 'number', group: 'interaction', label: { 'zh-CN': '延迟出现', en: 'Show delay' }, default: 0, min: 0, max: 1, step: 0.05, unit: 's' },
+  ],
+  presets: [
+    { id: 'violet', name: { 'zh-CN': '紫夜', en: 'Violet Night' }, values: { variant: 'spark', color: '#a78bfa', textColor: '#a1a1aa' } },
+    { id: 'orb', name: { 'zh-CN': '晶球', en: 'Crystal' }, values: { variant: 'orb', color: '#38bdf8', textColor: '#a1a1aa', messages: 'Thinking|Searching the web|Checking the numbers', size: 20 } },
+    { id: 'terminal', name: { 'zh-CN': '终端', en: 'Terminal' }, values: { variant: 'dots', color: '#4ade80', textColor: '#86efac', messages: 'Running tools|Reading the logs|Writing a fix', size: 16, speed: 1.1 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { variant: 'bar', color: '#fb923c', textColor: '#a8a29e', messages: 'Generating|Refining|Finishing up', size: 18 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  guidance: {
+    use: ['Use in chat and generation UIs while a model works. Use loader-text-shimmer alone when only the sentence is needed; use progress-bar when real progress is known.'],
+    rules: [
+      'Write specific messages for what the system is doing; rotate them slowly (2-5 s).',
+      'Never fake progress: the sweep bar is intentionally indeterminate.',
+      'The elapsed counter is aria-hidden so screen readers only hear the message change, not every second.',
+    ],
+  },
+  capture: { zoom: 2, posterTime: 3.4, loop: 9 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'smoothui',
+      repo: 'educlopez/smoothui',
+      sha: 'b6312bce2b6f2ed95d8a6e98a592857884f5ea9e',
+      paths: ['packages/smoothui/components/ai-loader/index.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Eduardo Calvo'],
+      origin: 'The shimmering status line follows prompt-kit text-shimmer (Copyright (c) 2025 Julien Thibeaut, MIT).',
+    },
+    modifications: [
+      'Rewrote the dots and sweep-bar variants as CSS keyframes (upstream drives them with motion and useAnimationFrame) and kept the shared-cycle idea and the ease-in-out curve.',
+      'Added a spark and an orb mark, rotating status messages, a shimmering text gradient, and a show delay; the elapsed counter now starts after two seconds and is aria-hidden.',
+      'The clock uses rAF and performance.now so it pauses in background tabs and is deterministic under the capture clock; reduced motion freezes the marks, breathes their opacity and swaps messages with a plain fade.',
+    ],
+    assets: [],
+  },
+})

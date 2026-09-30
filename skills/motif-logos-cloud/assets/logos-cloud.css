@@ -1,0 +1,30 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Mudunuri Bhaskara Karthikeya Varma
+ * Source: https://github.com/karthikmudunuri/eldoraui/blob/6bb8fd2/apps/www/registry/blocks/logo-cloud-02/page.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+@keyframes lc-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.lc-track {
+  animation: lc-left var(--lc-dur) linear infinite;
+  will-change: transform;
+}
+
+.lc-cloud:hover .lc-pausable {
+  animation-play-state: paused;
+}
+
+/* 减少动态效果时停止滚动。 */
+@media (prefers-reduced-motion: reduce) {
+  .lc-track {
+    animation: none;
+  }
+}
