@@ -21,6 +21,7 @@ Digits pop into a row of slots with a blinking caret; wrong codes shake red and 
 
 - `assets/input-otp.tsx` — the component (`InputOtp`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-input-otp`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -47,7 +48,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `radius` | 12 | 12 | 0–26 px (best 6–20) | Corner radius |
 | `size` | 52 | 52 | 36–64 px (best 42–60) | Slot size |
 | `separator` | true | true | boolean | Even lengths, boxes only |
-| `spring` | visualDuration 0.28, bounce 0.35 | visualDuration 0.28, bounce 0.35 | visualDuration s, bounce 0–1 | Pop-in spring |
+| `spring` | visualDuration 0.28, bounce 0.35 | visualDuration 0.28, bounce 0.35 | visualDuration 0.05–4 s, bounce 0–0.9 | Pop-in spring |
 
 ## Rules
 

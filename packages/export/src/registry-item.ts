@@ -31,24 +31,38 @@ export function runtimeRegistryItem(context: ExportContext): RegistryItemJson {
   }
 }
 
+export interface ComponentFile {
+  /** 条目内的相对路径。 */
+  path: string
+  /** 放进用户项目的位置（相对项目根或 src/）。 */
+  target: string
+  content: string
+}
+
 /**
- * 条目的 registry item：`npx shadcn add <origin>/r/<slug>.json` 安装。
- * 所有文件落在 components/motif/<slug>/，保持条目内部的相对导入可用；参数值已写进 defaults。
+ * 条目要放进用户项目的全部文件（不含演示和资源）：入口文件已写入参数，运行时导入改成 @/lib/motif-runtime。
+ * 都落在 components/motif/<slug>/，条目内部的相对导入保持可用。registry 和站点上的「手动复制」共用这一份。
  */
+export function componentFiles(item: ItemSource, bakedEntry: string): ComponentFile[] {
+  const { manifest } = item
+  return manifest.files
+    .filter((file) => file.role !== 'demo' && file.role !== 'asset')
+    .map((file) => ({
+      path: file.path,
+      target: `components/motif/${manifest.slug}/${file.path}`,
+      content: rewriteRuntimeImport(file.path === manifest.entry.file ? bakedEntry : (item.files[file.path] ?? ''), '@/lib/motif-runtime'),
+    }))
+}
+
+/** 条目的 registry item：`npx shadcn add <origin>/r/<slug>.json` 安装，参数值已写进 defaults。 */
 export function itemRegistryItem(item: ItemSource, values: ParamValues, context: ExportContext, options: { bakedEntry: string; hash: string }): RegistryItemJson {
   const { manifest } = item
-  const dir = `components/motif/${manifest.slug}`
-  const files: RegistryItemJson['files'] = []
-  for (const file of manifest.files) {
-    if (file.role === 'demo' || file.role === 'asset') continue
-    const code = file.path === manifest.entry.file ? options.bakedEntry : item.files[file.path] ?? ''
-    files.push({
-      path: `registry/motif/${manifest.slug}/${file.path}`,
-      type: file.path.endsWith('.css') ? 'registry:file' : 'registry:component',
-      content: rewriteRuntimeImport(code, '@/lib/motif-runtime'),
-      target: `${dir}/${file.path}`,
-    })
-  }
+  const files: RegistryItemJson['files'] = componentFiles(item, options.bakedEntry).map((file) => ({
+    path: `registry/motif/${manifest.slug}/${file.path}`,
+    type: file.path.endsWith('.css') ? 'registry:file' : 'registry:component',
+    content: file.content,
+    target: file.target,
+  }))
   const npm = npmDependencies(item, context)
   delete npm.clsx
   delete npm['tailwind-merge']

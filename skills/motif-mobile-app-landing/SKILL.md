@@ -25,6 +25,7 @@ A dark mobile-app site: three phones drawn in JSX float in front of track lines,
 - `assets/phones.tsx`
 - `assets/parts.tsx`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-mobile-app-landing`, then set the values from Tuned parameters below.
 
 ## Install
 

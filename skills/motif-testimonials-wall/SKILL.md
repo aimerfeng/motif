@@ -22,6 +22,7 @@ Twelve customer quotes in three columns that drift in opposite directions and fa
 - `assets/testimonials-wall.tsx` — the component (`TestimonialsWall`); the tuned values are baked into its `defaults` object
 - `assets/testimonials-wall.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-testimonials-wall`, then set the values from Tuned parameters below.
 
 ## Install
 

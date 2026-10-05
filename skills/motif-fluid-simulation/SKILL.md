@@ -23,6 +23,7 @@ A real Navier-Stokes fluid solved on the GPU: colored dye constantly stirred int
 - `assets/fluid-simulation.tsx` — the component (`FluidSimulation`); the tuned values are baked into its `defaults` object
 - `assets/fluid-engine.ts`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-fluid-simulation`, then set the values from Tuned parameters below.
 
 ## Install
 

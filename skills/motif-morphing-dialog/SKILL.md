@@ -21,6 +21,7 @@ Tap a card and it springs open into a dialog, title and cover riding along while
 
 - `assets/morphing-dialog.tsx` — the component (`MorphingDialog`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-morphing-dialog`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -41,7 +42,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 
 | Param | Value | Default | Range | Meaning |
 | --- | --- | --- | --- | --- |
-| `spring` | visualDuration 0.5, bounce 0.15 | visualDuration 0.5, bounce 0.15 | visualDuration s, bounce 0–1 | Shorter is crisper, more bounce overshoots |
+| `spring` | visualDuration 0.5, bounce 0.15 | visualDuration 0.5, bounce 0.15 | visualDuration 0.05–4 s, bounce 0–0.9 | Shorter is crisper, more bounce overshoots |
 | `radius` | 24 | 24 | 4–40 px (best 12–32) | Dialog radius |
 | `triggerRadius` | 18 | 18 | 4–40 px (best 8–28) | Trigger radius |
 | `backdropOpacity` | 0.5 | 0.5 | 0.1–0.85 (best 0.3–0.7) | Backdrop dimming |

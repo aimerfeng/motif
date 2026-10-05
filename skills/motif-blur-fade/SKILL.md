@@ -21,6 +21,7 @@ Content drifts in out of a soft blur and snaps into focus, like a lens finding i
 
 - `assets/blur-fade.tsx` — the component (`BlurFade`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-blur-fade`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -44,7 +45,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `text` | Craft the moments between screens | Craft the moments between screens | ≤ 60 chars | Demo only |
 | `duration` | 0.9 | 0.9 | 0.2–2.5 s (best 0.5–1.4) | Duration |
 | `delay` | 0 | 0 | 0–3 s | Stagger several elements with it |
-| `ease` | 0.22, 1, 0.36, 1 | 0.22, 1, 0.36, 1 | cubic-bezier | Easing |
+| `ease` | 0.22, 1, 0.36, 1 | 0.22, 1, 0.36, 1 | cubic-bezier, x 0–1, y -0.6–1.6 | Easing |
 | `direction` | up | up | up / down / left / right | Direction |
 | `offset` | 16 | 16 | 0–80 px (best 6–36) | Travel distance |
 | `blur` | 10 | 10 | 0–30 px (best 4–18) | Start blur |

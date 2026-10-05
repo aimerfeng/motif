@@ -12,13 +12,36 @@ export const DEFAULTS_END = '/* @motif:end */'
 
 const IDENTIFIER = /^[A-Za-z_$][\w$]*$/
 
+/**
+ * 单引号字符串字面量。值可能来自分享链接，必须保证写出来的永远只是一个字符串：
+ * 反斜杠、引号、换行、行分隔符和其他控制字符都写成转义序列；`*` 后面紧跟 `/` 时写成 `*\/`，
+ * 这样值里不会出现区域的结束标记，下一次 bake 也能找对区域。
+ */
+function quote(text: string): string {
+  let body = ''
+  for (const char of text) {
+    const code = char.codePointAt(0)!
+    if (char === '\\') body += '\\\\'
+    else if (char === "'") body += "\\'"
+    else if (char === '\n') body += '\\n'
+    else if (char === '\r') body += '\\r'
+    else if (code < 0x20 || code === 0x7f || code === 0x2028 || code === 0x2029) body += `\\u${code.toString(16).padStart(4, '0')}`
+    else body += char
+  }
+  return `'${body.replaceAll('*/', '*\\/')}'`
+}
+
 function printValue(value: JsonValue, indent: string): string {
   if (value === null) return 'null'
-  if (typeof value === 'string') return `'${value.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (typeof value === 'string') return quote(value)
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) throw new Error(`cannot print ${value} as a default value`)
+    return String(value)
+  }
+  if (typeof value === 'boolean') return String(value)
   if (Array.isArray(value)) return `[${value.map((item) => printValue(item, indent)).join(', ')}]`
   const inner = `${indent}  `
-  const entries = Object.entries(value).map(([key, item]) => `${inner}${IDENTIFIER.test(key) ? key : `'${key}'`}: ${printValue(item, inner)},`)
+  const entries = Object.entries(value).map(([key, item]) => `${inner}${IDENTIFIER.test(key) ? key : quote(key)}: ${printValue(item, inner)},`)
   return entries.length === 0 ? '{}' : `{\n${entries.join('\n')}\n${indent}}`
 }
 

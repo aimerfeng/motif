@@ -21,6 +21,7 @@ Heading and a small “talk to a person” card on the left, six questions on th
 
 - `assets/faq-accordion.tsx` — the component (`FaqAccordion`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-faq-accordion`, then set the values from Tuned parameters below.
 
 ## Install
 

@@ -21,6 +21,7 @@ A two-series chart card with a time-range switch, area, bar or line drawing and 
 
 - `assets/dashboard-area-chart.tsx` — the component (`DashboardAreaChart`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-dashboard-area-chart`, then set the values from Tuned parameters below.
 
 ## Install
 

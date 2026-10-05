@@ -21,6 +21,7 @@ Buttons and icons drift toward the pointer as it approaches, then spring back wh
 
 - `assets/magnetic.tsx` — the component (`Magnetic`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-magnetic`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -44,7 +45,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `intensity` | 0.5 | 0.5 | 0.1–1 (best 0.25–0.75) | How much of the pointer offset the element follows |
 | `range` | 120 | 120 | 40–300 px (best 80–200) | How close the pointer must be to start pulling |
 | `actionArea` | parent | parent | self / parent / global | Active area |
-| `spring` | visualDuration 0.45, bounce 0.3 | visualDuration 0.45, bounce 0.3 | visualDuration s, bounce 0–1 | Shorter is snappier, more bounce wobbles longer |
+| `spring` | visualDuration 0.45, bounce 0.3 | visualDuration 0.45, bounce 0.3 | visualDuration 0.05–4 s, bounce 0–0.9 | Shorter is snappier, more bounce wobbles longer |
 
 ## Rules
 

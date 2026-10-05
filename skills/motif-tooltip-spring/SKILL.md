@@ -21,6 +21,7 @@ Tooltips spring in with a touch of blur; inside a group, one bubble glides betwe
 
 - `assets/tooltip-spring.tsx` — the component (`TooltipSpring`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-tooltip-spring`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #8b5cf6 | #8b5cf6 | color | Used by the accent variant |
 | `side` | top | top | top / bottom | Side |
 | `radius` | 10 | 10 | 2–18 px (best 6–14) | Corner radius |
-| `spring` | visualDuration 0.3, bounce 0.22 | visualDuration 0.3, bounce 0.22 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.3, bounce 0.22 | visualDuration 0.3, bounce 0.22 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `arrow` | true | true | boolean | Arrow |
 | `delay` | 0.35 | 0.35 | 0–1.2 s (best 0.15–0.6) | Skipped when moving between tooltips |
 

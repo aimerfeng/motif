@@ -21,6 +21,7 @@ Headline and calls to action on the left, a slowly turning orb of 4×4 dithered 
 
 - `assets/hero-dithering-orb.tsx` — the component (`HeroDitheringOrb`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-hero-dithering-orb`, then set the values from Tuned parameters below.
 
 ## Install
 

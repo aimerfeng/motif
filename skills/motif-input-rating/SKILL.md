@@ -21,6 +21,7 @@ Icons light up to the pointer and swell on hover; on click the chosen icons pop 
 
 - `assets/input-rating.tsx` — the component (`InputRating`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-input-rating`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -47,7 +48,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `count` | 5 | 5 | 3–10 (best 3–7) | Count |
 | `allowHalf` | false | false | boolean | Allow half steps |
 | `gap` | 6 | 6 | 0–20 px (best 2–12) | Gap |
-| `spring` | visualDuration 0.3, bounce 0.5 | visualDuration 0.3, bounce 0.5 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.3, bounce 0.5 | visualDuration 0.3, bounce 0.5 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 
 ## Rules
 

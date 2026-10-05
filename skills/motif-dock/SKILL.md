@@ -21,6 +21,7 @@ Icons swell smoothly as the pointer nears them and pull their neighbors along, l
 
 - `assets/dock.tsx` — the component (`Dock`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-dock`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `iconMagnification` | 80 | 80 | 40–128 px (best 60–104) | Magnified size |
 | `iconDistance` | 150 | 150 | 60–320 px (best 100–220) | How far from an icon the swell starts |
 | `gap` | 8 | 8 | 0–24 px (best 4–14) | Gap |
-| `spring` | visualDuration 0.28, bounce 0.25 | visualDuration 0.28, bounce 0.25 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.28, bounce 0.25 | visualDuration 0.28, bounce 0.25 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `direction` | bottom | bottom | bottom / middle / top | Grow toward |
 | `disableMagnification` | false | false | boolean | Disable magnification |
 

@@ -23,6 +23,7 @@ Ten hand-picked WebGL transitions (warps, zooms, cube, ripple, polka dots and mo
 - `assets/shaders.ts`
 - `assets/artwork.ts`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-image-transitions`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -46,7 +47,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `transition` | crosswarp | crosswarp | crosswarp / crosszoom / directional-warp / ripple / swirl / cube / glitch-memories / polka-dots / circle-open / dreamy-zoom | Transition |
 | `duration` | 1.6 | 1.6 | 0.4–3.5 s (best 0.8–2.4) | Duration |
 | `pause` | 1.2 | 1.2 | 0.2–5 s | How long each slide holds before the next transition |
-| `easing` | 0.65, 0, 0.35, 1 | 0.65, 0, 0.35, 1 | cubic-bezier | Easing |
+| `easing` | 0.65, 0, 0.35, 1 | 0.65, 0, 0.35, 1 | cubic-bezier, x 0–1, y -0.6–1.6 | Easing |
 | `scheme` | dusk | dusk | dusk / mono / lagoon / candy | Palette |
 | `slides` | 2 | 2 | 2 / 3 | Two slides ping-pong, three run in sequence |
 

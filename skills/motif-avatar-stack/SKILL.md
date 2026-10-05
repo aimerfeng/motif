@@ -21,6 +21,7 @@ A row of overlapping gradient avatars: the one under the pointer lifts, its neig
 
 - `assets/avatar-stack.tsx` — the component (`AvatarStack`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-avatar-stack`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -46,7 +47,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `maxVisible` | 5 | 5 | 2–8 (best 3–6) | Max visible |
 | `shape` | circle | circle | circle / squircle | Shape |
 | `spread` | 10 | 10 | 0–20 px (best 4–14) | Neighbor spread |
-| `spring` | visualDuration 0.3, bounce 0.3 | visualDuration 0.3, bounce 0.3 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.3, bounce 0.3 | visualDuration 0.3, bounce 0.3 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `color` | #8b5cf6 | #8b5cf6 | color | Focus color |
 | `showStatus` | true | true | boolean | Presence dots |
 

@@ -21,6 +21,7 @@ Glowing filaments weave into a neural-network texture, like lightning, veins or 
 
 - `assets/neuro-noise.tsx` — the component (`NeuroNoiseBackground`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-neuro-noise`, then set the values from Tuned parameters below.
 
 ## Install
 

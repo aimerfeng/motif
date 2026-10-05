@@ -22,6 +22,7 @@ A dark design-and-engineering studio site: a hero with a beam-lit product mock, 
 
 - `assets/studio-agency-site.tsx` — the component (`StudioAgencySite`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-studio-agency-site`, then set the values from Tuned parameters below.
 
 ## Install
 

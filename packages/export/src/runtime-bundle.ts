@@ -1,3 +1,5 @@
+import { REPO_URL } from './context.ts'
+
 /**
  * 把 packages/runtime/src 下的多个模块合成一个可以直接放进用户项目的 motif-runtime.ts。
  * 做法很朴素：去掉模块之间的相对导入和 index 的再导出，合并、去重外部导入。
@@ -46,7 +48,7 @@ export function bundleRuntime(files: Record<string, string>): string {
   }
 
   return [
-    '// motif-runtime: hooks shared by Motif components (https://github.com/aimerfeng/motif, MIT).',
+    `// motif-runtime: hooks shared by Motif components (${REPO_URL}, MIT).`,
     '// Generated from packages/runtime/src; edit there, not here.',
     ...importLines,
     '',

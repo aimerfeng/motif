@@ -63,3 +63,13 @@ test('shadcn registry 按链接里的参数生成组件', async ({ request }) =>
   const invalid = await request.get(`/r/${SLUG}.json?v=eyJzaXplIjo5OTk5fQ`)
   expect((await invalid.json()).files[0].content).toContain('size: 160,')
 })
+
+test('链接里夹带代码的参数进不了导出的组件', async ({ request }) => {
+  // {"spring":{"visualDuration":0.4,"bounce":0.2,"a':globalThis.pwned=1,'b":1}} 的 base64url：多出来的键曾经会原样写进 defaults。
+  const payload = 'eyJzcHJpbmciOnsidmlzdWFsRHVyYXRpb24iOjAuNCwiYm91bmNlIjowLjIsImEnOmdsb2JhbFRoaXMucHduZWQ9MSwnYiI6MX19'
+  const response = await request.get(`/r/number-ticker.json?v=${payload}`)
+  expect(response.ok()).toBe(true)
+  const content: string = (await response.json()).files[0].content
+  expect(content).not.toContain('pwned')
+  expect(content).toContain('visualDuration: 1.8,')
+})

@@ -21,6 +21,7 @@ A number that springs from a start value to its target with tabular digits, so n
 
 - `assets/number-ticker.tsx` — the component (`NumberTicker`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-number-ticker`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -47,7 +48,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `prefix` |  |  | ≤ 4 chars | Prefix |
 | `suffix` |  |  | ≤ 4 chars | Suffix |
 | `grouping` | true | true | boolean | Thousands separator |
-| `spring` | visualDuration 1.8, bounce 0 | visualDuration 1.8, bounce 0 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 1.8, bounce 0 | visualDuration 1.8, bounce 0 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `delay` | 0 | 0 | 0–3 s | Delay |
 | `direction` | up | up | up / down | Down rolls from the target back to the start value |
 | `startOnView` | false | false | boolean | Start in viewport |

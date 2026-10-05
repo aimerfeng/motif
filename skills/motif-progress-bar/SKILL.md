@@ -22,6 +22,7 @@ A determinate progress bar: the fill glides on a spring with the number in step,
 - `assets/progress-bar.tsx` — the component (`ProgressBar`); the tuned values are baked into its `defaults` object
 - `assets/progress-bar.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-progress-bar`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -47,7 +48,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #8b5cf6 | #8b5cf6 | color | Color |
 | `colorEnd` | #ec4899 | #ec4899 | color | Used by gradient, striped and glow |
 | `radius` | 24 | 24 | 0–24 px | At or above half the thickness it becomes a pill |
-| `spring` | visualDuration 0.6, bounce 0 | visualDuration 0.6, bounce 0 | visualDuration s, bounce 0–1 | Progress should not overshoot; keep bounce small |
+| `spring` | visualDuration 0.6, bounce 0 | visualDuration 0.6, bounce 0 | visualDuration 0.05–4 s, bounce 0–0.9 | Progress should not overshoot; keep bounce small |
 | `label` | Uploading | Uploading | ≤ 32 chars | Label |
 | `showLabel` | true | true | boolean | Show label |
 | `showValue` | true | true | boolean | Show percent |

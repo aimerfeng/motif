@@ -23,6 +23,7 @@ A perspective grid rolls in from the horizon under a soft glow, its distant line
 - `assets/retro-grid.tsx` — the component (`RetroGrid`); the tuned values are baked into its `defaults` object
 - `assets/shaders.ts`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-retro-grid`, then set the values from Tuned parameters below.
 
 ## Install
 

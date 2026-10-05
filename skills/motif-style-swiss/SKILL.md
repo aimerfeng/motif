@@ -22,6 +22,7 @@ A strict twelve-column grid, the Radix twelve-step grey scale and one accent, fl
 
 - `assets/style-swiss.tsx` — the component (`StyleSwiss`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-style-swiss`, then set the values from Tuned parameters below.
 
 ## Install
 

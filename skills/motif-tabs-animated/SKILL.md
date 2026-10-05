@@ -21,6 +21,7 @@ A spring-driven indicator glides to the next tab while the panel slides in from 
 
 - `assets/tabs-animated.tsx` — the component (`TabsAnimated`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-tabs-animated`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -46,7 +47,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `size` | md | md | sm / md / lg | Size |
 | `radius` | 10 | 10 | 4–20 px (best 6–14) | For pill and segment styles |
 | `stretch` | false | false | boolean | Stretch to width |
-| `spring` | visualDuration 0.3, bounce 0.12 | visualDuration 0.3, bounce 0.12 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.3, bounce 0.12 | visualDuration 0.3, bounce 0.12 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 
 ## Rules
 

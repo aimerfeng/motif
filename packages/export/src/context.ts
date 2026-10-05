@@ -1,6 +1,10 @@
 import type { ItemSource, ParamValues } from '@motif/schema'
 import { FONTS, VENDOR_ENTRIES, type FontEntry } from '@motif/vendor/manifest'
 
+/** 仓库：Skill 里的安装命令、仓库内 skill 的来源链接、站点上的 GitHub 链接都从这里取。 */
+export const REPO = 'aimerfeng/motif'
+export const REPO_URL = `https://github.com/${REPO}`
+
 /** 导出时需要的站点级信息（来自 catalog.json）。 */
 export interface ExportContext {
   /** 站点地址，例如 https://motif.dev；用于 registry URL 和 Skill 里的来源链接。 */

@@ -21,6 +21,7 @@ A soft pool of light trails the pointer across a card and fades when it leaves. 
 
 - `assets/spotlight.tsx` — the component (`Spotlight`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-spotlight`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #a5b4fc | #a5b4fc | color | Color |
 | `intensity` | 0.42 | 0.42 | 0.05–0.8 (best 0.2–0.6) | Intensity |
 | `blur` | 24 | 24 | 0–60 px (best 12–40) | Blur radius on the edge of the light |
-| `spring` | visualDuration 0.3, bounce 0 | visualDuration 0.3, bounce 0 | visualDuration s, bounce 0–1 | Longer durations make the light trail behind |
+| `spring` | visualDuration 0.3, bounce 0 | visualDuration 0.3, bounce 0 | visualDuration 0.05–4 s, bounce 0–0.9 | Longer durations make the light trail behind |
 
 ## Rules
 

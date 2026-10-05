@@ -21,6 +21,7 @@ The thumb stretches under your finger and springs across on release while the tr
 
 - `assets/toggle-spring.tsx` — the component (`ToggleSpring`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-toggle-spring`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #8b5cf6 | #8b5cf6 | color | On color |
 | `size` | 32 | 32 | 22–48 px (best 26–40) | Height |
 | `radius` | 22 | 22 | 4–24 px (best 8–24) | Anything above half the height is a full pill |
-| `spring` | visualDuration 0.32, bounce 0.3 | visualDuration 0.32, bounce 0.3 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.32, bounce 0.3 | visualDuration 0.32, bounce 0.3 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `label` | Push notifications | Push notifications | ≤ 32 chars | Label |
 
 ## Rules

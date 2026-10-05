@@ -21,6 +21,7 @@ When a file is dragged in, the dashed border starts to flow and the icon bobs; o
 
 - `assets/input-dropzone.tsx` — the component (`InputDropzone`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-input-dropzone`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #38bdf8 | #38bdf8 | color | Accent |
 | `radius` | 18 | 18 | 6–32 px (best 10–24) | Corner radius |
 | `height` | 156 | 156 | 110–240 px (best 130–200) | Zone height |
-| `spring` | visualDuration 0.34, bounce 0.25 | visualDuration 0.34, bounce 0.25 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.34, bounce 0.25 | visualDuration 0.34, bounce 0.25 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `title` | Drop files here or | Drop files here or | ≤ 32 chars | A "browse" link follows it |
 | `hint` | PNG, JPG or PDF up to 10 MB | PNG, JPG or PDF up to 10 MB | ≤ 48 chars | Hint |
 

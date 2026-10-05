@@ -22,6 +22,7 @@ A small mark plus a shimmering status line that rotates through messages and sho
 - `assets/loader-ai-thinking.tsx` — the component (`LoaderAiThinking`); the tuned values are baked into its `defaults` object
 - `assets/loader-ai-thinking.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-loader-ai-thinking`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -43,7 +44,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | Param | Value | Default | Range | Meaning |
 | --- | --- | --- | --- | --- |
 | `variant` | spark | spark | spark / orb / dots / bar | Mark |
-| `messages` | Thinking|Reading your sources|Drafting a reply | Thinking|Reading your sources|Drafting a reply | ≤ 120 chars | Separate with /; they rotate in order |
+| `messages` | Thinking\|Reading your sources\|Drafting a reply | Thinking\|Reading your sources\|Drafting a reply | ≤ 120 chars | Separate with /; they rotate in order |
 | `color` | #a78bfa | #a78bfa | color | Mark color |
 | `textColor` | #a1a1aa | #a1a1aa | color | Text color |
 | `size` | 18 | 18 | 12–40 px (best 14–28) | Mark size |

@@ -21,6 +21,7 @@ A black capsule that morphs between idle, now playing, device battery and an inc
 
 - `assets/dynamic-island.tsx` — the component (`DynamicIsland`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-dynamic-island`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -41,7 +42,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 
 | Param | Value | Default | Range | Meaning |
 | --- | --- | --- | --- | --- |
-| `spring` | visualDuration 0.55, bounce 0.3 | visualDuration 0.55, bounce 0.3 | visualDuration s, bounce 0–1 | Morph spring |
+| `spring` | visualDuration 0.55, bounce 0.3 | visualDuration 0.55, bounce 0.3 | visualDuration 0.05–4 s, bounce 0–0.9 | Morph spring |
 | `autoplay` | true | true | boolean | Cycles through the states; click the island to advance by hand |
 | `dwell` | 2 | 2 | 1–6 s (best 1.6–3.5) | Time per state |
 | `scale` | 1 | 1 | 0.7–1.6 x (best 0.8–1.4) | Scale |

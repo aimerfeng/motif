@@ -21,6 +21,7 @@ A gradient-stroked ring whose arc and center number ride one spring. Full ring, 
 
 - `assets/progress-ring.tsx` — the component (`ProgressRing`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-progress-ring`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -48,7 +49,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `colorEnd` | #ec4899 | #ec4899 | color | End color |
 | `cap` | round | round | round / butt | Line cap |
 | `glow` | true | true | boolean | Glow |
-| `spring` | visualDuration 0.9, bounce 0 | visualDuration 0.9, bounce 0 | visualDuration s, bounce 0–1 | Fill spring |
+| `spring` | visualDuration 0.9, bounce 0 | visualDuration 0.9, bounce 0 | visualDuration 0.05–4 s, bounce 0–0.9 | Fill spring |
 | `label` | Daily goal | Daily goal | ≤ 24 chars | Label |
 | `showValue` | true | true | boolean | Show center value |
 

@@ -1,14 +1,14 @@
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { prepareExport, skillFiles, skillName, type ExportContext } from '@motif/export'
+import { prepareExport, REPO_URL, skillFiles, skillName, type ExportContext } from '@motif/export'
 import { ITEMS_DIR, loadItemSource, loadRuntime, REPO_ROOT } from '@motif/registry'
 import { defaultsOf } from '@motif/schema'
 import { VENDOR_ENTRIES } from '@motif/vendor/manifest'
 
 export const LIBRARY_DIR = fileURLToPath(new URL('../library/', import.meta.url))
 export const SKILLS_OUT = path.join(REPO_ROOT, 'skills')
-export const REPO_URL = 'https://github.com/aimerfeng/motif'
+export { REPO_URL }
 
 /** skill 目录名 → （相对路径 → 文本）。 */
 export type SkillTree = Record<string, Record<string, string>>

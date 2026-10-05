@@ -21,6 +21,7 @@ Content loops end to end at a steady pace with faded edges and eases down on hov
 
 - `assets/infinite-slider.tsx` — the component (`InfiniteSlider`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-infinite-slider`, then set the values from Tuned parameters below.
 
 ## Install
 

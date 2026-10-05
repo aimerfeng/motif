@@ -21,6 +21,7 @@ A sheet that rises from the bottom while the page behind it scales back. Drag th
 
 - `assets/dialog-drawer.tsx` — the component (`DialogDrawer`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-dialog-drawer`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -44,7 +45,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #8b5cf6 | #8b5cf6 | color | Accent |
 | `radius` | 26 | 26 | 8–40 px (best 16–32) | Top radius |
 | `snapMode` | two | two | two / single | Snap points |
-| `spring` | visualDuration 0.5, bounce 0.12 | visualDuration 0.5, bounce 0.12 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.5, bounce 0.12 | visualDuration 0.5, bounce 0.12 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `dim` | 0.55 | 0.55 | 0–0.85 (best 0.35–0.7) | Backdrop dim |
 | `scaleBackground` | true | true | boolean | Scale page back |
 | `maxWidth` | 460 | 460 | 320–720 px (best 380–560) | Max width |

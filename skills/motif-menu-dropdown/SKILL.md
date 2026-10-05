@@ -21,6 +21,7 @@ The menu springs open from its trigger with a touch of blur, items settle in one
 
 - `assets/menu-dropdown.tsx` — the component (`MenuDropdown`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-menu-dropdown`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `radius` | 14 | 14 | 6–24 px (best 8–20) | Corner radius |
 | `width` | 248 | 248 | 200–340 px (best 220–300) | Menu width |
 | `align` | start | start | start / end | Align |
-| `spring` | visualDuration 0.34, bounce 0.16 | visualDuration 0.34, bounce 0.16 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.34, bounce 0.16 | visualDuration 0.34, bounce 0.16 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `showShortcuts` | true | true | boolean | Show shortcuts |
 | `label` | Project | Project | ≤ 20 chars | Trigger label |
 

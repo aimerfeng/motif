@@ -23,6 +23,7 @@ Notched pixel outlines, Press Start 2P headings, stepped motion and a 16-color p
 - `assets/style-8bit.tsx` — the component (`EightBit`); the tuned values are baked into its `defaults` object
 - `assets/style-8bit.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-style-8bit`, then set the values from Tuned parameters below.
 
 ## Install
 

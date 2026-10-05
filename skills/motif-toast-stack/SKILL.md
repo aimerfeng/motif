@@ -22,6 +22,7 @@ Sonner-style stacking toasts: cards tuck behind the newest one, expand into a li
 - `assets/toast-stack.tsx` — the component (`ToastStack`); the tuned values are baked into its `defaults` object
 - `assets/toast-stack.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-toast-stack`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -50,7 +51,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `radius` | 14 | 14 | 4–24 px (best 8–20) | Corner radius |
 | `richColors` | false | false | boolean | Rich colors |
 | `expandOnHover` | true | true | boolean | Expand on hover |
-| `spring` | visualDuration 0.45, bounce 0.12 | visualDuration 0.45, bounce 0.12 | visualDuration s, bounce 0–1 | Motion spring |
+| `spring` | visualDuration 0.45, bounce 0.12 | visualDuration 0.45, bounce 0.12 | visualDuration 0.05–4 s, bounce 0–0.9 | Motion spring |
 
 ## Rules
 

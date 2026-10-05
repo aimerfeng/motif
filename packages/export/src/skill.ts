@@ -1,6 +1,7 @@
 import type { Category, ItemSource, Kind, ParamSpec, ParamValues } from '@motif/schema'
-import { printDefaults } from '@motif/schema'
-import { fontImports, itemUrl, npmDependencies, usesRuntime, rewriteRuntimeImport, type ExportContext } from './context.ts'
+import { EASING_RANGE, printDefaults, SPRING_RANGE } from '@motif/schema'
+import { fontImports, itemUrl, npmDependencies, REPO, usesRuntime, type ExportContext } from './context.ts'
+import { componentFiles } from './registry-item.ts'
 import { bundleRuntime } from './runtime-bundle.ts'
 
 /** Skill 的目录名与 name 字段：统一 motif- 前缀，避免和用户自己的 skill 冲突。 */
@@ -99,6 +100,11 @@ function formatValue(value: unknown): string {
   return String(value)
 }
 
+/** 表格单元格：竖线会被当成列分隔，换行会把一行拆开。 */
+function cell(text: string): string {
+  return text.replace(/\r\n|\r|\n/g, ' ').replaceAll('|', '\\|')
+}
+
 function rangeOf(param: ParamSpec): string {
   switch (param.type) {
     case 'number':
@@ -114,9 +120,9 @@ function rangeOf(param: ParamSpec): string {
     case 'text':
       return `≤ ${param.maxLength} chars`
     case 'spring':
-      return 'visualDuration s, bounce 0–1'
+      return `visualDuration ${SPRING_RANGE.visualDuration.min}–${SPRING_RANGE.visualDuration.max} s, bounce ${SPRING_RANGE.bounce.min}–${SPRING_RANGE.bounce.max}`
     case 'easing':
-      return 'cubic-bezier'
+      return `cubic-bezier, x ${EASING_RANGE.x.join('–')}, y ${EASING_RANGE.y.join('–')}`
     default:
       return param.type
   }
@@ -146,7 +152,7 @@ export function skillMarkdown(item: ItemSource, values: ParamValues, context: Ex
 
   const rows = manifest.params.map((param) => {
     const meaning = (param.hint ?? param.label).en.replaceAll('|', '/')
-    return `| \`${param.key}\` | ${formatValue(values[param.key] ?? param.default)} | ${formatValue(param.default)} | ${rangeOf(param)} | ${meaning} |`
+    return `| \`${param.key}\` | ${cell(formatValue(values[param.key] ?? param.default))} | ${cell(formatValue(param.default))} | ${cell(rangeOf(param))} | ${cell(meaning)} |`
   })
 
   const importPath = `@/components/motif/${manifest.slug}/${entry.file.replace(/\.tsx?$/, '')}`
@@ -174,6 +180,7 @@ export function skillMarkdown(item: ItemSource, values: ParamValues, context: Ex
     '',
     ...assetFiles.map((file) => `- \`assets/${file.path}\`${file.path === entry.file ? ` — the component (\`${entry.export}\`); the tuned values are baked into its \`defaults\` object` : ''}`),
     ...(usesRuntime(item) ? ['- `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`'] : []),
+    `- No \`assets/\` folder next to this file? It was copied on its own: fetch the files with \`npx skills add ${REPO} --skill ${name}\`, then set the values from Tuned parameters below.`,
     '',
     '## Install',
     '',
@@ -213,13 +220,8 @@ export function skillMarkdown(item: ItemSource, values: ParamValues, context: Ex
 
 /** Skill 目录里的全部文件（相对 `<skillName>/`）：SKILL.md + assets。 */
 export function skillFiles(item: ItemSource, values: ParamValues, context: ExportContext, options: SkillOptions & { bakedEntry: string }): Record<string, string> {
-  const { manifest } = item
   const files: Record<string, string> = { 'SKILL.md': skillMarkdown(item, values, context, options) }
-  for (const file of manifest.files) {
-    if (file.role === 'demo' || file.role === 'asset') continue
-    const code = file.path === manifest.entry.file ? options.bakedEntry : item.files[file.path] ?? ''
-    files[`assets/${file.path}`] = rewriteRuntimeImport(code, '@/lib/motif-runtime')
-  }
+  for (const file of componentFiles(item, options.bakedEntry)) files[`assets/${file.path}`] = file.content
   if (usesRuntime(item)) files['assets/motif-runtime.ts'] = bundleRuntime(context.runtime.files)
   files['assets/theme.css'] = context.runtime.themeCss
   return files

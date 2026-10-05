@@ -1,12 +1,13 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { runInNewContext } from 'node:vm'
 import * as esbuild from 'esbuild'
 import { unzipSync, strFromU8 } from 'fflate'
 import { describe, expect, it } from 'vitest'
-import { defaultsOf, type ItemSource } from '@motif/schema'
+import { defaultsOf, printDefaults, type ItemSource, type ParamValues } from '@motif/schema'
 import { loadItemSource, ITEMS_DIR } from '@motif/registry'
-import { bundleRuntime, exportRegistryItem, exportSkillZip, exportStarterZip, prepareExport, skillMarkdown, viteStarter, type ExportContext } from '../src/index.ts'
+import { bundleRuntime, componentFiles, exportRegistryItem, exportSkillZip, exportStarterZip, prepareExport, skillMarkdown, viteStarter, type ExportContext } from '../src/index.ts'
 
 const RUNTIME_SRC = fileURLToPath(new URL('../../runtime/src/', import.meta.url))
 const runtimeFiles = Object.fromEntries(
@@ -123,5 +124,30 @@ describe('item exports', () => {
     expect(json.files.map((file) => file.target)).toEqual(['components/motif/liquid-form/liquid-form.tsx', 'components/motif/liquid-form/shaders.ts'])
     expect(json.files[0]!.content).toContain("from '@/lib/motif-runtime'")
     expect(json.dependencies).toEqual([])
+  })
+
+  it('writes hostile text values into exported code as plain strings', () => {
+    // 分享链接里的参数会写进别人项目里的源码：执行后只能得到同样的值，不能多出任何语句。
+    const values: ParamValues = {
+      quote: "it's \\ \"both\"",
+      lines: 'a\nb\r\nc d e',
+      control: 'tab\there\u0000\u001b',
+      marker: 'x /* @motif:end */ y */ *\\/',
+      unicode: '母题 🎨',
+      odd: { "a':globalThis.pwned=1,'b": 1, 'x-y': 2 },
+    }
+    const sandbox: Record<string, unknown> = {}
+    const result: unknown = runInNewContext(`${printDefaults(values).replace('export const', 'const')}; defaults`, sandbox)
+    expect(JSON.parse(JSON.stringify(result))).toEqual(values)
+    expect(sandbox.pwned).toBeUndefined()
+  })
+
+  it('lists every component file for manual copy, with the tuned entry', async () => {
+    const item = await load('liquid-form')
+    const values = defaultsOf(item.manifest.params)
+    const { bakedEntry } = await prepareExport(item, values)
+    const files = componentFiles(item, bakedEntry)
+    expect(files.map((file) => file.target)).toEqual(['components/motif/liquid-form/liquid-form.tsx', 'components/motif/liquid-form/shaders.ts'])
+    expect(files[0]!.content).toContain("from '@/lib/motif-runtime'")
   })
 })

@@ -21,6 +21,7 @@ One thumb springs between mutually exclusive options, with icons, text or both. 
 
 - `assets/toggle-segmented.tsx` — the component (`ToggleSegmented`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-toggle-segmented`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -46,7 +47,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #8b5cf6 | #8b5cf6 | color | Accent |
 | `size` | md | md | sm / md / lg | Size |
 | `radius` | 12 | 12 | 4–24 px (best 6–20) | Corner radius |
-| `spring` | visualDuration 0.32, bounce 0.18 | visualDuration 0.32, bounce 0.18 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.32, bounce 0.18 | visualDuration 0.32, bounce 0.18 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 
 ## Rules
 

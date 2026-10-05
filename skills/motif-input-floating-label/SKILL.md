@@ -21,6 +21,7 @@ The label sits inside the empty field and lifts to the corner on focus or input 
 
 - `assets/input-floating-label.tsx` — the component (`InputFloatingLabel`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-input-floating-label`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #a78bfa | #a78bfa | color | Accent |
 | `radius` | 12 | 12 | 0–24 px (best 6–18) | Corner radius |
 | `size` | md | md | sm / md / lg | Size |
-| `spring` | visualDuration 0.3, bounce 0.15 | visualDuration 0.3, bounce 0.15 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.3, bounce 0.15 | visualDuration 0.3, bounce 0.15 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `label` | Email address | Email address | ≤ 28 chars | Label |
 | `placeholder` | you@company.com | you@company.com | ≤ 28 chars | Appears once the label has floated |
 

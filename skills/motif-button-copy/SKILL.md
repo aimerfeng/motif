@@ -21,6 +21,7 @@ One click copies to the clipboard: the icon morphs into a check drawn in one str
 
 - `assets/button-copy.tsx` — the component (`ButtonCopy`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-button-copy`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #34d399 | #34d399 | color | Success color |
 | `radius` | 12 | 12 | 4–24 px (best 6–18) | Corner radius |
 | `size` | md | md | sm / md / lg | Size |
-| `spring` | visualDuration 0.34, bounce 0.3 | visualDuration 0.34, bounce 0.3 | visualDuration s, bounce 0–1 | Spring |
+| `spring` | visualDuration 0.34, bounce 0.3 | visualDuration 0.34, bounce 0.3 | visualDuration 0.05–4 s, bounce 0–0.9 | Spring |
 | `value` | npx motif add tabs-animated | npx motif add tabs-animated | ≤ 64 chars | Text to copy |
 | `label` | Copy | Copy | ≤ 14 chars | Used by the labeled button variant |
 | `feedback` | 2 | 2 | 1–4 s (best 1.5–3) | Feedback time |

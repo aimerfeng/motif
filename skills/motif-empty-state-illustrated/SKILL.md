@@ -22,6 +22,7 @@ Four inline SVG illustrations: no results, empty inbox, no files yet and offline
 - `assets/empty-state-illustrated.tsx` — the component (`EmptyStateIllustrated`); the tuned values are baked into its `defaults` object
 - `assets/empty-state-illustrated.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-empty-state-illustrated`, then set the values from Tuned parameters below.
 
 ## Install
 

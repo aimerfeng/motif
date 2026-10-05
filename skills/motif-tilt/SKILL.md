@@ -21,6 +21,7 @@ A card leans toward the pointer in 3D with a soft glare that follows it, and inn
 
 - `assets/tilt.tsx` — the component (`Tilt`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-tilt`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -45,7 +46,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `perspective` | 1000 | 1000 | 400–2400 px (best 700–1600) | Smaller values exaggerate the depth |
 | `reverse` | false | false | boolean | Tilt away from the pointer instead of toward it |
 | `glare` | 0.22 | 0.22 | 0–0.6 (best 0.1–0.35) | Glare |
-| `spring` | visualDuration 0.5, bounce 0.2 | visualDuration 0.5, bounce 0.2 | visualDuration s, bounce 0–1 | Shorter feels more responsive |
+| `spring` | visualDuration 0.5, bounce 0.2 | visualDuration 0.5, bounce 0.2 | visualDuration 0.05–4 s, bounce 0–0.9 | Shorter feels more responsive |
 
 ## Rules
 

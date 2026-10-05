@@ -23,6 +23,7 @@ Warm paper ground, black outlines, keys that press down, sunset stripes and half
 - `assets/style-retro-bold.tsx` — the component (`RetroBold`); the tuned values are baked into its `defaults` object
 - `assets/style-retro-bold.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-style-retro-bold`, then set the values from Tuned parameters below.
 
 ## Install
 

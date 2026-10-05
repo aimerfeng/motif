@@ -22,6 +22,7 @@ A ray-marched blob of liquid silver at the center, its surface slowly rippling w
 - `assets/liquid-form.tsx` — the component (`LiquidForm`); the tuned values are baked into its `defaults` object
 - `assets/shaders.ts`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-liquid-form`, then set the values from Tuned parameters below.
 
 ## Install
 

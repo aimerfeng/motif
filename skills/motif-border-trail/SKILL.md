@@ -21,6 +21,7 @@ One or several comet trails with bright heads chase each other around the border
 
 - `assets/border-trail.tsx` — the component (`BorderTrail`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-border-trail`, then set the values from Tuned parameters below.
 
 ## Install
 

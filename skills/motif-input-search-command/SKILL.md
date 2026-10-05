@@ -21,6 +21,7 @@ Fuzzy filtering as you type with matched letters highlighted, a selection bar th
 
 - `assets/input-search-command.tsx` — the component (`InputSearchCommand`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-input-search-command`, then set the values from Tuned parameters below.
 
 ## Install
 
@@ -44,7 +45,7 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `color` | #8b5cf6 | #8b5cf6 | color | Accent |
 | `radius` | 16 | 16 | 6–28 px (best 10–22) | Corner radius |
 | `size` | md | md | sm / md / lg | Density |
-| `spring` | visualDuration 0.26, bounce 0.1 | visualDuration 0.26, bounce 0.1 | visualDuration s, bounce 0–1 | Highlight spring |
+| `spring` | visualDuration 0.26, bounce 0.1 | visualDuration 0.26, bounce 0.1 | visualDuration 0.05–4 s, bounce 0–0.9 | Highlight spring |
 | `maxRows` | 10 | 10 | 3–12 (best 5–10) | Visible rows |
 | `placeholder` | Search or jump to… | Search or jump to… | ≤ 36 chars | Placeholder |
 | `showFooter` | true | true | boolean | Footer hints |

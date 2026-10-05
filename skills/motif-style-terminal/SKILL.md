@@ -23,6 +23,7 @@ Monospace all the way down: hairline borders, inverse-video buttons, one phospho
 - `assets/style-terminal.tsx` — the component (`Terminal`); the tuned values are baked into its `defaults` object
 - `assets/style-terminal.css`
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-style-terminal`, then set the values from Tuned parameters below.
 
 ## Install
 

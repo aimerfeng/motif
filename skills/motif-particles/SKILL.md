@@ -22,6 +22,7 @@ Tiny specks of light drift and twinkle in the background, shifting slightly with
 
 - `assets/particles.tsx` — the component (`Particles`); the tuned values are baked into its `defaults` object
 - `assets/motif-runtime.ts` — small shared hooks the component imports; place it at `src/lib/motif-runtime.ts`
+- No `assets/` folder next to this file? It was copied on its own: fetch the files with `npx skills add aimerfeng/motif --skill motif-particles`, then set the values from Tuned parameters below.
 
 ## Install
 
