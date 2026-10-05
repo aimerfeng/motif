@@ -2,6 +2,7 @@
 
 import { bake, printDefaults, type ParamValues } from '@motif/schema'
 import { useState } from 'react'
+import { useCopy } from '@/lib/clipboard'
 import type { CodeLine, HighlightedFile } from '@/lib/code-tokens'
 
 // 与 shiki 的 vesper 主题一致的颜色，用来给客户端生成的默认值区域着色。
@@ -52,9 +53,9 @@ function Lines({ lines, start, highlight }: { lines: CodeLine[]; start: number; 
  * 条目的源码。组件本体里的默认值区域按当前参数实时重新生成——
  * 用户在这里看到、复制的代码，就是下载得到的代码。
  */
-export function CodeView({ files, entry, values, labels }: { files: HighlightedFile[]; entry: string; values: ParamValues; labels: { copy: string; copied: string; tuned: string } }) {
+export function CodeView({ files, entry, values, labels }: { files: HighlightedFile[]; entry: string; values: ParamValues; labels: { copy: string; copied: string; failed: string; tuned: string } }) {
   const [active, setActive] = useState(files[0]?.path)
-  const [copied, setCopied] = useState<string | null>(null)
+  const { copy, stateOf } = useCopy()
   const file = files.find((f) => f.path === active) ?? files[0]
   if (!file) return null
 
@@ -62,11 +63,7 @@ export function CodeView({ files, entry, values, labels }: { files: HighlightedF
   const region = isEntry ? tokenizeDefaults(values) : []
   const text = isEntry ? bake(file.source, values) : file.source
 
-  const copy = async () => {
-    await navigator.clipboard.writeText(text)
-    setCopied(file.path)
-    window.setTimeout(() => setCopied((current) => (current === file.path ? null : current)), 1600)
-  }
+  const state = stateOf(file.path)
 
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-sunken">
@@ -84,8 +81,8 @@ export function CodeView({ files, entry, values, labels }: { files: HighlightedF
         ))}
         <span className="ml-auto flex shrink-0 items-center gap-3">
           {isEntry && <span className="hidden text-[11.5px] text-ink-faint sm:inline">{labels.tuned}</span>}
-          <button type="button" onClick={() => void copy()} className="rounded-md px-2.5 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink">
-            {copied === file.path ? labels.copied : labels.copy}
+          <button type="button" onClick={() => void copy(file.path, text)} className="rounded-md px-2.5 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink">
+            <span aria-live="polite">{state === 'copied' ? labels.copied : state === 'failed' ? labels.failed : labels.copy}</span>
           </button>
         </span>
       </div>

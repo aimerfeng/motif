@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { cache } from 'react'
+import { skillName } from '@motif/export'
 import { CATALOG_PATH, readCatalog, type CatalogItem } from '@motif/registry/catalog'
 import type { Category, Kind } from '@motif/schema'
 import type { Locale } from '@/i18n/routing'
@@ -30,6 +31,8 @@ export interface ItemSummary {
   tags: string[]
   runtime: string[]
   source: string | null
+  /** 这个条目的 skill 名（/skill/<name>.md）。 */
+  skill: string
   media: ItemMedia
 }
 
@@ -44,6 +47,7 @@ export function summarize(item: CatalogItem, locale: Locale): ItemSummary {
     tags: manifest.tags,
     runtime: manifest.runtime,
     source: manifest.provenance.upstream?.repo ?? null,
+    skill: skillName(manifest.slug),
     media: mediaFor(manifest.slug),
   }
 }

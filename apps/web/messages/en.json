@@ -9,15 +9,17 @@
     "docs": "Docs",
     "github": "GitHub repository",
     "language": "Switch language",
-    "home": "Motif home"
+    "home": "Motif home",
+    "soon": "Soon",
+    "menu": "Menu"
   },
   "home": {
     "headline": "Beautiful motion, ready to take home",
     "lead": "Components, motion and shaders picked from open source. Tune them live, download code that runs, or hand the skill to your agent.",
-    "browse": "Browse {count} effects",
+    "browse": "Browse all {count} items",
     "heroCaption": "Running above:",
     "featured": "Featured",
-    "allEffects": "All {count} effects",
+    "allEffects": "All {count} items",
     "howTitle": "Pick one, tune it, take it home",
     "how": {
       "pick": {
@@ -35,7 +37,6 @@
     },
     "sourcesTitle": "Built on these open-source projects",
     "sourcesBody": "Integrated code keeps its original license and copyright notices, pinned to the commits we reviewed. Thank you to their authors.",
-    "footer": "Motif is open source (MIT). Item data generated on {date}.",
     "github": "View on GitHub",
     "levelsTitle": "From a whole site to a single button",
     "levelsLead": "Templates, styles, sections, components and effects: from an entire website down to one loading animation, everything can be previewed, tuned, downloaded, or copied as a skill."
@@ -44,8 +45,8 @@
     "title": "Market",
     "lead": "{count} entries, from whole-site templates, design styles and page sections to functional components like loaders and toasts, and visual effects. All from open-source projects whose licenses allow redistribution. Preview, tune, download the code, or copy the skill for your agent.",
     "all": "All",
-    "search": "Search effects and tags",
-    "empty": "No effects match",
+    "search": "Search names, categories, tags",
+    "empty": "No items match",
     "categories": {
       "landing": "Landing pages",
       "saas": "SaaS sites",
@@ -123,7 +124,9 @@
       "motif-shaders": "Shaders",
       "motif-scroll": "Scroll",
       "motif-3d": "3D"
-    }
+    },
+    "results": "{count, plural, one {# result} other {# results}}",
+    "clearFilters": "Clear filters"
   },
   "item": {
     "back": "Market",
@@ -171,7 +174,13 @@
       "desktop": "Desktop",
       "tablet": "Tablet",
       "mobile": "Mobile"
-    }
+    },
+    "breadcrumb": "Breadcrumb",
+    "replay": "Replay",
+    "retry": "Reload",
+    "related": "More like this",
+    "moreIn": "More {category}",
+    "copyFailed": "Copy failed"
   },
   "lab": {
     "previewTitle": "Preview sandbox lab"
@@ -210,10 +219,32 @@
       "motion": "Motion",
       "layout": "Layout",
       "interaction": "Interaction",
+      "content": "Content",
+      "shape": "Shape",
+      "type": "Type",
+      "text": "Text",
+      "copy": "Copy",
+      "brand": "Brand",
+      "value": "Value",
+      "pricing": "Pricing",
+      "data": "Data",
+      "input": "Input",
+      "trigger": "Trigger",
+      "behavior": "Behavior",
+      "physics": "Physics",
+      "burst": "Burst",
+      "path": "Path",
+      "grid": "Grid",
+      "border": "Border",
+      "glass": "Glass",
+      "beam": "Beam",
+      "orb": "Orb",
+      "stars": "Stars",
       "grain": "Grain",
       "tint": "Tint",
-      "text": "Text"
-    }
+      "quality": "Quality"
+    },
+    "copyFailed": "Copy failed"
   },
   "export": {
     "copy": "Copy",
@@ -227,7 +258,10 @@
     "manualLead": "Copy the component file (with your values baked in) into your project, and put the shared hooks in src/lib/motif-runtime.ts.",
     "copyComponent": "Copy {file}",
     "copyRuntime": "Copy motif-runtime.ts",
-    "downloadShort": "Download project"
+    "downloadShort": "Download project",
+    "copyFailed": "Copy failed",
+    "packing": "Packing…",
+    "downloadFailed": "Packing failed, try again"
   },
   "skill": {
     "title": "Hand this effect to your agent",
@@ -237,5 +271,9 @@
     "copied": "Copied",
     "copyMarkdown": "Copy SKILL.md",
     "failed": "Copy failed"
+  },
+  "footer": {
+    "line": "Motif · open source (MIT) · item data generated on {date}",
+    "notices": "Third-party notices"
   }
 }

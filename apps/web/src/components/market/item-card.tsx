@@ -73,7 +73,7 @@ export function ItemCard({ item, categoryLabel }: { item: ItemSummary; categoryL
         )}
       </Link>
       <SkillButton
-        source={{ name: `motif-${item.slug}` }}
+        source={{ name: item.skill }}
         variant="overlay"
         className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[state=copied]:opacity-100 [@media(hover:none)]:opacity-100"
       />

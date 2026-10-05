@@ -1,6 +1,6 @@
 'use client'
 
-import type { JsonValue, ParamSpec } from '@motif/schema'
+import { SPRING_RANGE, type JsonValue, type ParamSpec } from '@motif/schema'
 import { useId, useState, type CSSProperties, type ReactNode } from 'react'
 import { EasingEditor } from './easing-editor'
 import { SpringPlot } from './spring-plot'
@@ -155,10 +155,45 @@ export function PaletteControl({ param, label, hint, value, changed, onChange, o
   )
 }
 
+/** 中文按两个字宽、其他字符按一个字宽粗算文字宽度，用来判断分段按钮放不放得下。 */
+function textUnits(text: string): number {
+  let units = 0
+  for (const char of text) units += char.codePointAt(0)! > 0x2e80 ? 2 : 1
+  return units
+}
+
+// 面板宽 320px：两段时每段约放得下 22 个字宽，三段 14 个，四段 11 个。
+const SEGMENT_BUDGET = 44
+
 export function SelectControl({ param, label, hint, value, changed, onChange, onReset, optionLabel }: ControlProps<'select'> & { optionLabel: (value: string) => string }) {
   const id = useId()
   const current = typeof value === 'string' ? value : param.default
-  if (param.options.length <= 4) {
+  const count = param.options.length
+  const fitsSegments = count <= 4 && param.options.every((option) => textUnits(optionLabel(option.value)) <= Math.floor(SEGMENT_BUDGET / count))
+  // 选项名字长（比如字体搭配）时竖排成列表，不截断成看不懂的「Archivo …」。
+  if (!fitsSegments && count <= 8) {
+    return (
+      <div className="space-y-1.5">
+        <Label id={id} label={label} hint={hint} changed={changed} onReset={onReset} />
+        <div role="radiogroup" id={id} aria-label={label} className="overflow-hidden rounded-lg border border-line bg-sunken text-[12.5px]">
+          {param.options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              role="radio"
+              aria-checked={option.value === current}
+              onClick={() => onChange(option.value)}
+              className="flex w-full items-center gap-2.5 border-b border-line px-2.5 py-2 text-left text-ink-muted transition-colors duration-150 last:border-b-0 hover:text-ink aria-checked:bg-white/[0.06] aria-checked:text-ink"
+            >
+              <span aria-hidden className={`size-1.5 shrink-0 rounded-full ${option.value === current ? 'bg-ink' : 'bg-white/15'}`} />
+              <span className="min-w-0">{optionLabel(option.value)}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+  if (fitsSegments) {
     return (
       <div className="space-y-1.5">
         <Label id={id} label={label} hint={hint} changed={changed} onReset={onReset} />
@@ -254,7 +289,7 @@ export function SpringControl({ param, label, hint, value, changed, onChange, on
       <Label id={id} label={label} hint={hint} changed={changed} onReset={onReset} />
       <SpringPlot visualDuration={spring.visualDuration} bounce={spring.bounce} />
       <NumberControl
-        param={{ key: `${param.key}-duration`, type: 'number', label: param.label, default: param.default.visualDuration, min: 0.05, max: 2, step: 0.01, unit: 's' }}
+        param={{ key: `${param.key}-duration`, type: 'number', label: param.label, default: param.default.visualDuration, ...SPRING_RANGE.visualDuration, unit: 's' }}
         label={durationLabel}
         value={spring.visualDuration}
         changed={false}
@@ -262,7 +297,7 @@ export function SpringControl({ param, label, hint, value, changed, onChange, on
         onReset={onReset}
       />
       <NumberControl
-        param={{ key: `${param.key}-bounce`, type: 'number', label: param.label, default: param.default.bounce, min: 0, max: 0.9, step: 0.01 }}
+        param={{ key: `${param.key}-bounce`, type: 'number', label: param.label, default: param.default.bounce, ...SPRING_RANGE.bounce }}
         label={bounceLabel}
         value={spring.bounce}
         changed={false}

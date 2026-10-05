@@ -30,13 +30,15 @@ interface PreviewFrameProps {
   title: string
   className?: string
   onStatus?: (status: PreviewStatus) => void
+  /** 变化时在沙箱里重新挂载组件：只播一次的入场动画可以重播，出错后也能重试。 */
+  replayToken?: number
 }
 
 const HEARTBEAT_MS = 2000
 const HEARTBEAT_TIMEOUT_MS = 5000
 
 /** 在跨源、不透明源的沙箱 iframe 里挂载一个组件模块。模块变化时重新挂载，props 变化时只发新 props。 */
-export function PreviewFrame({ module, exportName = 'default', props = {}, styles, theme, title, className, onStatus }: PreviewFrameProps) {
+export function PreviewFrame({ module, exportName = 'default', props = {}, styles, theme, title, className, onStatus, replayToken = 0 }: PreviewFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const nonce = useMemo(() => crypto.randomUUID(), [])
   const [src, setSrc] = useState<string | null>(null)
@@ -64,14 +66,15 @@ export function PreviewFrame({ module, exportName = 'default', props = {}, style
   }
 
   useEffect(() => {
-    let lastPong = performance.now()
+    // 发出 ping 的时刻；收到沙箱的任何消息就清空。只有等了太久还没回音才算卡死。
+    let awaiting: number | null = null
     let seq = 0
 
     const onMessage = (event: MessageEvent) => {
       if (event.source !== iframeRef.current?.contentWindow) return
       const message: SandboxMessage | null = readSandboxMessage(event.data, nonce)
       if (!message) return
-      lastPong = performance.now()
+      awaiting = null
       switch (message.type) {
         case 'ready':
           readyRef.current = true
@@ -90,19 +93,27 @@ export function PreviewFrame({ module, exportName = 'default', props = {}, style
     window.addEventListener('message', onMessage)
 
     // 心跳：沙箱卡死（死循环）时 host 自己不会被拖住，超时后重建 iframe。
+    // 后台标签页的定时器会被浏览器节流到一分钟一次，那时的间隔不能当成没有回音，所以隐藏时不计时。
     const timer = window.setInterval(() => {
-      if (!readyRef.current) return
-      if (performance.now() - lastPong > HEARTBEAT_TIMEOUT_MS) {
+      if (!readyRef.current || document.hidden) return
+      if (awaiting === null) {
+        awaiting = performance.now()
+        post({ type: 'ping', seq: ++seq })
+      } else if (performance.now() - awaiting > HEARTBEAT_TIMEOUT_MS) {
+        awaiting = null
         readyRef.current = false
         setStatus({ state: 'hung' })
         setReloadKey((key) => key + 1)
-        return
       }
-      post({ type: 'ping', seq: ++seq })
     }, HEARTBEAT_MS)
+    const onVisibility = () => {
+      if (document.hidden) awaiting = null
+    }
+    document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
       window.removeEventListener('message', onMessage)
+      document.removeEventListener('visibilitychange', onVisibility)
       window.clearInterval(timer)
     }
     // post 只依赖 ref 和 nonce。
@@ -116,7 +127,7 @@ export function PreviewFrame({ module, exportName = 'default', props = {}, style
     setStatus({ state: 'loading' })
     post(mountMessage())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moduleKey, stylesKey, exportName, theme])
+  }, [moduleKey, stylesKey, exportName, theme, replayToken])
 
   const propsKey = JSON.stringify(props)
   useEffect(() => {

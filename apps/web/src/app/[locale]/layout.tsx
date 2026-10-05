@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { ReactNode } from 'react'
+import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { routing } from '@/i18n/routing'
@@ -23,10 +24,11 @@ export default async function LocaleLayout({ children, params }: { children: Rea
 
   return (
     <html lang={locale}>
-      <body>
+      <body className="flex min-h-dvh flex-col">
         <NextIntlClientProvider>
           <SiteHeader />
-          {children}
+          <div className="flex-1">{children}</div>
+          <SiteFooter locale={locale} />
         </NextIntlClientProvider>
       </body>
     </html>

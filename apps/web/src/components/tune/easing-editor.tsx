@@ -1,5 +1,6 @@
 'use client'
 
+import { EASING_RANGE } from '@motif/schema'
 import { useRef } from 'react'
 
 type Curve = [number, number, number, number]
@@ -31,8 +32,8 @@ export function EasingEditor({ id, value, onChange, label }: { id: string; value
     event.currentTarget.setPointerCapture(event.pointerId)
     const move = (e: PointerEvent) => {
       const rect = svg.getBoundingClientRect()
-      const x = Math.min(1, Math.max(0, ((e.clientX - rect.left) / rect.width) * SIZE - PAD) / INNER)
-      const y = Math.min(1.6, Math.max(-0.6, 1 - ((((e.clientY - rect.top) / rect.height) * SIZE - PAD) / INNER)))
+      const x = Math.min(EASING_RANGE.x[1], Math.max(EASING_RANGE.x[0], ((e.clientX - rect.left) / rect.width) * SIZE - PAD) / INNER)
+      const y = Math.min(EASING_RANGE.y[1], Math.max(EASING_RANGE.y[0], 1 - ((((e.clientY - rect.top) / rect.height) * SIZE - PAD) / INNER)))
       const round = (n: number) => Math.round(n * 100) / 100
       onChange(handle === 0 ? [round(x), round(y), x2, y2] : [x1, y1, round(x), round(y)])
     }

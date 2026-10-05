@@ -5,11 +5,6 @@ import path from 'node:path'
 const SKILLS_DIR = path.resolve(/*turbopackIgnore: true*/ process.cwd(), '../..', 'skills')
 const NAME = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
-/** 市场里每个条目对应的 skill 名。 */
-export function itemSkillName(slug: string): string {
-  return `motif-${slug}`
-}
-
 function skillDir(name: string): string | null {
   return NAME.test(name) ? path.join(/*turbopackIgnore: true*/ SKILLS_DIR, name) : null
 }

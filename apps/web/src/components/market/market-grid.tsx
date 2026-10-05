@@ -2,45 +2,45 @@
 
 import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema'
 import { useTranslations } from 'next-intl'
-import { useDeferredValue, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { SearchIcon } from '@/components/icons'
 import { SkillButton } from '@/components/skill-button'
 import type { ItemSummary } from '@/lib/catalog'
 import { generalSkills } from '@/lib/general-skills'
+import { writeMarketQuery, type MarketQuery } from '@/lib/market-query'
+import { replaceUrl, URL_WRITE_DELAY_MS } from '@/lib/url-state'
 import { ItemCard } from './item-card'
 
-function readQuery(): { kind: Kind | null; category: Category | null } {
-  const params = new URLSearchParams(window.location.search)
-  const kind = params.get('kind')
-  const category = params.get('category')
-  const validKind = (KINDS as readonly string[]).includes(kind ?? '') ? (kind as Kind) : null
-  const validCategory = validKind && (CATEGORIES_BY_KIND[validKind] as readonly string[]).includes(category ?? '') ? (category as Category) : null
-  return { kind: validKind, category: validCategory }
-}
-
-/** 市场：先按层级（模板 / 风格 / 区块 / 组件 / 效果），再按分类和关键词筛选。筛选状态写进 URL，可以分享。 */
-export function MarketGrid({ items }: { items: ItemSummary[] }) {
+/**
+ * 市场：先按层级（模板 / 风格 / 区块 / 组件 / 效果），再按分类和关键词筛选。
+ * 初始筛选由服务端从链接解析好传进来；之后的改动写回链接（不产生历史记录），可以分享。
+ */
+export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: MarketQuery }) {
   const t = useTranslations('market')
-  const [kind, setKind] = useState<Kind | null>(null)
-  const [category, setCategory] = useState<Category | null>(null)
-  const [query, setQuery] = useState('')
+  const [kind, setKind] = useState<Kind | null>(initial.kind)
+  const [category, setCategory] = useState<Category | null>(initial.category)
+  const [query, setQuery] = useState(initial.q)
   const deferredQuery = useDeferredValue(query)
+  const searchRef = useRef<HTMLInputElement>(null)
 
-  // 首次挂载时从链接还原筛选（静态页面在服务端没有查询参数，所以放在 effect 里）。
+  // 搜索词边打边写会很密，停下来再写进链接。
   useEffect(() => {
-    const initial = readQuery()
-    setKind(initial.kind)
-    setCategory(initial.category)
-  }, [])
+    const timer = window.setTimeout(() => replaceUrl((url) => writeMarketQuery(url, { kind, category, q: query })), URL_WRITE_DELAY_MS)
+    return () => window.clearTimeout(timer)
+  }, [kind, category, query])
 
-  // 只在用户操作时写回链接；放在 effect 里会在开发模式的双重挂载中把链接先清掉。
-  const writeQuery = (nextKind: Kind | null, nextCategory: Category | null) => {
-    const url = new URL(window.location.href)
-    if (nextKind) url.searchParams.set('kind', nextKind)
-    else url.searchParams.delete('kind')
-    if (nextCategory) url.searchParams.set('category', nextCategory)
-    else url.searchParams.delete('category')
-    window.history.replaceState(window.history.state, '', url)
-  }
+  // 「/」聚焦搜索框（输入框里打字时不抢）。
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return
+      const target = event.target as HTMLElement | null
+      if (target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))) return
+      event.preventDefault()
+      searchRef.current?.focus()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   // 只显示有条目的层级和分类，按固定顺序。
   const kinds = useMemo(() => KINDS.filter((k) => items.some((item) => item.kind === k)), [items])
@@ -49,29 +49,35 @@ export function MarketGrid({ items }: { items: ItemSummary[] }) {
     [items, kind],
   )
 
+  // 搜索也匹配层级和分类的名字（搜「按钮」能找到所有按钮）；多个词之间是「且」。
+  const haystacks = useMemo(
+    () => new Map(items.map((item) => [item.slug, [item.title, item.summary, item.slug, ...item.tags, t(`kinds.${item.kind}`), t(`categories.${item.category}`)].join('\n').toLowerCase()])),
+    [items, t],
+  )
   const visible = useMemo(() => {
-    const needle = deferredQuery.trim().toLowerCase()
+    const terms = deferredQuery.trim().toLowerCase().split(/\s+/).filter(Boolean)
     return items.filter((item) => {
       if (kind && item.kind !== kind) return false
       if (category && item.category !== category) return false
-      if (!needle) return true
-      return [item.title, item.summary, item.slug, ...item.tags].some((text) => text.toLowerCase().includes(needle))
+      const haystack = haystacks.get(item.slug)!
+      return terms.every((term) => haystack.includes(term))
     })
-  }, [items, kind, category, deferredQuery])
+  }, [items, haystacks, kind, category, deferredQuery])
 
   const selectKind = (next: Kind | null) => {
     setKind(next)
     setCategory(null)
-    writeQuery(next, null)
   }
-  const selectCategory = (next: Category | null) => {
-    setCategory(next)
-    writeQuery(kind, next)
+  const filtered = kind !== null || query.trim() !== ''
+  const clearAll = () => {
+    setKind(null)
+    setCategory(null)
+    setQuery('')
   }
 
   return (
     <section className="mt-10">
-      <div role="tablist" aria-label={t('kindsLabel')} className="flex gap-6 overflow-x-auto border-b border-line">
+      <div role="tablist" aria-label={t('kindsLabel')} className="-mx-5 flex gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0">
         <KindTab active={kind === null} onClick={() => selectKind(null)} count={items.length}>
           {t('all')}
         </KindTab>
@@ -82,20 +88,20 @@ export function MarketGrid({ items }: { items: ItemSummary[] }) {
         ))}
       </div>
 
-      <div className="flex flex-col gap-4 py-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-4 py-5 lg:flex-row lg:items-start lg:justify-between">
         <div role="group" aria-label={t('categoriesLabel')} className="-mx-1 flex flex-wrap gap-1">
           {kind && (
-            <FilterChip active={category === null} onClick={() => selectCategory(null)}>
+            <FilterChip active={category === null} onClick={() => setCategory(null)}>
               {t('allIn', { kind: t(`kinds.${kind}`) })}
             </FilterChip>
           )}
           {categories.map((c) => (
-            <FilterChip key={c} active={category === c} onClick={() => selectCategory(c)}>
+            <FilterChip key={c} active={category === c} onClick={() => setCategory(c)}>
               {t(`categories.${c}`)}
             </FilterChip>
           ))}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <span className="text-[12px] text-ink-faint">{t('generalSkill')}</span>
           <span className="flex flex-wrap gap-1.5" data-testid="general-skills">
             {generalSkills(kind, category).map((name) => (
@@ -104,23 +110,45 @@ export function MarketGrid({ items }: { items: ItemSummary[] }) {
           </span>
           <label className="relative ml-1 block w-full sm:w-64">
             <span className="sr-only">{t('search')}</span>
-            <svg viewBox="0 0 20 20" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-faint" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-              <circle cx="9" cy="9" r="5.5" />
-              <path d="m13.2 13.2 3.3 3.3" strokeLinecap="round" />
-            </svg>
+            <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-faint" />
             <input
+              ref={searchRef}
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape' && query) {
+                  event.preventDefault()
+                  setQuery('')
+                }
+              }}
               placeholder={t('search')}
-              className="h-9 w-full rounded-lg border border-line bg-raised pr-3 pl-9 text-[14px] placeholder:text-ink-faint focus:border-line-strong focus:outline-none"
+              enterKeyHint="search"
+              className="peer h-9 w-full rounded-lg border border-line bg-raised pr-9 pl-9 text-[14px] placeholder:text-ink-faint focus:border-line-strong focus:outline-none [&::-webkit-search-cancel-button]:hidden"
             />
+            <kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-line px-1.5 font-mono text-[11px] leading-[18px] text-ink-faint peer-focus:hidden peer-[:not(:placeholder-shown)]:hidden max-sm:hidden">
+              /
+            </kbd>
           </label>
         </div>
       </div>
 
+      {filtered && (
+        <p className="flex items-center gap-3 pb-2 text-[13px] text-ink-faint" aria-live="polite">
+          <span data-testid="result-count">{t('results', { count: visible.length })}</span>
+          <button type="button" onClick={clearAll} className="text-ink-muted underline decoration-line-strong underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ink">
+            {t('clearFilters')}
+          </button>
+        </p>
+      )}
+
       {visible.length === 0 ? (
-        <p className="py-24 text-center text-ink-faint">{t('empty')}</p>
+        <div className="flex flex-col items-center gap-4 py-24 text-center">
+          <p className="text-ink-muted">{t('empty')}</p>
+          <button type="button" onClick={clearAll} className="rounded-full border border-line px-4 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink">
+            {t('clearFilters')}
+          </button>
+        </div>
       ) : (
         <ul className="mt-4 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-3" data-testid="market-grid">
           {visible.map((item) => (
@@ -155,7 +183,7 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className="rounded-full px-3.5 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:text-ink aria-pressed:bg-ink aria-pressed:text-canvas"
+      className="rounded-full px-3.5 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink aria-pressed:bg-ink aria-pressed:text-canvas"
     >
       {children}
     </button>

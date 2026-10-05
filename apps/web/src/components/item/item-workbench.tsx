@@ -4,6 +4,7 @@ import type { PreviewTheme } from '@motif/preview/protocol'
 import type { ItemSource, Kind, ParamValues } from '@motif/schema'
 import { useTranslations } from 'next-intl'
 import { useState, type ReactNode } from 'react'
+import { RefreshIcon } from '@/components/icons'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
 import { TunePanel } from '@/components/tune/tune-panel'
 import { useTune, type TunePreset } from '@/components/tune/use-tune'
@@ -21,14 +22,17 @@ interface ItemWorkbenchProps {
   presets: TunePreset[]
   files: HighlightedFile[]
   exportData: ExportData
+  /** 服务端渲染好的标题区（面包屑、标题、简介、来源），快捷操作排在它右边。 */
+  header: ReactNode
   /** 服务端渲染好的「来源与许可证」内容。 */
   license: ReactNode
 }
 
 /** 详情页的工作区：实时预览 + 调参面板，下方是随参数变化的代码、安装、Skill 与许可证。 */
-export function ItemWorkbench({ item, title, build, theme, defaults, presets, files, exportData, license }: ItemWorkbenchProps) {
+export function ItemWorkbench({ item, title, build, theme, defaults, presets, files, exportData, header, license }: ItemWorkbenchProps) {
   const t = useTranslations('item')
   const [status, setStatus] = useState<PreviewStatus>({ state: 'loading' })
+  const [replay, setReplay] = useState(0)
   const tune = useTune(item.manifest.params, defaults, presets)
   // 模板、风格、区块是「一页」：预览更高、可以滚动，并能切换设备宽度看响应式效果。
   const pageLike = PAGE_KINDS.has(item.manifest.kind)
@@ -36,27 +40,47 @@ export function ItemWorkbench({ item, title, build, theme, defaults, presets, fi
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        {pageLike ? <ViewportSwitch value={viewport} onChange={setViewport} /> : <span />}
-        <QuickActions item={item} values={tune.values} data={exportData} />
-      </div>
+      <header className="mt-5 mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        {/* 服务端传来的元素单独包一层，不和客户端的兄弟节点放在同一个子节点数组里（否则开发模式会报缺 key）。 */}
+        <div className="max-w-3xl min-w-0">{header}</div>
+        <div className="flex shrink-0 items-center gap-2">
+          {pageLike && <ViewportSwitch value={viewport} onChange={setViewport} />}
+          <QuickActions item={item} values={tune.values} data={exportData} />
+        </div>
+      </header>
+
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div
-          className={`relative self-start overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(78vh,860px)] min-h-[520px]' : 'aspect-[16/10]'}`}
-        >
-          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 transition-[width] duration-300 ease-(--ease-out-soft)" style={{ width: VIEWPORT_WIDTH[viewport] }}>
-            <PreviewFrame
-              title={title}
-              module={{ kind: 'url', url: build.js }}
-              styles={{ kind: 'url', url: build.css }}
-              exportName={item.manifest.demo.export}
-              theme={theme}
-              props={tune.values}
-              onStatus={setStatus}
-              className={`absolute inset-0 size-full ${viewport === 'desktop' ? '' : 'border-x border-line'}`}
-            />
+        {/* 手机上调参面板在预览下方：小尺寸的效果预览吸在顶部，边调边看。页面类条目太高，不吸。 */}
+        <div className={`self-start ${pageLike ? '' : 'max-lg:sticky max-lg:top-14 max-lg:z-10 max-lg:-mx-5 max-lg:bg-canvas max-lg:px-5 max-lg:pt-2 max-lg:pb-3'}`}>
+          <div
+            className={`group relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(78vh,860px)] min-h-[520px]' : 'aspect-[16/10]'}`}
+          >
+            <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 transition-[width] duration-300 ease-(--ease-out-soft)" style={{ width: VIEWPORT_WIDTH[viewport] }}>
+              <PreviewFrame
+                title={title}
+                module={{ kind: 'url', url: build.js }}
+                styles={{ kind: 'url', url: build.css }}
+                exportName={item.manifest.demo.export}
+                theme={theme}
+                props={tune.values}
+                onStatus={setStatus}
+                replayToken={replay}
+                className={`absolute inset-0 size-full ${viewport === 'desktop' ? '' : 'border-x border-line'}`}
+              />
+            </div>
+            <PreviewStatusOverlay status={status} onRetry={() => setReplay((n) => n + 1)} />
+            {status.state === 'mounted' && (
+              <button
+                type="button"
+                onClick={() => setReplay((n) => n + 1)}
+                aria-label={t('replay')}
+                title={t('replay')}
+                className="absolute right-3 bottom-3 grid size-8 place-items-center rounded-full bg-black/55 text-white/85 opacity-0 ring-1 ring-white/15 backdrop-blur-md transition-opacity duration-150 group-hover:opacity-100 hover:text-white focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
+              >
+                <RefreshIcon className="size-4" />
+              </button>
+            )}
           </div>
-          <PreviewStatusOverlay status={status} />
         </div>
         <div className="lg:sticky lg:top-20 lg:self-start">
           <TunePanel params={item.manifest.params} presets={presets} tune={tune} />
@@ -69,7 +93,7 @@ export function ItemWorkbench({ item, title, build, theme, defaults, presets, fi
             {
               id: 'code',
               label: t('tabs.code'),
-              content: <CodeView files={files} entry={item.manifest.entry.file} values={tune.values} labels={{ copy: t('copy'), copied: t('copied'), tuned: t('tunedNote') }} />,
+              content: <CodeView files={files} entry={item.manifest.entry.file} values={tune.values} labels={{ copy: t('copy'), copied: t('copied'), failed: t('copyFailed'), tuned: t('tunedNote') }} />,
             },
             { id: 'install', label: t('tabs.install'), content: <InstallPanel item={item} values={tune.values} encoded={tune.encoded} data={exportData} /> },
             { id: 'skill', label: t('tabs.skill'), content: <SkillPanel item={item} values={tune.values} data={exportData} /> },
@@ -93,7 +117,7 @@ function ViewportSwitch({ value, onChange }: { value: Viewport; onChange: (value
     mobile: <path d="M5.5 1.5h5a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1zM7.25 12.5h1.5" />,
   }
   return (
-    <div role="radiogroup" aria-label={t('label')} className="flex rounded-lg border border-line p-0.5" data-testid="viewport-switch">
+    <div role="radiogroup" aria-label={t('label')} className="flex rounded-lg border border-line p-0.5 max-sm:hidden" data-testid="viewport-switch">
       {(['desktop', 'tablet', 'mobile'] as const).map((option) => (
         <button
           key={option}
@@ -114,16 +138,25 @@ function ViewportSwitch({ value, onChange }: { value: Viewport; onChange: (value
   )
 }
 
-function PreviewStatusOverlay({ status }: { status: PreviewStatus }) {
+function PreviewStatusOverlay({ status, onRetry }: { status: PreviewStatus; onRetry: () => void }) {
   const t = useTranslations('item')
   if (status.state === 'mounted') return null
-  const message = status.state === 'loading' ? t('loading') : status.state === 'hung' ? t('hung') : t('previewError', { message: status.message })
+  if (status.state === 'error') {
+    return (
+      <div role="alert" className="absolute inset-0 grid place-items-center bg-sunken/90 p-6 text-center">
+        <div className="max-w-md">
+          <p className="text-[13px] text-danger">{t('previewError', { message: status.message })}</p>
+          <button type="button" onClick={onRetry} className="mt-4 rounded-full border border-line px-4 py-1.5 text-[12.5px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink">
+            {t('retry')}
+          </button>
+        </div>
+      </div>
+    )
+  }
   return (
-    <div
-      className={`pointer-events-none absolute inset-x-0 bottom-0 p-3 text-[12px] ${status.state === 'error' ? 'text-danger' : 'text-ink-faint'}`}
-      role={status.state === 'error' ? 'alert' : 'status'}
-    >
-      {message}
+    <div role="status" className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-2 p-3 text-[12px] text-ink-faint">
+      <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-ink-faint" />
+      {status.state === 'loading' ? t('loading') : t('hung')}
     </div>
   )
 }

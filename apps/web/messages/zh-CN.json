@@ -9,15 +9,17 @@
     "docs": "文档",
     "github": "GitHub 仓库",
     "language": "切换语言",
-    "home": "Motif 首页"
+    "home": "Motif 首页",
+    "soon": "即将",
+    "menu": "菜单"
   },
   "home": {
     "headline": "把好看的动效，带回你的项目",
     "lead": "从开源世界精选的组件、动效与着色器。实时调参，下载能直接运行的代码，或者把 Skill 交给你的 agent。",
-    "browse": "浏览 {count} 个效果",
+    "browse": "浏览全部 {count} 个条目",
     "heroCaption": "首屏正在运行的是",
     "featured": "精选",
-    "allEffects": "全部 {count} 个效果",
+    "allEffects": "全部 {count} 个条目",
     "howTitle": "挑一个，调到刚好，带走",
     "how": {
       "pick": {
@@ -35,7 +37,6 @@
     },
     "sourcesTitle": "来自这些开源项目",
     "sourcesBody": "整合的代码保留原来的许可证和版权声明，固定在审阅过的提交上。感谢这些作者。",
-    "footer": "Motif 是开源项目（MIT）。条目数据生成于 {date}。",
     "github": "在 GitHub 上查看",
     "levelsTitle": "从整站到一个按钮",
     "levelsLead": "整站模板、设计风格、页面区块、功能组件、视觉效果：大到一整个网站，小到一个加载动画，都能预览、调参、下载，或者复制 Skill。"
@@ -44,8 +45,8 @@
     "title": "市场",
     "lead": "{count} 个条目：从整站模板、设计风格、页面区块，到加载、通知这样的功能组件和视觉效果。全部来自许可证允许再分发的开源项目，每一个都能实时预览、调参、下载代码，或者直接复制 Skill 给你的 agent。",
     "all": "全部",
-    "search": "搜索效果、标签",
-    "empty": "没有找到匹配的效果",
+    "search": "搜索名称、分类、标签",
+    "empty": "没有找到匹配的条目",
     "categories": {
       "landing": "落地页",
       "saas": "SaaS 官网",
@@ -123,7 +124,9 @@
       "motif-shaders": "着色器",
       "motif-scroll": "滚动",
       "motif-3d": "3D"
-    }
+    },
+    "results": "{count} 个结果",
+    "clearFilters": "清除筛选"
   },
   "item": {
     "back": "市场",
@@ -171,7 +174,13 @@
       "desktop": "桌面",
       "tablet": "平板",
       "mobile": "手机"
-    }
+    },
+    "breadcrumb": "位置",
+    "replay": "重新播放",
+    "retry": "重新载入",
+    "related": "同类条目",
+    "moreIn": "更多{category}",
+    "copyFailed": "复制失败"
   },
   "lab": {
     "previewTitle": "预览沙箱实验"
@@ -210,10 +219,32 @@
       "motion": "动效",
       "layout": "布局",
       "interaction": "交互",
+      "content": "内容",
+      "shape": "形状",
+      "type": "字体",
+      "text": "文字",
+      "copy": "文案",
+      "brand": "品牌",
+      "value": "数值",
+      "pricing": "定价",
+      "data": "数据",
+      "input": "输入",
+      "trigger": "触发",
+      "behavior": "行为",
+      "physics": "物理",
+      "burst": "迸发",
+      "path": "路径",
+      "grid": "网格",
+      "border": "边框",
+      "glass": "玻璃",
+      "beam": "光束",
+      "orb": "光球",
+      "stars": "星点",
       "grain": "颗粒",
       "tint": "着色",
-      "text": "文字"
-    }
+      "quality": "画质"
+    },
+    "copyFailed": "复制失败"
   },
   "export": {
     "copy": "复制",
@@ -227,7 +258,10 @@
     "manualLead": "复制组件文件（已写入当前参数），放进你的项目；共用的 hooks 放到 src/lib/motif-runtime.ts。",
     "copyComponent": "复制 {file}",
     "copyRuntime": "复制 motif-runtime.ts",
-    "downloadShort": "下载项目"
+    "downloadShort": "下载项目",
+    "copyFailed": "复制失败",
+    "packing": "正在打包…",
+    "downloadFailed": "打包失败，再试一次"
   },
   "skill": {
     "title": "把这个效果交给你的 agent",
@@ -237,5 +271,9 @@
     "copied": "已复制",
     "copyMarkdown": "复制 SKILL.md",
     "failed": "复制失败"
+  },
+  "footer": {
+    "line": "Motif 母题 · 开源（MIT）· 条目数据生成于 {date}",
+    "notices": "第三方许可"
   }
 }

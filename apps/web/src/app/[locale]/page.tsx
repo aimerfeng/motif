@@ -1,10 +1,11 @@
+import { REPO_URL } from '@motif/export'
 import { defaultsOf, KINDS } from '@motif/schema'
 import { getTranslations } from 'next-intl/server'
 import { HeroStage } from '@/components/home/hero-stage'
 import { ItemCard } from '@/components/market/item-card'
 import { Link } from '@/i18n/navigation'
 import { resolveRouteLocale } from '@/i18n/locale'
-import { getCatalog, getPublishedItems, summarize } from '@/lib/catalog'
+import { getPublishedItems, summarize } from '@/lib/catalog'
 import { FEATURED, HERO } from '@/lib/featured'
 import { mediaFor } from '@/lib/media'
 
@@ -12,13 +13,15 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const locale = resolveRouteLocale((await params).locale)
   const t = await getTranslations({ locale, namespace: 'home' })
   const tm = await getTranslations({ locale, namespace: 'market' })
-  const [items, catalog] = await Promise.all([getPublishedItems(), getCatalog()])
+  const items = await getPublishedItems()
   const hero = items.find((item) => item.manifest.slug === HERO.slug)
   const featured = FEATURED.map((slug) => items.find((item) => item.manifest.slug === slug))
     .filter((item) => item !== undefined)
     .slice(0, 6)
     .map((item) => summarize(item, locale))
-  const sources = [...new Map(items.flatMap((item) => (item.manifest.provenance.upstream ? [[item.manifest.provenance.upstream.repo, item.manifest.provenance.upstream.spdx] as const] : []))).entries()]
+  const sources = [...new Map(items.flatMap((item) => (item.manifest.provenance.upstream ? [[item.manifest.provenance.upstream.repo, item.manifest.provenance.upstream.spdx] as const] : []))).entries()].sort(([a], [b]) =>
+    a.localeCompare(b, 'en', { sensitivity: 'base' }),
+  )
   // 按层级浏览：每个有内容的层级一张卡，封面取该层级里第一个精选条目（没有就取第一个）。
   const levels = KINDS.flatMap((kind) => {
     const inKind = items.filter((item) => item.manifest.kind === kind)
@@ -52,7 +55,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
               {t('browse', { count: items.length })}
             </Link>
             <a
-              href="https://github.com/aimerfeng/motif"
+              href={REPO_URL}
               target="_blank"
               rel="noreferrer"
               className="rounded-full border border-white/25 px-5 py-2.5 text-[14px] text-ink backdrop-blur-md transition-colors duration-150 hover:border-white/50"
@@ -122,8 +125,8 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
         </div>
       </section>
 
-      <section className="mx-auto mt-28 mb-24 max-w-[1400px] border-t border-line px-5 pt-10 sm:px-8">
-        <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
+      <section className="mx-auto mt-28 mb-24 max-w-[1400px] px-5 sm:px-8">
+        <div className="grid gap-8 border-t border-line pt-10 lg:grid-cols-[1fr_2fr]">
           <div>
             <h2 className="text-[15px] font-medium">{t('sourcesTitle')}</h2>
             <p className="mt-2 max-w-sm text-[13.5px] leading-relaxed text-pretty text-ink-muted">{t('sourcesBody')}</p>
@@ -139,7 +142,6 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
             ))}
           </ul>
         </div>
-        <p className="mt-10 text-[12.5px] text-ink-faint">{t('footer', { date: catalog.generatedAt.slice(0, 10) })}</p>
       </section>
     </main>
   )

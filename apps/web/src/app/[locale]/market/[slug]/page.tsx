@@ -3,11 +3,13 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ItemWorkbench } from '@/components/item/item-workbench'
+import { ItemCard } from '@/components/market/item-card'
 import { Link } from '@/i18n/navigation'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { routing, type Locale } from '@/i18n/routing'
-import { getCatalog, getItem, getPublishedItems } from '@/lib/catalog'
+import { getCatalog, getItem, getPublishedItems, summarize } from '@/lib/catalog'
 import { highlightFile } from '@/lib/code-tokens'
+import { marketOrder } from '@/lib/featured'
 import { RUNTIME_LABELS } from '@/lib/labels'
 
 export async function generateStaticParams() {
@@ -42,35 +44,49 @@ export default async function ItemPage({ params }: PageProps<'/[locale]/market/[
       .map((file) => highlightFile(file.path, item.files[file.path] ?? '', file.path === manifest.entry.file)),
   )
   const upstream = manifest.provenance.upstream
+  const summary = summarize(item, locale)
+  // 同类条目：同分类优先，再补同层级的，按市场的顺序取前三个。
+  const others = (await getPublishedItems()).filter((other) => other.manifest.slug !== slug).map((other) => summarize(other, locale))
+  const related = [
+    ...others.filter((other) => other.category === summary.category).sort(marketOrder),
+    ...others.filter((other) => other.category !== summary.category && other.kind === summary.kind).sort(marketOrder),
+  ].slice(0, 3)
+  const categoryHref = `/market?kind=${manifest.kind}&category=${manifest.category}`
+  const categoryLabel = tm(`categories.${manifest.category}`)
 
-  return (
-    <main className="mx-auto max-w-[1400px] px-5 pt-8 pb-24 sm:px-8">
-      <nav className="text-[13px] text-ink-faint">
+  const header = (
+    <div>
+      <nav aria-label={t('breadcrumb')} className="flex flex-wrap items-center gap-x-2 text-[13px] text-ink-faint">
         <Link href="/market" className="transition-colors duration-150 hover:text-ink">
           {t('back')}
         </Link>
-        <span className="mx-2">/</span>
-        <span>{tm(`categories.${manifest.category}`)}</span>
+        <span aria-hidden>/</span>
+        <Link href={`/market?kind=${manifest.kind}`} className="transition-colors duration-150 hover:text-ink">
+          {tm(`kinds.${manifest.kind}`)}
+        </Link>
+        <span aria-hidden>/</span>
+        <Link href={categoryHref} className="transition-colors duration-150 hover:text-ink">
+          {categoryLabel}
+        </Link>
       </nav>
+      <h1 className="mt-4 font-display text-[36px] leading-[1.1] font-semibold tracking-[-0.03em] sm:text-[44px]">{manifest.title[locale]}</h1>
+      <p className="mt-3 text-[15px] leading-relaxed text-pretty text-ink-muted">{manifest.summary[locale]}</p>
+      <ul className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-ink-faint">
+        <li>{manifest.runtime.map((r) => RUNTIME_LABELS[r] ?? r).join(' · ')}</li>
+        <li>{upstream?.spdx ?? 'MIT'}</li>
+        {upstream && (
+          <li>
+            <a href={`https://github.com/${upstream.repo}`} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ink">
+              {upstream.repo}
+            </a>
+          </li>
+        )}
+      </ul>
+    </div>
+  )
 
-      <header className="mt-5 mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-3xl">
-          <h1 className="font-display text-[36px] leading-[1.1] font-semibold tracking-[-0.03em] sm:text-[44px]">{manifest.title[locale]}</h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-pretty text-ink-muted">{manifest.summary[locale]}</p>
-        </div>
-        <ul className="flex flex-wrap gap-x-5 gap-y-1 text-[12.5px] text-ink-faint lg:justify-end">
-          <li>{manifest.runtime.map((r) => RUNTIME_LABELS[r] ?? r).join(' · ')}</li>
-          <li>{upstream?.spdx ?? 'MIT'}</li>
-          {upstream && (
-            <li>
-              <a href={`https://github.com/${upstream.repo}`} target="_blank" rel="noreferrer" className="hover:text-ink">
-                {upstream.repo}
-              </a>
-            </li>
-          )}
-        </ul>
-      </header>
-
+  return (
+    <main className="mx-auto max-w-[1400px] px-5 pt-8 pb-24 sm:px-8">
       <ItemWorkbench
         item={{ manifest, files: item.files }}
         title={manifest.title[locale]}
@@ -80,8 +96,27 @@ export default async function ItemPage({ params }: PageProps<'/[locale]/market/[
         presets={manifest.presets.map((preset) => ({ id: preset.id, name: preset.name[locale], values: preset.values }))}
         files={files}
         exportData={{ vendor: catalog.vendor, runtime: catalog.runtime }}
+        header={header}
         license={<ProvenancePanel manifest={manifest} locale={locale} />}
       />
+
+      {related.length > 0 && (
+        <section className="mt-24 border-t border-line pt-10">
+          <div className="flex items-end justify-between gap-6">
+            <h2 className="font-display text-[24px] leading-tight font-semibold tracking-[-0.02em]">{t('related')}</h2>
+            <Link href={categoryHref} className="shrink-0 text-[14px] text-ink-muted transition-colors duration-150 hover:text-ink">
+              {t('moreIn', { category: categoryLabel })} →
+            </Link>
+          </div>
+          <ul className="mt-6 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
+            {related.map((other) => (
+              <li key={other.slug}>
+                <ItemCard item={other} categoryLabel={tm(`categories.${other.category}`)} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   )
 }
