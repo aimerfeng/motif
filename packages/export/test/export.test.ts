@@ -101,7 +101,7 @@ describe('item exports', () => {
     expect(frontmatter).toMatch(/^name: motif-liquid-form$/m)
     const description = JSON.parse(/^description: (.*)$/m.exec(frontmatter)![1]!) as string
     expect(description.length).toBeLessThanOrEqual(1024)
-    expect(markdown).toContain('| `metal` | 1.4 | 1 |')
+    expect(markdown).toContain('| `metal` | 1.4 | 1.2 |')
     expect(markdown).toContain('License: MIT')
     expect(markdown.split('\n').length).toBeLessThan(500)
   })

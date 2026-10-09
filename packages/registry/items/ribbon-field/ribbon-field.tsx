@@ -13,8 +13,8 @@ export const defaults = {
   pointerAmount: 1,
   smoothing: 0.035,
   hue: 0,
-  saturation: 1,
-  brightness: 1.8,
+  saturation: 1.25,
+  brightness: 2.3,
   opacity: 1,
 }
 /* @motif:end */

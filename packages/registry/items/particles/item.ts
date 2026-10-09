@@ -39,7 +39,7 @@ export default defineItem({
   dependencies: ['@motif/runtime'],
   perf: { webgl: false, maxDpr: 2 },
   a11y: { reducedMotion: 'static' },
-  capture: { posterTime: 2, loop: 8 },
+  capture: { posterTime: 2, loop: 8, zoom: 1.5 },
   provenance: {
     kind: 'upstream',
     upstream: {

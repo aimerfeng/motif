@@ -109,8 +109,7 @@ void main() {
   vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), fwd));
   vec3 up = cross(fwd, right);
   vec3 rd = normalize(fwd + uv.x * right + uv.y * up);
-  vec3 bgCol = mix(vec3(0.02), vec3(0.05), length(uv) * 0.5);
-  vec3 col = bgCol;
+  vec3 col = vec3(0.0);
   float d = 0.0;
   for(int i=0; i<MAX_STEPS; i++) {
     vec3 p = ro + rd * d;
@@ -118,7 +117,8 @@ void main() {
     d += ds;
     if(d > MAX_DIST || abs(ds) < SURF_DIST) break;
   }
-  if(d < MAX_DIST) {
+  bool hit = d < MAX_DIST;
+  if(hit) {
     vec3 p = ro + rd * d;
     vec3 n = calcNormal(p, t);
     vec3 ref = reflect(rd, n);
@@ -132,10 +132,9 @@ void main() {
     float disp = map(p, t) - (length(p) - 1.8);
     col *= mix(0.7, 1.0, smoothstep(-0.1, 0.1, disp));
   }
-  float bloom = exp(-length(uv) * 2.5);
-  col += vec3(0.02, 0.02, 0.02) * bloom;
   col = col / (col + 0.5);
   col = pow(col, vec3(1.0/2.2));
-  gl_FragColor = vec4(col, 1.0);
+  // 背景透明，底色由页面画（background 参数）：色调映射不会再把近黑的背景抬成灰色，色调滤镜也只作用在液态银上。
+  gl_FragColor = hit ? vec4(col, 1.0) : vec4(0.0);
 }
 `;

@@ -113,7 +113,8 @@ export default defineItem({
   dependencies: ['@motif/runtime'],
   perf: { webgl: false, maxDpr: 1.5 },
   a11y: { reducedMotion: 'static' },
-  capture: { posterTime: 6 },
+  // 字很小：放大截图，海报里能看清字。
+  capture: { posterTime: 6, zoom: 1.5 },
   provenance: {
     kind: 'upstream',
     upstream: {

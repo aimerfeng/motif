@@ -58,8 +58,8 @@ export default defineItem({
       group: 'interaction',
     },
     { key: 'hue', type: 'number', label: { 'zh-CN': '色相', en: 'Hue' }, default: 0, min: -180, max: 180, step: 1, unit: 'deg', group: 'color' },
-    { key: 'saturation', type: 'number', label: { 'zh-CN': '饱和度', en: 'Saturation' }, default: 1, min: 0, max: 1.6, step: 0.01, group: 'color' },
-    { key: 'brightness', type: 'number', label: { 'zh-CN': '亮度', en: 'Brightness' }, default: 1.8, min: 0.8, max: 2.4, step: 0.01, group: 'color' },
+    { key: 'saturation', type: 'number', label: { 'zh-CN': '饱和度', en: 'Saturation' }, default: 1.25, min: 0, max: 1.6, step: 0.01, group: 'color' },
+    { key: 'brightness', type: 'number', label: { 'zh-CN': '亮度', en: 'Brightness' }, default: 2.3, min: 0.8, max: 2.4, step: 0.01, group: 'color' },
     { key: 'opacity', type: 'number', label: { 'zh-CN': '不透明度', en: 'Opacity' }, default: 1, min: 0.3, max: 1, step: 0.01, group: 'color' },
   ],
   presets: [
