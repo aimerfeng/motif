@@ -147,11 +147,18 @@ Each item gets 3–5 presets, a bilingual title and description, reduced-motion 
 - **P5 Polish.**
   - A home-page showpiece, search, and docs.
   - Accessibility and performance: INP, and LCP using posters.
+    - **LCP done (2026-10-09):** the first market row loads its posters eagerly at high priority; cards use 480 px posters through srcset (8 KB instead of 22 KB on standard screens).
+    - **INP done (2026-10-09):** measured on the production build with 4× CPU throttling (Event Timing API). Market tab and chip clicks took 300–640 ms, mostly the first click forcing hydration of all 145 cards.
+      - The grid now follows deferred filter values in a memoised component, and renders 24 cards per batch as you scroll.
+      - Every market interaction now takes 24–104 ms; slider drags on the detail page take under 80 ms.
+      - A sitemap (every item page, both locales) and robots rules (Studio session URLs are credentials and stay out of search) replace the crawl path the full grid used to provide.
   - A subsetted Chinese display font.
+    - **Done (2026-10-09):** Chinese headings use self-hosted Noto Sans SC (OFL), split by unicode-range into about a hundred slices so a page only downloads the glyphs it shows; body text stays on system fonts.
   - A `look_at_preview` screenshot tool so the agent can check its own output visually. **Done in P4.**
   - A second batch of items: GSAP-style originals, image-based shaders, animata, smoothui.
     - **Done (2026-10-09):** 12 animata / smoothui items, and 4 originals in place of GSAP (see Decisions).
-    - Image-based shaders are still to do.
+    - **Image-based shaders done (2026-10-09):** liquid-metal, heatmap, pool-water, fluted-glass, halftone-cmyk and gem-smoke (Paper Shaders, Apache-2.0). Input images are drawn on a canvas at runtime (`useDrawnImage` / `useImageElement` in motif-runtime), so the repo holds no image assets.
+    - Quiet items revisited: liquid-form gets a real dark background (its tone mapping lifted it to grey), ribbon-field is brighter, and the vortex and particles posters are captured closer.
 
 **Out of scope for now:** user accounts and user-published market items (needs a database and moderation), production deployment and filings, and the real production model key. These wait for the user's decision. (User-published items and identity were decided on 2026-10-08: see "Scope change: decentralized community" below.)
 
@@ -177,7 +184,7 @@ The user wants Motif to become a decentralized community: anyone can submit item
 The regulatory risk comes first: issuing a token is prohibited for operators in mainland China, so the token stays detachable (registry and identity do not depend on it; curation works with zero bond and zero rewards), and **no token deployment happens without a legal opinion**.
 
 - **C0 Contracts (done).** `packages/contracts`: token, governor, timelock, registry, curation and identity on Hardhat 3 + OpenZeppelin 5.6; the Ignition deployment module (ends with every admin role on the timelock); the genesis seeding script for the existing catalog; TypeScript bindings (`contentHash` = sha256 of the RFC 8785 canonical ItemSource, SPDX/commit encoding, generated ABIs). Unit, fuzz, invariant and deployment integration tests run in `pnpm verify`.
-- **C1 Decisions before deployment (user).** Pick the chain (an L2, or an EVM consortium chain that supports cancun) and a reachable RPC; get the legal opinion on the token and the operating entity; design the token distribution and reward amounts; choose the moderator multisig and genesis curators; commission an external audit.
+- **C1 Decisions before deployment.** **Chain decided (2026-10-09): Arbitrum One, phase 1 without token economics** (bond, rewards and reward pool at 0; see `docs/decisions/0007-chain.md`, rehearsed on a local Arbitrum Sepolia fork). Still the user's: the legal opinion and operating entity, the moderator multisig and genesis curators, an external audit, and the token economics once they are allowed.
 - **C2 Site integration (done).** Details in ADR 0005 §10.
   - Wallet connection with viem and injected wallets (EIP-6963), no WalletConnect, no external CDN; a header wallet menu.
   - `/community`: overview with on-chain stats, how it works, latest community works, open reviews and contributors; a faucet on the local chain.
@@ -189,7 +196,7 @@ The regulatory risk comes first: issuing a token is prohibited for operators in 
   - The event index is an in-process, incremental fold of the four contracts' events shared by every route (`globalThis`), resynced from scratch when the chain is reset.
   - Tooling: `pnpm dev:chain`, `pnpm item:pack | item:unpack | item:remix`, unit tests in `apps/web/test`, and `e2e/community.spec.ts` on its own local chain with a forwarding test wallet.
 - **C2 follow-ups (production).** Replace the in-process index with an indexer service writing to a database, and `.data/community` with object storage; rate-limit the upload, check and blob endpoints; capture posters and loops for approved community works on the server; Studio's "submit to the community" once Studio exists (P4).
-- **C3 Deployment.** Testnet first (full governance cycle, seeding, a week of real submissions), then mainnet; seed the catalog and renounce the seeder role; hand curator appointments to governance. Prepared: the runbook `docs/deploy-community.md`, a `target` network that reads its RPC and deployer key from the Hardhat keystore, `ignition/parameters/production.example.json`, and `scripts/check-deployment.ts` (27 checks of the role structure after deployment). Executing it waits for the C1 decisions.
+- **C3 Deployment.** Testnet first (full governance cycle, seeding, a week of real submissions), then mainnet; seed the catalog and renounce the seeder role; hand curator appointments to governance. Prepared: the runbook `docs/deploy-community.md`; `arbitrumSepolia` / `arbitrumOne` networks with pinned chain ids that read the RPC and deployer key from the Hardhat keystore; a forked `arbitrumSepoliaFork` for free rehearsals; parameter templates `arbitrum-sepolia.example.json` and `arbitrum-one.example.json`; and `scripts/check-deployment.ts` (27 checks of the role structure after deployment). Executing it needs the user's addresses, a funded deployer key and the legal opinion.
 - Gate for each step: `pnpm verify` green, e2e for the new pages, and for C3 a recorded rehearsal of every governance action on testnet.
 
 ## Verification (end to end)
