@@ -53,10 +53,21 @@ interface ItemReport {
 
 // ---- 图像工具 ----
 
-/** 亮度的标准差。先转成单通道（b-w 色彩空间）再统计：只 greyscale() 时 sharp 仍返回 3 个通道。 */
+/** 亮度（Rec. 709）的标准差：画面接近纯色时趋近 0，用来判断海报是不是空白。 */
 async function lumaStdDev(png: Buffer): Promise<number> {
-  const { channels } = await sharp(png).toColourspace('b-w').stats()
-  return channels[0]?.stdev ?? 0
+  // sharp 的 stats() 统计的是输入图像，不受管线里的 toColourspace 影响（读到的是红色通道）：
+  // 浅色暖调的海报红色通道几乎全是 255，会被误判为空白。所以在原始像素上按 Rec. 709 自己算亮度。
+  const { data, info } = await sharp(png).removeAlpha().raw().toBuffer({ resolveWithObject: true })
+  const pixels = info.width * info.height
+  let sum = 0
+  let squares = 0
+  for (let i = 0; i < data.length; i += info.channels) {
+    const luma = 0.2126 * data[i]! + 0.7152 * data[i + 1]! + 0.0722 * data[i + 2]!
+    sum += luma
+    squares += luma * luma
+  }
+  const mean = sum / pixels
+  return Math.sqrt(Math.max(squares / pixels - mean * mean, 0))
 }
 
 /** 两帧之间明显变化（灰度差 > 8）的像素数。 */
