@@ -8,7 +8,7 @@ import { spdxToBytes32 } from '../src/encoding.ts'
 /**
  * 部署后的自检：核对链上的权限结构和 ADR 0005 的设计一致。正式部署后、交给社区之前必须跑一遍。
  *
- *   pnpm --filter @motif/contracts exec hardhat run scripts/check-deployment.ts --network target
+ *   pnpm --filter @motif/contracts exec hardhat run scripts/check-deployment.ts --network arbitrumOne
  *
  * 部署记录默认读 ignition/deployments/chain-<id>（MOTIF_DEPLOYMENT_ID 可以指定别的）；
  * 部署者默认是第一个账户（MOTIF_DEPLOYER 可以指定）。有任何一项不符合就以非 0 退出。
@@ -53,7 +53,10 @@ check('registry: curation can register', await registry.read.hasRole([ROLES.cura
 check('registry: the deployer cannot register (seeding finished)', !(await registry.read.hasRole([ROLES.curation, deployer])))
 check('identity: curation issues reputation', await identity.read.hasRole([ROLES.issuer, curation.address]))
 for (const spdx of ALLOWED_SPDX) check(`registry: ${spdx} is allowed`, await registry.read.licenseAllowed([spdxToBytes32(spdx)]))
-check('curation: the reward pool is funded', (await curation.read.rewardPool()) > 0n)
+// 第一阶段可以只上登记和审核：押金和奖励都是 0（ADR 0007），这时奖励池不需要有钱。
+const { publishReward, remixReward } = await curation.read.getParams()
+if (publishReward > 0n || remixReward > 0n) check('curation: the reward pool is funded', (await curation.read.rewardPool()) > 0n)
+else console.log('· curation: rewards are off, so the reward pool is not checked')
 check('governor: uses the timelock', getAddress(await governor.read.timelock()) === timelock.address)
 
 let failed = 0

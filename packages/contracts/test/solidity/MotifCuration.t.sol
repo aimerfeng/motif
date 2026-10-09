@@ -337,6 +337,33 @@ contract MotifCurationTest is MotifBase {
         assertEq(token.balanceOf(alice), before + BOND);
     }
 
+    function test_ZeroEconomicsIsPlainRegistrationAndReview() public {
+        // 第一阶段（ADR 0007）：押金和奖励都是 0。没有代币的人也能投稿，通过后只记声誉，奖励池一分不动。
+        MotifCuration.Params memory params = defaultParams();
+        params.bond = 0;
+        params.publishReward = 0;
+        params.remixReward = 0;
+        vm.prank(address(timelock));
+        curation.setParams(params);
+
+        address stranger = makeAddr("stranger");
+        uint256 pool = curation.rewardPool();
+        uint256 itemId = submit(stranger, "no-bond");
+        assertEq(curation.totalBonded(), 0);
+        approve(itemId, 1);
+        assertTrue(registry.isListed(itemId));
+
+        uint256 bobBefore = token.balanceOf(bob);
+        uint256 remixId = submitRemix(bob, "no-bond-remix", itemId, 1);
+        approve(remixId, 1);
+
+        assertEq(token.balanceOf(stranger), 0);
+        assertEq(token.balanceOf(bob), bobBefore);
+        assertEq(curation.rewardPool(), pool);
+        assertEq(identity.reputationOf(stranger), PUBLISH_REPUTATION + REMIX_REPUTATION);
+        assertEq(identity.reputationOf(bob), PUBLISH_REPUTATION);
+    }
+
     function test_InvalidParamsRevert() public {
         MotifCuration.Params memory params = defaultParams();
         params.quorum = 0;

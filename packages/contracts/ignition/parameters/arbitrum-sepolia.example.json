@@ -1,0 +1,29 @@
+{
+  "Motif": {
+    "moderator": "0x<测试用的版主多签或地址>",
+    "curators": ["0x<测试审核员 1>", "0x<测试审核员 2>", "0x<测试审核员 3>"],
+    "genesisHolder": "0x<测试用的创世接收方>",
+    "treasuryAllocation": "600000000000000000000000000n",
+    "genesisAllocation": "100000000000000000000000000n",
+    "rewardPoolAllocation": "1000000000000000000000000n",
+    "timelockDelay": "600n",
+    "governor": {
+      "votingDelay": "300n",
+      "votingPeriod": "1800n",
+      "proposalThreshold": "1000000000000000000000000n",
+      "quorumPercent": "4n",
+      "lateQuorumExtension": "300n"
+    },
+    "curation": {
+      "bond": "100000000000000000000n",
+      "quorum": "2n",
+      "reviewPeriod": "3600n",
+      "publishReward": "1000000000000000000000n",
+      "remixReward": "200000000000000000000n",
+      "publishReputation": "10n",
+      "remixReputation": "5n",
+      "curatorReputation": "1n",
+      "violationPenalty": "20n"
+    }
+  }
+}

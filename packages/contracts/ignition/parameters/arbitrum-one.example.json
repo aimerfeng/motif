@@ -1,0 +1,30 @@
+{
+  "Motif": {
+    "moderator": "0x<应急版主多签地址 / moderator multisig>",
+    "curators": ["0x<创世审核员 1>", "0x<创世审核员 2>", "0x<创世审核员 3>"],
+    "genesisHolder": "0x<创世流通份额的接收方：项目多签，第一阶段不对外分发>",
+    "seeder": "0x<创世导入用的地址，导入完会自行放弃权限；省略则为部署者>",
+    "treasuryAllocation": "600000000000000000000000000n",
+    "genesisAllocation": "100000000000000000000000000n",
+    "rewardPoolAllocation": "0n",
+    "timelockDelay": "172800n",
+    "governor": {
+      "votingDelay": "86400n",
+      "votingPeriod": "432000n",
+      "proposalThreshold": "1000000000000000000000000n",
+      "quorumPercent": "4n",
+      "lateQuorumExtension": "86400n"
+    },
+    "curation": {
+      "bond": "0n",
+      "quorum": "2n",
+      "reviewPeriod": "604800n",
+      "publishReward": "0n",
+      "remixReward": "0n",
+      "publishReputation": "10n",
+      "remixReputation": "5n",
+      "curatorReputation": "1n",
+      "violationPenalty": "20n"
+    }
+  }
+}
