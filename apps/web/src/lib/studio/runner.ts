@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url'
 import path from 'node:path'
-import { aiSdkRunner, createModel, scriptedRunner, type AgentRunner } from '@motif/agent'
+import { modelConfigFromEnv, modelRunner, scriptedRunner, type AgentRunner } from '@motif/agent'
 
 /*
  * 选择 Studio 的运行器（MOTIF_AGENT_PROVIDER，见 apps/web/.env.example）：
@@ -22,8 +22,10 @@ export function runnerConfig(): RunnerConfig {
   const name = provider()
   switch (name) {
     case 'anthropic':
-    case 'openai-compatible':
-      return process.env.MOTIF_AGENT_API_KEY && process.env.MOTIF_AGENT_MODEL ? { provider: name, label: process.env.MOTIF_AGENT_MODEL } : null
+    case 'openai-compatible': {
+      const model = modelConfigFromEnv(process.env)
+      return model ? { provider: name, label: model.model } : null
+    }
     case 'claude-cli':
       return { provider: name, label: `${process.env.MOTIF_CLAUDE_MODEL ?? 'claude-sonnet-5-5'} (local CLI)` }
     case 'scripted':
@@ -59,11 +61,9 @@ export async function getRunner(): Promise<AgentRunner | null> {
     case 'claude-cli':
       return loadCliRunner()
     case 'anthropic':
-      return aiSdkRunner(createModel({ provider: 'anthropic', apiKey: process.env.MOTIF_AGENT_API_KEY!, model: process.env.MOTIF_AGENT_MODEL!, ...(process.env.MOTIF_AGENT_BASE_URL ? { baseURL: process.env.MOTIF_AGENT_BASE_URL } : {}) }))
     case 'openai-compatible': {
-      const baseURL = process.env.MOTIF_AGENT_BASE_URL
-      if (!baseURL) return null
-      return aiSdkRunner(createModel({ provider: 'openai-compatible', apiKey: process.env.MOTIF_AGENT_API_KEY!, model: process.env.MOTIF_AGENT_MODEL!, baseURL }))
+      const model = modelConfigFromEnv(process.env)
+      return model ? modelRunner(model) : null
     }
     default:
       return null

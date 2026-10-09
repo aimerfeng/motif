@@ -60,8 +60,20 @@ id 是 12 位随机 base36（约 62 位熵）。没有列出全部会话的接�
 - 浏览器由 `MOTIF_CAPTURE_CHANNEL` 选择。开发模式默认用本机的 Edge（Windows）或 Chrome；生产环境不设就关闭，这时工具会告诉 agent「没有截图」。
 - 浏览器常驻，每次截图开一个新的上下文。
 - Playwright 不经过 Next 打包，运行时从工作区加载。
+- OpenAI 兼容接口的工具结果只能放文字，中转站也不一定转换里面的图片，而 OpenAI 兼容的 provider 会把图片内容序列化成一大段 base64 文本。所以这类接口下：
+  - 工具结果只写「截图在下一条消息里」；
+  - 截图由 `prepareStep` 作为紧跟其后的一条用户消息发出（`modelRunner` 按 provider 自动选择）。
 
-### 9. 成本上限
+### 9. 站点的模型（2026-10-09）
+
+生产用「字字动画算力平台」（OpenAI 兼容的中转站，`https://zizidonghua.com/v1`）：
+
+- `MOTIF_AGENT_PROVIDER=openai-compatible`；
+- 模型 `OmniC-5-standard`（Claude Opus 5 系列）。同平台的 `OmniC-5-light` 是 Sonnet 5 系列，单价相同。
+
+配置写在 `apps/web/.env.local`，不进仓库。环境变量到模型的映射只有一份（`modelConfigFromEnv`），站点和 `pnpm smoke:agent` 共用。配了站点模型时，冒烟测试就用它，而不是本机 CLI。
+
+### 10. 成本上限
 
 用的是站点自己的 key，所以有三道闸：
 - 每个会话的 token 上限 `MOTIF_AGENT_SESSION_TOKENS`，默认 60 万；
@@ -72,4 +84,3 @@ id 是 12 位随机 base36（约 62 位熵）。没有列出全部会话的接�
 
 - 多实例部署时，运行锁和预览回报要换成共享存储，现在只在进程内存里。
 - 生产环境开启截图需要在镜像里装浏览器（Playwright 的 chromium 约 300 MB）；要不要装等部署时再定。
-- 会话目前没有过期清理。

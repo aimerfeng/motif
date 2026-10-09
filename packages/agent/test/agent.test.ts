@@ -151,4 +151,47 @@ describe('AI SDK runner', () => {
     expect(history.length).toBeGreaterThan(2)
     expect(model.doStreamCalls).toHaveLength(2)
   })
+
+  it('moves screenshots into a user message for models that take only text tool results', async () => {
+    const model = new MockLanguageModelV4({
+      doStream: [
+        {
+          stream: simulateReadableStream({
+            chunks: [
+              { type: 'tool-call', toolCallId: 'c1', toolName: 'look_at_preview', input: JSON.stringify({ times: [1] }) },
+              { type: 'finish', finishReason: { unified: 'tool-calls', raw: undefined }, usage },
+            ],
+          }),
+        },
+        {
+          stream: simulateReadableStream({
+            chunks: [
+              { type: 'tool-call', toolCallId: 'c2', toolName: 'finish', input: JSON.stringify({ summary: '看过了。' }) },
+              { type: 'finish', finishReason: { unified: 'tool-calls', raw: undefined }, usage },
+            ],
+          }),
+        },
+      ],
+    })
+    const host = testHost()
+    host.capture = async (request) => request.times.map((time) => ({ time, mediaType: 'image/jpeg', data: 'aGVsbG8=' }))
+    const item = starterItem('studio-test')
+    await runAgent({
+      runner: aiSdkRunner(model, { imagesInToolResults: false }),
+      host,
+      system: 'system prompt',
+      prompt: 'how does it look?',
+      item,
+      values: defaultsOf(item.manifest.params),
+      evaluation: await host.evaluate(item),
+      state: undefined,
+      signal: new AbortController().signal,
+      onEvent: () => undefined,
+    })
+
+    const prompt = model.doStreamCalls[1]!.prompt
+    const toolMessage = prompt.find((message) => message.role === 'tool')!
+    expect(JSON.stringify(toolMessage.content)).not.toContain('aGVsbG8=')
+    expect(prompt.at(-1)).toMatchObject({ role: 'user', content: [{ type: 'text' }, { type: 'file', mediaType: 'image/jpeg' }] })
+  })
 })

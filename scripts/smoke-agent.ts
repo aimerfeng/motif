@@ -1,13 +1,15 @@
 /**
- * 用本机 Claude Code CLI（Sonnet 5.5）真实跑几个 Studio 任务，确认 agent 能从一句话做出编译通过、检查干净的条目。
+ * 真实跑几个 Studio 任务，确认 agent 能从一句话做出编译通过、检查干净的条目。
+ * 模型和站点一致：apps/web/.env.local 里配了站点内置的模型（MOTIF_AGENT_*）就用它，否则用本机 Claude Code CLI。
  * 会调用模型，所以不放进 pnpm verify；对话记录和产物写到 .data/evals/<时间>/，方便回头看 agent 的表现。
  *
  *   pnpm smoke:agent                 # 默认的三个任务
  *   pnpm smoke:agent "一句话需求" …   # 自定义任务
  */
+import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { appendEvent, buildSystemPrompt, runAgent, starterItem, type AgentHost, type Evaluation, type TranscriptEntry } from '@motif/agent'
+import { appendEvent, buildSystemPrompt, modelConfigFromEnv, modelRunner, runAgent, starterItem, type AgentHost, type Evaluation, type TranscriptEntry } from '@motif/agent'
 import { claudeCliRunner } from '@motif/agent-claude-cli'
 import { checkItem, type SourceRecord } from '@motif/checker'
 import { compileItem } from '@motif/compiler'
@@ -59,7 +61,12 @@ function host(): AgentHost {
 
 const outDir = path.join(REPO_ROOT, '.data/evals', new Date().toISOString().replaceAll(':', '-').slice(0, 19))
 await mkdir(outDir, { recursive: true })
-const runner = claudeCliRunner()
+// 和站点读同一份环境变量（已经设置的变量优先）。
+const envFile = path.join(REPO_ROOT, 'apps/web/.env.local')
+if (existsSync(envFile)) process.loadEnvFile(envFile)
+const model = modelConfigFromEnv(process.env)
+const runner = model ? modelRunner(model) : claudeCliRunner()
+console.log(`runner: ${model ? `${model.provider} ${model.model}` : 'local Claude Code CLI'}\n`)
 let failures = 0
 
 for (const [index, task] of TASKS.entries()) {
