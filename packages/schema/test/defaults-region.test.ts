@@ -37,7 +37,7 @@ describe('defaults region', () => {
 
   it('keeps every value on its own line and the end marker out of strings', () => {
     // 值可能来自分享链接；执行后得到同样的值这一点由 export 包的测试用 node:vm 验证。
-    const values: ParamValues = { lines: 'a\nb\r\nc d', marker: 'x /* @motif:end */ y', odd: { "a':1,'b": 1 } }
+    const values: ParamValues = { lines: 'a\nb\r\nc\u2028d', marker: 'x /* @motif:end */ y', odd: { "a':1,'b": 1 } }
     const printed = printDefaults(values).split('\n')
     expect(printed).toHaveLength(9)
     expect(printed.filter((line) => line.includes('*/'))).toEqual([DEFAULTS_START, DEFAULTS_END])

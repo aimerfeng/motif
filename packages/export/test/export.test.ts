@@ -130,7 +130,7 @@ describe('item exports', () => {
     // 分享链接里的参数会写进别人项目里的源码：执行后只能得到同样的值，不能多出任何语句。
     const values: ParamValues = {
       quote: "it's \\ \"both\"",
-      lines: 'a\nb\r\nc d e',
+      lines: 'a\nb\r\nc\u2028d\u2029e',
       control: 'tab\there\u0000\u001b',
       marker: 'x /* @motif:end */ y */ *\\/',
       unicode: '母题 🎨',

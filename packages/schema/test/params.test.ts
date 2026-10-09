@@ -32,7 +32,7 @@ describe('checkParamValue', () => {
   it('takes single-line text only', () => {
     expect(checkParamValue(text, 'Ship it 🚀')).toBeNull()
     expect(checkParamValue(text, 'a\nb')).not.toBeNull()
-    expect(checkParamValue(text, 'a b')).not.toBeNull()
+    expect(checkParamValue(text, 'a\u2028b')).not.toBeNull()
     expect(checkParamValue(text, 'x'.repeat(21))).not.toBeNull()
   })
 
