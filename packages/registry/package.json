@@ -13,7 +13,10 @@
     "lint": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "sync-defaults": "tsx scripts/sync-defaults.ts",
-    "notices": "tsx scripts/notices.ts"
+    "notices": "tsx scripts/notices.ts",
+    "item:pack": "tsx scripts/item-pack.ts",
+    "item:unpack": "tsx scripts/item-unpack.ts",
+    "item:remix": "tsx scripts/item-remix.ts"
   },
   "dependencies": {
     "@motif/checker": "workspace:*",

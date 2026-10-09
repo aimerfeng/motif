@@ -1,6 +1,6 @@
 'use client'
 
-import type { JsonValue, ParamSpec, ParamValues } from '@motif/schema'
+import type { JsonValue, ParamSpec, ParamValues } from '@motif/schema/core'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { decodeValues, encodeValues } from '@/lib/share'
 import { replaceUrl, URL_WRITE_DELAY_MS } from '@/lib/url-state'

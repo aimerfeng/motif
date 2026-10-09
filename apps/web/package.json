@@ -14,16 +14,21 @@
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
+    "@motif/checker": "workspace:*",
+    "@motif/compiler": "workspace:*",
+    "@motif/contracts": "workspace:*",
     "@motif/export": "workspace:*",
     "@motif/preview": "workspace:*",
     "@motif/registry": "workspace:*",
     "@motif/schema": "workspace:*",
     "@motif/skills": "workspace:*",
+    "@motif/vendor": "workspace:*",
     "next": "16.3.7",
     "next-intl": "^4.14.8",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "shiki": "^4.4.3"
+    "shiki": "^4.4.3",
+    "viem": "^2.57.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

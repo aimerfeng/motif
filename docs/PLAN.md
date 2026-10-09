@@ -150,7 +150,7 @@ Each item gets 3–5 presets, a bilingual title and description, reduced-motion 
   - A `look_at_preview` screenshot tool so the agent can check its own output visually.
   - A second batch of items: GSAP-based, image-based shaders, animata, smoothui.
 
-**Out of scope for now:** user accounts and user-published market items (needs a database and moderation), production deployment and filings, and the real production model key. These wait for the user's decision.
+**Out of scope for now:** user accounts and user-published market items (needs a database and moderation), production deployment and filings, and the real production model key. These wait for the user's decision. (User-published items and identity were decided on 2026-10-08: see "Scope change: decentralized community" below.)
 
 ## Scope change (2026-09-30): market levels and skills on every item
 
@@ -166,6 +166,28 @@ Delivered so far:
 - 20 self-hosted OFL fonts; manifest `fonts` (checked, installed on export) and `guidance` (item-specific skill rules).
 - 52 more upstream sources pinned (research in `docs/research/{templates-styles,sections-blocks,functional-components}.md`); partially licensed repos are restricted by path.
 - In progress: ~70 new items across styles, templates, sections and components, imported by parallel agents.
+
+## Scope change (2026-10-08): decentralized community
+
+The user wants Motif to become a decentralized community: anyone can submit items, the community reviews them, attribution and remix lineage are traceable on chain, and a token plus a DAO handle incentives and governance. The user chose Solidity / EVM (chain to be decided), a community token with DAO governance, on-chain registration, lineage, curation and identity, and site-hosted sources with only hashes on chain. Decisions, defaults and risks are in `docs/decisions/0005-decentralized-community.md`.
+
+The regulatory risk comes first: issuing a token is prohibited for operators in mainland China, so the token stays detachable (registry and identity do not depend on it; curation works with zero bond and zero rewards), and **no token deployment happens without a legal opinion**.
+
+- **C0 Contracts (done).** `packages/contracts`: token, governor, timelock, registry, curation and identity on Hardhat 3 + OpenZeppelin 5.6; the Ignition deployment module (ends with every admin role on the timelock); the genesis seeding script for the existing catalog; TypeScript bindings (`contentHash` = sha256 of the RFC 8785 canonical ItemSource, SPDX/commit encoding, generated ABIs). Unit, fuzz, invariant and deployment integration tests run in `pnpm verify`.
+- **C1 Decisions before deployment (user).** Pick the chain (an L2, or an EVM consortium chain that supports cancun) and a reachable RPC; get the legal opinion on the token and the operating entity; design the token distribution and reward amounts; choose the moderator multisig and genesis curators; commission an external audit.
+- **C2 Site integration (done).** Details in ADR 0005 §10.
+  - Wallet connection with viem and injected wallets (EIP-6963), no WalletConnect, no external CDN; a header wallet menu.
+  - `/community`: overview with on-chain stats, how it works, latest community works, open reviews and contributors; a faucet on the local chain.
+  - `/community/submit`: drop a `.motif.json`, the server runs the same checker and compiler as the market (in a forked compiler process), shows a live preview, the content hash, license, upstream and remix parent; then the wallet signs the source upload, approves the bond and submits. Sources are stored per (hash, uploader) and served only for the on-chain author (the front-running defense).
+  - `/community/items/<id>`: the on-chain record — preview of any version, version history, review panel with votes and hosted notes, rewards, lineage; actions by role (curator vote with note, submitter withdraw, anyone expire, maintainer new version and transfer, moderator delist).
+  - `/community/review` (queue, "only what needs me", recently closed, curators), `/community/u/<handle|address>` (profile, works, remixes, reviews, moderation), `/community/profile` (register handle, name, bio, links).
+  - `/community/governance`: settings, treasury, proposals with decoded actions and tallies, delegation, vote / queue / execute, and a proposal composer with templates (curators, moderators, reward pool funding, review parameters, licenses).
+  - Market: approved community works appear in the grid (badged) and at `/community/works/<slug>` with the same detail component as catalog items (full workbench plus an "On chain" tab); `/market/<slug>` stays statically generated for the catalog. shadcn registry and skills for community works are generated on demand. Every item page shows "verified on chain", computed in the browser.
+  - The event index is an in-process, incremental fold of the four contracts' events shared by every route (`globalThis`), resynced from scratch when the chain is reset.
+  - Tooling: `pnpm dev:chain`, `pnpm item:pack | item:unpack | item:remix`, unit tests in `apps/web/test`, and `e2e/community.spec.ts` on its own local chain with a forwarding test wallet.
+- **C2 follow-ups (production).** Replace the in-process index with an indexer service writing to a database, and `.data/community` with object storage; rate-limit the upload, check and blob endpoints; capture posters and loops for approved community works on the server; Studio's "submit to the community" once Studio exists (P4).
+- **C3 Deployment.** Testnet first (full governance cycle, seeding, a week of real submissions), then mainnet; seed the catalog and renounce the seeder role; hand curator appointments to governance. Prepared: the runbook `docs/deploy-community.md`, a `target` network that reads its RPC and deployer key from the Hardhat keystore, `ignition/parameters/production.example.json`, and `scripts/check-deployment.ts` (27 checks of the role structure after deployment). Executing it waits for the C1 decisions.
+- Gate for each step: `pnpm verify` green, e2e for the new pages, and for C3 a recorded rehearsal of every governance action on testnet.
 
 ## Verification (end to end)
 

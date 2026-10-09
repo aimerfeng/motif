@@ -13,6 +13,7 @@
     "dev": "node scripts/dev.mjs",
     "dev:web": "pnpm --filter @motif/web dev",
     "dev:preview": "pnpm --filter @motif/preview dev",
+    "dev:chain": "node scripts/dev-chain.mjs",
     "build": "pnpm --filter @motif/preview build && pnpm --filter @motif/web build",
     "lint": "pnpm lint:types && pnpm lint:eslint",
     "lint:types": "pnpm -r --workspace-concurrency=1 lint && tsc --noEmit -p e2e/tsconfig.json && tsc --noEmit -p scripts/tsconfig.json",
@@ -24,6 +25,9 @@
     "capture": "tsx scripts/capture.ts",
     "audit:items": "pnpm --filter @motif/registry check",
     "items:sync-defaults": "pnpm --filter @motif/registry sync-defaults",
+    "item:pack": "pnpm --filter @motif/registry run item:pack",
+    "item:unpack": "pnpm --filter @motif/registry run item:unpack",
+    "item:remix": "pnpm --filter @motif/registry run item:remix",
     "check:export": "tsx scripts/check-export.ts",
     "skills:build": "pnpm --filter @motif/skills build",
     "notices": "pnpm --filter @motif/registry notices"

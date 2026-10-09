@@ -1,4 +1,4 @@
-import { bake, paramsHash, type ItemSource, type ParamValues } from '@motif/schema'
+import { bake, paramsHash, type ItemSource, type ParamValues } from '@motif/schema/core'
 import { strToU8, zipSync } from 'fflate'
 import type { ExportContext } from './context.ts'
 import { itemRegistryItem } from './registry-item.ts'

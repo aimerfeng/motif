@@ -9,13 +9,17 @@
 | `apps/web` | 站点：Next.js 16 App Router + Tailwind v4 + next-intl（默认 `zh-CN`，英文走 `/en`） |
 | `apps/preview` | 预览沙箱：不透明源 iframe 里跑组件；esbuild 构建运行时和条目，静态服务在 `127.0.0.1:4100` |
 | `packages/vendor` | 沙箱可用的第三方依赖清单 + 预打包（一次 esbuild 构建，保证 React 只有一份） |
+| `packages/contracts` | 社区合约（Solidity，Hardhat 3 + OpenZeppelin）和 TS 绑定（内容哈希、ABI、链上事件归约器）；设计见 `docs/decisions/0005-decentralized-community.md` |
+| `apps/web/src/lib/community` | 社区的服务端：链配置、事件同步、源码存储、投稿检查（编译在子进程里）；页面在 `app/[locale]/community` |
 | `e2e` | Playwright，本地用已安装的 Edge |
 
 ## 常用命令
 
 - `pnpm dev`：同时启动站点（`localhost:3000`）和预览沙箱（`127.0.0.1:4100`）。
+- `pnpm dev:chain`：（可选）本地社区链（`127.0.0.1:8545`），全新部署合约并导入条目；开发模式的站点自动连上。
 - `pnpm verify`：类型检查 + ESLint + 单元测试 + 构建。**提交前必须通过。**
 - `pnpm e2e`：端到端测试（自己起 3100 / 4110 端口的服务）。
+- 改了合约之后运行 `pnpm --filter @motif/contracts abi` 重新导出 ABI（`pnpm verify` 会检查它是否过期）。
 
 ## 开发原则
 

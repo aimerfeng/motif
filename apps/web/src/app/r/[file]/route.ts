@@ -1,6 +1,7 @@
 import { exportRegistryItem, runtimeRegistryItem, type ExportContext } from '@motif/export'
 import { defaultsOf } from '@motif/schema'
-import { getCatalog, getItem } from '@/lib/catalog'
+import { getCatalog } from '@/lib/catalog'
+import { marketSource } from '@/lib/community/market-source'
 import { decodeValues } from '@/lib/share'
 
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=300' }
@@ -19,10 +20,11 @@ export async function GET(request: Request, { params }: RouteContext<'/r/[file]'
 
   if (slug === 'motif-runtime') return Response.json(runtimeRegistryItem(context), { headers: HEADERS })
 
-  const item = await getItem(slug)
+  // 目录条目和审核通过的社区作品都能用 shadcn 安装。
+  const item = await marketSource(slug)
   if (!item) return Response.json({ error: `no item named "${slug}"` }, { status: 404, headers: HEADERS })
   const defaults = defaultsOf(item.manifest.params)
   const values = decodeValues(url.searchParams.get('v') ?? '', item.manifest.params, defaults)
-  const json = await exportRegistryItem({ manifest: item.manifest, files: item.files }, values, context)
+  const json = await exportRegistryItem(item, values, context)
   return Response.json(json, { headers: HEADERS })
 }

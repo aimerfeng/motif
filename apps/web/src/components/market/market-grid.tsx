@@ -1,6 +1,6 @@
 'use client'
 
-import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema'
+import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { SearchIcon } from '@/components/icons'

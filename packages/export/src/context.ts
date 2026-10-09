@@ -1,4 +1,4 @@
-import type { ItemSource, ParamValues } from '@motif/schema'
+import type { ItemSource, ParamValues } from '@motif/schema/core'
 import { FONTS, VENDOR_ENTRIES, type FontEntry } from '@motif/vendor/manifest'
 
 /** 仓库：Skill 里的安装命令、仓库内 skill 的来源链接、站点上的 GitHub 链接都从这里取。 */

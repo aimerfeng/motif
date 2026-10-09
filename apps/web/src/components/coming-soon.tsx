@@ -3,7 +3,7 @@ import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
 
 /** 还没做好的栏目：说清楚它将来做什么，不放假内容。 */
-export async function ComingSoon({ locale, section }: { locale: Locale; section: 'studio' | 'skills' | 'docs' }) {
+export async function ComingSoon({ locale, section }: { locale: Locale; section: 'studio' }) {
   const t = await getTranslations({ locale, namespace: 'upcoming' })
   return (
     <main className="mx-auto flex min-h-[70dvh] max-w-2xl flex-col justify-center px-5 sm:px-8">

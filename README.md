@@ -20,6 +20,12 @@
    ```
 
 5. **Agent 工作台**（开发中）：用自然语言描述想要的效果，agent 从市场条目出发生成或改写组件。
+6. **去中心化社区**（合约和站点已完成，可在本地链上完整试用，尚未部署到公开网络）：
+   - 任何人押上押金投稿，DAO 任命的审核员投票，通过的作品进入市场，作者得到奖励和声誉；
+   - 源码由站点托管，链上记录内容哈希、许可证、署名和 Remix 谱系，详情页的“链上已验证”是浏览器自己重算哈希后比对的结果；
+   - 资料、审核队列、治理（委托、提案、投票、执行）都在 `/community` 下。
+
+   设计与风险见 [docs/decisions/0005-decentralized-community.md](./docs/decisions/0005-decentralized-community.md)，上线步骤见 [docs/deploy-community.md](./docs/deploy-community.md)。
 
 ## 本地开发
 
@@ -29,6 +35,7 @@
 pnpm install
 pnpm sources:sync   # 克隆上游仓库到 sources/_clones（只读，用来对照）
 pnpm dev            # 站点 http://localhost:3000，预览沙箱 http://127.0.0.1:4100
+pnpm dev:chain      # （可选，另开终端）本地社区链 http://127.0.0.1:8545：部署合约、导入条目，站点自动连上
 ```
 
 | 命令 | 作用 |
@@ -40,6 +47,8 @@ pnpm dev            # 站点 http://localhost:3000，预览沙箱 http://127.0.0
 | `pnpm check:export <slug>` | 真正安装并构建导出的项目（需要联网） |
 | `pnpm skills:build` | 重新生成仓库根目录的 `skills/` |
 | `pnpm notices` | 重新生成 `THIRD_PARTY_NOTICES.md` |
+| `pnpm dev:chain` | 启动本地社区链（全新部署 + 导入目录），提供测试币 |
+| `pnpm item:pack <slug>` | 把条目目录打包成 `.motif.json`，用于社区投稿（`item:unpack` 还原，`item:remix` 开一个 Remix） |
 
 新增或修改效果请先读 [docs/authoring-items.md](./docs/authoring-items.md)。
 
@@ -57,6 +66,7 @@ pnpm dev            # 站点 http://localhost:3000，预览沙箱 http://127.0.0
 | `packages/export` | 导出：Vite 项目、shadcn registry、SKILL.md |
 | `packages/skills` | 通用 Skill 源文件与 `skills/` 的生成 |
 | `packages/vendor` | 沙箱可用的第三方依赖清单和预打包 |
+| `packages/contracts` | 社区合约（登记、审核、身份、代币、治理）、部署模块和 TS 绑定 |
 | `skills/` | 生成的 Agent Skill（`npx skills add` 从这里安装） |
 | `sources/sources.json` | 上游来源登记（仓库、固定提交、许可证） |
 | `docs/` | 实施计划、技术决策、调研 |

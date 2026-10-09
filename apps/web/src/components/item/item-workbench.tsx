@@ -1,14 +1,15 @@
 'use client'
 
-import type { PreviewTheme } from '@motif/preview/protocol'
-import type { ItemSource, Kind, ParamValues } from '@motif/schema'
+import type { ModuleRef, PreviewTheme, StyleRef } from '@motif/preview/protocol'
+import type { ItemSource, Kind, ParamValues } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { useState, type ReactNode } from 'react'
+import { ChainBadge } from '@/components/community/chain-badge'
 import { RefreshIcon } from '@/components/icons'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
 import { TunePanel } from '@/components/tune/tune-panel'
 import { useTune, type TunePreset } from '@/components/tune/use-tune'
-import type { HighlightedFile } from '@/lib/code-tokens'
+import type { HighlightedCode } from '@/lib/code-tokens'
 import { CodeView } from './code-view'
 import { InstallPanel, QuickActions, SkillPanel, type ExportData } from './export-panels'
 import { ItemTabs } from './item-tabs'
@@ -16,20 +17,23 @@ import { ItemTabs } from './item-tabs'
 interface ItemWorkbenchProps {
   item: ItemSource
   title: string
-  build: { js: string; css: string }
+  /** 预览模块：市场目录条目是沙箱托管的预编译产物（URL），社区作品是编译好的代码字符串。 */
+  preview: { module: ModuleRef; styles: StyleRef }
   theme: PreviewTheme
   defaults: ParamValues
   presets: TunePreset[]
-  files: HighlightedFile[]
+  code: HighlightedCode
   exportData: ExportData
   /** 服务端渲染好的标题区（面包屑、标题、简介、来源），快捷操作排在它右边。 */
   header: ReactNode
   /** 服务端渲染好的「来源与许可证」内容。 */
   license: ReactNode
+  /** 额外的标签页（例如链上记录），排在最后。 */
+  extraTabs?: { id: string; label: string; content: ReactNode }[]
 }
 
 /** 详情页的工作区：实时预览 + 调参面板，下方是随参数变化的代码、安装、Skill 与许可证。 */
-export function ItemWorkbench({ item, title, build, theme, defaults, presets, files, exportData, header, license }: ItemWorkbenchProps) {
+export function ItemWorkbench({ item, title, preview, theme, defaults, presets, code, exportData, header, license, extraTabs = [] }: ItemWorkbenchProps) {
   const t = useTranslations('item')
   const [status, setStatus] = useState<PreviewStatus>({ state: 'loading' })
   const [replay, setReplay] = useState(0)
@@ -45,6 +49,7 @@ export function ItemWorkbench({ item, title, build, theme, defaults, presets, fi
         <div className="max-w-3xl min-w-0">{header}</div>
         <div className="flex shrink-0 items-center gap-2">
           {pageLike && <ViewportSwitch value={viewport} onChange={setViewport} />}
+          <ChainBadge item={item} />
           <QuickActions item={item} values={tune.values} data={exportData} />
         </div>
       </header>
@@ -58,8 +63,8 @@ export function ItemWorkbench({ item, title, build, theme, defaults, presets, fi
             <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 transition-[width] duration-300 ease-(--ease-out-soft)" style={{ width: VIEWPORT_WIDTH[viewport] }}>
               <PreviewFrame
                 title={title}
-                module={{ kind: 'url', url: build.js }}
-                styles={{ kind: 'url', url: build.css }}
+                module={preview.module}
+                styles={preview.styles}
                 exportName={item.manifest.demo.export}
                 theme={theme}
                 props={tune.values}
@@ -93,11 +98,12 @@ export function ItemWorkbench({ item, title, build, theme, defaults, presets, fi
             {
               id: 'code',
               label: t('tabs.code'),
-              content: <CodeView files={files} entry={item.manifest.entry.file} values={tune.values} labels={{ copy: t('copy'), copied: t('copied'), failed: t('copyFailed'), tuned: t('tunedNote') }} />,
+              content: <CodeView code={code} sources={item.files} entry={item.manifest.entry.file} values={tune.values} labels={{ copy: t('copy'), copied: t('copied'), failed: t('copyFailed'), tuned: t('tunedNote') }} />,
             },
             { id: 'install', label: t('tabs.install'), content: <InstallPanel item={item} values={tune.values} encoded={tune.encoded} data={exportData} /> },
             { id: 'skill', label: t('tabs.skill'), content: <SkillPanel item={item} values={tune.values} data={exportData} /> },
             { id: 'license', label: t('tabs.license'), content: license },
+            ...extraTabs,
           ]}
         />
       </div>

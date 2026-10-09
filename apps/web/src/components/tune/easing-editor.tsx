@@ -1,6 +1,6 @@
 'use client'
 
-import { EASING_RANGE } from '@motif/schema'
+import { EASING_RANGE } from '@motif/schema/core'
 import { useRef } from 'react'
 
 type Curve = [number, number, number, number]

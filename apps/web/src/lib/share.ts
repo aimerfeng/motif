@@ -1,4 +1,4 @@
-import { checkParamValue, type JsonValue, type ParamSpec, type ParamValues } from '@motif/schema'
+import { checkParamValue, type JsonValue, type ParamSpec, type ParamValues } from '@motif/schema/core'
 
 /** 调好的参数编码进 URL（base64url 的 JSON），只放和默认值不同的键，链接更短。 */
 export function encodeValues(values: ParamValues, defaults: ParamValues): string {

@@ -22,6 +22,9 @@
   --color-ink-faint: oklch(0.56 0.01 270);
   --color-focus: oklch(0.84 0.07 285);
   --color-danger: oklch(0.72 0.16 25);
+  /* 社区里的状态：审核通过、进行中。明度和彩度与 danger 接近，几种状态并排时分量一致。 */
+  --color-success: oklch(0.78 0.13 160);
+  --color-pending: oklch(0.8 0.11 85);
 
   --radius-card: 14px;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -106,4 +109,34 @@
 }
 .motif-range:focus-visible::-webkit-slider-thumb {
   box-shadow: 0 0 0 3px var(--color-canvas), 0 0 0 5px var(--color-focus);
+}
+
+/*
+ * 代码视图：行号由 CSS 计数器生成，不占 DOM，也不会被选中复制。
+ * code 撑到最长一行的宽度，横向滚动时高亮行的底色也跟着铺满。
+ */
+.code-lines {
+  display: inline-block;
+  min-width: 100%;
+  counter-reset: code-line;
+}
+.code-line {
+  position: relative;
+  min-height: 1lh;
+  padding-left: 4.25rem;
+  padding-right: 1rem;
+  white-space: pre;
+  counter-increment: code-line;
+}
+.code-line::before {
+  content: counter(code-line);
+  position: absolute;
+  left: 0;
+  width: 3.25rem;
+  text-align: right;
+  color: color-mix(in oklab, var(--color-ink-faint) 50%, transparent);
+  user-select: none;
+}
+.code-line[data-tuned] {
+  background: oklch(0.84 0.07 285 / 0.07);
 }

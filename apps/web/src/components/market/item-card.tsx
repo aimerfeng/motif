@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useRef } from 'react'
 import { SkillButton } from '@/components/skill-button'
 import { Link } from '@/i18n/navigation'
@@ -12,6 +13,7 @@ import { RUNTIME_LABELS } from '@/lib/labels'
  */
 export function ItemCard({ item, categoryLabel }: { item: ItemSummary; categoryLabel: string }) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const t = useTranslations('community')
   const tech = item.runtime.filter((r) => r !== 'react').map((r) => RUNTIME_LABELS[r] ?? r)
 
   const play = () => {
@@ -30,7 +32,7 @@ export function ItemCard({ item, categoryLabel }: { item: ItemSummary; categoryL
 
   return (
     <div className="group relative" onPointerEnter={play} onPointerLeave={stop} data-testid={`card-${item.slug}`}>
-      <Link href={`/market/${item.slug}`} className="block rounded-[var(--radius-card)]" onFocus={play} onBlur={stop}>
+      <Link href={item.community ? `/community/works/${item.slug}` : `/market/${item.slug}`} className="block rounded-[var(--radius-card)]" onFocus={play} onBlur={stop}>
         <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken transition-[border-color] duration-200 group-hover:border-line-strong">
           {item.media.poster ? (
             <>
@@ -59,7 +61,10 @@ export function ItemCard({ item, categoryLabel }: { item: ItemSummary; categoryL
         </div>
         <div className="mt-3.5 flex items-baseline justify-between gap-4 px-0.5">
           <h2 className="truncate text-[15px] font-medium tracking-[-0.01em]">{item.title}</h2>
-          <span className="shrink-0 text-[12px] text-ink-faint">{categoryLabel}</span>
+          <span className="shrink-0 text-[12px] text-ink-faint">
+            {item.community && <span className="mr-2 text-success">{t('cardBadge')}</span>}
+            {categoryLabel}
+          </span>
         </div>
         <p className="mt-1 line-clamp-1 px-0.5 text-[13px] text-ink-muted">{item.summary}</p>
         {tech.length > 0 && (

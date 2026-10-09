@@ -11,7 +11,9 @@
     "language": "切换语言",
     "home": "Motif 首页",
     "soon": "即将",
-    "menu": "菜单"
+    "menu": "菜单",
+    "skip": "跳到正文",
+    "community": "社区"
   },
   "home": {
     "headline": "把好看的动效，带回你的项目",
@@ -134,7 +136,8 @@
       "code": "代码",
       "license": "来源与许可证",
       "install": "安装",
-      "skill": "Skill"
+      "skill": "Skill",
+      "chain": "链上记录"
     },
     "facts": {
       "category": "分类",
@@ -180,7 +183,508 @@
     "retry": "重新载入",
     "related": "同类条目",
     "moreIn": "更多{category}",
-    "copyFailed": "复制失败"
+    "copyFailed": "复制失败",
+    "communityBy": "社区作品 · 作者",
+    "remix": "Remix 这个条目"
+  },
+  "community": {
+    "cardBadge": "社区",
+    "nav": {
+      "label": "社区导航",
+      "overview": "概览",
+      "submit": "投稿",
+      "review": "审核",
+      "governance": "治理"
+    },
+    "wallet": {
+      "connect": "连接钱包",
+      "connecting": "正在连接…",
+      "wrongChain": "网络不对",
+      "noWallet": "没有找到浏览器钱包。安装一个支持以太坊的钱包扩展（例如 MetaMask）后刷新页面。",
+      "choose": "选择钱包",
+      "switchTo": "切换到 {chain}",
+      "noHandle": "还没有 handle",
+      "myPage": "我的主页",
+      "editProfile": "编辑资料",
+      "createProfile": "创建资料",
+      "submit": "投稿作品",
+      "review": "审核队列",
+      "disconnect": "断开连接",
+      "loading": "正在连接社区链…",
+      "disabled": "社区链没有连接，暂时不能操作。",
+      "wrongChainLead": "钱包连的不是社区所在的网络。",
+      "connectLead": "这一步需要连接钱包：操作会以你的地址签名并记录在链上。"
+    },
+    "faucet": {
+      "connectFirst": "连接钱包后可以领取测试币。",
+      "claim": "领取 1 ETH 和 1000 MOTIF",
+      "busy": "正在发放…",
+      "done": "已到账",
+      "failed": "领取失败，稍后再试"
+    },
+    "pause": {
+      "lead": "你是版主：遇到垃圾投稿潮时可以暂停新投稿。进行中的审核、撤回和关闭不受影响。",
+      "pausedLead": "新投稿已暂停。处理完之后记得恢复。",
+      "pause": "暂停投稿",
+      "resume": "恢复投稿",
+      "busy": "请在钱包里确认…"
+    },
+    "offline": {
+      "title": "社区",
+      "lead": "社区链还没有连接。投稿、审核和治理都记录在链上，链连上之后这里会显示社区的作品和动态。",
+      "dev": "本地开发：另开一个终端运行 <code>pnpm dev:chain</code>，它会启动一条本地链、部署合约并导入现有条目，站点会自动连上。"
+    },
+    "hub": {
+      "title": "社区",
+      "lead": "任何人都可以把作品投到 Motif。审核员按“效果质量第一、许可证先行”审核，通过的作品进入市场；署名、来源和 Remix 关系都记在链上，任何人都能核对。",
+      "localChain": "这是本地开发链（{chain}），上面的资产没有任何价值，只用来试用社区功能。",
+      "paused": "投稿暂时关闭：版主暂停了新投稿（通常是在处理垃圾投稿）。进行中的审核、撤回和关闭不受影响，押金不会被锁住。",
+      "cta": {
+        "submit": "投稿作品",
+        "review": "审核队列",
+        "governance": "社区治理"
+      },
+      "stats": {
+        "registered": "链上条目",
+        "works": "社区作品",
+        "reviews": "进行中的审核",
+        "curators": "审核员",
+        "rewardPool": "奖励池"
+      },
+      "how": {
+        "title": "怎么参与",
+        "submit": {
+          "title": "投稿",
+          "body": "押 {bond} MOTIF 提交作品。源码由站点托管，链上记录内容哈希、许可证、来源和 Remix 关系。"
+        },
+        "review": {
+          "title": "审核",
+          "body": "{quorum} 位审核员投票通过即上架，审核期 {days} 天。质量问题退回押金；抄袭、伪造许可证、恶意代码会罚没押金。"
+        },
+        "reward": {
+          "title": "奖励",
+          "body": "新作品通过得 {publish} MOTIF 和声誉。你的作品被别人 Remix 并通过时，你再得 {remix} MOTIF。"
+        }
+      },
+      "works": {
+        "title": "最新社区作品",
+        "inMarket": "在市场里查看",
+        "empty": "还没有审核通过的社区作品。来投第一个。"
+      },
+      "reviews": {
+        "title": "正在审核",
+        "all": "全部",
+        "empty": "现在没有待审核的投稿。",
+        "votes": "{votes}/{quorum} 票"
+      },
+      "contributors": {
+        "title": "贡献榜",
+        "empty": "还没有人获得声誉。",
+        "reputation": "声誉 {value}"
+      }
+    },
+    "status": {
+      "version": {
+        "none": "未知",
+        "pending": "审核中",
+        "approved": "已通过",
+        "rejected": "已驳回",
+        "withdrawn": "已撤回"
+      },
+      "outcome": {
+        "none": "未知",
+        "open": "审核中",
+        "approved": "已通过",
+        "rejected": "已驳回",
+        "slashed": "违规",
+        "withdrawn": "已撤回",
+        "expired": "已过期"
+      }
+    },
+    "submit": {
+      "title": "投稿",
+      "lead": "把条目文件（.motif.json）拖进来：站点会用和市场条目相同的检查器和编译器检查它，你可以先看实时预览，再押上押金提交到链上。",
+      "notJson": "这不是有效的 JSON 文件。",
+      "checking": "正在检查…",
+      "replace": "换一个文件",
+      "drop": "把 .motif.json 拖到这里，或点击选择",
+      "dropHint": "条目文件包含清单（item.ts 的内容）和全部源码",
+      "untitled": "未命名",
+      "passed": "检查通过",
+      "failed": "{count} 个问题需要修改",
+      "facts": {
+        "slug": "slug",
+        "license": "许可证",
+        "upstream": "上游",
+        "hash": "内容哈希",
+        "remixOf": "Remix 自"
+      },
+      "parentMissing": "provenance.basedOn 指向的 “{slug}” 不在链上，或者还没有通过的版本",
+      "hashMismatch": "浏览器算出的内容哈希和预检结果不一致，请重新选择文件。",
+      "panel": {
+        "title": "提交",
+        "waiting": "先选择条目文件。检查通过后在这里提交。",
+        "asNew": "这会作为一个新条目提交审核。",
+        "asVersion": "这是你维护的条目，会作为第 {version} 版提交审核。",
+        "bond": "押金",
+        "balance": "你的余额",
+        "lowBalance": "余额不够付押金。",
+        "lowBalanceLocal": "余额不够付押金，先在社区概览页领取测试币。",
+        "paused": "投稿暂时关闭。",
+        "submit": "签名并提交",
+        "steps": "钱包会依次请你：签名确认上传源码 → 授权押金（第一次投稿时）→ 发送投稿交易。审核结束后押金按结果退回或罚没。"
+      },
+      "blocked": {
+        "taken": "这个 slug 已经被 {maintainer} 使用。改一个 slug 再投。",
+        "pending": "这个条目的上一个版本还在审核中，结束后才能提交新版本。",
+        "delisted": "这个条目已被下架，不能再提交新版本。"
+      },
+      "phase": {
+        "idle": "签名并提交",
+        "uploading": "正在上传源码…",
+        "signing": "请在钱包里确认…",
+        "pending": "等待上链…",
+        "syncing": "正在同步…",
+        "done": "已提交",
+        "failed": "签名并提交"
+      },
+      "remix": {
+        "lead": "Remix「{title}」：下载它的源文件，用 <code>pnpm item:unpack</code> 还原成条目目录，改好后打包投稿（清单里的 provenance.basedOn 写 <code>{slug}</code>）。",
+        "download": "下载源文件"
+      },
+      "prepare": {
+        "title": "准备条目文件",
+        "scratch": "从零开始：在仓库的 packages/registry/items/ 下按《条目编写指南》建一个条目目录（例如 my-effect），然后运行 <code>pnpm item:pack my-effect</code>。",
+        "remix": "Remix 现有条目：运行 <code>pnpm item:remix mesh-gradient my-gradient</code> 复制一份并记好来源，改完后打包。原作者会在你的作品通过时得到奖励。",
+        "community": "社区作品不在仓库里：在它的条目页下载源文件，再用 <code>pnpm item:unpack my-effect.motif.json</code> 还原成条目目录。"
+      },
+      "criteria": {
+        "title": "审核员看什么",
+        "quality": "默认参数就是最好看的状态，调参范围内的任何值都不难看。",
+        "license": "来源真实、许可证允许再分发，保留了原版权头。原创作品按 MIT 授权。",
+        "motion": "处理了“减少动态效果”，离开屏幕时暂停，不拖慢页面。",
+        "network": "不加载外部 CDN、字体或统计脚本，不往外发数据。"
+      }
+    },
+    "item": {
+      "metaTitle": "条目 #{id}",
+      "breadcrumb": "位置",
+      "back": "社区",
+      "listed": "已上架",
+      "delisted": "已下架",
+      "abandoned": "未通过",
+      "notYetListed": "尚未上架",
+      "maintainer": "维护者",
+      "remixOf": "Remix 自",
+      "openInMarket": "在市场中打开",
+      "delistedReason": "这个条目已被版主下架：{reason}",
+      "delistedNoReason": "这个条目已被版主下架。",
+      "sourceWithheld": "条目已下架，源码不再提供。",
+      "sourceMissing": "站点上没有这个版本的源码（作者可能还没有上传）。",
+      "versions": "版本",
+      "current": "当前版本",
+      "record": "v{version} 的链上记录",
+      "facts": {
+        "author": "作者",
+        "submitted": "提交时间",
+        "license": "许可证",
+        "upstream": "上游",
+        "hash": "内容哈希",
+        "source": "源码",
+        "version": "版本",
+        "curators": "审核员"
+      },
+      "downloadSource": "下载源文件",
+      "verifyHint": "对它计算 sha256(JCS) 应当等于上面的内容哈希",
+      "remixes": "基于它的 Remix",
+      "review": {
+        "title": "v{version} 的审核",
+        "genesis": "创世导入的条目：上链前已由维护者审核，没有社区审核记录。",
+        "none": "这个版本没有审核记录。",
+        "submitter": "投稿者",
+        "bond": "押金",
+        "deadline": "截止",
+        "closed": "结算",
+        "progress": "票数",
+        "tally": "通过 {approve} · 反对 {reject} · 需要 {quorum}",
+        "verdicts": {
+          "approve": "通过",
+          "reject": "驳回",
+          "violation": "违规"
+        },
+        "noteMissing": "（意见全文不在站点上）",
+        "reward": "奖励 {amount} MOTIF"
+      },
+      "fullRecord": "查看完整的链上记录"
+    },
+    "actions": {
+      "title": "操作",
+      "none": "你在这个条目上没有可以做的操作。",
+      "maintainer": {
+        "lead": "你是这个条目的维护者，可以提交新版本。",
+        "newVersion": "提交新版本"
+      },
+      "vote": {
+        "voted": "你已经投过票了。",
+        "conflicted": "你是投稿者或被 Remix 的作者，需要回避这次审核。",
+        "lead": "按审核标准给出你的判断。哪一方先达到法定票数，就按哪一方结算。",
+        "label": "审核结论",
+        "verdicts": {
+          "approve": "通过",
+          "reject": "驳回",
+          "violation": "违规"
+        },
+        "hints": {
+          "approve": "效果好看、参数范围合理、来源和许可证可信。通过后作者拿回押金并得到奖励。",
+          "reject": "质量还不够，或者有需要修改的问题。押金退回作者，鼓励改好再投。",
+          "violation": "抄袭、伪造许可证、恶意代码或垃圾投稿。违规票多于驳回票时罚没押金并扣声誉。"
+        },
+        "note": "审核意见",
+        "notePlaceholder": "写下你的理由（驳回和违规时必填）。意见全文由站点托管，链上记录它的哈希。",
+        "submit": "提交审核票",
+        "noteRequired": "驳回和违规需要写明理由。",
+        "phase": {
+          "idle": "提交审核票",
+          "signing": "请在钱包里确认…",
+          "pending": "等待上链…",
+          "syncing": "正在同步…",
+          "done": "已提交",
+          "failed": "提交审核票"
+        }
+      },
+      "withdraw": {
+        "lead": "还没有审核员投票，你可以撤回这次投稿并取回押金。",
+        "button": "撤回投稿"
+      },
+      "expire": {
+        "lead": "审核期已过但没有结论。任何人都可以关闭这次审核，押金退回投稿者。",
+        "button": "关闭审核"
+      },
+      "accept": {
+        "lead": "维护者想把这个条目转交给你。接受后由你提交之后的版本。",
+        "button": "接受维护权"
+      },
+      "transfer": {
+        "title": "转交维护权",
+        "lead": "转交给另一个地址，对方接受后才生效。",
+        "pending": "正在等待 {address} 接受。再提交一次可以改成别人。",
+        "button": "发起转交"
+      },
+      "moderate": {
+        "label": "版主",
+        "delistLead": "下架 {slug}：它会从市场里消失，站点不再提供源码。历史记录和署名保留在链上。",
+        "relistLead": "恢复上架这个条目。",
+        "reason": "下架理由（会公开）",
+        "delist": "下架",
+        "relist": "恢复上架"
+      }
+    },
+    "review": {
+      "title": "审核",
+      "lead": "每份投稿需要 {quorum} 位审核员的结论，审核期 {days} 天。审核员看的是：默认参数是否好看、调参范围内是否都不难看、来源和许可证是否真实。",
+      "open": "进行中（{count}）",
+      "recent": "最近结算",
+      "noneClosed": "还没有结算过的审核。",
+      "curators": "审核员（{count}）",
+      "howCurators": "审核员由 DAO 治理任免。每投一票得到声誉，奖励的是参与，不是“站对边”。",
+      "toGovernance": "去治理页提名审核员",
+      "onlyMine": "只看需要我审核的",
+      "nothingForYou": "没有需要你审核的投稿了。",
+      "empty": "现在没有待审核的投稿。",
+      "newItem": "新条目",
+      "newVersion": "第 {version} 版",
+      "by": "投稿者",
+      "votes": "{votes}/{quorum} 票",
+      "overdue": "已过期",
+      "youVoted": "已投票"
+    },
+    "profile": {
+      "reputation": "声誉 {value}",
+      "curator": "审核员",
+      "works": "作品（{count}）",
+      "noWorks": "还没有投稿。",
+      "delisted": "已下架",
+      "remixedBy": "被 Remix（{count}）",
+      "votes": "审核记录（{count}）",
+      "verdicts": {
+        "approve": "通过",
+        "reject": "驳回",
+        "violation": "违规"
+      },
+      "moderate": {
+        "label": "版主",
+        "lead": "清空 @{handle} 的资料并封禁这个 handle（冒充、侵权、违法内容）。账号和声誉保留。",
+        "reason": "处理理由（会公开）",
+        "button": "清空资料并封禁 handle"
+      }
+    },
+    "profileEditor": {
+      "title": "创作者资料",
+      "lead": "handle 是你在社区里的名字，记在链上，别人可以用它找到你的作品。名字、简介和链接由站点托管，链上记录它们的哈希。",
+      "loading": "正在读取账户…",
+      "handle": "handle",
+      "handleHint": "3–32 个小写字母、数字或连字符。改名后旧 handle 仍归你所有，别人不能抢注冒充。",
+      "handleChangeHint": "可以改名；旧 handle 仍归你所有。",
+      "handleRule": "只能用 3–32 个小写字母、数字和单个连字符，不能以连字符开头或结尾。",
+      "name": "显示名称",
+      "bio": "简介",
+      "links": "链接",
+      "linksHint": "每行一个，最多 {max} 个，以 http:// 或 https:// 开头。",
+      "badLink": "这个链接不合法：{link}",
+      "register": "创建资料",
+      "save": "保存",
+      "saved": "已保存，查看主页 →",
+      "publicNote": "资料是公开的：链上记录永久保留，站点上的资料可以随时更新。",
+      "phase": {
+        "signing": "请在钱包里确认…",
+        "pending": "等待上链…",
+        "syncing": "正在同步…"
+      }
+    },
+    "governance": {
+      "title": "治理",
+      "lead": "MOTIF 持有者委托投票权后可以发起和表决提案：任免审核员和版主、调整审核参数和奖励、动用金库、许可证白名单。通过的提案进入时间锁，延迟到期后任何人都可以执行。",
+      "settings": {
+        "delay": "投票延迟",
+        "period": "投票期",
+        "timelock": "时间锁",
+        "threshold": "提案门槛",
+        "quorum": "法定人数",
+        "treasury": "金库",
+        "supply": "总供应量"
+      },
+      "proposals": "提案（{count}）",
+      "noProposals": "还没有提案。",
+      "states": {
+        "pending": "等待投票",
+        "active": "投票中",
+        "canceled": "已取消",
+        "defeated": "未通过",
+        "succeeded": "已通过",
+        "queued": "排队中",
+        "expired": "已过期",
+        "executed": "已执行"
+      },
+      "by": "发起人",
+      "startsAt": "{when}开始投票",
+      "endsAt": "{when}截止",
+      "eta": "{when}可执行",
+      "tally": {
+        "for": "赞成",
+        "against": "反对",
+        "abstain": "弃权"
+      },
+      "delegation": {
+        "title": "我的投票权",
+        "balance": "持有",
+        "votes": "投票权",
+        "threshold": "发起提案需要至少 {threshold} 票。",
+        "lead": "MOTIF 需要委托后才计入投票权（可以委托给自己）。委托只是授权投票，币不会离开你的钱包。",
+        "self": "委托给自己",
+        "phase": {
+          "signing": "请在钱包里确认…",
+          "pending": "等待上链…",
+          "syncing": "正在同步…"
+        }
+      },
+      "actions": {
+        "voted": "你已经投过票了。",
+        "for": "赞成",
+        "against": "反对",
+        "abstain": "弃权",
+        "queue": "放入时间锁",
+        "execute": "执行",
+        "phase": {
+          "signing": "请在钱包里确认…",
+          "pending": "等待上链…",
+          "syncing": "正在同步…"
+        }
+      },
+      "composer": {
+        "title": "发起提案",
+        "lead": "选一个模板，填好参数和说明。投票权达到门槛才能发起。",
+        "template": "提案类型",
+        "templates": {
+          "appointCurator": "任命审核员",
+          "removeCurator": "撤换审核员",
+          "appointModerator": "任命版主",
+          "removeModerator": "撤换版主",
+          "fundRewards": "从金库拨款到奖励池",
+          "curationParams": "调整审核参数",
+          "allowLicense": "允许新的许可证"
+        },
+        "address": "地址",
+        "amount": "数量（MOTIF）",
+        "spdx": "SPDX 标识符",
+        "spdxHint": "只能加入允许再分发的许可证。Commons Clause、非商业、AGPL 等不能整合。",
+        "params": {
+          "quorum": "法定票数",
+          "bond": "押金（MOTIF）",
+          "publishReward": "发布奖励（MOTIF）",
+          "remixReward": "Remix 奖励（MOTIF）"
+        },
+        "titleLabel": "标题",
+        "body": "说明",
+        "bodyPlaceholder": "为什么要这样做，投票的人需要知道什么。",
+        "submit": "发起提案",
+        "done": "提案已发起，投票延迟过后开始投票。",
+        "phase": {
+          "signing": "请在钱包里确认…",
+          "pending": "等待上链…",
+          "syncing": "正在同步…"
+        }
+      }
+    },
+    "badge": {
+      "verified": "链上已验证 · v{version}",
+      "mismatch": "与链上记录不一致",
+      "delisted": "已在链上下架",
+      "verifiedTitle": "浏览器对页面上的源码计算的内容哈希，与链上登记的版本一致",
+      "mismatchTitle": "页面上的源码与链上登记的内容哈希不一致",
+      "delistedTitle": "这个条目已被社区版主下架"
+    },
+    "errors": {
+      "rejected": "你在钱包里取消了这次操作。",
+      "notConnected": "请先连接钱包。",
+      "reverted": "交易被链上拒绝了。",
+      "contract": {
+        "SlugTaken": "这个 slug 已经被占用了。",
+        "InvalidSlug": "slug 只能用小写字母、数字和单个连字符。",
+        "ContentAlreadyRegistered": "同样的内容已经登记过了（每份内容只能登记一次）。",
+        "LicenseNotAllowed": "这个许可证不在白名单里。",
+        "InvalidUpstream": "上游仓库和固定提交要么都写，要么都不写。",
+        "InvalidParent": "Remix 的来源必须是已上架条目里审核通过的版本。",
+        "NotMaintainer": "只有条目的维护者能提交新版本。",
+        "NotPendingMaintainer": "维护权没有转交给你。",
+        "NoApprovedVersion": "这个条目还没有通过的版本，请重新投稿。",
+        "VersionPending": "上一个版本还在审核中。",
+        "ItemIsDelisted": "这个条目已被下架。",
+        "ZeroContentHash": "内容哈希为空。",
+        "AlreadyVoted": "你已经投过票了。",
+        "ConflictOfInterest": "你需要回避这次审核。",
+        "ReviewPeriodOver": "审核期已经结束。",
+        "ReviewPeriodNotOver": "审核期还没结束。",
+        "ReviewNotOpen": "这次审核已经结束。",
+        "ReviewHasVotes": "已经有人投票，不能撤回了。",
+        "NotSubmitter": "只有投稿者能撤回。",
+        "EnforcedPause": "投稿暂时关闭。",
+        "InvalidParams": "参数不合法（法定票数至少 1，审核期在 1 小时到 90 天之间）。",
+        "InsufficientRewardPool": "奖励池余额不够。",
+        "ERC20InsufficientBalance": "MOTIF 余额不够。",
+        "ERC20InsufficientAllowance": "押金授权额度不够。",
+        "AccessControlUnauthorizedAccount": "你的地址没有这项权限。",
+        "AlreadyRegistered": "这个地址已经注册过资料了。",
+        "NotRegistered": "这个地址还没有注册资料。",
+        "InvalidHandle": "handle 只能用 3–32 个小写字母、数字和单个连字符。",
+        "HandleTaken": "这个 handle 已经被别人使用了。",
+        "HandleIsBlocked": "这个 handle 已被封禁。",
+        "GovernorInsufficientProposerVotes": "投票权没有达到提案门槛（记得先委托投票权）。",
+        "GovernorAlreadyCastVote": "你已经对这个提案投过票了。",
+        "GovernorUnexpectedProposalState": "提案当前的状态不允许这个操作。",
+        "GovernorNonexistentProposal": "提案不存在。",
+        "TimelockUnexpectedOperationState": "时间锁还没到期。"
+      }
+    }
   },
   "lab": {
     "previewTitle": "预览沙箱实验"
@@ -190,14 +694,6 @@
     "studio": {
       "title": "工作台",
       "lead": "用自然语言描述想要的效果，agent 从市场条目出发生成或改写组件，实时预览、调参、导出。"
-    },
-    "skills": {
-      "title": "Skills",
-      "lead": "每个效果都配一份 Agent Skill，复制到自己的项目里，让你的 agent 也能做出同样的效果。"
-    },
-    "docs": {
-      "title": "文档",
-      "lead": "如何使用市场、调参、导出代码和 Skill，以及如何贡献新的效果。"
     },
     "back": "先去逛逛市场"
   },
@@ -275,5 +771,20 @@
   "footer": {
     "line": "Motif 母题 · 开源（MIT）· 条目数据生成于 {date}",
     "notices": "第三方许可"
+  },
+  "notFound": {
+    "title": "这里什么都没有",
+    "lead": "这个地址没有对应的页面，可能是条目改了名字，或者链接抄错了。",
+    "market": "去市场看看",
+    "home": "回到首页"
+  },
+  "pageError": {
+    "title": "页面出了点问题",
+    "lead": "渲染这一页时出错了。可以重试一次；如果一直出错，欢迎在 GitHub 上提 issue。",
+    "retry": "重试"
+  },
+  "docs": {
+    "title": "文档",
+    "toc": "本页目录"
   }
 }

@@ -1,4 +1,4 @@
-import type { ItemSource, ParamValues } from '@motif/schema'
+import type { ItemSource, ParamValues } from '@motif/schema/core'
 import { fontImports, itemUrl, npmDependencies, rewriteRuntimeImport, usesRuntime, type ExportContext } from './context.ts'
 import { bundleRuntime } from './runtime-bundle.ts'
 import { skillFiles, skillName } from './skill.ts'

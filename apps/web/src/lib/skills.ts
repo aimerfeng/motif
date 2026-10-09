@@ -38,3 +38,12 @@ export async function readSkillFiles(name: string): Promise<Record<string, strin
   }
   return files
 }
+
+// 通用 skill 的源文件在 packages/skills/library/，每个子目录一个；以目录为准，不另列清单。
+const LIBRARY_DIR = path.resolve(/*turbopackIgnore: true*/ process.cwd(), '../..', 'packages/skills/library')
+
+/** 通用 skill 的名字，motif-design 排最前（它是总纲），其余按名字。 */
+export async function listGeneralSkills(): Promise<string[]> {
+  const names = (await readdir(LIBRARY_DIR, { withFileTypes: true })).filter((entry) => entry.isDirectory() && NAME.test(entry.name)).map((entry) => entry.name)
+  return names.sort((a, b) => (a === 'motif-design' ? -1 : b === 'motif-design' ? 1 : a.localeCompare(b)))
+}

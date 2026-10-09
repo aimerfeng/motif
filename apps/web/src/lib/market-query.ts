@@ -1,4 +1,4 @@
-import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema'
+import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema/core'
 
 /** 市场的筛选状态，和链接里的 ?kind=&category=&q= 一一对应，服务端和浏览器共用这一份解析。 */
 export interface MarketQuery {

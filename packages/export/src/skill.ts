@@ -1,5 +1,5 @@
-import type { Category, ItemSource, Kind, ParamSpec, ParamValues } from '@motif/schema'
-import { EASING_RANGE, printDefaults, SPRING_RANGE } from '@motif/schema'
+import type { Category, ItemSource, Kind, ParamSpec, ParamValues } from '@motif/schema/core'
+import { EASING_RANGE, printDefaults, SPRING_RANGE } from '@motif/schema/core'
 import { fontImports, itemUrl, npmDependencies, REPO, usesRuntime, type ExportContext } from './context.ts'
 import { componentFiles } from './registry-item.ts'
 import { bundleRuntime } from './runtime-bundle.ts'

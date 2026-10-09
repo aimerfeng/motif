@@ -1,4 +1,4 @@
-import type { ItemSource, ParamValues } from '@motif/schema'
+import type { ItemSource, ParamValues } from '@motif/schema/core'
 import { itemUrl, npmDependencies, rewriteRuntimeImport, usesRuntime, type ExportContext } from './context.ts'
 import { bundleRuntime } from './runtime-bundle.ts'
 

@@ -2,6 +2,7 @@ import { REPO_URL } from '@motif/export'
 import { useTranslations } from 'next-intl'
 import { GitHubIcon } from '@/components/icons'
 import { Link } from '@/i18n/navigation'
+import { WalletButton } from './community/wallet-button'
 import { LocaleSwitcher } from './locale-switcher'
 import { MotifMark } from './motif-mark'
 import { DesktopNav, MobileNav, type NavLink } from './site-nav'
@@ -10,8 +11,9 @@ export function SiteHeader() {
   const t = useTranslations('nav')
   const links: NavLink[] = [
     { href: '/market', label: t('market') },
+    { href: '/community', label: t('community') },
     { href: '/studio', label: t('studio'), badge: t('soon') },
-    { href: '/docs', label: t('docs'), badge: t('soon') },
+    { href: '/docs', label: t('docs') },
   ]
 
   return (
@@ -25,13 +27,15 @@ export function SiteHeader() {
         </Link>
         <DesktopNav links={links} />
         <div className="ml-auto flex items-center gap-2">
+          <WalletButton />
           <LocaleSwitcher label={t('language')} />
           <a
             href={REPO_URL}
             target="_blank"
             rel="noreferrer"
             aria-label={t('github')}
-            className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink"
+            // 手机上头部放不下；页脚里也有仓库链接。
+            className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink max-sm:hidden"
           >
             <GitHubIcon className="size-[18px]" />
           </a>

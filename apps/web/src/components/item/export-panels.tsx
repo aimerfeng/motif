@@ -12,9 +12,10 @@ import {
   usesRuntime,
   type ExportContext,
 } from '@motif/export'
-import { bake, type ItemSource, type ParamValues } from '@motif/schema'
+import { bake, type ItemSource, type ParamValues } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { CopyCommand } from '@/components/copy-command'
 import { CopyIcon, DownloadIcon } from '@/components/icons'
 import { SkillButton } from '@/components/skill-button'
 import { useCopy, type CopyState } from '@/lib/clipboard'
@@ -77,23 +78,6 @@ function CopyLabel({ state, idle }: { state: CopyState; idle: string }) {
   return <span aria-live="polite">{state === 'copied' ? t('copied') : state === 'failed' ? t('copyFailed') : idle}</span>
 }
 
-function Command({ text, state, onCopy }: { text: string; state: CopyState; onCopy: () => void }) {
-  const t = useTranslations('export')
-  return (
-    <div className="flex items-stretch overflow-hidden rounded-lg border border-line bg-sunken">
-      <code className="flex-1 overflow-x-auto px-3 py-2.5 font-mono text-[12.5px] whitespace-nowrap text-ink">{text}</code>
-      <button
-        type="button"
-        onClick={onCopy}
-        className="flex shrink-0 items-center gap-1.5 border-l border-line px-3 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink"
-      >
-        <CopyIcon state={state} className="size-3.5" />
-        <CopyLabel state={state} idle={t('copy')} />
-      </button>
-    </div>
-  )
-}
-
 const buttonPrimary =
   'inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2 text-[13.5px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-50'
 const buttonSecondary =
@@ -132,12 +116,12 @@ export function InstallPanel({ item, values, encoded, data }: { item: ItemSource
       </Section>
 
       <Section title={t('shadcnTitle')} description={t('shadcnLead')}>
-        <Command text={shadcn} state={stateOf('shadcn')} onCopy={() => void copy('shadcn', shadcn)} />
+        <CopyCommand text={shadcn} />
       </Section>
 
       <Section title={t('manualTitle')} description={t('manualLead')}>
         <div className="space-y-3">
-          {deps.length > 0 && <Command text={install} state={stateOf('deps')} onCopy={() => void copy('deps', install)} />}
+          {deps.length > 0 && <CopyCommand text={install} />}
           <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line">
             {files.map((file) => (
               <FileRow key={file.path} target={`src/${file.target}`} state={stateOf(file.path)} onCopy={() => void copy(file.path, file.content)} />

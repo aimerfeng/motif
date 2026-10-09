@@ -28,6 +28,14 @@ export function CopyIcon({ state = 'idle', ...props }: IconProps & { state?: 'id
   )
 }
 
+export function WalletIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12.5 5V3.5a1 1 0 0 0-1-1h-8a1.5 1.5 0 0 0 0 3h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-10A1.5 1.5 0 0 1 2 12V4M11 9.25h.5" />
+    </Icon>
+  )
+}
+
 export function DownloadIcon(props: IconProps) {
   return (
     <Icon {...props}>

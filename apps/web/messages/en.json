@@ -11,7 +11,9 @@
     "language": "Switch language",
     "home": "Motif home",
     "soon": "Soon",
-    "menu": "Menu"
+    "menu": "Menu",
+    "skip": "Skip to content",
+    "community": "Community"
   },
   "home": {
     "headline": "Beautiful motion, ready to take home",
@@ -134,7 +136,8 @@
       "code": "Code",
       "license": "Source & license",
       "install": "Install",
-      "skill": "Skill"
+      "skill": "Skill",
+      "chain": "On chain"
     },
     "facts": {
       "category": "Category",
@@ -180,7 +183,508 @@
     "retry": "Reload",
     "related": "More like this",
     "moreIn": "More {category}",
-    "copyFailed": "Copy failed"
+    "copyFailed": "Copy failed",
+    "communityBy": "Community work by",
+    "remix": "Remix this"
+  },
+  "community": {
+    "cardBadge": "Community",
+    "nav": {
+      "label": "Community navigation",
+      "overview": "Overview",
+      "submit": "Submit",
+      "review": "Review",
+      "governance": "Governance"
+    },
+    "wallet": {
+      "connect": "Connect wallet",
+      "connecting": "Connecting…",
+      "wrongChain": "Wrong network",
+      "noWallet": "No browser wallet found. Install an Ethereum wallet extension (MetaMask, for example) and reload the page.",
+      "choose": "Choose a wallet",
+      "switchTo": "Switch to {chain}",
+      "noHandle": "No handle yet",
+      "myPage": "My page",
+      "editProfile": "Edit profile",
+      "createProfile": "Create profile",
+      "submit": "Submit work",
+      "review": "Review queue",
+      "disconnect": "Disconnect",
+      "loading": "Connecting to the community chain…",
+      "disabled": "The community chain is not connected, so this is unavailable for now.",
+      "wrongChainLead": "Your wallet is on a different network from the community.",
+      "connectLead": "This step needs a wallet: the action is signed by your address and recorded on chain."
+    },
+    "faucet": {
+      "connectFirst": "Connect a wallet to claim test tokens.",
+      "claim": "Claim 1 ETH and 1000 MOTIF",
+      "busy": "Sending…",
+      "done": "Received",
+      "failed": "Claim failed, try again later"
+    },
+    "pause": {
+      "lead": "You are a moderator: you can pause new submissions during a spam wave. Open reviews, withdrawals and closing keep working.",
+      "pausedLead": "New submissions are paused. Remember to resume once things are handled.",
+      "pause": "Pause submissions",
+      "resume": "Resume submissions",
+      "busy": "Confirm in your wallet…"
+    },
+    "offline": {
+      "title": "Community",
+      "lead": "The community chain is not connected yet. Submissions, reviews and governance live on chain; once it is connected, community works and activity show up here.",
+      "dev": "Local development: run <code>pnpm dev:chain</code> in another terminal. It starts a local chain, deploys the contracts and imports the existing items, and the site connects to it automatically."
+    },
+    "hub": {
+      "title": "Community",
+      "lead": "Anyone can submit work to Motif. Curators review it for quality first and license first; approved work goes into the market, and attribution, sources and remix lineage are recorded on chain for anyone to check.",
+      "localChain": "This is a local development chain ({chain}). Its assets are worthless and only exist to try the community features.",
+      "paused": "Submissions are paused: a moderator stopped new submissions, usually to deal with spam. Open reviews, withdrawals and closing are not affected, and bonds are never locked.",
+      "cta": {
+        "submit": "Submit work",
+        "review": "Review queue",
+        "governance": "Governance"
+      },
+      "stats": {
+        "registered": "Items on chain",
+        "works": "Community works",
+        "reviews": "Open reviews",
+        "curators": "Curators",
+        "rewardPool": "Reward pool"
+      },
+      "how": {
+        "title": "How it works",
+        "submit": {
+          "title": "Submit",
+          "body": "Post a {bond} MOTIF bond with your work. The site hosts the source; the chain records its content hash, license, provenance and remix lineage."
+        },
+        "review": {
+          "title": "Review",
+          "body": "{quorum} curator approvals put it in the market; the review period is {days} days. Quality problems get the bond back; plagiarism, fake licenses and malicious code forfeit it."
+        },
+        "reward": {
+          "title": "Reward",
+          "body": "Approved new work earns {publish} MOTIF and reputation. When someone remixes your work and the remix is approved, you earn another {remix} MOTIF."
+        }
+      },
+      "works": {
+        "title": "Latest community works",
+        "inMarket": "See them in the market",
+        "empty": "No community work has been approved yet. Be the first."
+      },
+      "reviews": {
+        "title": "In review",
+        "all": "All",
+        "empty": "Nothing is waiting for review right now.",
+        "votes": "{votes}/{quorum} votes"
+      },
+      "contributors": {
+        "title": "Contributors",
+        "empty": "Nobody has earned reputation yet.",
+        "reputation": "Reputation {value}"
+      }
+    },
+    "status": {
+      "version": {
+        "none": "Unknown",
+        "pending": "In review",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "withdrawn": "Withdrawn"
+      },
+      "outcome": {
+        "none": "Unknown",
+        "open": "In review",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "slashed": "Violation",
+        "withdrawn": "Withdrawn",
+        "expired": "Expired"
+      }
+    },
+    "submit": {
+      "title": "Submit",
+      "lead": "Drop in an item file (.motif.json). The site checks it with the same checker and compiler as the market items, shows you a live preview, and then you post the bond and submit it on chain.",
+      "notJson": "That is not a valid JSON file.",
+      "checking": "Checking…",
+      "replace": "Choose another file",
+      "drop": "Drop a .motif.json here, or click to choose",
+      "dropHint": "An item file holds the manifest (what item.ts exports) and every source file",
+      "untitled": "Untitled",
+      "passed": "Checks passed",
+      "failed": "{count, plural, one {# problem to fix} other {# problems to fix}}",
+      "facts": {
+        "slug": "Slug",
+        "license": "License",
+        "upstream": "Upstream",
+        "hash": "Content hash",
+        "remixOf": "Remix of"
+      },
+      "parentMissing": "provenance.basedOn points to “{slug}”, which is not on chain or has no approved version",
+      "hashMismatch": "The content hash computed in your browser differs from the check result. Choose the file again.",
+      "panel": {
+        "title": "Submit",
+        "waiting": "Choose an item file first. Once it passes the checks, submit it here.",
+        "asNew": "This will be submitted for review as a new item.",
+        "asVersion": "You maintain this item; this will be submitted for review as version {version}.",
+        "bond": "Bond",
+        "balance": "Your balance",
+        "lowBalance": "Your balance does not cover the bond.",
+        "lowBalanceLocal": "Your balance does not cover the bond. Claim test tokens on the community overview first.",
+        "paused": "Submissions are paused.",
+        "submit": "Sign and submit",
+        "steps": "Your wallet will ask you to: sign the source upload → approve the bond (first time only) → send the submission. After the review the bond is returned or forfeited depending on the outcome."
+      },
+      "blocked": {
+        "taken": "This slug is already used by {maintainer}. Pick another slug.",
+        "pending": "The previous version of this item is still in review. Submit a new version after it closes.",
+        "delisted": "This item has been delisted and cannot take new versions."
+      },
+      "phase": {
+        "idle": "Sign and submit",
+        "uploading": "Uploading the source…",
+        "signing": "Confirm in your wallet…",
+        "pending": "Waiting for the chain…",
+        "syncing": "Syncing…",
+        "done": "Submitted",
+        "failed": "Sign and submit"
+      },
+      "remix": {
+        "lead": "Remix “{title}”: download its source file, restore it with <code>pnpm item:unpack</code>, change it, then pack and submit (set provenance.basedOn to <code>{slug}</code>).",
+        "download": "Download source"
+      },
+      "prepare": {
+        "title": "Preparing the item file",
+        "scratch": "From scratch: create an item folder under packages/registry/items/ following the authoring guide (say my-effect), then run <code>pnpm item:pack my-effect</code>.",
+        "remix": "Remixing an existing item: run <code>pnpm item:remix mesh-gradient my-gradient</code> to copy it with its provenance, change it, then pack it. The original author is rewarded when your work is approved.",
+        "community": "Community works are not in the repository: download the source from the item page and restore it with <code>pnpm item:unpack my-effect.motif.json</code>."
+      },
+      "criteria": {
+        "title": "What curators look for",
+        "quality": "The defaults are the best-looking state, and no value in the tuning ranges looks bad.",
+        "license": "The provenance is real, the license allows redistribution, and the original copyright headers are kept. Original work is licensed under MIT.",
+        "motion": "It handles reduced motion, pauses off screen and does not slow the page down.",
+        "network": "It loads nothing from external CDNs, fonts or analytics, and sends no data out."
+      }
+    },
+    "item": {
+      "metaTitle": "Item #{id}",
+      "breadcrumb": "Breadcrumb",
+      "back": "Community",
+      "listed": "Listed",
+      "delisted": "Delisted",
+      "abandoned": "Not approved",
+      "notYetListed": "Not listed yet",
+      "maintainer": "Maintainer",
+      "remixOf": "Remix of",
+      "openInMarket": "Open in the market",
+      "delistedReason": "A moderator delisted this item: {reason}",
+      "delistedNoReason": "A moderator delisted this item.",
+      "sourceWithheld": "The item is delisted; its source is no longer served.",
+      "sourceMissing": "The site does not have the source for this version (the author may not have uploaded it).",
+      "versions": "Versions",
+      "current": "Current",
+      "record": "On-chain record of v{version}",
+      "facts": {
+        "author": "Author",
+        "submitted": "Submitted",
+        "license": "License",
+        "upstream": "Upstream",
+        "hash": "Content hash",
+        "source": "Source",
+        "version": "Version",
+        "curators": "Curators"
+      },
+      "downloadSource": "Download source",
+      "verifyHint": "its sha256(JCS) should equal the content hash above",
+      "remixes": "Remixes of this item",
+      "review": {
+        "title": "Review of v{version}",
+        "genesis": "Imported at genesis: reviewed by the maintainers before it went on chain, so there is no community review.",
+        "none": "This version has no review.",
+        "submitter": "Submitter",
+        "bond": "Bond",
+        "deadline": "Closes",
+        "closed": "Closed",
+        "progress": "Votes",
+        "tally": "Approve {approve} · against {reject} · needs {quorum}",
+        "verdicts": {
+          "approve": "Approve",
+          "reject": "Reject",
+          "violation": "Violation"
+        },
+        "noteMissing": "(the full note is not on this site)",
+        "reward": "Reward {amount} MOTIF"
+      },
+      "fullRecord": "See the full on-chain record"
+    },
+    "actions": {
+      "title": "Actions",
+      "none": "There is nothing you can do on this item.",
+      "maintainer": {
+        "lead": "You maintain this item and can submit a new version.",
+        "newVersion": "Submit a new version"
+      },
+      "vote": {
+        "voted": "You have already voted.",
+        "conflicted": "You submitted this or wrote the remixed version, so you sit this review out.",
+        "lead": "Judge it against the review criteria. Whichever side reaches the quorum first decides the outcome.",
+        "label": "Verdict",
+        "verdicts": {
+          "approve": "Approve",
+          "reject": "Reject",
+          "violation": "Violation"
+        },
+        "hints": {
+          "approve": "It looks good, its ranges are sensible, and its provenance and license hold up. The author gets the bond back plus the reward.",
+          "reject": "Not good enough yet, or it has problems to fix. The bond goes back to the author so they can improve it and resubmit.",
+          "violation": "Plagiarism, a fake license, malicious code or spam. When violations outnumber rejections the bond is forfeited and reputation is deducted."
+        },
+        "note": "Review note",
+        "notePlaceholder": "Explain your reasoning (required for reject and violation). The site hosts the note; the chain records its hash.",
+        "submit": "Cast review vote",
+        "noteRequired": "Reject and violation need a reason.",
+        "phase": {
+          "idle": "Cast review vote",
+          "signing": "Confirm in your wallet…",
+          "pending": "Waiting for the chain…",
+          "syncing": "Syncing…",
+          "done": "Submitted",
+          "failed": "Cast review vote"
+        }
+      },
+      "withdraw": {
+        "lead": "No curator has voted yet, so you can withdraw this submission and get the bond back.",
+        "button": "Withdraw submission"
+      },
+      "expire": {
+        "lead": "The review period is over without a decision. Anyone can close it; the bond goes back to the submitter.",
+        "button": "Close review"
+      },
+      "accept": {
+        "lead": "The maintainer wants to hand this item to you. Once you accept, you submit its future versions.",
+        "button": "Accept maintainership"
+      },
+      "transfer": {
+        "title": "Transfer maintainership",
+        "lead": "Hand it to another address; it takes effect once they accept.",
+        "pending": "Waiting for {address} to accept. Submit again to pick someone else.",
+        "button": "Start transfer"
+      },
+      "moderate": {
+        "label": "Moderator",
+        "delistLead": "Delist {slug}: it disappears from the market and the site stops serving its source. History and attribution stay on chain.",
+        "relistLead": "List this item again.",
+        "reason": "Reason (public)",
+        "delist": "Delist",
+        "relist": "List again"
+      }
+    },
+    "review": {
+      "title": "Review",
+      "lead": "Each submission needs {quorum} curator verdicts within {days} days. Curators check that the defaults look great, that nothing in the tuning ranges looks bad, and that provenance and license are real.",
+      "open": "Open ({count})",
+      "recent": "Recently closed",
+      "noneClosed": "No review has closed yet.",
+      "curators": "Curators ({count})",
+      "howCurators": "Curators are appointed and removed by DAO governance. Each vote earns reputation: the reward is for taking part, not for picking the winning side.",
+      "toGovernance": "Nominate a curator in governance",
+      "onlyMine": "Only what needs my review",
+      "nothingForYou": "Nothing is waiting for your review.",
+      "empty": "Nothing is waiting for review right now.",
+      "newItem": "New item",
+      "newVersion": "Version {version}",
+      "by": "by",
+      "votes": "{votes}/{quorum} votes",
+      "overdue": "Overdue",
+      "youVoted": "Voted"
+    },
+    "profile": {
+      "reputation": "Reputation {value}",
+      "curator": "Curator",
+      "works": "Works ({count})",
+      "noWorks": "No submissions yet.",
+      "delisted": "Delisted",
+      "remixedBy": "Remixed by others ({count})",
+      "votes": "Reviews ({count})",
+      "verdicts": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "violation": "Violation"
+      },
+      "moderate": {
+        "label": "Moderator",
+        "lead": "Clear @{handle}'s profile and block the handle (impersonation, infringement, illegal content). The account and its reputation stay.",
+        "reason": "Reason (public)",
+        "button": "Clear profile and block handle"
+      }
+    },
+    "profileEditor": {
+      "title": "Creator profile",
+      "lead": "Your handle is your name in the community; it is recorded on chain and people use it to find your work. Your display name, bio and links are hosted by the site, with their hash on chain.",
+      "loading": "Reading your account…",
+      "handle": "Handle",
+      "handleHint": "3–32 lowercase letters, digits or hyphens. If you rename, the old handle stays yours so nobody can take it to impersonate you.",
+      "handleChangeHint": "You can rename; the old handle stays yours.",
+      "handleRule": "Use 3–32 lowercase letters, digits and single hyphens, not starting or ending with a hyphen.",
+      "name": "Display name",
+      "bio": "Bio",
+      "links": "Links",
+      "linksHint": "One per line, up to {max}, starting with http:// or https://.",
+      "badLink": "This link is not valid: {link}",
+      "register": "Create profile",
+      "save": "Save",
+      "saved": "Saved. View your page →",
+      "publicNote": "Profiles are public: the on-chain record is permanent, and the hosted profile can be updated at any time.",
+      "phase": {
+        "signing": "Confirm in your wallet…",
+        "pending": "Waiting for the chain…",
+        "syncing": "Syncing…"
+      }
+    },
+    "governance": {
+      "title": "Governance",
+      "lead": "MOTIF holders who delegate their votes can make and decide proposals: appointing curators and moderators, tuning review parameters and rewards, spending the treasury and the license allowlist. Passed proposals go through a timelock and anyone can execute them once the delay is over.",
+      "settings": {
+        "delay": "Voting delay",
+        "period": "Voting period",
+        "timelock": "Timelock",
+        "threshold": "Proposal threshold",
+        "quorum": "Quorum",
+        "treasury": "Treasury",
+        "supply": "Total supply"
+      },
+      "proposals": "Proposals ({count})",
+      "noProposals": "No proposals yet.",
+      "states": {
+        "pending": "Pending",
+        "active": "Voting",
+        "canceled": "Canceled",
+        "defeated": "Defeated",
+        "succeeded": "Passed",
+        "queued": "Queued",
+        "expired": "Expired",
+        "executed": "Executed"
+      },
+      "by": "by",
+      "startsAt": "voting starts {when}",
+      "endsAt": "voting ends {when}",
+      "eta": "executable {when}",
+      "tally": {
+        "for": "For",
+        "against": "Against",
+        "abstain": "Abstain"
+      },
+      "delegation": {
+        "title": "My voting power",
+        "balance": "Balance",
+        "votes": "Voting power",
+        "threshold": "Making a proposal takes at least {threshold} votes.",
+        "lead": "MOTIF only counts as voting power once it is delegated (you can delegate to yourself). Delegating only grants votes; the tokens stay in your wallet.",
+        "self": "Delegate to myself",
+        "phase": {
+          "signing": "Confirm in your wallet…",
+          "pending": "Waiting for the chain…",
+          "syncing": "Syncing…"
+        }
+      },
+      "actions": {
+        "voted": "You have already voted.",
+        "for": "For",
+        "against": "Against",
+        "abstain": "Abstain",
+        "queue": "Queue in timelock",
+        "execute": "Execute",
+        "phase": {
+          "signing": "Confirm in your wallet…",
+          "pending": "Waiting for the chain…",
+          "syncing": "Syncing…"
+        }
+      },
+      "composer": {
+        "title": "New proposal",
+        "lead": "Pick a template and fill in the values and the rationale. You need voting power above the threshold.",
+        "template": "Proposal type",
+        "templates": {
+          "appointCurator": "Appoint a curator",
+          "removeCurator": "Remove a curator",
+          "appointModerator": "Appoint a moderator",
+          "removeModerator": "Remove a moderator",
+          "fundRewards": "Fund the reward pool from the treasury",
+          "curationParams": "Change review parameters",
+          "allowLicense": "Allow a new license"
+        },
+        "address": "Address",
+        "amount": "Amount (MOTIF)",
+        "spdx": "SPDX identifier",
+        "spdxHint": "Only licenses that allow redistribution. Commons Clause, non-commercial, AGPL and the like cannot be integrated.",
+        "params": {
+          "quorum": "Quorum (votes)",
+          "bond": "Bond (MOTIF)",
+          "publishReward": "Publish reward (MOTIF)",
+          "remixReward": "Remix reward (MOTIF)"
+        },
+        "titleLabel": "Title",
+        "body": "Rationale",
+        "bodyPlaceholder": "Why this, and what voters need to know.",
+        "submit": "Make proposal",
+        "done": "Proposal made. Voting opens after the voting delay.",
+        "phase": {
+          "signing": "Confirm in your wallet…",
+          "pending": "Waiting for the chain…",
+          "syncing": "Syncing…"
+        }
+      }
+    },
+    "badge": {
+      "verified": "Verified on chain · v{version}",
+      "mismatch": "Differs from the on-chain record",
+      "delisted": "Delisted on chain",
+      "verifiedTitle": "The content hash your browser computed for the source on this page matches the version registered on chain",
+      "mismatchTitle": "The source on this page does not match the content hash registered on chain",
+      "delistedTitle": "A community moderator delisted this item"
+    },
+    "errors": {
+      "rejected": "You cancelled this in your wallet.",
+      "notConnected": "Connect a wallet first.",
+      "reverted": "The chain rejected the transaction.",
+      "contract": {
+        "SlugTaken": "This slug is already taken.",
+        "InvalidSlug": "Slugs can only use lowercase letters, digits and single hyphens.",
+        "ContentAlreadyRegistered": "The same content is already registered (each piece of content can be registered once).",
+        "LicenseNotAllowed": "This license is not on the allowlist.",
+        "InvalidUpstream": "Give both the upstream repository and the pinned commit, or neither.",
+        "InvalidParent": "A remix must start from an approved version of a listed item.",
+        "NotMaintainer": "Only the item's maintainer can submit new versions.",
+        "NotPendingMaintainer": "Maintainership was not handed to you.",
+        "NoApprovedVersion": "This item has no approved version; submit it again as a new item.",
+        "VersionPending": "The previous version is still in review.",
+        "ItemIsDelisted": "This item has been delisted.",
+        "ZeroContentHash": "The content hash is empty.",
+        "AlreadyVoted": "You have already voted.",
+        "ConflictOfInterest": "You have to sit this review out.",
+        "ReviewPeriodOver": "The review period is over.",
+        "ReviewPeriodNotOver": "The review period is not over yet.",
+        "ReviewNotOpen": "This review has already closed.",
+        "ReviewHasVotes": "Someone has voted, so it can no longer be withdrawn.",
+        "NotSubmitter": "Only the submitter can withdraw.",
+        "EnforcedPause": "Submissions are paused.",
+        "InvalidParams": "Invalid parameters (quorum at least 1, review period between 1 hour and 90 days).",
+        "InsufficientRewardPool": "The reward pool does not hold enough.",
+        "ERC20InsufficientBalance": "Not enough MOTIF.",
+        "ERC20InsufficientAllowance": "The bond allowance is too low.",
+        "AccessControlUnauthorizedAccount": "Your address does not have this permission.",
+        "AlreadyRegistered": "This address already has a profile.",
+        "NotRegistered": "This address has no profile yet.",
+        "InvalidHandle": "Handles use 3–32 lowercase letters, digits and single hyphens.",
+        "HandleTaken": "Someone else already uses this handle.",
+        "HandleIsBlocked": "This handle is blocked.",
+        "GovernorInsufficientProposerVotes": "Your voting power is below the proposal threshold (remember to delegate first).",
+        "GovernorAlreadyCastVote": "You have already voted on this proposal.",
+        "GovernorUnexpectedProposalState": "The proposal's current state does not allow this.",
+        "GovernorNonexistentProposal": "This proposal does not exist.",
+        "TimelockUnexpectedOperationState": "The timelock delay is not over yet."
+      }
+    }
   },
   "lab": {
     "previewTitle": "Preview sandbox lab"
@@ -190,14 +694,6 @@
     "studio": {
       "title": "Studio",
       "lead": "Describe the effect you want in plain words. An agent starts from a market item, generates or rewrites the component, and you preview, tune and export it."
-    },
-    "skills": {
-      "title": "Skills",
-      "lead": "Every effect ships with an agent skill. Copy it into your project so your own agent can build the same effect."
-    },
-    "docs": {
-      "title": "Docs",
-      "lead": "How to use the market, tune effects, export code and skills, and contribute new effects."
     },
     "back": "Browse the market meanwhile"
   },
@@ -275,5 +771,20 @@
   "footer": {
     "line": "Motif · open source (MIT) · item data generated on {date}",
     "notices": "Third-party notices"
+  },
+  "notFound": {
+    "title": "Nothing here",
+    "lead": "There is no page at this address. The item may have been renamed, or the link was copied wrong.",
+    "market": "Browse the market",
+    "home": "Back to home"
+  },
+  "pageError": {
+    "title": "Something went wrong",
+    "lead": "This page failed to render. Try again; if it keeps failing, please open an issue on GitHub.",
+    "retry": "Try again"
+  },
+  "docs": {
+    "title": "Docs",
+    "toc": "On this page"
   }
 }

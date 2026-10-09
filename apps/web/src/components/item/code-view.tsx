@@ -1,74 +1,84 @@
 'use client'
 
-import { bake, printDefaults, type ParamValues } from '@motif/schema'
+import { bake, printDefaults, type ParamValues } from '@motif/schema/core'
 import { useState } from 'react'
 import { useCopy } from '@/lib/clipboard'
-import type { CodeLine, HighlightedFile } from '@/lib/code-tokens'
+import type { CodeLine, HighlightedCode } from '@/lib/code-tokens'
 
 // 与 shiki 的 vesper 主题一致的颜色，用来给客户端生成的默认值区域着色。
-const COLORS = { comment: '#8b8b8b94', keyword: '#A0A0A0', string: '#99FFE4', number: '#FFC799', plain: '#FFF' }
+const COLORS = { comment: '#8B8B8B94', keyword: '#A0A0A0', string: '#99FFE4', number: '#FFC799', plain: '#FFF' }
 
 /** 默认值区域的格式固定（printDefaults 生成），用一个很小的分词器就能正确着色。 */
-function tokenizeDefaults(values: ParamValues): CodeLine[] {
+function tokenizeDefaults(values: ParamValues, palette: string[]): CodeLine[] {
+  const index = (color: string) => Math.max(0, palette.indexOf(color))
   return printDefaults(values)
     .split('\n')
     .map((line) => {
-      if (line.startsWith('/*')) return [{ content: line, color: COLORS.comment }]
-      if (line.startsWith('export const')) {
-        return [
-          { content: 'export const ', color: COLORS.keyword },
-          { content: 'defaults', color: COLORS.plain },
-          { content: ' = {', color: COLORS.keyword },
-        ]
-      }
-      const tokens: CodeLine = []
+      if (line.startsWith('/*')) return [index(COLORS.comment), line]
+      if (line.startsWith('export const')) return [index(COLORS.keyword), 'export const ', index(COLORS.plain), 'defaults', index(COLORS.keyword), ' = {']
+      const out: CodeLine = []
       const pattern = /('(?:[^'\\]|\\.)*')|(-?\d+(?:\.\d+)?(?:e-?\d+)?)|(true|false|null)|([A-Za-z_$][\w$]*)(?=:)|(\s+)|(.)/g
       for (const match of line.matchAll(pattern)) {
-        const [text, string, number, literal, key] = match
-        const color = string ? COLORS.string : number || literal ? COLORS.number : key ? COLORS.plain : /\s/.test(text) ? undefined : COLORS.keyword
-        tokens.push(color ? { content: text, color } : { content: text })
+        const [text, string, number, literal, key, space] = match
+        const color = string ? COLORS.string : number || literal ? COLORS.number : key || space ? COLORS.plain : COLORS.keyword
+        out.push(index(color), text)
       }
-      return tokens
+      return out
     })
 }
 
-function Lines({ lines, start, highlight }: { lines: CodeLine[]; start: number; highlight?: boolean }) {
-  return (
-    <>
-      {lines.map((line, index) => (
-        <div key={start + index} className={`grid grid-cols-[3.25rem_1fr] ${highlight ? 'bg-[oklch(0.84_0.07_285/0.07)]' : ''}`}>
-          <span aria-hidden className="pr-4 text-right text-ink-faint/50 select-none">
-            {start + index}
-          </span>
-          <span className="whitespace-pre">
-            {line.length === 0 ? '​' : line.map((token, i) => <span key={i} style={token.color ? { color: token.color } : undefined}>{token.content}</span>)}
-          </span>
-        </div>
-      ))}
-    </>
-  )
+function Lines({ lines, tuned }: { lines: CodeLine[]; tuned?: boolean }) {
+  return lines.map((line, index) => {
+    const segments = []
+    for (let i = 0; i < line.length; i += 2) {
+      segments.push(
+        <span key={i} className={`t${line[i] as number}`}>
+          {line[i + 1]}
+        </span>,
+      )
+    }
+    return (
+      <div key={index} className="code-line" data-tuned={tuned || undefined}>
+        {segments}
+      </div>
+    )
+  })
 }
 
 /**
  * 条目的源码。组件本体里的默认值区域按当前参数实时重新生成——
  * 用户在这里看到、复制的代码，就是下载得到的代码。
  */
-export function CodeView({ files, entry, values, labels }: { files: HighlightedFile[]; entry: string; values: ParamValues; labels: { copy: string; copied: string; failed: string; tuned: string } }) {
-  const [active, setActive] = useState(files[0]?.path)
+export function CodeView({
+  code,
+  sources,
+  entry,
+  values,
+  labels,
+}: {
+  code: HighlightedCode
+  /** 条目文件的原文（复制用），和导出共用同一份。 */
+  sources: Record<string, string>
+  entry: string
+  values: ParamValues
+  labels: { copy: string; copied: string; failed: string; tuned: string }
+}) {
+  const [active, setActive] = useState(code.files[0]?.path)
   const { copy, stateOf } = useCopy()
-  const file = files.find((f) => f.path === active) ?? files[0]
+  const file = code.files.find((f) => f.path === active) ?? code.files[0]
   if (!file) return null
 
   const isEntry = file.path === entry && file.after !== null
-  const region = isEntry ? tokenizeDefaults(values) : []
-  const text = isEntry ? bake(file.source, values) : file.source
-
+  const source = sources[file.path] ?? ''
+  const text = isEntry ? bake(source, values) : source
   const state = stateOf(file.path)
+  const paletteCss = code.palette.map((color, index) => `.code-tokens .t${index}{color:${color}}`).join('')
 
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-sunken">
+      <style>{paletteCss}</style>
       <div className="flex items-center gap-1 overflow-x-auto border-b border-line px-2 py-1.5">
-        {files.map((f) => (
+        {code.files.map((f) => (
           <button
             key={f.path}
             type="button"
@@ -86,13 +96,13 @@ export function CodeView({ files, entry, values, labels }: { files: HighlightedF
           </button>
         </span>
       </div>
-      <pre className="max-h-[560px] overflow-auto py-3 font-mono text-[12.5px] leading-[1.7]" data-testid="code-view">
-        <code>
-          <Lines lines={file.before} start={1} />
+      <pre className="code-tokens max-h-[560px] overflow-auto py-3 font-mono text-[12.5px] leading-[1.7]" data-testid="code-view">
+        <code className="code-lines">
+          <Lines lines={file.before} />
           {isEntry && (
             <>
-              <Lines lines={region} start={file.before.length + 1} highlight />
-              <Lines lines={file.after ?? []} start={file.before.length + region.length + 1} />
+              <Lines lines={tokenizeDefaults(values, code.palette)} tuned />
+              <Lines lines={file.after ?? []} />
             </>
           )}
         </code>

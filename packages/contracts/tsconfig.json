@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  // artifacts/**/*.d.ts 是 hardhat build 生成的合约类型（hardhat-viem 靠它推断 ABI），所以 lint 前先编译。
+  "include": [
+    "hardhat.config.ts",
+    "vitest.config.ts",
+    "src/**/*.ts",
+    "scripts/**/*.ts",
+    "test/**/*.ts",
+    "ignition/**/*.ts",
+    "artifacts/**/*.d.ts"
+  ]
+}

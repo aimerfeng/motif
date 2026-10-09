@@ -28,7 +28,7 @@ items/<slug>/
 照抄参考条目的结构。要点：
 
 - `title` / `summary`：中英两份。中文要自然，不要像翻译腔；summary 一两句话：看起来是什么样 + 适合用在哪里。
-- `kind` 与 `category`：市场分五个层级，分类必须属于所选层级（定义在 `packages/schema/src/manifest.ts` 的 `CATEGORIES_BY_KIND`）：
+- `kind` 与 `category`：市场分五个层级，分类必须属于所选层级（定义在 `packages/schema/src/taxonomy.ts` 的 `CATEGORIES_BY_KIND`）：
   - `template` 整站模板：landing、saas、portfolio、product、agency、blog、event、app
   - `style` 设计风格：minimal、bold、retro、glass、editorial、technical、playful
   - `section` 页面区块：hero、navbar、features、pricing、testimonials、logos、stats、faq、cta、footer、team、changelog、posts、contact、showcase、dashboard
@@ -158,3 +158,18 @@ pnpm capture <slug>                   # 海报 + 循环视频 + 闸门：必须 
 ```
 
 `pnpm capture` 的闸门：能挂载、没有控制台错误、帧率 ≥ 55、海报不是空白、画面确实在动、减少动态效果时静止。生成的海报在 `apps/web/public/media/<slug>/poster.webp`，**一定要亲眼看**（用 sharp 转成 PNG 再看），不好看就改默认参数、`posterTime`、`zoom` 或演示，直到它能放进作品集。
+
+## 投稿到社区
+
+不想改仓库、或者想让作品以自己的名义上架，可以投到社区（见 `docs/decisions/0005-decentralized-community.md`）：
+
+```bash
+pnpm item:remix mesh-gradient my-gradient   # 从现有条目开一个 Remix（记下 provenance.basedOn）；从零开始就直接建目录
+pnpm item:pack my-gradient                  # 跑一遍检查器，打包成 my-gradient.motif.json
+```
+
+- 打包出来的清单一律是 `published`；`item:remix` 和 `item:unpack` 还原出来的目录是 `draft`，编辑期间不会出现在本地市场里。投稿后在站点上撤回或被驳回，删掉这个目录就行，不要提交进仓库。
+- 在 `/community/submit` 拖入 `.motif.json`：站点用同一个检查器和编译器再查一遍并给出实时预览，然后钱包签名上传、押押金、提交上链。
+- 社区投稿可以整合 `sources/sources.json` 之外的上游（检查器只给提醒），但许可证仍然必须允许再分发，许可证头、版权行和 `provenance` 的要求和上面完全一样，审核员会逐条核对。原创作品按 MIT 授权。
+- 审核员的标准就是这份指南：默认参数最好看、调参范围内不难看、处理减少动态效果、不访问外部网络、来源真实。质量问题退回押金，抄袭和伪造许可证会被罚没押金。
+- 本地试用：`pnpm dev:chain` 启动本地社区链，连上钱包后在社区页领取测试币。

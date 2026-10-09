@@ -1,4 +1,4 @@
-import type { Category, Kind } from '@motif/schema'
+import type { Category, Kind } from '@motif/schema/core'
 
 /**
  * 通用 skill：按层级给主 skill，按分类可以再给一个更具体的。

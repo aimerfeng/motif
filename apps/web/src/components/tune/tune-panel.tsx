@@ -1,6 +1,6 @@
 'use client'
 
-import type { JsonValue, L10n, ParamSpec } from '@motif/schema'
+import type { JsonValue, L10n, ParamSpec } from '@motif/schema/core'
 import { useLocale, useMessages, useTranslations } from 'next-intl'
 import type { Locale } from '@/i18n/routing'
 import { useCopy } from '@/lib/clipboard'

@@ -2,7 +2,7 @@ import path from 'node:path'
 import { cache } from 'react'
 import { skillName } from '@motif/export'
 import { CATALOG_PATH, readCatalog, type CatalogItem } from '@motif/registry/catalog'
-import type { Category, Kind } from '@motif/schema'
+import type { Category, Kind } from '@motif/schema/core'
 import type { Locale } from '@/i18n/routing'
 import { mediaFor, type ItemMedia } from './media'
 
@@ -34,6 +34,8 @@ export interface ItemSummary {
   /** 这个条目的 skill 名（/skill/<name>.md）。 */
   skill: string
   media: ItemMedia
+  /** 社区投稿审核通过的作品（不在仓库目录里，源码由站点托管、记录在链上）。 */
+  community?: boolean
 }
 
 export function summarize(item: CatalogItem, locale: Locale): ItemSummary {

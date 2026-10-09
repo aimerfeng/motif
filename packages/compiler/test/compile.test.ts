@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compileItem } from '../src/index.ts'
+import { compileItem, forbiddenCss } from '../src/index.ts'
 
 describe('compileItem', () => {
   it('bundles relative files, keeps vendor imports external and emits only the used Tailwind classes', async () => {
@@ -33,5 +33,19 @@ describe('compileItem', () => {
     const result = await compileItem({ entry: 'demo.tsx', files: { 'demo.tsx': 'export const x = (' } })
     expect(result.ok).toBe(false)
     expect(result.diagnostics[0]).toMatchObject({ level: 'error', file: 'demo.tsx', line: 1 })
+  })
+
+  // 社区投稿的 CSS 不可信：这些指令会让 Tailwind 读服务器上的文件（错误信息还会把内容带出来）或执行插件代码。
+  it('refuses style directives that read files or load plugins, before Tailwind sees them', async () => {
+    for (const css of ['@import "../../apps/web/.env.local";', '@plugin "./evil.js";', '@config "../tailwind.config.js";', '@source "../../";', '@reference "x.css";', '@\\69mport "x";']) {
+      const result = await compileItem({ entry: 'demo.tsx', files: { 'demo.tsx': 'export const Demo = () => null', 'styles.css': css } })
+      expect(result.ok, css).toBe(false)
+      expect(result.diagnostics[0]).toMatchObject({ level: 'error', file: 'styles.css' })
+      expect(result.css).toBe('')
+    }
+  })
+
+  it('still allows the directives items actually use, including inside comments', () => {
+    expect(forbiddenCss('/* @import is not allowed */ @theme { --x: 1 } @keyframes a { to { opacity: 0 } } @utility b { color: red } @custom-variant c (&:hover);')).toBeNull()
   })
 })

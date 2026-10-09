@@ -1,6 +1,6 @@
 'use client'
 
-import { SPRING_RANGE, type JsonValue, type ParamSpec } from '@motif/schema'
+import { SPRING_RANGE, type JsonValue, type ParamSpec } from '@motif/schema/core'
 import { useId, useState, type CSSProperties, type ReactNode } from 'react'
 import { EasingEditor } from './easing-editor'
 import { SpringPlot } from './spring-plot'

@@ -1,4 +1,4 @@
-import type { JsonValue, ParamValues } from './params.ts'
+import type { JsonValue, ParamValues } from './values.ts'
 
 // 组件文件里有一段由参数生成的默认值区域：
 //

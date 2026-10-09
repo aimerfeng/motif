@@ -78,9 +78,14 @@ export async function compileItem(input: CompileInput): Promise<CompileResult> {
     return { ok: false, js: '', css: '', diagnostics }
   }
 
-  const styles = Object.entries(files)
-    .filter(([file]) => file.endsWith('.css'))
-    .map(([, text]) => text)
+  const styleFiles = Object.entries(files).filter(([file]) => file.endsWith('.css'))
+  // 这些指令会让 Tailwind 去读服务器上的文件或执行插件代码；条目的样式只需要自身的 CSS，一律拒绝，不交给 Tailwind。
+  for (const [file, text] of styleFiles) {
+    const problem = forbiddenCss(text)
+    if (problem) diagnostics.push({ level: 'error', message: problem, file })
+  }
+  if (diagnostics.some((diagnostic) => diagnostic.level === 'error')) return { ok: false, js, css: '', diagnostics }
+  const styles = styleFiles.map(([, text]) => text)
   const scanned = Object.entries(files)
     .filter(([file]) => /\.(tsx?|jsx?)$/.test(file))
     .map(([file, content]) => ({ content, extension: path.extname(file).slice(1) }))
@@ -132,6 +137,17 @@ function virtualFiles(files: Record<string, string>): esbuild.Plugin {
       })
     },
   }
+}
+
+const FORBIDDEN_AT_RULES = /@(import|plugin|config|source|reference)\b/i
+
+/** 条目 CSS 里不允许的指令（先去掉注释再找）。转义过的 at 规则名也拒绝，免得绕过检查。 */
+export function forbiddenCss(css: string): string | null {
+  const code = css.replace(/\/\*[\s\S]*?\*\//g, '')
+  const match = FORBIDDEN_AT_RULES.exec(code)
+  if (match) return `${match[0]} is not allowed in item styles; everything an item needs is already available in the sandbox`
+  if (/@[\w-]*\\/.test(code)) return 'escaped at-rule names are not allowed in item styles'
+  return null
 }
 
 function toDiagnostic(level: Diagnostic['level'], message: esbuild.Message): Diagnostic {

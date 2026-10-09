@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Compiles an item's files (TSX + Tailwind) into one ES module and one stylesheet for the preview sandbox.",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./worker": "./src/worker.ts"
   },
   "scripts": {
     "lint": "tsc --noEmit -p tsconfig.json",
