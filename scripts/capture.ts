@@ -232,6 +232,8 @@ async function captureItem(item: CatalogItem): Promise<ItemReport> {
       await rm(outDir, { recursive: true, force: true })
       await mkdir(outDir, { recursive: true })
       await sharp(posterPng).resize(960, 600).webp({ quality: 82, effort: 6 }).toFile(path.join(outDir, 'poster.webp'))
+      // 市场卡片在普通屏幕上只有 300–450 px 宽：小图给它用（srcset），省掉大半流量。
+      await sharp(posterPng).resize(480, 300).webp({ quality: 80, effort: 6 }).toFile(path.join(outDir, 'poster-sm.webp'))
       if (loopSeconds > 0) await encodeLoop(framesDir, outDir, loopSeconds)
     }
   } finally {

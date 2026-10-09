@@ -3,6 +3,8 @@ import path from 'node:path'
 
 export interface ItemMedia {
   poster: string | null
+  /** 480 px 宽的海报，给卡片的 srcset 用。 */
+  posterSmall: string | null
   loopWebm: string | null
   loopMp4: string | null
 }
@@ -12,5 +14,5 @@ const PUBLIC_DIR = path.resolve(/*turbopackIgnore: true*/ process.cwd(), 'public
 
 export function mediaFor(slug: string): ItemMedia {
   const file = (name: string) => (existsSync(path.join(/*turbopackIgnore: true*/ PUBLIC_DIR, 'media', slug, name)) ? `/media/${slug}/${name}` : null)
-  return { poster: file('poster.webp'), loopWebm: file('loop.webm'), loopMp4: file('loop.mp4') }
+  return { poster: file('poster.webp'), posterSmall: file('poster-sm.webp'), loopWebm: file('loop.webm'), loopMp4: file('loop.mp4') }
 }

@@ -2,7 +2,7 @@
 
 import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
-import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { memo, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { SearchIcon } from '@/components/icons'
 import { SkillButton } from '@/components/skill-button'
 import type { ItemSummary } from '@/lib/catalog'
@@ -20,7 +20,11 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
   const [kind, setKind] = useState<Kind | null>(initial.kind)
   const [category, setCategory] = useState<Category | null>(initial.category)
   const [query, setQuery] = useState(initial.q)
+  // 卡片网格跟着「延后」的筛选值渲染：点击时先把选中的标签画出来，上百张卡片在后台重排（INP）。
+  const deferredKind = useDeferredValue(kind)
+  const deferredCategory = useDeferredValue(category)
   const deferredQuery = useDeferredValue(query)
+  const pending = kind !== deferredKind || category !== deferredCategory || query !== deferredQuery
   const searchRef = useRef<HTMLInputElement>(null)
 
   // 搜索词边打边写会很密，停下来再写进链接。
@@ -57,12 +61,12 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
   const visible = useMemo(() => {
     const terms = deferredQuery.trim().toLowerCase().split(/\s+/).filter(Boolean)
     return items.filter((item) => {
-      if (kind && item.kind !== kind) return false
-      if (category && item.category !== category) return false
+      if (deferredKind && item.kind !== deferredKind) return false
+      if (deferredCategory && item.category !== deferredCategory) return false
       const haystack = haystacks.get(item.slug)!
       return terms.every((term) => haystack.includes(term))
     })
-  }, [items, haystacks, kind, category, deferredQuery])
+  }, [items, haystacks, deferredKind, deferredCategory, deferredQuery])
 
   const selectKind = (next: Kind | null) => {
     setKind(next)
@@ -150,17 +154,59 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
           </button>
         </div>
       ) : (
-        <ul className="mt-4 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-3" data-testid="market-grid">
-          {visible.map((item) => (
-            <li key={item.slug}>
-              <ItemCard item={item} categoryLabel={t(`categories.${item.category}`)} />
-            </li>
-          ))}
-        </ul>
+        // 后台重排期间把旧的卡片调暗一点；样式放在外层，网格的 props 不变，memo 才生效。
+        <div className={`transition-opacity duration-150 ${pending ? 'opacity-60' : ''}`}>
+          <CardGrid items={visible} />
+        </div>
       )}
     </section>
   )
 }
+
+/**
+ * 每批渲染多少张卡片。首屏只看得到两行，剩下的滚动到附近再渲染：
+ * 上百张卡片一次性水合时，页面刚打开那几秒的第一次点击要等它们全部水合完（INP）。
+ */
+const BATCH = 24
+
+/** 卡片网格单独成组件并 memo：只改了选中状态的那次渲染不会碰到上百张卡片。 */
+const CardGrid = memo(function CardGrid({ items }: { items: ItemSummary[] }) {
+  const t = useTranslations('market')
+  const [limit, setLimit] = useState(BATCH)
+  // 筛选结果变了就从第一批重新开始（渲染期间根据上一次的结果调整状态，不用 effect）。
+  const [shownFor, setShownFor] = useState(items)
+  if (items !== shownFor) {
+    setShownFor(items)
+    setLimit(BATCH)
+  }
+  const sentinel = useRef<HTMLDivElement>(null)
+  const more = limit < items.length
+
+  // 哨兵离视口还有 1200px 时就渲染下一批；新一批渲染完哨兵还在范围内，会接着再加。
+  useEffect(() => {
+    const element = sentinel.current
+    if (!element || !more) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) setLimit((value) => value + BATCH)
+    }, { rootMargin: '1200px 0px' })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [more, limit])
+
+  return (
+    <>
+      <ul className="mt-4 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 xl:grid-cols-3" data-testid="market-grid">
+        {items.slice(0, limit).map((item, index) => (
+          <li key={item.slug}>
+            {/* 第一行（宽屏三列）是首屏，海报往往就是 LCP。 */}
+            <ItemCard item={item} categoryLabel={t(`categories.${item.category}`)} priority={index < 3} />
+          </li>
+        ))}
+      </ul>
+      {more && <div ref={sentinel} aria-hidden className="h-px" />}
+    </>
+  )
+})
 
 function KindTab({ active, onClick, count, children }: { active: boolean; onClick: () => void; count: number; children: ReactNode }) {
   return (

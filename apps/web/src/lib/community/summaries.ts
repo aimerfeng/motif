@@ -17,7 +17,7 @@ export function summarizeCommunityItem({ content }: ListedCommunityItem, locale:
     runtime: manifest.runtime,
     source: manifest.provenance.upstream?.repo ?? null,
     skill: skillName(manifest.slug),
-    media: { poster: null, loopWebm: null, loopMp4: null },
+    media: { poster: null, posterSmall: null, loopWebm: null, loopMp4: null },
     community: true,
   }
 }

@@ -27,7 +27,9 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     const inKind = items.filter((item) => item.manifest.kind === kind)
     if (inKind.length === 0) return []
     const cover = FEATURED.map((slug) => inKind.find((item) => item.manifest.slug === slug)).find((item) => item !== undefined) ?? inKind[0]!
-    return [{ kind, count: inKind.length, poster: mediaFor(cover.manifest.slug).poster }]
+    // 层级卡片只有五分之一屏宽，用小海报。
+    const media = mediaFor(cover.manifest.slug)
+    return [{ kind, count: inKind.length, poster: media.posterSmall ?? media.poster }]
   })
 
   const heroValues = hero ? { ...defaultsOf(hero.manifest.params), ...(hero.manifest.presets.find((preset) => preset.id === HERO.preset)?.values ?? {}) } : {}

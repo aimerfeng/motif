@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { scrollToCard } from './support/market'
 
 test('市场的筛选来自链接，首屏就是筛好的结果', async ({ page }) => {
   await page.goto('/market?kind=component&category=button')
@@ -11,7 +12,7 @@ test('市场的筛选来自链接，首屏就是筛好的结果', async ({ page 
   await expect(page.getByTestId('card-hold-button')).toBeVisible()
   await page.getByRole('button', { name: '清除筛选' }).first().click()
   await expect(page).not.toHaveURL(/kind=|q=/)
-  await expect(page.getByTestId('card-mesh-gradient')).toBeVisible()
+  await scrollToCard(page, 'mesh-gradient')
 })
 
 test('换语言时保留筛选和调好的参数', async ({ page }) => {

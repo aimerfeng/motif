@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { scrollToCard } from './support/market'
 
 test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
 
@@ -23,7 +24,7 @@ test('市场按层级和分类筛选，筛选状态写进链接', async ({ page 
 
 test('每张卡片都能直接复制 Skill，筛选栏能复制通用 Skill', async ({ page }) => {
   await page.goto('/market')
-  const card = page.getByTestId('card-mesh-gradient')
+  const card = await scrollToCard(page, 'mesh-gradient')
   await card.hover()
   await card.getByRole('button', { name: '复制 Skill' }).click()
   await expect(card.getByRole('button', { name: '已复制' })).toBeVisible()

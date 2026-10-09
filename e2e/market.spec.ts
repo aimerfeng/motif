@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { expect, test } from '@playwright/test'
+import { scrollToCard } from './support/market'
 
 interface CatalogFile {
   items: { manifest: { slug: string; status: string; title: { 'zh-CN': string; en: string }; presets: unknown[] }; build: unknown }[]
@@ -11,8 +12,9 @@ const published = (JSON.parse(readFileSync(catalogPath, 'utf8')) as CatalogFile)
 
 test('市场列出所有已发布条目，并能切换到英文', async ({ page }) => {
   await page.goto('/market')
-  const grid = page.getByTestId('market-grid')
-  for (const item of published) await expect(grid.getByTestId(`card-${item.manifest.slug}`)).toBeVisible()
+  // 卡片分批渲染：首屏只有一批，滚到底时全部出现。
+  await expect(page.getByTestId('market-grid').locator('[data-testid^="card-"]')).toHaveCount(24)
+  for (const item of published) await scrollToCard(page, item.manifest.slug)
 
   await page.getByRole('button', { name: 'EN' }).click()
   await expect(page).toHaveURL(/\/en\/market$/)

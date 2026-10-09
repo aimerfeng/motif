@@ -11,7 +11,7 @@ import { RUNTIME_LABELS } from '@/lib/labels'
  * 市场卡片：静态海报，悬停时播放循环视频（画廊里不放实时 WebGL，见 docs/decisions/0002）。
  * 右上角可以直接复制这个条目的 Skill；按钮是链接的兄弟节点，不嵌在链接里。
  */
-export function ItemCard({ item, categoryLabel }: { item: ItemSummary; categoryLabel: string }) {
+export function ItemCard({ item, categoryLabel, priority = false }: { item: ItemSummary; categoryLabel: string; /** 首屏的卡片：海报立即加载、优先级调高（往往就是页面的 LCP）。 */ priority?: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const t = useTranslations('community')
   const tech = item.runtime.filter((r) => r !== 'react').map((r) => RUNTIME_LABELS[r] ?? r)
@@ -37,7 +37,16 @@ export function ItemCard({ item, categoryLabel }: { item: ItemSummary; categoryL
           {item.media.poster ? (
             <>
               {/* 海报是预先生成的 webp，不需要 next/image 再处理。 */}
-              <img src={item.media.poster} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover" />
+              <img
+                src={item.media.poster}
+                srcSet={item.media.posterSmall ? `${item.media.posterSmall} 480w, ${item.media.poster} 960w` : undefined}
+                sizes="(min-width: 1280px) 440px, (min-width: 640px) 50vw, 100vw"
+                alt=""
+                loading={priority ? "eager" : "lazy"}
+                fetchPriority={priority ? "high" : "auto"}
+                decoding="async"
+                className="absolute inset-0 size-full object-cover"
+              />
               {(item.media.loopWebm ?? item.media.loopMp4) && (
                 <video
                   ref={videoRef}

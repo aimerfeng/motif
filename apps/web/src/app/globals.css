@@ -2,14 +2,17 @@
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
 @import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/noto-sans-sc';
 
 /*
  * 站点外壳要安静，把视觉留给效果本身：夜间画廊式的暗底、极细的分隔线、没有强调色抢戏。
- * 中文走系统字体（苹方 / 微软雅黑），拉丁字母用自托管的 Geist 与 Bricolage Grotesque。
+ * 正文的中文走系统字体（苹方 / 微软雅黑），拉丁字母用自托管的 Geist 与 Bricolage Grotesque。
+ * 标题的中文用自托管的思源黑体（Noto Sans SC，OFL）：按 unicode-range 切成约百个分片，浏览器只下载页面上用到的字所在的分片；
+ * Windows 上的雅黑在大字号下发虚，标题在各个系统上也就一致了。
  */
 @theme {
   --font-sans: 'Geist Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Bricolage Grotesque Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', ui-sans-serif, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', ui-sans-serif, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
   --color-canvas: oklch(0.158 0.006 275);
