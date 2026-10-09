@@ -68,6 +68,23 @@ export const DOCS: Record<Locale, { lead: string; sections: DocSection[] }> = {
         ],
       },
       {
+        id: 'studio',
+        title: '工作台',
+        blocks: [
+          { type: 'p', text: '在[工作台](/studio)里用一句话描述想要的效果，agent 会写出组件、整理参数和预设，右边实时预览。也可以在任何条目页点「在工作台里改」，带着调好的参数接着改。' },
+          {
+            type: 'list',
+            items: [
+              'agent 每改一次文件，都会用和市场同一套检查器、编译器检查；出错时它会自己看到并修好，对话里标红的那一步就是。',
+              '预览里调好的参数可以「应用为默认值」，写回组件的 `defaults` 和参数定义。',
+              '想自己动手：在「代码」里直接改，Ctrl / ⌘ + S 保存并编译。',
+              '做好以后可以下载项目、用 shadcn 安装（地址是 `/r/s/<会话>.json`）、复制 Skill，或者一键投稿到社区。',
+              '会话链接就是这个工作区的钥匙：拿到链接的人可以继续改，请只分享给信任的人。',
+            ],
+          },
+        ],
+      },
+      {
         id: 'skills',
         title: '把效果交给 agent',
         blocks: [
@@ -165,6 +182,23 @@ export const DOCS: Record<Locale, { lead: string; sections: DocSection[] }> = {
             ],
           },
           { type: 'command', text: REGISTRY_EXAMPLE },
+        ],
+      },
+      {
+        id: 'studio',
+        title: 'Studio',
+        blocks: [
+          { type: 'p', text: 'In [Studio](/en/studio), describe the effect you want in a sentence: the agent writes the component, sets up parameters and presets, and the preview updates live. Or choose "Open in Studio" on any item page to keep working from it with your tuned values.' },
+          {
+            type: 'list',
+            items: [
+              'Every file the agent writes goes through the same checker and compiler as the market. When something breaks it sees the error and fixes it; that is the step marked red in the conversation.',
+              '"Apply as defaults" writes the values you tuned in the preview back into the component\'s `defaults` and the parameter definitions.',
+              'Prefer to do it yourself? Edit under Code and press Ctrl / ⌘ + S to save and build.',
+              'When it is ready, download the project, install it with shadcn (`/r/s/<session>.json`), copy the skill, or submit it to the community in one step.',
+              'A session link is the key to its workspace: anyone with the link can keep editing, so share it only with people you trust.',
+            ],
+          },
         ],
       },
       {

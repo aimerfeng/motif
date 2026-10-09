@@ -35,7 +35,7 @@ const COMMUNITY_RELAXED_RULES = new Set(['provenance/source', 'provenance/sha'])
 
 const SOURCES_FILE = path.resolve(/*turbopackIgnore: true*/ process.cwd(), '../..', 'sources/sources.json')
 let sources: Promise<SourceRecord[]> | null = null
-function loadSources(): Promise<SourceRecord[]> {
+export function loadSources(): Promise<SourceRecord[]> {
   sources ??= readFile(SOURCES_FILE, 'utf8').then((text) => (JSON.parse(text) as { sources: SourceRecord[] }).sources)
   return sources
 }

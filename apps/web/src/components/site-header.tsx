@@ -12,7 +12,7 @@ export function SiteHeader() {
   const links: NavLink[] = [
     { href: '/market', label: t('market') },
     { href: '/community', label: t('community') },
-    { href: '/studio', label: t('studio'), badge: t('soon') },
+    { href: '/studio', label: t('studio') },
     { href: '/docs', label: t('docs') },
   ]
 

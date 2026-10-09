@@ -10,7 +10,6 @@
     "github": "GitHub repository",
     "language": "Switch language",
     "home": "Motif home",
-    "soon": "Soon",
     "menu": "Menu",
     "skip": "Skip to content",
     "community": "Community"
@@ -689,14 +688,6 @@
   "lab": {
     "previewTitle": "Preview sandbox lab"
   },
-  "upcoming": {
-    "soon": "Coming soon",
-    "studio": {
-      "title": "Studio",
-      "lead": "Describe the effect you want in plain words. An agent starts from a market item, generates or rewrites the component, and you preview, tune and export it."
-    },
-    "back": "Browse the market meanwhile"
-  },
   "tune": {
     "title": "Tune",
     "reset": "Reset",
@@ -786,5 +777,101 @@
   "docs": {
     "title": "Docs",
     "toc": "On this page"
+  },
+  "studio": {
+    "home": {
+      "title": "Studio",
+      "lead": "Describe the effect you want in a sentence: the agent writes the component, tunes its parameters and previews it live. Or pick an item from the market and keep going from there.",
+      "placeholder": "For example: a slow, aurora-like flowing background in cool colours for a sign-in page",
+      "hint": "Enter to send, Shift + Enter for a new line",
+      "unavailable": "No agent is configured on this site yet. You can still open a blank workspace and edit the code by hand.",
+      "blank": "Start blank",
+      "start": "Start",
+      "starting": "Preparing…",
+      "examples": {
+        "aurora": "A slow aurora background in cool tones",
+        "loader": "A loader with three dots bouncing in turn",
+        "pricing": "Three pricing cards, the middle one with a glowing edge",
+        "text": "A headline that fades in letter by letter with a little blur"
+      },
+      "remix": "Want to start from an existing effect? Pick one in the <link>market</link> and choose \"Open in Studio\".",
+      "recent": "Recent sessions",
+      "remixOf": "from {slug}"
+    },
+    "chat": {
+      "title": "Conversation",
+      "agent": "Powered by {label}",
+      "noAgent": "No agent configured",
+      "budget": "Model budget used by this session",
+      "empty": "Tell the agent what to change: a new palette, a different rhythm, an extra parameter, or a different effect altogether.",
+      "placeholder": "Describe the change you want…",
+      "send": "Send",
+      "stop": "Stop",
+      "working": "The agent is working…",
+      "unavailable": "No agent is configured on this site: you can edit the code by hand under Code below.",
+      "done": "Done",
+      "aborted": "Stopped",
+      "error": "Something went wrong: {message}"
+    },
+    "tools": {
+      "search_market": "Search the market for \"{query}\"",
+      "read_market_item": "Look at {slug}",
+      "read_market_file": "Read {file}",
+      "list_files": "List files",
+      "read_file": "Read {path}",
+      "write_file": "Write {path}",
+      "edit_file": "Edit {path}",
+      "delete_file": "Delete {path}",
+      "set_params": "Tune the preview",
+      "check_preview": "Check the preview",
+      "look_at_preview": "Look at the preview",
+      "finish": "Wrap up",
+      "unknown": "Use a tool"
+    },
+    "basedOn": "from <link>{slug}</link>",
+    "status": {
+      "running": "The agent is editing…",
+      "ok": "Build {version} · compiles cleanly",
+      "errors": "{count, plural, one {# problem} other {# problems}} to fix"
+    },
+    "actions": {
+      "applyDefaults": "Apply as defaults",
+      "copyLink": "Copy session link",
+      "linkCopied": "Copied",
+      "submit": "Submit to community",
+      "dismiss": "Dismiss"
+    },
+    "preview": {
+      "noBuild": "Nothing runs yet: fix the errors under Problems first.",
+      "loading": "Loading the preview"
+    },
+    "noParams": "This item has no parameters yet.",
+    "noProblems": "No problems: the checker and the compiler are both happy.",
+    "fixFirst": "Fix the errors under Problems before exporting.",
+    "tabs": {
+      "code": "Code",
+      "problems": "Problems",
+      "install": "Install",
+      "skill": "Skill"
+    },
+    "editor": {
+      "save": "Save and build",
+      "saving": "Building…",
+      "discard": "Discard changes",
+      "invalidJson": "item.json is not valid JSON: {message}"
+    },
+    "suggest": {
+      "palette": "Use a more restrained palette",
+      "calmer": "Make the motion slower and softer",
+      "param": "Add a parameter for intensity",
+      "aurora": "Turn it into a slow, flowing aurora",
+      "loader": "Turn it into a loading animation",
+      "hero": "Make it a hero background with a centered headline"
+    },
+    "open": {
+      "label": "Open in Studio",
+      "busy": "Opening…",
+      "failed": "Could not open; try again"
+    }
   }
 }

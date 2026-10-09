@@ -93,8 +93,11 @@ function DownloadButton({ state, onClick, label, className, testId }: { state: D
   )
 }
 
-/** 「安装」：下载可运行的项目、shadcn 命令、手动复制。 */
-export function InstallPanel({ item, values, encoded, data }: { item: ItemSource; values: ParamValues; encoded: string; data: ExportData }) {
+/**
+ * 「安装」：下载可运行的项目、shadcn 命令、手动复制。
+ * registryPath 是 shadcn 安装地址的路径部分：默认是市场条目的 /r/<slug>.json，Studio 会话用 /r/s/<id>.json。
+ */
+export function InstallPanel({ item, values, encoded, data, registryPath }: { item: ItemSource; values: ParamValues; encoded: string; data: ExportData; registryPath?: string }) {
   const t = useTranslations('export')
   const context = useExportContext(data)
   const { copy, stateOf } = useCopy()
@@ -104,7 +107,7 @@ export function InstallPanel({ item, values, encoded, data }: { item: ItemSource
   const files = useMemo(() => componentFiles(item, bake(item.files[item.manifest.entry.file] ?? '', values)), [item, values])
 
   if (!context) return null
-  const registryUrl = `${context.origin}/r/${slug}.json${encoded ? `?v=${encoded}` : ''}`
+  const registryUrl = `${context.origin}${registryPath ?? `/r/${slug}.json`}${encoded ? `?v=${encoded}` : ''}`
   const shadcn = `npx shadcn@latest add "${registryUrl}"`
   const deps = Object.keys(npmDependencies(item, context))
   const install = `npm install ${deps.join(' ')}`

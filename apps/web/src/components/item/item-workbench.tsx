@@ -7,6 +7,7 @@ import { useState, type ReactNode } from 'react'
 import { ChainBadge } from '@/components/community/chain-badge'
 import { RefreshIcon } from '@/components/icons'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
+import { OpenInStudio } from '@/components/studio/open-in-studio'
 import { TunePanel } from '@/components/tune/tune-panel'
 import { useTune, type TunePreset } from '@/components/tune/use-tune'
 import type { HighlightedCode } from '@/lib/code-tokens'
@@ -50,6 +51,7 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
         <div className="flex shrink-0 items-center gap-2">
           {pageLike && <ViewportSwitch value={viewport} onChange={setViewport} />}
           <ChainBadge item={item} />
+          <OpenInStudio slug={item.manifest.slug} values={tune.values} />
           <QuickActions item={item} values={tune.values} data={exportData} />
         </div>
       </header>

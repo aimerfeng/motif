@@ -111,8 +111,9 @@ export function TunePanel({ params, presets, tune }: { params: readonly ParamSpe
             <PresetChip active={tune.activePreset === null && !tune.changed} onClick={() => tune.applyPreset(null)}>
               {t('defaultPreset')}
             </PresetChip>
-            {presets.map((preset) => (
-              <PresetChip key={preset.id} active={tune.activePreset === preset.id} onClick={() => tune.applyPreset(preset.id)}>
+            {/* 工作台里 agent 改清单的中途，id 可能暂时重复或缺失：key 带上序号，不靠它唯一。 */}
+            {presets.map((preset, index) => (
+              <PresetChip key={`${preset.id}:${index}`} active={tune.activePreset === preset.id} onClick={() => tune.applyPreset(preset.id)}>
                 {preset.name}
               </PresetChip>
             ))}
@@ -124,8 +125,8 @@ export function TunePanel({ params, presets, tune }: { params: readonly ParamSpe
         {groups.map((group) => (
           <fieldset key={group.key || 'main'} className="space-y-4 border-b border-line px-4 py-4 last:border-b-0">
             {group.key && <legend className="float-left mb-1 w-full text-[11px] tracking-wide text-ink-faint">{groupTitle(group.key)}</legend>}
-            {group.params.map((param) => (
-              <div key={param.key} className="clear-both">
+            {group.params.map((param, index) => (
+              <div key={`${param.key}:${index}`} className="clear-both">
                 {control(param)}
               </div>
             ))}

@@ -6,6 +6,7 @@ import { resolveRouteLocale } from '@/i18n/locale'
 import { getItem } from '@/lib/catalog'
 import { listedCommunityItem } from '@/lib/community/items'
 import { getCommunity } from '@/lib/community/state'
+import { loadSession } from '@/lib/studio/store'
 import { alternatesFor } from '@/lib/site'
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/community/submit'>): Promise<Metadata> {
@@ -21,8 +22,13 @@ export default async function SubmitPage({ params, searchParams }: PageProps<'/[
   const t = await getTranslations({ locale, namespace: 'community.submit' })
   const code = (chunks: React.ReactNode) => <code className="font-mono text-[12.5px] text-ink">{chunks}</code>
 
+  const search = await searchParams
+  // 从工作台进来：直接载入那个会话里的条目。
+  const studioId = typeof search.studio === 'string' ? search.studio : null
+  const studioItem = studioId ? ((await loadSession(studioId))?.item ?? null) : null
+
   // 从条目页点“Remix”进来：先给出这个条目的源文件。
-  const remixSlug = (await searchParams).remix
+  const remixSlug = search.remix
   const slug = typeof remixSlug === 'string' ? remixSlug : null
   const remixTitle = slug
     ? ((await getItem(slug))?.manifest.title[locale] ?? (await listedCommunityItem(community, slug))?.content.source.manifest.title[locale] ?? null)
@@ -45,7 +51,7 @@ export default async function SubmitPage({ params, searchParams }: PageProps<'/[
       )}
 
       <div className="mt-10">
-        <SubmitFlow locale={locale} paused={community.state.paused} />
+        <SubmitFlow locale={locale} paused={community.state.paused} initial={studioItem} />
       </div>
 
       <section className="mt-20 grid gap-10 border-t border-line pt-10 text-[14px] leading-relaxed md:grid-cols-2">

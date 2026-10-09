@@ -87,8 +87,8 @@ async function pageFor(deviceScaleFactor: number): Promise<Page> {
 async function mount(page: Page, item: CatalogItem, clock: 'real' | 'manual', css: { width: number; height: number }): Promise<number> {
   await page.setViewportSize(css)
   const options: CaptureMountOptions = {
-    js: item.build!.js,
-    css: item.build!.css,
+    module: { kind: 'url', url: item.build!.js },
+    styles: { kind: 'url', url: item.build!.css },
     exportName: item.manifest.demo.export,
     theme: item.manifest.demo.theme,
     props: defaultsOf(item.manifest.params),

@@ -51,6 +51,9 @@ must(shell('pnpm --filter @motif/contracts exec hardhat ignition deploy ignition
 must(shell('pnpm --filter @motif/contracts exec hardhat run scripts/seed-catalog.ts --network e2e', { MOTIF_DEPLOYMENT_ID: 'e2e' }))
 const communityData = path.join(ROOT, '.data/e2e-community')
 rmSync(communityData, { recursive: true, force: true })
+// Studio 的会话也放独立目录；agent 用脚本运行器，不调任何模型。
+const studioData = path.join(ROOT, '.data/e2e-studio')
+rmSync(studioData, { recursive: true, force: true })
 
 // 2. 沙箱和站点。条目检查不通过时 build 以非 0 退出，但失败的条目只是不进市场，e2e 照常跑剩下的。
 shell('pnpm --filter @motif/preview build')
@@ -60,6 +63,8 @@ const webEnv = {
   MOTIF_CHAIN_RPC_URL: E2E.chainUrl,
   MOTIF_CHAIN_DEPLOYMENT: path.join(ROOT, 'packages/contracts/ignition/deployments/e2e/deployed_addresses.json'),
   MOTIF_COMMUNITY_DATA: communityData,
+  MOTIF_STUDIO_DATA: studioData,
+  MOTIF_AGENT_PROVIDER: 'scripted',
 }
 must(shell('pnpm --filter @motif/web exec next build', webEnv))
 

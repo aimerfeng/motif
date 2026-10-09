@@ -143,6 +143,7 @@ Each item gets 3–5 presets, a bilingual title and description, reduced-motion 
   - Build `/api/compile`, sessions saved to `.data/sessions`, the three runners, a CodeMirror 6 code view, remix from the market, and "apply as defaults".
   - Sharing via `/r/s/<id>.json`, and all export paths reused.
   - Gate: scripted e2e covers remix and error → auto-fix. `pnpm smoke:agent` (manual, not part of verify) runs 3 real prompts through the local CLI Sonnet 5.5 and saves the transcripts to `.data/evals/`.
+  - **Done (2026-10-09), see `docs/decisions/0006-studio.md`.** `packages/agent` (tools, AI SDK and scripted runners, prompt), `packages/agent-claude-cli` (dev runner, loaded natively at runtime), sessions in `.data/studio`, NDJSON event streaming, browser preview reports for `check_preview`, CodeMirror 6 editing, "Open in Studio" with tuned values, apply as defaults, `/r/s/<id>.json`, export panels, and submit to the community. Compilation reuses the community compiler worker instead of a separate `/api/compile`.
 - **P5 Polish.**
   - A home-page showpiece, search, and docs.
   - Accessibility and performance: INP, and LCP using posters.

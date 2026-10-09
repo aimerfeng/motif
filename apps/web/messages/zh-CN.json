@@ -10,7 +10,6 @@
     "github": "GitHub 仓库",
     "language": "切换语言",
     "home": "Motif 首页",
-    "soon": "即将",
     "menu": "菜单",
     "skip": "跳到正文",
     "community": "社区"
@@ -689,14 +688,6 @@
   "lab": {
     "previewTitle": "预览沙箱实验"
   },
-  "upcoming": {
-    "soon": "即将上线",
-    "studio": {
-      "title": "工作台",
-      "lead": "用自然语言描述想要的效果，agent 从市场条目出发生成或改写组件，实时预览、调参、导出。"
-    },
-    "back": "先去逛逛市场"
-  },
   "tune": {
     "title": "调参",
     "reset": "重置",
@@ -786,5 +777,101 @@
   "docs": {
     "title": "文档",
     "toc": "本页目录"
+  },
+  "studio": {
+    "home": {
+      "title": "工作台",
+      "lead": "用一句话描述想要的效果，agent 会写出组件、调好参数，在右边实时预览。也可以从市场里挑一个条目接着改。",
+      "placeholder": "比如：一个像极光一样缓慢流动的背景，配色偏冷，适合放在登录页",
+      "hint": "Enter 发送，Shift + Enter 换行",
+      "unavailable": "这个站点还没有配置 agent，可以先打开空白工作区手动编辑代码。",
+      "blank": "空白开始",
+      "start": "开始",
+      "starting": "正在准备…",
+      "examples": {
+        "aurora": "缓慢流动的极光背景，冷色调",
+        "loader": "三个点依次弹跳的加载动画",
+        "pricing": "三档定价卡片，中间那档有光边",
+        "text": "标题文字逐字浮现，带一点模糊"
+      },
+      "remix": "想在现成的效果上改？去<link>市场</link>挑一个，点「在工作台里改」。",
+      "recent": "最近的会话",
+      "remixOf": "基于 {slug}"
+    },
+    "chat": {
+      "title": "对话",
+      "agent": "由 {label} 驱动",
+      "noAgent": "没有配置 agent",
+      "budget": "本会话已用的模型额度",
+      "empty": "告诉 agent 你想怎么改：换配色、调节奏、加一个参数，或者干脆换个效果。",
+      "placeholder": "描述你想要的改动…",
+      "send": "发送",
+      "stop": "停止",
+      "working": "agent 正在工作…",
+      "unavailable": "这个站点没有配置 agent：可以在下方「代码」里手动编辑。",
+      "done": "完成",
+      "aborted": "已停止",
+      "error": "出错了：{message}"
+    },
+    "tools": {
+      "search_market": "搜索市场「{query}」",
+      "read_market_item": "查看条目 {slug}",
+      "read_market_file": "读取 {file}",
+      "list_files": "列出文件",
+      "read_file": "读取 {path}",
+      "write_file": "写入 {path}",
+      "edit_file": "修改 {path}",
+      "delete_file": "删除 {path}",
+      "set_params": "调整预览参数",
+      "check_preview": "检查预览",
+      "look_at_preview": "查看画面",
+      "finish": "收尾",
+      "unknown": "调用工具"
+    },
+    "basedOn": "基于 <link>{slug}</link>",
+    "status": {
+      "running": "agent 正在修改…",
+      "ok": "第 {version} 版 · 编译通过",
+      "errors": "有 {count} 个问题要修"
+    },
+    "actions": {
+      "applyDefaults": "应用为默认值",
+      "copyLink": "复制会话链接",
+      "linkCopied": "已复制",
+      "submit": "投稿到社区",
+      "dismiss": "关闭"
+    },
+    "preview": {
+      "noBuild": "还没有能运行的版本：先修好「问题」里的错误。",
+      "loading": "正在载入预览"
+    },
+    "noParams": "这个条目还没有可调的参数。",
+    "noProblems": "没有问题：检查器和编译器都通过了。",
+    "fixFirst": "先修好「问题」里的错误，才能导出。",
+    "tabs": {
+      "code": "代码",
+      "problems": "问题",
+      "install": "安装",
+      "skill": "Skill"
+    },
+    "editor": {
+      "save": "保存并编译",
+      "saving": "正在编译…",
+      "discard": "放弃修改",
+      "invalidJson": "item.json 不是合法的 JSON：{message}"
+    },
+    "suggest": {
+      "palette": "换一套更克制的配色",
+      "calmer": "让动画慢一点、柔和一点",
+      "param": "加一个控制强度的参数",
+      "aurora": "改成缓慢流动的极光",
+      "loader": "改成一个加载动画",
+      "hero": "做成一个首屏背景，中间放标题"
+    },
+    "open": {
+      "label": "在工作台里改",
+      "busy": "正在打开…",
+      "failed": "打开失败，再试一次"
+    }
   }
 }

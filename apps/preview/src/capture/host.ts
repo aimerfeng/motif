@@ -2,13 +2,14 @@
  * 截图 / 录屏用的宿主页面（dist/capture.html）。它像站点一样把条目挂进不透明源的沙箱 iframe，
  * 并把协议包装成 window.motifCapture 上的异步方法，供 Playwright 调用。
  */
-import { envelope, readSandboxMessage, sandboxUrl, type HostMessage, type MountMessage, type SandboxMessage } from '../protocol.ts'
+import { envelope, readSandboxMessage, sandboxUrl, type HostMessage, type ModuleRef, type MountMessage, type SandboxMessage, type StyleRef } from '../protocol.ts'
 
 type Waiter = { match: (message: SandboxMessage) => boolean; resolve: (message: SandboxMessage) => void }
 
 export interface CaptureMountOptions {
-  js: string
-  css: string
+  /** 市场条目是沙箱上的产物 URL，Studio 的截图直接给编译好的代码。 */
+  module: ModuleRef
+  styles: StyleRef
   exportName: string
   theme: 'dark' | 'light'
   props: MountMessage['props']
@@ -82,8 +83,8 @@ window.motifCapture = {
     const done = waitFor((message) => message.type === 'mounted' || (message.type === 'error' && message.phase !== 'runtime'))
     post({
       type: 'mount',
-      module: { kind: 'url', url: options.js },
-      styles: { kind: 'url', url: options.css },
+      module: options.module,
+      styles: options.styles,
       exportName: options.exportName,
       props: options.props,
       theme: options.theme,

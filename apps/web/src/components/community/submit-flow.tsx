@@ -3,7 +3,7 @@
 import { motifCurationAbi, motifTokenAbi, versionInput } from '@motif/contracts'
 import { defaultsOf, type ItemSource } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
-import { useState, type DragEvent } from 'react'
+import { useEffect, useState, type DragEvent } from 'react'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
 import { Link, useRouter } from '@/i18n/navigation'
 import { formatMotif, shortAddress, uploadMessage } from '@/lib/community/shared'
@@ -51,7 +51,8 @@ async function lookup(slug: string): Promise<Registration> {
 }
 
 /** 投稿：选文件 → 预检和预览 → 签名上传源码 → 授权押金 → 上链。 */
-export function SubmitFlow({ locale, paused }: { locale: 'zh-CN' | 'en'; paused: boolean }) {
+/** initial：从工作台（/community/submit?studio=<会话>）带过来的条目，进页面就预检。 */
+export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN' | 'en'; paused: boolean; initial?: ItemSource | null }) {
   const t = useTranslations('community.submit')
   const { address, account, config, walletClient } = useCommunity()
   const router = useRouter()
@@ -67,17 +68,30 @@ export function SubmitFlow({ locale, paused }: { locale: 'zh-CN' | 'en'; paused:
   const [preview, setPreview] = useState<PreviewStatus>({ state: 'loading' })
 
   const load = async (file: File) => {
-    setLoadError(null)
-    setReport(null)
-    setItem(null)
-    writer.reset()
     let parsed: ItemSource
     try {
       parsed = JSON.parse(await file.text()) as ItemSource
     } catch {
+      setReport(null)
+      setItem(null)
       setLoadError(t('notJson'))
       return
     }
+    await check(parsed)
+  }
+
+  // 从工作台带过来的条目：进页面就直接预检，不用先下载再拖进来。
+  useEffect(() => {
+    if (initial) void check(initial)
+    // 只在进入页面时执行一次。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function check(parsed: ItemSource) {
+    setLoadError(null)
+    setReport(null)
+    setItem(null)
+    writer.reset()
     setChecking(true)
     try {
       const response = await fetch('/api/community/check', { method: 'POST', body: JSON.stringify(parsed) })

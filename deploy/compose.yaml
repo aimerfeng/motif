@@ -19,8 +19,15 @@ services:
       MOTIF_CHAIN_PUBLIC_RPC_URL: ${MOTIF_CHAIN_PUBLIC_RPC_URL:-}
       MOTIF_CHAIN_START_BLOCK: ${MOTIF_CHAIN_START_BLOCK:-0}
       MOTIF_CHAIN_NAME: ${MOTIF_CHAIN_NAME:-}
+      # 工作台（Studio）：站点内置的模型 key，只在服务端；不配就关闭 agent，手动编辑仍然可用。
+      MOTIF_AGENT_PROVIDER: ${MOTIF_AGENT_PROVIDER:-}
+      MOTIF_AGENT_API_KEY: ${MOTIF_AGENT_API_KEY:-}
+      MOTIF_AGENT_MODEL: ${MOTIF_AGENT_MODEL:-}
+      MOTIF_AGENT_BASE_URL: ${MOTIF_AGENT_BASE_URL:-}
+      MOTIF_AGENT_SESSION_TOKENS: ${MOTIF_AGENT_SESSION_TOKENS:-}
+      MOTIF_STUDIO_DATA: /data/studio
     volumes:
-      # 社区投稿的源码只存在这里（链上只有哈希），必须持久化并备份（deploy/backup.sh）。
+      # 社区投稿的源码只存在这里（链上只有哈希），必须持久化并备份（deploy/backup.sh）；工作台的会话也放在这里。
       - community-data:/data
     expose: ['3000']
 
