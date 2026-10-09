@@ -5,3 +5,4 @@ export { useFrameLoop, type FrameInfo, type FrameLoopOptions } from './frame-loo
 export { useCanvasSize, type CanvasSize, type CanvasSizeOptions } from './canvas-size.ts'
 export { createProgram, bindFullscreenQuad, releaseContext } from './webgl.ts'
 export { cssVars, type CSSVariables } from './css-vars.ts'
+export { useDrawnImage, useImageElement, type DrawnImageOptions } from './drawn-image.ts'

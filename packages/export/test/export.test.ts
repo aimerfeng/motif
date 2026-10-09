@@ -61,7 +61,7 @@ describe('bundleRuntime', () => {
   it('merges the runtime modules into one file without relative imports', async () => {
     const code = bundleRuntime(runtimeFiles)
     expect(code).not.toMatch(/from '\.\//)
-    for (const name of ['cn', 'cssVars', 'usePrefersReducedMotion', 'useIsActive', 'useFrameLoop', 'useCanvasSize', 'createProgram', 'bindFullscreenQuad', 'releaseContext']) {
+    for (const name of ['cn', 'cssVars', 'usePrefersReducedMotion', 'useIsActive', 'useFrameLoop', 'useCanvasSize', 'useDrawnImage', 'useImageElement', 'createProgram', 'bindFullscreenQuad', 'releaseContext']) {
       expect(code).toMatch(new RegExp(`export function ${name}\\b`))
     }
     expect(code.match(/from 'react'/g)).toHaveLength(1)

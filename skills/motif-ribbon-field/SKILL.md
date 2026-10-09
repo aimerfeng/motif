@@ -6,7 +6,7 @@ compatibility: React 18+ with Tailwind CSS v4. Needs clsx, tailwind-merge.
 metadata:
   source: "https://github.com/aimerfeng/motif/tree/main/packages/registry/items/ribbon-field"
   motif-item: "ribbon-field"
-  params-hash: "cfd05981"
+  params-hash: "fcf34963"
 ---
 
 # Ribbon Field (光带点阵)
@@ -49,8 +49,8 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `pointerAmount` | 1 | 1 | 0–2 | How far the ribbons drift with the pointer |
 | `smoothing` | 0.035 | 0.035 | 0.01–0.12 | Lower is softer |
 | `hue` | 0 | 0 | -180–180 deg | Hue |
-| `saturation` | 1 | 1 | 0–1.6 | Saturation |
-| `brightness` | 1.8 | 1.8 | 0.8–2.4 | Brightness |
+| `saturation` | 1.25 | 1.25 | 0–1.6 | Saturation |
+| `brightness` | 2.3 | 2.3 | 0.8–2.4 | Brightness |
 | `opacity` | 1 | 1 | 0.3–1 | Opacity |
 
 ## Rules

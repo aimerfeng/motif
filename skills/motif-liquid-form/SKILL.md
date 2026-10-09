@@ -6,7 +6,7 @@ compatibility: React 18+ with Tailwind CSS v4. Needs clsx, tailwind-merge.
 metadata:
   source: "https://github.com/aimerfeng/motif/tree/main/packages/registry/items/liquid-form"
   motif-item: "liquid-form"
-  params-hash: "90518470"
+  params-hash: "590adbb9"
 ---
 
 # Liquid Form (液态银)
@@ -47,10 +47,11 @@ Change them through props, or edit the `defaults` object in the component. Stay 
 | `morph` | 1 | 1 | 0–2 | How much the surface ripples |
 | `noiseScale` | 1 | 1 | 0.4–2.5 | Higher values make finer ripples |
 | `mouseAmount` | 0.15 | 0.15 | 0–0.4 | Pointer influence |
-| `metal` | 1 | 1 | 0.3–1.8 | Metalness |
+| `metal` | 1.2 | 1.2 | 0.3–1.8 | Metalness |
 | `camera` | 5.5 | 5.5 | 4–7 | Camera distance |
 | `tintHue` | 220 | 220 | 0–360 deg | Tint hue |
 | `tintAmount` | 0 | 0 | 0–1 | Tint amount |
+| `background` | #0b0b0e | #0b0b0e | color | Background |
 
 ## Rules
 

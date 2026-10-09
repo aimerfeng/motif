@@ -90,6 +90,20 @@ export function BorderBeam({ className, style, ...props }: BorderBeamProps) {
 - 用 `pointermove` 做交互时挂在 host 元素上，并做缓动。
 - 用 `delta` 驱动的模拟（粒子、流体）要能承受 `delta` 为 0 和较大的值。
 
+### 需要图片输入的着色器
+
+Paper 的液态金属、热力图、水面、凹槽玻璃、半调这类着色器要一张输入图。条目里不能放图片，所以图都现画，照 `pool-water`、`liquid-metal` 的写法：
+
+- `useDrawnImage(key, draw, { width, height, fonts, trim })` 在 Canvas 上画图，返回 data URL。
+  - draw 用到的参数都拼进 `key`，key 变了才重画。
+  - 用到的字体写进 `fonts`，加载完再画。
+  - 文字和标志加 `trim`，裁掉四周空白：着色器按整张图缩放，空白会让图形变小。
+- 着色器的参数每帧都在变时（例如让画面在玻璃后面移动），用 `useImageElement(url)` 把地址变成图片元素再传。传字符串的话，每次更新参数都会重新解码一遍图。
+- 先看上游组件怎么预处理图片：
+  - Heatmap 把图铺在白底上按亮度取形状，所以图形要画成黑色；
+  - LiquidMetal 按透明度取形状，所以要透明底白色。
+- 着色器会把图片边缘带进画面（水波、折射、平移）：适当放大 `scale`，边缘留在视口外。
+
 ## demo.tsx
 
 ```tsx

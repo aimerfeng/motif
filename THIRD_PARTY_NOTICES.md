@@ -13,7 +13,7 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: Apache-2.0
 - Commit: [`43cd68d`](https://github.com/paper-design/shaders/tree/43cd68db79fa0b1759f72ffc941b3238e2a3954c)
 - Paper Shaders (https://shaders.paper.design)
-- Used by: `dithering`, `dot-orbit`, `god-rays`, `grain-gradient`, `mesh-gradient`, `metaballs`, `neuro-noise`, `pulsing-border`, `simplex-noise`, `smoke-ring`, `spiral`, `swirl`, `warp`, `waves`
+- Used by: `dithering`, `dot-orbit`, `fluted-glass`, `gem-smoke`, `god-rays`, `grain-gradient`, `halftone-cmyk`, `heatmap`, `liquid-metal`, `mesh-gradient`, `metaballs`, `neuro-noise`, `pool-water`, `pulsing-border`, `simplex-noise`, `smoke-ring`, `spiral`, `swirl`, `warp`, `waves`
 
 ### magicuidesign/magicui
 

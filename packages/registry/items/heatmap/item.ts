@@ -1,0 +1,83 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'heatmap',
+  status: 'published',
+  title: { 'zh-CN': '热力图形', en: 'Heatmap' },
+  summary: {
+    'zh-CN': '像热成像一样的图形：一层层彩色等高线从中心流向边缘，外圈带一点辉光。内置心形、闪电、星芒，也可以写一段字；图形都在 Canvas 上现画，不需要图片素材。',
+    en: 'A shape seen through a thermal camera: bands of colour flow from the centre to the edges with a soft glow around them. Heart, bolt and spark shapes are built in, or type a word; everything is drawn on a canvas at runtime, so no image assets are needed.',
+  },
+  kind: 'effect',
+  category: 'shader',
+  tags: ['heatmap', 'thermal', 'glow', 'logo', 'gradient', 'webgl', 'shader', 'paper'],
+  runtime: ['react', 'webgl2', 'canvas2d'],
+  entry: { file: 'heatmap.tsx', export: 'HeatmapMark' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'heatmap.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'mark',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '图形', en: 'Mark' },
+      default: 'heart',
+      options: [
+        { value: 'heart', label: { 'zh-CN': '心形', en: 'Heart' } },
+        { value: 'bolt', label: { 'zh-CN': '闪电', en: 'Bolt' } },
+        { value: 'spark', label: { 'zh-CN': '星芒', en: 'Spark' } },
+        { value: 'text', label: { 'zh-CN': '文字', en: 'Text' } },
+      ],
+    },
+    { key: 'text', type: 'text', group: 'content', label: { 'zh-CN': '文字', en: 'Text' }, hint: { 'zh-CN': '图形选「文字」时使用', en: 'Used when the mark is Text' }, default: 'HOT', maxLength: 6 },
+    { key: 'colors', type: 'palette', group: 'color', label: { 'zh-CN': '色带', en: 'Colours' }, hint: { 'zh-CN': '从冷到热排列', en: 'From cold to hot' }, default: ['#11206a', '#1f3ba2', '#2f63e7', '#6bd7ff', '#ffe679', '#ff991e', '#ff4c00'], minItems: 2, maxItems: 10 },
+    { key: 'colorBack', type: 'color', group: 'color', label: { 'zh-CN': '背景', en: 'Background' }, default: '#000000' },
+    { key: 'contour', type: 'number', group: 'shape', label: { 'zh-CN': '等高线', en: 'Contour' }, hint: { 'zh-CN': '色带贴着轮廓走的程度', en: 'How closely the bands follow the outline' }, default: 0.5, min: 0, max: 1, step: 0.01 },
+    { key: 'innerGlow', type: 'number', group: 'shape', label: { 'zh-CN': '内发光', en: 'Inner glow' }, default: 0.5, min: 0, max: 1, step: 0.01 },
+    { key: 'outerGlow', type: 'number', group: 'shape', label: { 'zh-CN': '外发光', en: 'Outer glow' }, default: 0.5, min: 0, max: 1, step: 0.01 },
+    { key: 'noise', type: 'number', group: 'shape', label: { 'zh-CN': '颗粒', en: 'Noise' }, default: 0, min: 0, max: 1, step: 0.01, safe: [0, 0.8] },
+    { key: 'angle', type: 'number', group: 'motion', label: { 'zh-CN': '流向', en: 'Flow angle' }, default: 0, min: 0, max: 360, step: 1, unit: 'deg' },
+    { key: 'scale', type: 'number', group: 'shape', label: { 'zh-CN': '大小', en: 'Size' }, default: 0.68, min: 0.3, max: 1.2, step: 0.01, safe: [0.5, 0.95] },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0, max: 3, step: 0.05, unit: 'x', safe: [0.3, 2] },
+  ],
+  presets: [
+    { id: 'thermal', name: { 'zh-CN': '热成像', en: 'Thermal' }, values: {} },
+    { id: 'sepia', name: { 'zh-CN': '旧照', en: 'Sepia' }, values: { mark: 'spark', colors: ['#997f45', '#ffffff'], noise: 0.75, speed: 0.5 } },
+    { id: 'aurora', name: { 'zh-CN': '极光', en: 'Aurora' }, values: { mark: 'bolt', colors: ['#03121c', '#0b4f6c', '#01baef', '#20fc8f', '#fbfbff'], colorBack: '#020a10', innerGlow: 0.7, outerGlow: 0.35 } },
+    { id: 'neon-sign', name: { 'zh-CN': '霓虹招牌', en: 'Neon Sign' }, values: { mark: 'text', text: 'OPEN', colors: ['#1a0026', '#5b0a91', '#ff2fb9', '#ffd1f1'], colorBack: '#08000d', contour: 0.7, outerGlow: 0.8 } },
+  ],
+  dependencies: ['@motif/runtime', '@paper-design/shaders-react'],
+  fonts: ['Archivo Black'],
+  perf: { webgl: true, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['A hero symbol, a status or "trending" moment, an event badge. Works best as a single bold silhouette on a dark field.'],
+    rules: [
+      'Use a solid, heavy silhouette; thin lines and small counters disappear in the glow.',
+      'Order the palette from cold to hot; 4 to 7 colours read best.',
+      'The mark is decorative: put the real label in accessible text nearby.',
+    ],
+  },
+  capture: { posterTime: 1.8, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'paper-shaders',
+      repo: 'paper-design/shaders',
+      sha: '43cd68db79fa0b1759f72ffc941b3238e2a3954c',
+      paths: ['packages/shaders-react/src/shaders/heatmap.tsx', 'docs/src/shader-defs/heatmap-def.ts'],
+      spdx: 'Apache-2.0',
+      copyright: ['Paper Shaders (https://shaders.paper.design)'],
+    },
+    modifications: [
+      'The input image is a built-in vector shape or a text mark drawn on a canvas at runtime (trimmed to the shape), so the item needs no image assets.',
+      'Parameter ranges adapted from the Paper docs; Thermal follows the upstream default and Sepia the upstream preset, Aurora and Neon Sign are Motif’s.',
+      'Renders a static frame when the user prefers reduced motion.',
+    ],
+    assets: [],
+  },
+})

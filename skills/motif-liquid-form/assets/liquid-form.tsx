@@ -12,10 +12,11 @@ export const defaults = {
   morph: 1,
   noiseScale: 1,
   mouseAmount: 0.15,
-  metal: 1,
+  metal: 1.2,
   camera: 5.5,
   tintHue: 220,
   tintAmount: 0,
+  background: '#0b0b0e',
 }
 /* @motif:end */
 
@@ -79,7 +80,7 @@ export function LiquidForm({ className, style, children, ...props }: LiquidFormP
     let disposed = false
 
     const setup = () => {
-      const gl = canvas.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'high-performance' })
+      const gl = canvas.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'high-performance' })
       if (!gl) return
       const program = createProgram(gl, VELOX_VERTEX_SHADER, VELOX_FRAGMENT_SHADER)
       gl.useProgram(program)
@@ -134,7 +135,12 @@ export function LiquidForm({ className, style, children, ...props }: LiquidFormP
   const tint = options.tintAmount > 0 ? `sepia(${options.tintAmount}) saturate(${1 + options.tintAmount * 5}) hue-rotate(${options.tintHue - 35}deg)` : undefined
 
   return (
-    <div ref={hostRef} className={cn('relative isolate overflow-hidden bg-black', className)} style={style}>
+    <div
+      ref={hostRef}
+      className={cn('relative isolate overflow-hidden', className)}
+      // 背景在液态银后面略微提亮，形体和背景分得开。
+      style={{ background: `radial-gradient(55% 55% at 50% 48%, color-mix(in oklab, ${options.background}, white 7%), ${options.background})`, ...style }}
+    >
       <canvas ref={canvasRef} className="absolute inset-0 -z-10 block h-full w-full" style={{ filter: tint }} />
       {children}
     </div>

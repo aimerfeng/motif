@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'pool-water',
+  status: 'published',
+  title: { 'zh-CN': '泳池水面', en: 'Pool Water' },
+  summary: {
+    'zh-CN': '透过水面看池底：焦散光斑在瓷砖上游走，水波让底下的图案轻轻晃动。池底是泳池瓷砖或马赛克，在 Canvas 上现画，主色随你调。适合夏日、旅行、度假类页面的首屏背景。',
+    en: 'Looking down through water: caustics wander over the floor while small waves shimmer the pattern below. The floor is pool tiles or mosaic, drawn on a canvas at runtime in a colour you pick. Made for summer, travel and resort hero backgrounds.',
+  },
+  kind: 'effect',
+  category: 'background',
+  tags: ['water', 'caustics', 'pool', 'summer', 'background', 'webgl', 'shader', 'paper'],
+  runtime: ['react', 'webgl2', 'canvas2d'],
+  entry: { file: 'pool-water.tsx', export: 'PoolWater' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'pool-water.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'floor',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '池底', en: 'Floor' },
+      default: 'tiles',
+      options: [
+        { value: 'tiles', label: { 'zh-CN': '泳池瓷砖', en: 'Pool tiles' } },
+        { value: 'mosaic', label: { 'zh-CN': '马赛克', en: 'Mosaic' } },
+      ],
+    },
+    { key: 'tile', type: 'color', group: 'color', label: { 'zh-CN': '池底主色', en: 'Floor colour' }, default: '#3fa9c4' },
+    { key: 'colorHighlight', type: 'color', group: 'color', label: { 'zh-CN': '光斑颜色', en: 'Highlight' }, default: '#ffffff' },
+    { key: 'caustic', type: 'number', group: 'shape', label: { 'zh-CN': '焦散', en: 'Caustics' }, hint: { 'zh-CN': '池底光斑的强弱', en: 'Strength of the light pattern on the floor' }, default: 0.7, min: 0, max: 1, step: 0.01, safe: [0.3, 1] },
+    { key: 'waves', type: 'number', group: 'shape', label: { 'zh-CN': '波纹', en: 'Waves' }, hint: { 'zh-CN': '池底被水波扭曲的程度', en: 'How much the waves bend the floor' }, default: 0.04, min: 0, max: 0.2, step: 0.005, safe: [0, 0.12] },
+    { key: 'highlights', type: 'number', group: 'shape', label: { 'zh-CN': '水面反光', en: 'Surface glints' }, default: 0.3, min: 0, max: 0.8, step: 0.01, safe: [0.1, 0.6] },
+    { key: 'layering', type: 'number', group: 'shape', label: { 'zh-CN': '层次', en: 'Layering' }, default: 0, min: 0, max: 0.4, step: 0.01, safe: [0, 0.2] },
+    { key: 'edges', type: 'number', group: 'shape', label: { 'zh-CN': '边缘', en: 'Edges' }, default: 0, min: 0, max: 0.4, step: 0.01, safe: [0, 0.2] },
+    { key: 'size', type: 'number', group: 'shape', label: { 'zh-CN': '波纹尺度', en: 'Ripple scale' }, default: 3, min: 1, max: 5, step: 0.01, safe: [1.8, 4] },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0, max: 3, step: 0.05, unit: 'x', safe: [0.3, 1.8] },
+  ],
+  presets: [
+    { id: 'lido', name: { 'zh-CN': '露天泳池', en: 'Lido' }, values: {} },
+    { id: 'lagoon', name: { 'zh-CN': '泻湖', en: 'Lagoon' }, values: { floor: 'mosaic', tile: '#1fb5a8', caustic: 0.8, waves: 0.06, size: 2.4 } },
+    { id: 'mint', name: { 'zh-CN': '薄荷', en: 'Mint' }, values: { tile: '#6cc7ad', caustic: 0.8, highlights: 0.35, size: 3.4 } },
+    { id: 'night-swim', name: { 'zh-CN': '夜泳', en: 'Night Swim' }, values: { tile: '#2348a8', colorHighlight: '#bfe3ff', caustic: 0.9, highlights: 0.15, speed: 0.6 } },
+  ],
+  dependencies: ['@motif/runtime', '@paper-design/shaders-react'],
+  fonts: [],
+  perf: { webgl: true, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['A hero or section background for summer, travel, wellness and resort pages. Put text on a solid card or a dark scrim; the moving caustics make bare text hard to read.'],
+    rules: [
+      'The floor is decorative and aria-hidden by nature (a canvas); nothing important lives in it.',
+      'Keep the waves low (under about 0.12): stronger waves melt the drawn floor into blobs.',
+      'To use a real photo instead, pass it as the image prop of the underlying Paper Water component.',
+    ],
+  },
+  capture: { posterTime: 3, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'paper-shaders',
+      repo: 'paper-design/shaders',
+      sha: '43cd68db79fa0b1759f72ffc941b3238e2a3954c',
+      paths: ['packages/shaders-react/src/shaders/water.tsx', 'docs/src/shader-defs/water-def.ts'],
+      spdx: 'Apache-2.0',
+      copyright: ['Paper Shaders (https://shaders.paper.design)'],
+    },
+    modifications: [
+      'The floor image (pool tiles or mosaic) is drawn on a canvas at runtime in the chosen colour, so the item needs no image assets.',
+      'Parameter ranges adapted from the Paper docs; the presets are Motif’s, tuned for the drawn floors.',
+      'Renders a static frame when the user prefers reduced motion.',
+    ],
+    assets: [],
+  },
+})
