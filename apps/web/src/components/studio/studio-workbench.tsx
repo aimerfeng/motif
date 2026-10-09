@@ -194,6 +194,7 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
             onSend={(prompt) => void send(prompt)}
             onAbort={() => void studio.abort()}
             suggestions={suggestions}
+            revert={{ available: view.snapshots, disabled: running || studio.busy, onRevert: (snapshot, label) => void studio.revert(snapshot, label) }}
           />
         </div>
       </aside>

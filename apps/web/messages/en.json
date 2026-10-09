@@ -811,7 +811,11 @@
       "unavailable": "No agent is configured on this site: you can edit the code by hand under Code below.",
       "done": "Done",
       "aborted": "Stopped",
-      "error": "Something went wrong: {message}"
+      "error": "Something went wrong: {message}",
+      "revert": "Go back to before this",
+      "reverted": "Restored the version from before \"{label}\"",
+      "undoRevert": "Undo",
+      "undoLabel": "before the restore"
     },
     "tools": {
       "search_market": "Search the market for \"{query}\"",

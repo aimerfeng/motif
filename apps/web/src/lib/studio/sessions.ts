@@ -5,7 +5,7 @@ import { HttpError } from '@/lib/community/http'
 import { marketSource } from '@/lib/community/market-source'
 import { evaluateItem, promptSkills, studioHost } from './host'
 import { sessionTokenBudget } from './runner'
-import { newSessionId, saveSession, type StudioSession } from './store'
+import { newSessionId, pruneSessions, saveSession, type StudioSession } from './store'
 
 /** 正在运行的会话：一个会话同时只跑一轮，中止也从这里找。挂在 globalThis 上，所有路由共用。 */
 const running = ((globalThis as { __motifStudioRuns?: Map<string, AbortController> }).__motifStudioRuns ??= new Map())
@@ -22,6 +22,7 @@ export function abortRun(id: string): boolean {
 
 /** 新会话：base 是要改的市场条目（目录条目或审核通过的社区作品），values 是用户在详情页调好的参数。 */
 export async function createSession(base: string | null, values?: unknown): Promise<StudioSession> {
+  void pruneSessions().catch((error: unknown) => console.error('[studio] prune failed', error))
   const id = newSessionId()
   let item: ItemSource
   if (base) {
@@ -58,13 +59,45 @@ export function sanitizeValues(item: ItemSource, values: unknown): ParamValues {
   return result
 }
 
-/** 用户在代码编辑器里手动改了条目：重新检查、编译。 */
+const MAX_SNAPSHOTS = 15
+
+/** 把当前版本存成快照（只留最近的几份），返回新的会话和快照编号。 */
+function withSnapshot(session: StudioSession): { session: StudioSession; snapshot: number } {
+  const snapshots = session.snapshots ?? []
+  const id = (snapshots.at(-1)?.id ?? 0) + 1
+  const next = [...snapshots, { id, at: Date.now(), item: session.item, values: session.values }].slice(-MAX_SNAPSHOTS)
+  return { session: { ...session, snapshots: next }, snapshot: id }
+}
+
+/** 用户在代码编辑器里手动改了条目：先留快照，再重新检查、编译。 */
 export async function updateItem(session: StudioSession, item: ItemSource): Promise<StudioSession> {
   if (isRunning(session.id)) throw new HttpError(409, 'the agent is still working on this item')
   const evaluation = await evaluateItem(item, (session.evaluation?.version ?? 0) + 1)
-  const updated: StudioSession = { ...session, item, values: sanitizeValues(item, carryValues(session.item, item, session.values)), evaluation }
+  const updated: StudioSession = { ...withSnapshot(session).session, item, values: sanitizeValues(item, carryValues(session.item, item, session.values)), evaluation }
   await saveSession(updated)
   return updated
+}
+
+/**
+ * 回到某个快照。回退之前的版本也存成快照，记在对话里，所以回退本身也能撤销。
+ * agent 的对话历史里还是回退前的样子，下一轮开头会提醒它重新读文件。
+ */
+export async function revertTo(session: StudioSession, snapshotId: number, label: string): Promise<StudioSession> {
+  if (isRunning(session.id)) throw new HttpError(409, 'the agent is still working on this item')
+  const target = session.snapshots?.find((snapshot) => snapshot.id === snapshotId)
+  if (!target) throw new HttpError(404, 'that version is no longer kept')
+  const { session: saved, snapshot } = withSnapshot(session)
+  const evaluation = await evaluateItem(target.item, (session.evaluation?.version ?? 0) + 1)
+  const reverted: StudioSession = {
+    ...saved,
+    item: target.item,
+    values: target.values,
+    evaluation,
+    transcript: [...session.transcript, { role: 'notice', kind: 'reverted', text: label, at: Date.now(), snapshot }],
+    pendingNote: 'Note: the user restored an earlier version of the item, so edits you made after that point are gone. Read the files again before changing them.',
+  }
+  await saveSession(reverted)
+  return reverted
 }
 
 /** 「应用为默认值」：把预览里调好的参数写回参数定义和组件的默认值区域。 */
@@ -86,11 +119,15 @@ export function startRun(session: StudioSession, prompt: string, runner: AgentRu
   const controller = new AbortController()
   running.set(session.id, controller)
   let version = session.evaluation?.version ?? 0
+  // 这一轮开始前的版本存成快照，挂在这条用户消息上，用户可以回到这里。
+  const { session: snapshotted, snapshot } = withSnapshot(session)
   const state: StudioSession = {
-    ...session,
-    transcript: [...session.transcript, { role: 'user', text: prompt, at: Date.now() }],
+    ...snapshotted,
+    transcript: [...session.transcript, { role: 'user', text: prompt, at: Date.now(), snapshot }],
     usage: { ...session.usage },
+    pendingNote: null,
   }
+  const agentPrompt = session.pendingNote ? `${session.pendingNote}\n\n${prompt}` : prompt
   let saving = Promise.resolve()
   const persist = () => {
     saving = saving.then(() => saveSession(state)).catch((error: unknown) => console.error('[studio] save failed', error))
@@ -124,7 +161,7 @@ export function startRun(session: StudioSession, prompt: string, runner: AgentRu
           runner,
           host: studioHost(session.id, () => ++version),
           system,
-          prompt,
+          prompt: agentPrompt,
           item: state.item,
           values: state.values,
           evaluation: state.evaluation,

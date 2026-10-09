@@ -41,6 +41,27 @@ test('从市场条目进入工作台：agent 改坏、自己修好、调参，�
   expect(errors).toEqual([])
 })
 
+test('回到某一轮之前的版本，回退本身也能撤销', async ({ page, request }) => {
+  const created = await request.post('/api/studio/sessions', { data: { base: 'border-beam' } })
+  const { id } = (await created.json()) as { id: string }
+  await page.goto(`/studio/${id}`)
+  await previewMounted(page)
+  const headColor = page.getByTestId('tune-panel').getByLabel('光头颜色').last()
+  const original = await headColor.inputValue()
+
+  await page.getByTestId('studio-prompt').fill('换个颜色')
+  await page.getByRole('button', { name: '发送' }).click()
+  await expect(page.getByTestId('studio-transcript').getByText('完成', { exact: true })).toBeVisible()
+  await expect(headColor).toHaveValue('#22d3ee')
+
+  await page.getByRole('button', { name: '回到这一步之前' }).click()
+  await expect(page.getByTestId('studio-reverted')).toBeVisible()
+  await expect(headColor).toHaveValue(original)
+
+  await page.getByRole('button', { name: '撤销这次回退' }).click()
+  await expect(headColor).toHaveValue('#22d3ee')
+})
+
 test('手动保存出错的代码时列出问题，修好后恢复', async ({ page, request }) => {
   const created = await request.post('/api/studio/sessions', { data: {} })
   const { id } = (await created.json()) as { id: string }

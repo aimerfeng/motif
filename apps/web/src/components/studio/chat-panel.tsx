@@ -56,11 +56,44 @@ function ToolRow({ entry, running }: { entry: ToolEntry; running: boolean }) {
   )
 }
 
-function Entry({ entry, running }: { entry: TranscriptEntry; running: boolean }) {
+interface Revert {
+  /** 还能回去的快照编号。 */
+  available: number[]
+  /** 正在运行时不能回退。 */
+  disabled: boolean
+  onRevert: (snapshot: number, label: string) => void
+}
+
+function RevertButton({ snapshot, label, revert, children }: { snapshot: number | undefined; label: string; revert: Revert; children: string }) {
+  if (snapshot === undefined || !revert.available.includes(snapshot)) return null
+  return (
+    <button
+      type="button"
+      disabled={revert.disabled}
+      onClick={() => revert.onRevert(snapshot, label)}
+      className="text-[11.5px] text-ink-faint underline decoration-line-strong underline-offset-4 transition-colors duration-150 hover:text-ink disabled:opacity-40"
+    >
+      {children}
+    </button>
+  )
+}
+
+const short = (text: string) => (text.length > 40 ? `${text.slice(0, 40)}…` : text)
+
+function Entry({ entry, running, revert }: { entry: TranscriptEntry; running: boolean; revert: Revert }) {
   const t = useTranslations('studio.chat')
   switch (entry.role) {
     case 'user':
-      return <div className="ml-8 self-end rounded-2xl rounded-br-md bg-ink px-3.5 py-2.5 text-[14px] leading-relaxed whitespace-pre-wrap text-canvas">{entry.text}</div>
+      return (
+        <div className="group ml-8 flex flex-col items-end gap-1 self-end">
+          <div className="rounded-2xl rounded-br-md bg-ink px-3.5 py-2.5 text-[14px] leading-relaxed whitespace-pre-wrap text-canvas">{entry.text}</div>
+          <span className="opacity-0 transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
+            <RevertButton snapshot={entry.snapshot} label={short(entry.text)} revert={revert}>
+              {t('revert')}
+            </RevertButton>
+          </span>
+        </div>
+      )
     case 'assistant':
       return (
         <div className="text-[14px] leading-relaxed text-ink">
@@ -78,6 +111,16 @@ function Entry({ entry, running }: { entry: TranscriptEntry; running: boolean })
           </div>
         )
       }
+      if (entry.kind === 'reverted') {
+        return (
+          <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[12.5px] text-ink-faint" data-testid="studio-reverted">
+            <span>{t('reverted', { label: entry.text })}</span>
+            <RevertButton snapshot={entry.snapshot} label={t('undoLabel')} revert={revert}>
+              {t('undoRevert')}
+            </RevertButton>
+          </p>
+        )
+      }
       return <p className={`text-[12.5px] ${entry.kind === 'error' ? 'text-danger' : 'text-ink-faint'}`}>{entry.kind === 'aborted' ? t('aborted') : t('error', { message: entry.text })}</p>
   }
 }
@@ -89,6 +132,7 @@ export function ChatPanel({
   onSend,
   onAbort,
   suggestions,
+  revert,
 }: {
   transcript: TranscriptEntry[]
   running: boolean
@@ -96,6 +140,7 @@ export function ChatPanel({
   onSend: (prompt: string) => void
   onAbort: () => void
   suggestions: string[]
+  revert: Revert
 }) {
   const t = useTranslations('studio.chat')
   const [draft, setDraft] = useState('')
@@ -153,7 +198,7 @@ export function ChatPanel({
           </div>
         )}
         {transcript.map((entry, index) => (
-          <Entry key={index} entry={entry} running={running && index === transcript.length - 1} />
+          <Entry key={index} entry={entry} running={running && index === transcript.length - 1} revert={revert} />
         ))}
         {running && (
           <p className="flex items-center gap-2 text-[12.5px] text-ink-faint" role="status">

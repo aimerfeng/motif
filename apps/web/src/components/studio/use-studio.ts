@@ -114,6 +114,7 @@ export function useStudio(initial: StudioView) {
 
   const save = (item: ItemSource) => mutate('item', { method: 'PUT', body: JSON.stringify({ item }) })
   const applyDefaults = (values: ParamValues) => mutate('defaults', { method: 'POST', body: JSON.stringify({ values }) })
+  const revert = (snapshot: number, label: string) => mutate('revert', { method: 'POST', body: JSON.stringify({ snapshot, label }) })
 
   // 调参：本地立即生效，停下来再存到服务端。
   const saveTimer = useRef<number | undefined>(undefined)
@@ -139,5 +140,5 @@ export function useStudio(initial: StudioView) {
     return () => window.clearInterval(timer)
   }, [base])
 
-  return { view, running, error, busy, run, abort, save, applyDefaults, setValues, report, dismissError: () => setError(null) }
+  return { view, running, error, busy, run, abort, save, applyDefaults, revert, setValues, report, dismissError: () => setError(null) }
 }

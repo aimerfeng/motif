@@ -19,10 +19,12 @@ export type AgentEvent =
 
 /** 保存下来的对话：用户的话、agent 的话，以及 agent 调用过的工具（只留摘要）。 */
 export type TranscriptEntry =
-  | { role: 'user'; text: string; at: number }
+  /** snapshot：这一轮开始前的版本，可以回到那里。 */
+  | { role: 'user'; text: string; at: number; snapshot?: number }
   | { role: 'assistant'; text: string; at: number }
   | { role: 'tool'; id: string; name: string; input: unknown; output: string | null; isError: boolean; at: number }
-  | { role: 'notice'; kind: 'done' | 'error' | 'aborted'; text: string; at: number }
+  /** reverted：用户回到了某个快照；snapshot 是回退前的版本，回退本身也能撤销。 */
+  | { role: 'notice'; kind: 'done' | 'error' | 'aborted' | 'reverted'; text: string; at: number; snapshot?: number }
 
 /** 把一串事件并进对话记录（运行中的增量文本合并到最后一条 assistant）。 */
 export function appendEvent(transcript: TranscriptEntry[], event: AgentEvent, now = Date.now()): void {
