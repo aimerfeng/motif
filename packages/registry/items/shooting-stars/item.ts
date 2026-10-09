@@ -1,0 +1,61 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'shooting-stars',
+  status: 'published',
+  title: { 'zh-CN': '流星夜空', en: 'Shooting Stars' },
+  summary: {
+    'zh-CN': '深青色的夜空里，一道道带光头的流星错落划过，背后的星点缓缓闪烁，地平线透着一抹暖光。适合做首屏背景、404 页和活动页。',
+    en: 'Streaks with glowing heads cross a deep teal night while the stars behind them twinkle, with a warm glow along the horizon. A hero backdrop, 404 page or event splash.',
+  },
+  kind: 'effect',
+  category: 'background',
+  tags: ['stars', 'night', 'sky', 'meteor', 'canvas', 'ambient'],
+  runtime: ['react', 'canvas2d'],
+  entry: { file: 'shooting-stars.tsx', export: 'ShootingStars' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'shooting-stars.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'skyTop', type: 'color', label: { 'zh-CN': '天顶颜色', en: 'Sky top' }, default: '#06161d', group: 'sky' },
+    { key: 'skyBottom', type: 'color', label: { 'zh-CN': '近地平线颜色', en: 'Sky bottom' }, default: '#0d3a40', group: 'sky' },
+    { key: 'glowColor', type: 'color', label: { 'zh-CN': '地平线光晕', en: 'Horizon glow' }, default: '#f59e0b', group: 'sky' },
+    { key: 'stars', type: 'number', label: { 'zh-CN': '星点密度', en: 'Star density' }, hint: { 'zh-CN': '每 1280×720 画面里的星点数', en: 'Stars per 1280x720 of area' }, default: 90, min: 0, max: 300, step: 5, safe: [40, 200], group: 'sky' },
+    { key: 'colors', type: 'palette', label: { 'zh-CN': '流星颜色', en: 'Streak colors' }, hint: { 'zh-CN': '每条流星取其中一种', en: 'Each streak picks one' }, default: ['#ffffff', '#9ff0e0', '#ffd9a0'], minItems: 1, maxItems: 4, group: 'streaks' },
+    { key: 'count', type: 'number', label: { 'zh-CN': '流星数量', en: 'Streak count' }, default: 16, min: 4, max: 40, step: 1, safe: [8, 28], group: 'streaks' },
+    { key: 'length', type: 'number', label: { 'zh-CN': '拖尾长度', en: 'Tail length' }, default: 170, min: 80, max: 320, step: 5, unit: 'px', safe: [110, 260], group: 'streaks' },
+    { key: 'angle', type: 'number', label: { 'zh-CN': '划过角度', en: 'Angle' }, hint: { 'zh-CN': '相对水平线向下倾斜', en: 'Downward tilt from horizontal' }, default: 24, min: 8, max: 55, step: 1, unit: 'deg', safe: [15, 42], group: 'streaks' },
+    { key: 'speed', type: 'number', label: { 'zh-CN': '时间流速', en: 'Speed' }, default: 1, min: 0.3, max: 2.5, step: 0.1, unit: 'x', safe: [0.6, 1.8], group: 'motion' },
+  ],
+  presets: [
+    { id: 'tealnight', name: { 'zh-CN': '青夜', en: 'Teal Night' }, values: { skyTop: '#06161d', skyBottom: '#0d3a40', glowColor: '#f59e0b', colors: ['#ffffff', '#9ff0e0', '#ffd9a0'] } },
+    { id: 'desert-dusk', name: { 'zh-CN': '荒漠黄昏', en: 'Desert Dusk' }, values: { skyTop: '#1d0f1f', skyBottom: '#7a2e3a', glowColor: '#ff9b54', colors: ['#fff1dc', '#ffc27a', '#ffffff'], count: 12, angle: 18, length: 220, stars: 50 } },
+    { id: 'polar', name: { 'zh-CN': '极夜', en: 'Polar Night' }, values: { skyTop: '#030712', skyBottom: '#14365e', glowColor: '#38bdf8', colors: ['#ffffff', '#bfe3ff', '#7dd3fc'], count: 20, angle: 32, length: 150, stars: 160 } },
+    { id: 'ink', name: { 'zh-CN': '墨色', en: 'Ink' }, values: { skyTop: '#0a0a0a', skyBottom: '#232323', glowColor: '#a3a3a3', colors: ['#ffffff', '#d4d4d4'], count: 10, angle: 28, length: 260, stars: 70, speed: 0.7 } },
+    { id: 'rose-meteor', name: { 'zh-CN': '蔷薇流星雨', en: 'Rose Shower' }, values: { skyTop: '#1b0b24', skyBottom: '#4b1d52', glowColor: '#f472b6', colors: ['#ffe4f1', '#fda4cf', '#ffffff'], count: 30, angle: 38, length: 130, stars: 120, speed: 1.4 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 3.2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'animata',
+      repo: 'codse/animata',
+      sha: '36674e4e9cfdc0f237693d8b736a2bf41065ca1d',
+      paths: ['animata/background/shooting-stars.tsx', 'animata/background/shooting-stars.css'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Animata'],
+    },
+    modifications: [
+      'Rewritten from per-streak SVG elements animated by CSS and re-randomised with Math.random on animationend to a single canvas drawn as a pure function of the frame-loop time, with a seeded integer hash for each streak and round. The same idea is kept: tapered gradient tail, glowing head, twinkling dots.',
+      'Palette, sky gradient, horizon glow, count, tail length, angle and speed are parameters; the dot count scales with area.',
+      'Motif improvement: with prefers-reduced-motion one still frame is drawn; pausing off-screen and in background tabs comes from the frame loop.',
+    ],
+    assets: [],
+  },
+})

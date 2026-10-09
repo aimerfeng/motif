@@ -1,0 +1,60 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'blurry-blob',
+  status: 'published',
+  title: { 'zh-CN': '晕染光斑', en: 'Blurry Blobs' },
+  summary: {
+    'zh-CN': '近白的薄荷底上，几团海玻璃青、天蓝和浅绿的光斑缓缓漂移、呼吸，叠在一起自然晕染。纯 CSS，几乎不耗性能。适合做柔和的首屏背景、卡片底和邮件头图。',
+    en: 'Sea-glass teal, sky blue and mint blobs drift and breathe over a near-white mint ground, blending where they overlap. Pure CSS and nearly free to run. A soft backdrop for hero sections, cards and email headers.',
+  },
+  kind: 'effect',
+  category: 'background',
+  tags: ['blob', 'gradient', 'soft', 'pastel', 'css', 'light'],
+  runtime: ['react', 'css'],
+  entry: { file: 'blurry-blob.tsx', export: 'BlurryBlob' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'blurry-blob.tsx', role: 'component' },
+    { path: 'blurry-blob.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'background', type: 'color', label: { 'zh-CN': '底色', en: 'Background' }, hint: { 'zh-CN': '浅底色用正片叠底，深底色自动改用滤色', en: 'Light grounds multiply, dark grounds switch to screen blending' }, default: '#f1fbf8', group: 'color' },
+    { key: 'colors', type: 'palette', label: { 'zh-CN': '光斑颜色', en: 'Blob colors' }, hint: { 'zh-CN': '每种颜色一团光斑，最多五团', en: 'One blob per color, up to five' }, default: ['#5eead4', '#7dd3fc', '#a7f3d0', '#bae6fd'], minItems: 2, maxItems: 5, group: 'color' },
+    { key: 'opacity', type: 'number', label: { 'zh-CN': '浓度', en: 'Intensity' }, default: 0.75, min: 0.3, max: 1, step: 0.05, safe: [0.5, 0.95], group: 'color' },
+    { key: 'blur', type: 'number', label: { 'zh-CN': '模糊', en: 'Blur' }, default: 80, min: 30, max: 140, step: 1, unit: 'px', safe: [50, 110], group: 'look' },
+    { key: 'size', type: 'number', label: { 'zh-CN': '光斑大小', en: 'Blob size' }, default: 1, min: 0.6, max: 1.5, step: 0.05, unit: 'x', safe: [0.8, 1.3], group: 'look' },
+    { key: 'drift', type: 'number', label: { 'zh-CN': '漂移幅度', en: 'Drift' }, default: 1, min: 0, max: 2, step: 0.1, unit: 'x', safe: [0.5, 1.6], group: 'motion' },
+    { key: 'speed', type: 'number', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0.3, max: 2.5, step: 0.1, unit: 'x', safe: [0.5, 1.8], group: 'motion' },
+  ],
+  presets: [
+    { id: 'sea-glass', name: { 'zh-CN': '海玻璃', en: 'Sea Glass' }, values: { background: '#f1fbf8', colors: ['#5eead4', '#7dd3fc', '#a7f3d0', '#bae6fd'], opacity: 0.75, blur: 80 } },
+    { id: 'peach-cream', name: { 'zh-CN': '蜜桃奶油', en: 'Peach Cream' }, values: { background: '#fff6ec', colors: ['#ff8a65', '#ffc371', '#ff6f91', '#ffe0b5'], opacity: 0.8 } },
+    { id: 'lilac-haze', name: { 'zh-CN': '丁香薄雾', en: 'Lilac Haze' }, values: { background: '#f8f4ff', colors: ['#c4b5fd', '#f9a8d4', '#a5b4fc', '#fbcfe8', '#ddd6fe'], opacity: 0.85, size: 1.15 } },
+    { id: 'matcha', name: { 'zh-CN': '抹茶', en: 'Matcha' }, values: { background: '#f6f8ee', colors: ['#a3c76d', '#d9e68a', '#79b98a', '#efe9a8'], opacity: 0.8, drift: 0.7, speed: 0.7 } },
+    { id: 'deep-bloom', name: { 'zh-CN': '暗夜花开', en: 'Deep Bloom' }, values: { background: '#12091a', colors: ['#7c3aed', '#db2777', '#f97316', '#2563eb'], opacity: 0.55, blur: 90, size: 1.1 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 2, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'animata',
+      repo: 'codse/animata',
+      sha: '36674e4e9cfdc0f237693d8b736a2bf41065ca1d',
+      paths: ['animata/background/blurry-blob.tsx', 'styles/globals.css'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Animata'],
+    },
+    modifications: [
+      'The upstream component renders two blurred, multiply-blended squares that only pulse in scale (the pop-blob keyframes in globals.css). This version keeps the blurred multiply blob idea but lays out up to five blobs from a palette, sizes them in container query units, and adds slow drift and rotation in a seamless keyframe cycle.',
+      'Background color, intensity, blur, size, drift and speed are parameters; the blend mode switches between multiply and screen from the background luminance.',
+      'Motif improvement: with prefers-reduced-motion the blobs stay still.',
+    ],
+    assets: [],
+  },
+})

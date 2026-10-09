@@ -1,0 +1,57 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Animata
+ * Source: https://github.com/codse/animata/blob/36674e4/animata/background/blurry-blob.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+.mbb-root {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  container-type: inline-size;
+  background-color: var(--mbb-bg);
+}
+
+.mbb-blob {
+  position: absolute;
+  left: var(--mbb-x);
+  top: var(--mbb-y);
+  width: calc(var(--mbb-size) * 1cqw);
+  aspect-ratio: 1;
+  margin: calc(var(--mbb-size) * -0.5cqw) 0 0 calc(var(--mbb-size) * -0.5cqw);
+  border-radius: 58% 42% 55% 45% / 48% 56% 44% 52%;
+  background-color: var(--mbb-color);
+  opacity: var(--mbb-opacity);
+  mix-blend-mode: var(--mbb-blend);
+  filter: blur(var(--mbb-blur));
+  pointer-events: none;
+  will-change: transform;
+  animation: mbb-drift calc(var(--mbb-duration) / var(--mbb-speed)) ease-in-out infinite;
+}
+
+/* 先扩大并漂向一侧，再收缩并漂向另一侧，最后回到原位，首尾衔接，循环不跳。 */
+@keyframes mbb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(calc(var(--mbb-dx) * var(--mbb-drift)), calc(var(--mbb-dy) * var(--mbb-drift)), 0) scale(1.18) rotate(24deg);
+  }
+  66% {
+    transform: translate3d(calc(var(--mbb-dx) * var(--mbb-drift) * -0.7), calc(var(--mbb-dy) * var(--mbb-drift) * 0.6), 0) scale(0.86) rotate(-18deg);
+  }
+}
+
+.mbb-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mbb-blob {
+    animation: none;
+  }
+}

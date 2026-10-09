@@ -333,8 +333,15 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`b6312bc`](https://github.com/educlopez/smoothui/tree/b6312bce2b6f2ed95d8a6e98a592857884f5ea9e)
 - Copyright (c) 2024 Eduardo Calvo
-- Used by: `input-floating-label`, `loader-ai-thinking`, `tabs-animated`, `toggle-spring`, `tooltip-spring`
+- Used by: `input-floating-label`, `loader-ai-thinking`, `scrubber`, `slide-to-confirm`, `switchboard-card`, `tabs-animated`, `time-machine-stack`, `toggle-spring`, `tooltip-spring`, `unlock-face-id`, `wallet-card-stack`
 - Upstream-declared origins: The shimmering status line follows prompt-kit text-shimmer (Copyright (c) 2025 Julien Thibeaut, MIT).
+
+### codse/animata
+
+- License: MIT
+- Commit: [`36674e4`](https://github.com/codse/animata/tree/36674e4e9cfdc0f237693d8b736a2bf41065ca1d)
+- Copyright (c) Animata
+- Used by: `blurry-blob`, `card-spread`, `circular-text`, `shooting-stars`, `speed-dial`, `swipe-button`
 
 ### iurvish/uselayouts
 

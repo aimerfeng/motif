@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'slide-to-confirm',
+  status: 'published',
+  title: { 'zh-CN': '滑动确认', en: 'Slide to Confirm' },
+  summary: {
+    'zh-CN': '胶囊轨道里一枚圆形把手，文字上有高光缓缓扫过；拖过八成才算数，色块跟着把手铺开，确认后把手变成对勾。适合关机、转账、删除这类需要多一道确认的操作。',
+    en: 'A round handle in a pill track under a slowly sweeping text shimmer. Drag past eighty percent to confirm while a color fill follows, then the handle turns into a check. Made for shutdown, transfers and other actions that deserve a second thought.',
+  },
+  kind: 'component',
+  category: 'button',
+  tags: ['slide', 'confirm', 'drag', 'swipe', 'power', 'safety', 'a11y'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'slide-to-confirm.tsx', export: 'SlideToConfirm' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'slide-to-confirm.tsx', role: 'component' },
+    { path: 'slide-to-confirm.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, default: '#ff5a47' },
+    {
+      key: 'icon',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '把手图标', en: 'Handle icon' },
+      default: 'arrow',
+      options: [
+        { value: 'arrow', label: { 'zh-CN': '双箭头', en: 'Chevrons' } },
+        { value: 'power', label: { 'zh-CN': '电源', en: 'Power' } },
+        { value: 'lock', label: { 'zh-CN': '解锁', en: 'Unlock' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'layout', label: { 'zh-CN': '高度', en: 'Height' }, default: 60, min: 48, max: 76, step: 1, unit: 'px', safe: [52, 68] },
+    { key: 'width', type: 'number', group: 'layout', label: { 'zh-CN': '宽度', en: 'Width' }, default: 320, min: 240, max: 332, step: 2, unit: 'px', safe: [260, 332] },
+    { key: 'shimmer', type: 'number', group: 'motion', label: { 'zh-CN': '高光周期', en: 'Shimmer period' }, default: 2.4, min: 1.2, max: 5, step: 0.1, unit: 's', safe: [1.6, 3.6] },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '回弹弹簧', en: 'Release spring' }, default: { visualDuration: 0.3, bounce: 0.2 } },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '提示文案', en: 'Prompt' }, default: 'Slide to power off', maxLength: 28 },
+    { key: 'doneLabel', type: 'text', group: 'content', label: { 'zh-CN': '完成文案', en: 'Done text' }, default: 'Shutting down…', maxLength: 28 },
+  ],
+  presets: [
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { color: '#ff5a47', icon: 'arrow', size: 60, width: 320 } },
+    { id: 'standby', name: { 'zh-CN': '待机', en: 'Standby' }, values: { color: '#f43f5e', icon: 'power', size: 56, width: 300, shimmer: 3.2, label: 'Slide to power off', doneLabel: 'Shutting down…' } },
+    { id: 'vault', name: { 'zh-CN': '金库', en: 'Vault' }, values: { color: '#f5b83d', icon: 'lock', size: 64, width: 332, shimmer: 2, spring: { visualDuration: 0.4, bounce: 0.35 }, label: 'Slide to unlock vault', doneLabel: 'Vault open' } },
+    { id: 'transfer', name: { 'zh-CN': '汇款', en: 'Transfer' }, values: { color: '#22c55e', icon: 'arrow', size: 52, width: 280, shimmer: 1.8, spring: { visualDuration: 0.22, bounce: 0.1 }, label: 'Slide to send $2,400', doneLabel: 'Payment sent' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  guidance: {
+    use: ['Use for a single high-stakes or irreversible action where an accidental tap would hurt. Not for routine buttons or reversible toggles.'],
+    rules: [
+      'The handle is drag-only for pointers and also a focusable button: Enter, Space or ArrowRight confirms, so keyboard and assistive-tech users are never blocked.',
+      'Uncontrolled it resets itself after resetAfter ms; controlled, pass done and reset it yourself. onConfirm is where the real action goes.',
+      'State the action in the label ("Slide to send $2,400"), keep it under ~28 characters, and use one accent color.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.7, posterTime: 2.7, loop: 9 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'smoothui',
+      repo: 'educlopez/smoothui',
+      sha: 'b6312bce2b6f2ed95d8a6e98a592857884f5ea9e',
+      paths: ['packages/smoothui/components/power-off-slide/index.tsx', 'apps/docs/app/smoothui.css'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Eduardo Calvo'],
+    },
+    modifications: [
+      'Removed the lucide-react dependency (inline SVG icons) and the hard-coded pixel constants: the track is measured with ResizeObserver and the threshold is 80% of the travel.',
+      'Added an accent-colored fill that follows the handle, a completed state with a check, three handle icons, size and width parameters, and an editable prompt and done text.',
+      'Shimmer is a CSS keyframe animation instead of a per-frame style write; the handle can also be activated from the keyboard (Enter / Space / ArrowRight) and drag stays available under reduced motion.',
+      'Controlled done / progress props let a parent drive the state (used by the demo autoplay); cn comes from @motif/runtime.',
+    ],
+    assets: [],
+  },
+})
