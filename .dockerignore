@@ -1,0 +1,22 @@
+# 部署镜像只需要源码和锁文件：依赖在镜像里重新安装，产物在镜像里重新构建。
+**/node_modules
+**/.next
+**/.next-e2e
+**/dist
+**/*.tsbuildinfo
+.git
+.data
+.claude
+test-results
+playwright-report
+sources/_clones
+packages/registry/generated
+packages/contracts/artifacts
+packages/contracts/cache
+packages/contracts/types
+packages/contracts/ignition/deployments/chain-31337
+packages/contracts/ignition/deployments/e2e
+deploy/.env
+**/.env
+**/.env.*
+!**/.env.example

@@ -21,3 +21,4 @@ playwright-report/
 .data/
 packages/registry/generated/
 .next-e2e/
+.deploy-files

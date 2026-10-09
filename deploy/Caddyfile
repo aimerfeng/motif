@@ -1,0 +1,12 @@
+# 站点和预览沙箱必须是两个不同的可注册域名（docs/decisions/0001）：沙箱和站点不同站点，才有进程和存储隔离。
+# 没有正式域名时用 <IP>.sslip.io 和 <IP>.nip.io——它们本身就是两个独立的域名。Caddy 自动申请和续期 HTTPS 证书。
+
+{$SITE_HOST} {
+	encode zstd gzip
+	reverse_proxy web:3000
+}
+
+{$PREVIEW_HOST} {
+	encode zstd gzip
+	reverse_proxy preview:4100
+}
