@@ -18,7 +18,7 @@ The user's priority: **the effects have to be good; that is where the value is.*
 | Interface language | Chinese and English (next-intl), default `zh-CN` |
 | Model | A **key built into the site** (server-side env) behind a provider interface. The user adds the real key later. **Development and testing use the local Claude Code CLI with Sonnet 5.5** (`C:\Users\10706\.local\bin\claude.exe`), with no paid API calls |
 | Deployment | Undecided; **local only** for now. Nothing depends on an external CDN at runtime (the user is in China): vendor code and fonts are self-hosted |
-| GSAP | Allowed as a dependency; the user will negotiate a license once the effects are good. The agent still prefers motion or CSS by default |
+| GSAP | **Not used (2026-10-09).** Its Standard License forbids use in no-code visual animation builders, which the Studio is. GSAP-style effects are built as original items on motion, CSS and SVG instead: shape-morph (MorphSVG), split-reveal (SplitText), scroll-story (ScrollTrigger pin + scrub) and flip-grid (Flip) |
 | License boundary | The repo is public. Code that is Commons Clause (react-bits, animate-ui), unlicensed, NC, AGPL, Prosperity (lygia), or Shadertoy under its default CC BY-NC-SA **is never copied in**; we only link to it. Only grade-A sources are integrated, with provenance recorded |
 | threeui items of "Neuform export" origin | Accepted. The MIT grant comes from the copyright holder, and `upstream.origin` records the source. Brand logos (`elements` and `brand-orbs`), full landing pages, and assets outside the MIT grant (thumbnails and videos) are not taken |
 
@@ -148,8 +148,10 @@ Each item gets 3–5 presets, a bilingual title and description, reduced-motion 
   - A home-page showpiece, search, and docs.
   - Accessibility and performance: INP, and LCP using posters.
   - A subsetted Chinese display font.
-  - A `look_at_preview` screenshot tool so the agent can check its own output visually.
-  - A second batch of items: GSAP-based, image-based shaders, animata, smoothui.
+  - A `look_at_preview` screenshot tool so the agent can check its own output visually. **Done in P4.**
+  - A second batch of items: GSAP-style originals, image-based shaders, animata, smoothui.
+    - **Done (2026-10-09):** 12 animata / smoothui items, and 4 originals in place of GSAP (see Decisions).
+    - Image-based shaders are still to do.
 
 **Out of scope for now:** user accounts and user-published market items (needs a database and moderation), production deployment and filings, and the real production model key. These wait for the user's decision. (User-published items and identity were decided on 2026-10-08: see "Scope change: decentralized community" below.)
 

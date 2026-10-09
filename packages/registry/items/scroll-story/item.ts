@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'scroll-story',
+  status: 'published',
+  title: { 'zh-CN': '滚动叙事', en: 'Scroll Story' },
+  summary: {
+    'zh-CN': '整段滚动期间画面钉在视口里，四章内容随滚动进度逐章切换：标题和正文上下交替，计数器滚动，右边 24 个点从散点归队成事件流，再连成环，最后排成柱状图。往回滚就倒着播，带一点可调的跟手延迟。',
+    en: 'The stage stays pinned while the section scrolls, and four chapters change with scroll progress: copy rises and falls away, the counter rolls, and 24 dots regroup from a scatter into streams, a traced ring and finally a bar chart. Scrolling back plays it in reverse, with an adjustable catch-up lag.',
+  },
+  kind: 'section',
+  category: 'showcase',
+  tags: ['scroll', 'pinned', 'sticky', 'scrub', 'storytelling', 'stagger', 'svg'],
+  runtime: ['react', 'svg'],
+  entry: { file: 'scroll-story.tsx', export: 'ScrollStory' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'scroll-story.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'eyebrow', type: 'text', group: 'content', label: { 'zh-CN': '小标题', en: 'Eyebrow' }, default: 'How Halyard works', maxLength: 32 },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#ffb547' },
+    {
+      key: 'tone',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+    },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线', en: 'Serif' } },
+        { value: 'grotesk', label: { 'zh-CN': '怪诞体', en: 'Grotesk' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线', en: 'Sans' } },
+      ],
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '画面位置', en: 'Visual side' },
+      default: 'right',
+      options: [
+        { value: 'right', label: { 'zh-CN': '在右', en: 'Right' } },
+        { value: 'left', label: { 'zh-CN': '在左', en: 'Left' } },
+      ],
+    },
+    { key: 'pace', type: 'number', group: 'motion', label: { 'zh-CN': '每章滚动距离', en: 'Scroll per chapter' }, hint: { 'zh-CN': '按屏幕高度计：1 表示滚一屏换一章', en: 'In screen heights: 1 means one screen per chapter' }, default: 1, min: 0.5, max: 2, step: 0.1, unit: 'x', safe: [0.7, 1.5] },
+    { key: 'smooth', type: 'number', group: 'motion', label: { 'zh-CN': '跟手延迟', en: 'Catch-up lag' }, hint: { 'zh-CN': '0 表示画面完全跟着滚动条走；越大追得越慢、越柔和', en: '0 follows the scrollbar exactly; higher values catch up more softly' }, default: 0.4, min: 0, max: 1.5, step: 0.05, unit: 's', safe: [0.15, 0.8] },
+    { key: 'ease', type: 'easing', group: 'motion', label: { 'zh-CN': '缓动', en: 'Easing' }, default: [0.65, 0, 0.35, 1] },
+    { key: 'stagger', type: 'number', group: 'motion', label: { 'zh-CN': '错开', en: 'Stagger' }, hint: { 'zh-CN': '点阵变形时最右边的点比最左边的晚出发多少（占一次切换的比例）', en: 'How much later the rightmost dot starts than the leftmost, as a share of one change' }, default: 0.35, min: 0, max: 0.7, step: 0.05, safe: [0.1, 0.5] },
+  ],
+  presets: [
+    { id: 'lantern', name: { 'zh-CN': '灯笼', en: 'Lantern' }, values: {} },
+    { id: 'paper', name: { 'zh-CN': '纸本', en: 'Paper' }, values: { tone: 'light', accent: '#e0482a', font: 'serif' } },
+    { id: 'signal', name: { 'zh-CN': '信号', en: 'Signal' }, values: { accent: '#7dd3fc', font: 'sans', layout: 'left', stagger: 0.5 } },
+    { id: 'moss', name: { 'zh-CN': '苔藓', en: 'Moss' }, values: { tone: 'light', accent: '#2f7d5b', font: 'grotesk', smooth: 0.2 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Instrument Serif', 'Bricolage Grotesque Variable', 'Inter Tight Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['A "how it works" or product-story section on a landing page: three to five steps that are easier to show than to list. Use one per page; it takes several screens of scroll.'],
+    rules: [
+      'The section is several screens tall and its stage is position: sticky; no ancestor between it and the scroll container may set overflow: hidden, or the pin breaks.',
+      'Progress is measured from the stage against the section, so it works inside any scroll container (the window or an overflow-y-auto element).',
+      'Each change holds still at both ends so the copy can be read; keep chapter titles to one short sentence and bodies under about 140 characters.',
+      'Under reduced motion nothing is pinned or scrubbed: the chapters render one after another, each with its still figure.',
+      'The dot layouts cycle every four chapters; with a different chapter count pass your own chapters and keep the visual meaning loose.',
+    ],
+  },
+  capture: { scroll: true, posterTime: 0.5, loop: 10 },
+  provenance: { kind: 'original', modifications: [], assets: [] },
+})

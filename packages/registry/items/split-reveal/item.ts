@@ -1,0 +1,77 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'split-reveal',
+  status: 'published',
+  title: { 'zh-CN': '分行揭示', en: 'Split Reveal' },
+  summary: {
+    'zh-CN': '标题按行、按词或按字拆开，从遮罩后面依次升起，带一点倾斜，再整齐地退场。行是在当前宽度下实际量出来的，换宽度会重新分行。中英文都能拆，适合杂志感的首屏标题和章节开场。',
+    en: 'A headline split by line, word or character rises out of masks one piece after another with a slight tilt, then exits in order. Lines are measured at the current width and re-split when it changes. Works for Chinese and English; made for editorial hero headlines and section openers.',
+  },
+  kind: 'effect',
+  category: 'text',
+  tags: ['text', 'split', 'reveal', 'mask', 'stagger', 'headline', 'editorial'],
+  runtime: ['react', 'css'],
+  entry: { file: 'split-reveal.tsx', export: 'SplitReveal' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'split-reveal.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'text', type: 'text', group: 'content', label: { 'zh-CN': '文字', en: 'Text' }, default: 'Every frame should earn its place on the page.', maxLength: 90 },
+    {
+      key: 'split',
+      type: 'select',
+      group: 'motion',
+      label: { 'zh-CN': '拆分方式', en: 'Split by' },
+      default: 'lines',
+      options: [
+        { value: 'lines', label: { 'zh-CN': '按行', en: 'Lines' } },
+        { value: 'words', label: { 'zh-CN': '按词', en: 'Words' } },
+        { value: 'chars', label: { 'zh-CN': '按字', en: 'Characters' } },
+      ],
+    },
+    { key: 'stagger', type: 'number', group: 'motion', label: { 'zh-CN': '错开', en: 'Stagger' }, hint: { 'zh-CN': '相邻两块之间隔多久出场', en: 'Delay between neighbouring pieces' }, default: 0.12, min: 0.01, max: 0.3, step: 0.01, unit: 's', safe: [0.03, 0.18] },
+    { key: 'duration', type: 'number', group: 'motion', label: { 'zh-CN': '时长', en: 'Duration' }, default: 1, min: 0.4, max: 2, step: 0.05, unit: 's', safe: [0.6, 1.4] },
+    { key: 'ease', type: 'easing', group: 'motion', label: { 'zh-CN': '缓动', en: 'Easing' }, default: [0.16, 1, 0.3, 1] },
+    { key: 'rotate', type: 'number', group: 'motion', label: { 'zh-CN': '倾斜', en: 'Tilt' }, hint: { 'zh-CN': '出场时带的旋转角度', en: 'Rotation each piece starts from' }, default: 6, min: 0, max: 20, step: 1, unit: 'deg', safe: [0, 10] },
+    { key: 'loop', type: 'boolean', group: 'motion', label: { 'zh-CN': '循环', en: 'Loop' }, hint: { 'zh-CN': '关闭后只揭示一次并停住', en: 'When off, it reveals once and stays' }, default: true },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'type',
+      label: { 'zh-CN': '字体', en: 'Font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线', en: 'Serif' } },
+        { value: 'grotesk', label: { 'zh-CN': '怪诞体', en: 'Grotesk' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线', en: 'Sans' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'type', label: { 'zh-CN': '字号', en: 'Size' }, default: 76, min: 28, max: 96, step: 1, unit: 'px', safe: [44, 88] },
+    { key: 'color', type: 'color', group: 'color', label: { 'zh-CN': '文字颜色', en: 'Text' }, default: '#f1ead8' },
+    { key: 'background', type: 'color', group: 'color', label: { 'zh-CN': '背景', en: 'Background' }, default: '#13241d' },
+  ],
+  presets: [
+    { id: 'forest', name: { 'zh-CN': '林间', en: 'Forest' }, values: { font: 'serif', split: 'lines', color: '#f1ead8', background: '#13241d' } },
+    { id: 'press', name: { 'zh-CN': '铅印', en: 'Press' }, values: { font: 'grotesk', split: 'words', color: '#141414', background: '#e8e4dc', rotate: 0, stagger: 0.06, ease: [0.83, 0, 0.17, 1] } },
+    { id: 'neon-night', name: { 'zh-CN': '夜色霓虹', en: 'Neon Night' }, values: { font: 'sans', split: 'chars', color: '#c6f432', background: '#0b0b0f', stagger: 0.025, duration: 0.8, rotate: 12 } },
+    { id: 'chalk', name: { 'zh-CN': '粉笔', en: 'Chalk' }, values: { font: 'serif', split: 'words', color: '#1e293b', background: '#f8fafc', stagger: 0.08, rotate: 3, text: '好的动效，读起来像一句话。' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Instrument Serif', 'Bricolage Grotesque Variable', 'Inter Tight Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['A hero headline or a section opener that should feel composed rather than flashy. Use it once per view, on short text (one to three lines).'],
+    rules: [
+      'The full sentence is exposed to screen readers once (aria-label); the split pieces are hidden from them.',
+      'Lines are measured after layout, so give the text a width constraint (max-width in ch or em) for a deliberate rag.',
+      'Keep the tilt small (under 10 degrees) for text people need to read; larger tilts suit display words only.',
+    ],
+  },
+  capture: { posterTime: 2.4, loop: 8, zoom: 1.15 },
+  provenance: { kind: 'original', modifications: [], assets: [] },
+})
