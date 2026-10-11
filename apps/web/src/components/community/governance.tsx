@@ -2,8 +2,9 @@
 
 import { motifCurationAbi, motifGovernorAbi, motifIdentityAbi, motifRegistryAbi, motifTokenAbi, ROLES, spdxToBytes32 } from '@motif/contracts'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { encodeFunctionData, formatUnits, isAddress, keccak256, parseEther, toHex, type Address, type Hex } from 'viem'
+import { BallotIcon, ChevronIcon } from '@/components/icons'
 import { formatMotif } from '@/lib/community/shared'
 import { ConnectGate } from './connect-gate'
 import { useWriter, type WritePhase } from './use-writer'
@@ -17,45 +18,56 @@ const primary = 'rounded-full bg-ink px-4 py-1.5 text-[13.5px] font-medium text-
 const secondary = 'rounded-full border border-line-strong px-4 py-1.5 text-[13.5px] text-ink transition-colors duration-150 hover:border-ink disabled:opacity-40'
 
 /** 投票权需要委托后才生效（ERC20Votes 的设计：不委托就不记检查点，转账更省 gas）。 */
-export function DelegationCard({ threshold }: { threshold: string }) {
+export function DelegationCard({ threshold, thresholdRaw }: { threshold: string; thresholdRaw: string }) {
   const t = useTranslations('community.governance.delegation')
   return (
     <div className="rounded-[var(--radius-card)] border border-line p-5 text-[13.5px]">
       <h2 className="text-[15px] font-medium">{t('title')}</h2>
       <div className="mt-4">
         <ConnectGate compact>
-          <Delegation threshold={threshold} />
+          <Delegation threshold={threshold} thresholdRaw={BigInt(thresholdRaw)} />
         </ConnectGate>
       </div>
     </div>
   )
 }
 
-function Delegation({ threshold }: { threshold: string }) {
+function Delegation({ threshold, thresholdRaw }: { threshold: string; thresholdRaw: bigint }) {
   const t = useTranslations('community.governance.delegation')
   const { account, address, config } = useCommunity()
   const writer = useWriter()
   if (!account || !address) return null
   const selfDelegated = account.delegate === address
   const delegate = () => writer.run(({ write }) => write({ address: config!.contracts.token, abi: motifTokenAbi, functionName: 'delegate', args: [address] }).then(() => {}))
+  // 离发起提案的门槛还差多少：直观比一句“需要至少 N 票”好懂。
+  const progress = thresholdRaw === 0n ? 1 : Math.min(1, Number((account.votes * 1000n) / thresholdRaw) / 1000)
   return (
-    <div className="space-y-3">
-      <dl className="grid grid-cols-[1fr_auto] gap-y-2">
-        <dt className="text-ink-faint">{t('balance')}</dt>
-        <dd className="tabular-nums">{formatMotif(account.balance)} MOTIF</dd>
-        <dt className="text-ink-faint">{t('votes')}</dt>
-        <dd className="tabular-nums" data-testid="voting-power">
-          {formatMotif(account.votes)}
-        </dd>
+    <div className="space-y-4">
+      <dl className="grid grid-cols-2 gap-3">
+        <div className="rounded-lg bg-sunken px-3 py-2.5">
+          <dt className="text-[12px] text-ink-faint">{t('balance')}</dt>
+          <dd className="mt-0.5 font-medium tabular-nums">{formatMotif(account.balance)}</dd>
+        </div>
+        <div className="rounded-lg bg-sunken px-3 py-2.5">
+          <dt className="text-[12px] text-ink-faint">{t('votes')}</dt>
+          <dd className="mt-0.5 font-medium tabular-nums" data-testid="voting-power">
+            {formatMotif(account.votes)}
+          </dd>
+        </div>
       </dl>
-      <p className="text-[12.5px] leading-relaxed text-ink-faint">{t('threshold', { threshold })}</p>
+      <div>
+        <div className="h-1.5 overflow-hidden rounded-full bg-sunken">
+          <div className={`h-full rounded-full ${progress >= 1 ? 'bg-success' : 'bg-pending'}`} style={{ width: `${progress * 100}%` }} />
+        </div>
+        <p className="mt-1.5 text-[12px] text-ink-faint tabular-nums">{t('threshold', { threshold })}</p>
+      </div>
       {!selfDelegated && (
-        <>
-          <p className="text-ink-muted">{t('lead')}</p>
+        <div className="space-y-3 border-t border-line pt-4">
+          <p className="leading-relaxed text-ink-muted">{t('lead')}</p>
           <button type="button" onClick={() => void delegate()} disabled={writer.busy} className={secondary} data-testid="delegate-button">
             {writer.busy ? t(`phase.${phaseKey(writer.phase)}`) : t('self')}
           </button>
-        </>
+        </div>
       )}
       {writer.error && (
         <p role="alert" className="text-[12.5px] text-danger">
@@ -151,19 +163,51 @@ export interface CurrentParams {
 type Template = 'appointCurator' | 'removeCurator' | 'appointModerator' | 'removeModerator' | 'fundRewards' | 'curationParams' | 'allowLicense'
 const TEMPLATES: Template[] = ['appointCurator', 'removeCurator', 'appointModerator', 'removeModerator', 'fundRewards', 'curationParams', 'allowLicense']
 
-/** 发起提案：常见的治理动作做成模板，填几个值就能生成正确的调用。 */
+/**
+ * 发起提案：常见的治理动作做成模板，填几个值就能生成正确的调用。
+ * 大多数访客只是来看提案和投票，表单默认收起；页头的「发起提案」（#propose）会把它展开。
+ */
 export function ProposalComposer({ params }: { params: CurrentParams | null }) {
   const t = useTranslations('community.governance.composer')
+  const [open, setOpen] = useState(false)
+  useEffect(() => {
+    const onHash = () => {
+      if (window.location.hash === '#propose') setOpen(true)
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  const close = () => {
+    setOpen(false)
+    // 清掉锚点，再点页头的按钮才会重新触发 hashchange。
+    if (window.location.hash === '#propose') window.history.replaceState(null, '', window.location.pathname + window.location.search)
+  }
   return (
-    <div className="rounded-[var(--radius-card)] border border-line p-5 text-[13.5px]">
-      <h2 className="text-[15px] font-medium">{t('title')}</h2>
-      <p className="mt-2 leading-relaxed text-ink-faint">{t('lead')}</p>
-      <div className="mt-4">
-        <ConnectGate compact>
-          {/* 链上参数变了（例如提案刚执行），表单初值跟着重来。 */}
-          <Composer key={JSON.stringify(params)} params={params} />
-        </ConnectGate>
-      </div>
+    <div id="propose" className="scroll-mt-24 rounded-[var(--radius-card)] border border-line text-[13.5px]">
+      <button
+        type="button"
+        onClick={() => (open ? close() : setOpen(true))}
+        aria-expanded={open}
+        data-testid="propose-open"
+        className="flex w-full items-center gap-3 p-5 text-left"
+      >
+        <span className="grid size-8 shrink-0 place-items-center rounded-full border border-line bg-raised text-ink-muted">
+          <BallotIcon className="size-4" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-medium">{t('title')}</span>
+          <span className="block text-[12.5px] text-ink-faint">{t('lead')}</span>
+        </span>
+        <ChevronIcon className={`size-4 shrink-0 text-ink-faint transition-transform duration-150 ${open ? 'rotate-90' : ''}`} />
+      </button>
+      {open && (
+        <div className="border-t border-line p-5">
+          <ConnectGate compact>
+            {/* 链上参数变了（例如提案刚执行），表单初值跟着重来。 */}
+            <Composer key={JSON.stringify(params)} params={params} />
+          </ConnectGate>
+        </div>
+      )}
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import type { ReactNode } from 'react'
 import { CommunityProvider } from '@/components/community/wallet'
+import { FooterGate } from '@/components/footer-gate'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { resolveRouteLocale } from '@/i18n/locale'
@@ -44,7 +45,9 @@ export default async function LocaleLayout({ children, params }: { children: Rea
             <div id="content" className="flex-1">
               {children}
             </div>
-            <SiteFooter locale={locale} />
+            <FooterGate>
+              <SiteFooter locale={locale} />
+            </FooterGate>
           </CommunityProvider>
         </NextIntlClientProvider>
       </body>

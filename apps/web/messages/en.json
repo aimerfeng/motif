@@ -193,7 +193,9 @@
       "overview": "Overview",
       "submit": "Submit",
       "review": "Review",
-      "governance": "Governance"
+      "governance": "Governance",
+      "testnet": "Local testnet",
+      "testnetTitle": "{chain}: assets here have no value and exist only for trying things out"
     },
     "wallet": {
       "connect": "Connect wallet",
@@ -222,26 +224,23 @@
       "failed": "Claim failed, try again later"
     },
     "pause": {
-      "lead": "You are a moderator: you can pause new submissions during a spam wave. Open reviews, withdrawals and closing keep working.",
-      "pausedLead": "New submissions are paused. Remember to resume once things are handled.",
+      "lead": "Pause new submissions (for spam waves). Open reviews keep working.",
+      "pausedLead": "New submissions are paused. Resume once things are handled.",
       "pause": "Pause submissions",
       "resume": "Resume submissions",
       "busy": "Confirm in your wallet…"
     },
     "offline": {
       "title": "Community",
-      "lead": "The community chain is not connected yet. Submissions, reviews and governance live on chain; once it is connected, community works and activity show up here.",
-      "dev": "Local development: run <code>pnpm dev:chain</code> in another terminal. It starts a local chain, deploys the contracts and imports the existing items, and the site connects to it automatically."
+      "lead": "The community chain is not connected yet. Once it is, community works, reviews and governance show up here.",
+      "dev": "Local development: run <code>pnpm dev:chain</code> in another terminal and the site connects to it automatically."
     },
     "hub": {
       "title": "Community",
-      "lead": "Anyone can submit work to Motif. Curators review it for quality first and license first; approved work goes into the market, and attribution, sources and remix lineage are recorded on chain for anyone to check.",
-      "localChain": "This is a local development chain ({chain}). Its assets are worthless and only exist to try the community features.",
-      "paused": "Submissions are paused: a moderator stopped new submissions, usually to deal with spam. Open reviews, withdrawals and closing are not affected, and bonds are never locked.",
+      "lead": "Submit your effects. Approved work joins the market, with credit and provenance on chain.",
+      "paused": "New submissions are paused while moderators deal with spam. Open reviews and bonds are unaffected.",
       "cta": {
-        "submit": "Submit work",
-        "review": "Review queue",
-        "governance": "Governance"
+        "submit": "Submit work"
       },
       "stats": {
         "registered": "Items on chain",
@@ -254,26 +253,30 @@
         "title": "How it works",
         "submit": {
           "title": "Submit",
-          "body": "Post a {bond} MOTIF bond with your work. The site hosts the source; the chain records its content hash, license, provenance and remix lineage."
+          "body": "Upload an item file; once it passes the checks, post the bond and submit.",
+          "chip": "{bond} MOTIF bond"
         },
         "review": {
           "title": "Review",
-          "body": "{quorum} curator approvals put it in the market; the review period is {days} days. Quality problems get the bond back; plagiarism, fake licenses and malicious code forfeit it."
+          "body": "{quorum} curator approvals put it in the market. Violations forfeit the bond.",
+          "chip": "{days}-day review"
         },
         "reward": {
           "title": "Reward",
-          "body": "Approved new work earns {publish} MOTIF and reputation. When someone remixes your work and the remix is approved, you earn another {remix} MOTIF."
+          "body": "Approved work earns MOTIF and reputation, and again when someone remixes it.",
+          "chip": "Publish +{publish} · Remix +{remix}"
         }
       },
       "works": {
-        "title": "Latest community works",
+        "title": "Latest works",
         "inMarket": "See them in the market",
-        "empty": "No community work has been approved yet. Be the first."
+        "empty": "No community work has been approved yet.",
+        "first": "Be the first"
       },
       "reviews": {
         "title": "In review",
         "all": "All",
-        "empty": "Nothing is waiting for review right now.",
+        "empty": "Nothing is waiting for review.",
         "votes": "{votes}/{quorum} votes"
       },
       "contributors": {
@@ -302,12 +305,12 @@
     },
     "submit": {
       "title": "Submit",
-      "lead": "Drop in an item file (.motif.json). The site checks it with the same checker and compiler as the market items, shows you a live preview, and then you post the bond and submit it on chain.",
+      "lead": "Upload an item file. The site checks it and shows a live preview; then post the bond and submit.",
       "notJson": "That is not a valid JSON file.",
       "checking": "Checking…",
       "replace": "Choose another file",
-      "drop": "Drop a .motif.json here, or click to choose",
-      "dropHint": "An item file holds the manifest (what item.ts exports) and every source file",
+      "drop": "Drop a .motif.json, or click to choose",
+      "dropHint": "One file holds the manifest and every source file",
       "untitled": "Untitled",
       "passed": "Checks passed",
       "failed": "{count, plural, one {# problem to fix} other {# problems to fix}}",
@@ -322,16 +325,14 @@
       "hashMismatch": "The content hash computed in your browser differs from the check result. Choose the file again.",
       "panel": {
         "title": "Submit",
-        "waiting": "Choose an item file first. Once it passes the checks, submit it here.",
         "asNew": "This will be submitted for review as a new item.",
         "asVersion": "You maintain this item; this will be submitted for review as version {version}.",
         "bond": "Bond",
         "balance": "Your balance",
         "lowBalance": "Your balance does not cover the bond.",
-        "lowBalanceLocal": "Your balance does not cover the bond. Claim test tokens on the community overview first.",
         "paused": "Submissions are paused.",
         "submit": "Sign and submit",
-        "steps": "Your wallet will ask you to: sign the source upload → approve the bond (first time only) → send the submission. After the review the bond is returned or forfeited depending on the outcome."
+        "steps": "Your wallet asks, in order: sign the upload → approve the bond (first time only) → send the submission."
       },
       "blocked": {
         "taken": "This slug is already used by {maintainer}. Pick another slug.",
@@ -348,21 +349,27 @@
         "failed": "Sign and submit"
       },
       "remix": {
-        "lead": "Remix “{title}”: download its source file, restore it with <code>pnpm item:unpack</code>, change it, then pack and submit (set provenance.basedOn to <code>{slug}</code>).",
+        "lead": "Remix “{title}”: download the source, restore it with <code>pnpm item:unpack</code>, change it, and set provenance.basedOn to <code>{slug}</code>.",
         "download": "Download source"
       },
       "prepare": {
-        "title": "Preparing the item file",
-        "scratch": "From scratch: create an item folder under packages/registry/items/ following the authoring guide (say my-effect), then run <code>pnpm item:pack my-effect</code>.",
-        "remix": "Remixing an existing item: run <code>pnpm item:remix mesh-gradient my-gradient</code> to copy it with its provenance, change it, then pack it. The original author is rewarded when your work is approved.",
-        "community": "Community works are not in the repository: download the source from the item page and restore it with <code>pnpm item:unpack my-effect.motif.json</code>."
+        "title": "Prepare an item file with the CLI",
+        "scratch": "From scratch: create an item folder under packages/registry/items/, then run <code>pnpm item:pack my-effect</code>.",
+        "remix": "Remix a built-in item: <code>pnpm item:remix mesh-gradient my-gradient</code> copies it with its provenance; pack it when done.",
+        "community": "Remix a community work: download its source from the item page and restore it with <code>pnpm item:unpack my-effect.motif.json</code>."
       },
       "criteria": {
-        "title": "What curators look for",
-        "quality": "The defaults are the best-looking state, and no value in the tuning ranges looks bad.",
-        "license": "The provenance is real, the license allows redistribution, and the original copyright headers are kept. Original work is licensed under MIT.",
-        "motion": "It handles reduced motion, pauses off screen and does not slow the page down.",
-        "network": "It loads nothing from external CDNs, fonts or analytics, and sends no data out."
+        "title": "Review criteria",
+        "quality": "The defaults look great, and nothing in the tuning ranges looks bad.",
+        "license": "Real provenance, a redistributable license and the original copyright headers. Original work is MIT.",
+        "motion": "Handles reduced motion, pauses off screen, never slows the page.",
+        "network": "Loads nothing from external CDNs, fonts or analytics, and sends no data out."
+      },
+      "fromStudio": "No item file? <link>Make one in the Studio</link> and submit it from there.",
+      "flow": {
+        "pick": "Choose the item file",
+        "check": "Check and preview",
+        "sign": "Sign and submit"
       }
     },
     "item": {
@@ -480,22 +487,23 @@
     },
     "review": {
       "title": "Review",
-      "lead": "Each submission needs {quorum} curator verdicts within {days} days. Curators check that the defaults look great, that nothing in the tuning ranges looks bad, and that provenance and license are real.",
-      "open": "Open ({count})",
+      "lead": "A submission settles once {quorum} curators agree. Reviews run for {days} days.",
+      "open": "Open",
       "recent": "Recently closed",
       "noneClosed": "No review has closed yet.",
-      "curators": "Curators ({count})",
-      "howCurators": "Curators are appointed and removed by DAO governance. Each vote earns reputation: the reward is for taking part, not for picking the winning side.",
-      "toGovernance": "Nominate a curator in governance",
+      "curators": "Curators",
+      "howCurators": "Curators are appointed by governance vote. Each vote earns reputation.",
+      "toGovernance": "Nominate a curator",
       "onlyMine": "Only what needs my review",
       "nothingForYou": "Nothing is waiting for your review.",
-      "empty": "Nothing is waiting for review right now.",
+      "empty": "Nothing is waiting for review.",
       "newItem": "New item",
       "newVersion": "Version {version}",
       "by": "by",
       "votes": "{votes}/{quorum} votes",
       "overdue": "Overdue",
-      "youVoted": "Voted"
+      "youVoted": "Voted",
+      "criteria": "Review criteria"
     },
     "profile": {
       "reputation": "Reputation {value}",
@@ -519,10 +527,10 @@
     },
     "profileEditor": {
       "title": "Creator profile",
-      "lead": "Your handle is your name in the community; it is recorded on chain and people use it to find your work. Your display name, bio and links are hosted by the site, with their hash on chain.",
+      "lead": "Your handle is your on-chain name in the community; the rest of your profile is hosted by the site.",
       "loading": "Reading your account…",
       "handle": "Handle",
-      "handleHint": "3–32 lowercase letters, digits or hyphens. If you rename, the old handle stays yours so nobody can take it to impersonate you.",
+      "handleHint": "3–32 lowercase letters, digits or hyphens. If you rename, the old handle stays yours.",
       "handleChangeHint": "You can rename; the old handle stays yours.",
       "handleRule": "Use 3–32 lowercase letters, digits and single hyphens, not starting or ending with a hyphen.",
       "name": "Display name",
@@ -538,11 +546,13 @@
         "signing": "Confirm in your wallet…",
         "pending": "Waiting for the chain…",
         "syncing": "Syncing…"
-      }
+      },
+      "preview": "Preview",
+      "previewName": "Your name"
     },
     "governance": {
       "title": "Governance",
-      "lead": "MOTIF holders who delegate their votes can make and decide proposals: appointing curators and moderators, tuning review parameters and rewards, spending the treasury and the license allowlist. Passed proposals go through a timelock and anyone can execute them once the delay is over.",
+      "lead": "Delegate your MOTIF votes to make and decide proposals. Passed proposals run after a timelock.",
       "settings": {
         "delay": "Voting delay",
         "period": "Voting period",
@@ -552,7 +562,6 @@
         "treasury": "Treasury",
         "supply": "Total supply"
       },
-      "proposals": "Proposals ({count})",
       "noProposals": "No proposals yet.",
       "states": {
         "pending": "Pending",
@@ -577,8 +586,8 @@
         "title": "My voting power",
         "balance": "Balance",
         "votes": "Voting power",
-        "threshold": "Making a proposal takes at least {threshold} votes.",
-        "lead": "MOTIF only counts as voting power once it is delegated (you can delegate to yourself). Delegating only grants votes; the tokens stay in your wallet.",
+        "threshold": "Threshold to propose: {threshold}",
+        "lead": "MOTIF counts as votes once delegated, which can be to yourself. Your tokens stay in your wallet.",
         "self": "Delegate to myself",
         "phase": {
           "signing": "Confirm in your wallet…",
@@ -601,7 +610,7 @@
       },
       "composer": {
         "title": "New proposal",
-        "lead": "Pick a template and fill in the values and the rationale. You need voting power above the threshold.",
+        "lead": "You need voting power above the threshold.",
         "template": "Proposal type",
         "templates": {
           "appointCurator": "Appoint a curator",
@@ -631,8 +640,20 @@
           "signing": "Confirm in your wallet…",
           "pending": "Waiting for the chain…",
           "syncing": "Syncing…"
-        }
-      }
+        },
+        "open": "New proposal",
+        "close": "Close"
+      },
+      "lifecycle": {
+        "title": "Proposal lifecycle",
+        "propose": "Propose",
+        "vote": "Vote",
+        "queue": "Queue",
+        "execute": "Execute"
+      },
+      "active": "Open",
+      "past": "Closed",
+      "calls": "What it executes ({count})"
     },
     "badge": {
       "verified": "Verified on chain · v{version}",
@@ -776,16 +797,16 @@
   },
   "docs": {
     "title": "Docs",
-    "toc": "On this page"
+    "toc": "On this page",
+    "start": "Quick start"
   },
   "studio": {
     "home": {
       "title": "Studio",
-      "lead": "Describe the effect you want in a sentence: the agent writes the component, tunes its parameters and previews it live. Or pick an item from the market and keep going from there.",
+      "lead": "Describe an effect. The agent writes the component and tunes it while you watch the preview.",
       "placeholder": "For example: a slow, aurora-like flowing background in cool colours for a sign-in page",
       "hint": "Enter to send, Shift + Enter for a new line",
       "unavailable": "No agent is configured on this site yet. You can still open a blank workspace and edit the code by hand.",
-      "blank": "Start blank",
       "start": "Start",
       "starting": "Preparing…",
       "examples": {
@@ -794,16 +815,27 @@
         "pricing": "Three pricing cards, the middle one with a glowing edge",
         "text": "A headline that fades in letter by letter with a little blur"
       },
-      "remix": "Want to start from an existing effect? Pick one in the <link>market</link> and choose \"Open in Studio\".",
       "recent": "Recent sessions",
-      "remixOf": "from {slug}"
+      "remixOf": "from {slug}",
+      "try": "Try",
+      "paths": {
+        "market": {
+          "title": "Start from the market",
+          "body": "Pick an item and choose “Open in Studio”."
+        },
+        "blank": {
+          "title": "Start blank",
+          "body": "Write the code from a template; call the agent any time."
+        }
+      },
+      "turns": "{count, plural, one {# turn} other {# turns}}"
     },
     "chat": {
       "title": "Conversation",
       "agent": "Powered by {label}",
       "noAgent": "No agent configured",
-      "budget": "Model budget used by this session",
-      "empty": "Tell the agent what to change: a new palette, a different rhythm, an extra parameter, or a different effect altogether.",
+      "budget": "{percent}% of this session’s model budget used",
+      "empty": "Tell the agent what to change: the palette, the pacing, a new parameter, or a different effect altogether.",
       "placeholder": "Describe the change you want…",
       "send": "Send",
       "stop": "Stop",

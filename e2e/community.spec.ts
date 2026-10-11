@@ -129,6 +129,7 @@ test('治理：委托、提案、投票、排队、执行，任命新的审核�
   await travel(2)
 
   const title = `任命审核员 ${run}`
+  await holder.getByTestId('propose-open').click()
   await holder.getByTestId('proposal-address').fill(ACCOUNTS.nominee)
   await holder.getByTestId('proposal-title').fill(title)
   await holder.getByTestId('propose-button').click()

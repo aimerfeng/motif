@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { CommunityOffline } from '@/components/community/offline'
 import { SubmitFlow } from '@/components/community/submit-flow'
+import { buttonSecondary, PageHeader } from '@/components/community/ui'
+import { CheckIcon, DownloadIcon, ReviewIcon, TerminalIcon } from '@/components/icons'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { getItem } from '@/lib/catalog'
 import { listedCommunityItem } from '@/lib/community/items'
@@ -20,7 +22,7 @@ export default async function SubmitPage({ params, searchParams }: PageProps<'/[
   const community = await getCommunity()
   if (!community) return <CommunityOffline locale={locale} />
   const t = await getTranslations({ locale, namespace: 'community.submit' })
-  const code = (chunks: React.ReactNode) => <code className="font-mono text-[12.5px] text-ink">{chunks}</code>
+  const code = (chunks: React.ReactNode) => <code className="rounded bg-sunken px-1 py-px font-mono text-[12.5px] text-ink">{chunks}</code>
 
   const search = await searchParams
   // 从工作台进来：直接载入那个会话里的条目。
@@ -35,44 +37,48 @@ export default async function SubmitPage({ params, searchParams }: PageProps<'/[
     : null
 
   return (
-    <div>
-      <div className="max-w-2xl">
-        <h1 className="font-display text-[44px] leading-[1.05] font-semibold tracking-[-0.03em]">{t('title')}</h1>
-        <p className="mt-4 text-[15px] leading-relaxed text-pretty text-ink-muted">{t('lead')}</p>
-      </div>
+    <div className="space-y-10">
+      <PageHeader title={t('title')} lead={t('lead')} />
 
       {slug && remixTitle && (
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-[var(--radius-card)] border border-line bg-sunken px-5 py-4 text-[13.5px]">
-          <p className="text-ink-muted">{t.rich('remix.lead', { title: remixTitle, code, slug })}</p>
-          <a href={`/api/items/${slug}/source?download`} className="rounded-full border border-line-strong px-4 py-1.5 text-ink transition-colors duration-150 hover:border-ink" download>
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-[var(--radius-card)] border border-line bg-raised px-5 py-4 text-[13.5px]">
+          <p className="max-w-2xl leading-relaxed text-ink-muted">{t.rich('remix.lead', { title: remixTitle, code, slug })}</p>
+          <a href={`/api/items/${slug}/source?download`} className={buttonSecondary} download>
+            <DownloadIcon className="size-4" />
             {t('remix.download')}
           </a>
         </div>
       )}
 
-      <div className="mt-10">
-        <SubmitFlow locale={locale} paused={community.state.paused} initial={studioItem} />
-      </div>
+      <SubmitFlow locale={locale} paused={community.state.paused} initial={studioItem} />
 
-      <section className="mt-20 grid gap-10 border-t border-line pt-10 text-[14px] leading-relaxed md:grid-cols-2">
-        <div>
-          <h2 className="text-[16px] font-medium">{t('prepare.title')}</h2>
-          <ul className="mt-3 list-disc space-y-2 pl-5 text-ink-muted marker:text-ink-faint">
+      <div className="grid gap-6 pt-6 md:grid-cols-2">
+        <section className="rounded-[var(--radius-card)] border border-line p-5">
+          <h2 className="flex items-center gap-2 text-[15px] font-medium">
+            <TerminalIcon className="size-4 text-ink-faint" />
+            {t('prepare.title')}
+          </h2>
+          <ul className="mt-4 space-y-3 text-[13.5px] leading-relaxed text-ink-muted">
             <li>{t.rich('prepare.scratch', { code })}</li>
             <li>{t.rich('prepare.remix', { code })}</li>
             <li>{t.rich('prepare.community', { code })}</li>
           </ul>
-        </div>
-        <div>
-          <h2 className="text-[16px] font-medium">{t('criteria.title')}</h2>
-          <ul className="mt-3 list-disc space-y-2 pl-5 text-ink-muted marker:text-ink-faint">
-            <li>{t('criteria.quality')}</li>
-            <li>{t('criteria.license')}</li>
-            <li>{t('criteria.motion')}</li>
-            <li>{t('criteria.network')}</li>
+        </section>
+        <section className="rounded-[var(--radius-card)] border border-line p-5">
+          <h2 className="flex items-center gap-2 text-[15px] font-medium">
+            <ReviewIcon className="size-4 text-ink-faint" />
+            {t('criteria.title')}
+          </h2>
+          <ul className="mt-4 space-y-3 text-[13.5px] leading-relaxed text-ink-muted">
+            {(['quality', 'license', 'motion', 'network'] as const).map((key) => (
+              <li key={key} className="flex gap-2.5">
+                <CheckIcon className="mt-[3px] size-3.5 shrink-0 text-success" />
+                {t(`criteria.${key}`)}
+              </li>
+            ))}
           </ul>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   )
 }

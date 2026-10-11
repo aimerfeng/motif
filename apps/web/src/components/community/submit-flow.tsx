@@ -4,10 +4,14 @@ import { motifCurationAbi, motifTokenAbi, versionInput } from '@motif/contracts'
 import { defaultsOf, type ItemSource } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState, type DragEvent } from 'react'
+import { CheckIcon, UploadIcon } from '@/components/icons'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
 import { Link, useRouter } from '@/i18n/navigation'
 import { formatMotif, shortAddress, uploadMessage } from '@/lib/community/shared'
 import { ConnectGate } from './connect-gate'
+import { FaucetButton } from './faucet'
+import { Chip } from './status'
+import { buttonPrimary } from './ui'
 import { useWriter } from './use-writer'
 import { useCommunity } from './wallet'
 
@@ -162,8 +166,15 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
   const lowBalance = account ? account.balance < account.bond : false
   const canSubmit = Boolean(report?.ok) && target.kind !== 'blocked' && !parentMissing && !lowBalance && !paused && !writer.busy && !uploading
 
+  // 右侧的进度：选文件 → 检查与预览 → 签名提交。
+  const stepState = {
+    pick: report || checking ? 'done' : 'active',
+    check: checking ? 'active' : report ? (report.ok ? 'done' : 'error') : 'todo',
+    sign: writer.phase === 'done' ? 'done' : report?.ok ? 'active' : 'todo',
+  } as const
+
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
       <div className="min-w-0">
         <label
           onDragOver={(event) => {
@@ -173,10 +184,17 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
           data-dragging={dragging || undefined}
-          className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--radius-card)] border border-dashed border-line-strong bg-sunken px-6 py-10 text-center transition-colors duration-150 hover:border-ink-faint data-dragging:border-focus"
+          className={`flex cursor-pointer items-center rounded-[var(--radius-card)] border border-dashed border-line-strong bg-sunken transition-colors duration-150 hover:border-ink-faint data-dragging:border-focus ${
+            item ? 'gap-3 px-4 py-3' : 'flex-col justify-center gap-3 px-6 py-14 text-center'
+          }`}
         >
-          <span className="text-[15px] font-medium">{checking ? t('checking') : item ? t('replace') : t('drop')}</span>
-          <span className="text-[13px] text-ink-faint">{t('dropHint')}</span>
+          <span className={`grid shrink-0 place-items-center rounded-full border border-line bg-raised text-ink-muted ${item ? 'size-8' : 'size-11'}`}>
+            <UploadIcon className={item ? 'size-4' : 'size-5'} />
+          </span>
+          <span className={item ? 'text-[13.5px] text-ink-muted' : 'space-y-1'}>
+            <span className={item ? 'block' : 'block text-[15px] font-medium text-ink'}>{checking ? t('checking') : item ? t('replace') : t('drop')}</span>
+            {!item && <span className="block text-[13px] text-ink-faint">{t('dropHint')}</span>}
+          </span>
           <input
             type="file"
             accept=".json,application/json"
@@ -189,17 +207,28 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
             }}
           />
         </label>
+        {!item && !checking && (
+          <p className="mt-3 text-[13px] text-ink-faint">
+            {t.rich('fromStudio', {
+              link: (chunks) => (
+                <Link href="/studio" className="text-ink-muted underline decoration-line-strong underline-offset-4 hover:text-ink hover:decoration-ink">
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </p>
+        )}
         {loadError && (
-          <p role="alert" className="mt-4 text-[13.5px] text-danger">
+          <p role="alert" className="mt-4 rounded-lg border border-danger/30 bg-danger/5 px-4 py-3 text-[13.5px] text-danger">
             {loadError}
           </p>
         )}
 
         {report && item && (
           <div className="mt-8" data-testid="submit-report">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
               <h2 className="font-display text-[28px] leading-tight font-semibold tracking-[-0.02em]">{report.title?.[locale] ?? report.slug ?? t('untitled')}</h2>
-              <span className={`text-[13px] ${report.ok ? 'text-success' : 'text-danger'}`}>{report.ok ? t('passed') : t('failed', { count: errors.length })}</span>
+              <Chip tone={report.ok ? 'success' : 'danger'}>{report.ok ? t('passed') : t('failed', { count: errors.length })}</Chip>
             </div>
             {report.build && (
               <div className="relative mt-5 aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken">
@@ -220,7 +249,20 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
                 )}
               </div>
             )}
-            <dl className="mt-6 grid grid-cols-[max-content_1fr] gap-x-8 gap-y-2.5 text-[13.5px]">
+            {(errors.length > 0 || warnings.length > 0) && (
+              <ul className="mt-5 space-y-2 text-[13px]" data-testid="submit-findings">
+                {[...errors, ...warnings].map((finding, index) => (
+                  <li
+                    key={index}
+                    className={`rounded-lg border px-3 py-2 leading-relaxed ${finding.level === 'error' ? 'border-danger/30 bg-danger/5 text-danger' : 'border-line text-ink-muted'}`}
+                  >
+                    <span className="font-mono text-[11.5px] opacity-80">[{finding.rule}]</span> {finding.file && <span className="font-mono text-[11.5px]">{finding.file} </span>}
+                    {finding.message}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <dl className="mt-5 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-8 gap-y-2.5 rounded-[var(--radius-card)] border border-line px-5 py-4 text-[13.5px]">
               <dt className="text-ink-faint">{t('facts.slug')}</dt>
               <dd className="font-mono text-[12.5px]">{report.slug}</dd>
               <dt className="text-ink-faint">{t('facts.license')}</dt>
@@ -228,7 +270,7 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
               {report.upstream && (
                 <>
                   <dt className="text-ink-faint">{t('facts.upstream')}</dt>
-                  <dd>
+                  <dd className="min-w-0 truncate">
                     {report.upstream.repo} <span className="font-mono text-[12px] text-ink-faint">{report.upstream.sha.slice(0, 7)}</span>
                   </dd>
                 </>
@@ -252,65 +294,74 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
                 </>
               )}
             </dl>
-            {(errors.length > 0 || warnings.length > 0) && (
-              <ul className="mt-6 space-y-2 text-[13px]" data-testid="submit-findings">
-                {[...errors, ...warnings].map((finding, index) => (
-                  <li key={index} className={`rounded-lg border px-3 py-2 ${finding.level === 'error' ? 'border-danger/30 text-danger' : 'border-line text-ink-muted'}`}>
-                    <span className="font-mono text-[11.5px] opacity-80">[{finding.rule}]</span> {finding.file && <span className="font-mono text-[11.5px]">{finding.file} </span>}
-                    {finding.message}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
         )}
       </div>
 
       <aside className="lg:sticky lg:top-20 lg:self-start">
-        <div className="rounded-[var(--radius-card)] border border-line p-5">
-          <h2 className="text-[15px] font-medium">{t('panel.title')}</h2>
-          {!report ? (
-            <p className="mt-3 text-[13.5px] leading-relaxed text-ink-muted">{t('panel.waiting')}</p>
-          ) : (
-            <div className="mt-4 space-y-4 text-[13.5px]">
-              <ConnectGate compact>
-                {target.kind === 'blocked' ? (
-                  <p className="text-danger">
-                    {t(`blocked.${target.reason}`, { maintainer: target.kind === 'blocked' && target.maintainer ? shortAddress(target.maintainer) : '' })}
-                  </p>
+        <div className="overflow-hidden rounded-[var(--radius-card)] border border-line">
+          <ol className="space-y-3 border-b border-line bg-raised px-5 py-4 text-[13.5px]">
+            {(['pick', 'check', 'sign'] as const).map((key, index) => (
+              <FlowStep key={key} index={index + 1} label={t(`flow.${key}`)} state={stepState[key]} />
+            ))}
+          </ol>
+          <div className="p-5 text-[13.5px]">
+            <ConnectGate compact>
+              {report &&
+                (target.kind === 'blocked' ? (
+                  <p className="text-danger">{t(`blocked.${target.reason}`, { maintainer: target.maintainer ? shortAddress(target.maintainer) : '' })}</p>
                 ) : (
                   <p className="text-ink-muted">{target.kind === 'version' ? t('panel.asVersion', { version: target.version }) : t('panel.asNew')}</p>
-                )}
-                {account && (
-                  <dl className="mt-4 grid grid-cols-[1fr_auto] gap-y-2 border-t border-line pt-4">
-                    <dt className="text-ink-faint">{t('panel.bond')}</dt>
-                    <dd className="tabular-nums">{formatMotif(account.bond)} MOTIF</dd>
-                    <dt className="text-ink-faint">{t('panel.balance')}</dt>
-                    <dd className={`tabular-nums ${lowBalance ? 'text-danger' : ''}`}>{formatMotif(account.balance)} MOTIF</dd>
-                  </dl>
-                )}
-                {lowBalance && <p className="mt-3 text-[12.5px] text-danger">{config?.local ? t('panel.lowBalanceLocal') : t('panel.lowBalance')}</p>}
-                {paused && <p className="mt-3 text-[12.5px] text-danger">{t('panel.paused')}</p>}
-                <button
-                  type="button"
-                  onClick={() => void submit()}
-                  disabled={!canSubmit}
-                  data-testid="submit-button"
-                  className="mt-5 w-full rounded-full bg-ink px-4 py-2 text-[14px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-40"
-                >
-                  {uploading ? t('phase.uploading') : writer.busy ? t(`phase.${writer.phase}`) : t('panel.submit')}
-                </button>
-                <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">{t('panel.steps')}</p>
-                {writer.error && (
-                  <p role="alert" className="mt-3 text-[12.5px] text-danger">
-                    {writer.error}
-                  </p>
-                )}
-              </ConnectGate>
-            </div>
-          )}
+                ))}
+              {account && (
+                <dl className={`grid grid-cols-[1fr_auto] gap-y-2 ${report ? 'mt-4 border-t border-line pt-4' : ''}`}>
+                  <dt className="text-ink-faint">{t('panel.bond')}</dt>
+                  <dd className="tabular-nums">{formatMotif(account.bond)} MOTIF</dd>
+                  <dt className="text-ink-faint">{t('panel.balance')}</dt>
+                  <dd className={`tabular-nums ${lowBalance ? 'text-danger' : ''}`}>{formatMotif(account.balance)} MOTIF</dd>
+                </dl>
+              )}
+              {lowBalance && (
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-[12.5px] text-danger">{t('panel.lowBalance')}</p>
+                  {config?.local && <FaucetButton compact />}
+                </div>
+              )}
+              {paused && <p className="mt-3 text-[12.5px] text-danger">{t('panel.paused')}</p>}
+              {report && (
+                <>
+                  <button type="button" onClick={() => void submit()} disabled={!canSubmit} data-testid="submit-button" className={`mt-5 w-full ${buttonPrimary}`}>
+                    {uploading ? t('phase.uploading') : writer.busy ? t(`phase.${writer.phase}`) : t('panel.submit')}
+                  </button>
+                  <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">{t('panel.steps')}</p>
+                </>
+              )}
+              {writer.error && (
+                <p role="alert" className="mt-3 text-[12.5px] text-danger">
+                  {writer.error}
+                </p>
+              )}
+            </ConnectGate>
+          </div>
         </div>
       </aside>
     </div>
+  )
+}
+
+function FlowStep({ index, label, state }: { index: number; label: string; state: 'todo' | 'active' | 'done' | 'error' }) {
+  const circle = {
+    todo: 'border-line text-ink-faint',
+    active: 'border-ink bg-ink text-canvas',
+    done: 'border-success/40 bg-success/10 text-success',
+    error: 'border-danger/40 bg-danger/10 text-danger',
+  }[state]
+  return (
+    <li className="flex items-center gap-3" data-state={state}>
+      <span className={`grid size-6 shrink-0 place-items-center rounded-full border font-mono text-[11px] ${circle}`}>
+        {state === 'done' ? <CheckIcon className="size-3.5" strokeWidth={2} /> : index}
+      </span>
+      <span className={state === 'todo' ? 'text-ink-faint' : 'text-ink'}>{label}</span>
+    </li>
   )
 }

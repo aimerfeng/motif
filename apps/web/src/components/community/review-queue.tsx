@@ -3,8 +3,10 @@
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import type { Address } from 'viem'
+import { CheckIcon, ClockIcon, ReviewIcon } from '@/components/icons'
 import { Link } from '@/i18n/navigation'
-import { PersonLink, type Person } from './people'
+import { personLabel, type Person } from './people'
+import { EmptyState, VoteMeter } from './ui'
 import { useCommunity } from './wallet'
 
 export interface QueueEntry {
@@ -30,38 +32,56 @@ export function ReviewQueue({ entries }: { entries: QueueEntry[] }) {
   const visible = mine ? entries.filter(actionable) : entries
 
   return (
-    <div>
-      {account?.curator && (
-        <label className="mb-4 inline-flex cursor-pointer items-center gap-2 text-[13.5px] text-ink-muted">
+    <div className="space-y-4">
+      {account?.curator && entries.length > 0 && (
+        <label className="inline-flex cursor-pointer items-center gap-2 text-[13px] text-ink-muted">
           <input type="checkbox" checked={mine} onChange={(event) => setMine(event.target.checked)} className="accent-[var(--color-ink)]" />
           {t('onlyMine')}
+          <span className="font-mono text-[12px] text-ink-faint tabular-nums">{entries.filter(actionable).length}</span>
         </label>
       )}
       {visible.length === 0 ? (
-        <p className="text-[14px] text-ink-faint">{mine ? t('nothingForYou') : t('empty')}</p>
+        <EmptyState icon={mine ? CheckIcon : ReviewIcon} title={mine ? t('nothingForYou') : t('empty')} />
       ) : (
-        <ul className="divide-y divide-line border-y border-line" data-testid="review-queue">
-          {visible.map((entry) => (
-            <li key={`${entry.itemId}-${entry.version}`} className="grid gap-2 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6">
-              <div className="min-w-0">
-                <Link href={`/community/items/${entry.itemId}?v=${entry.version}`} className="text-[15px] font-medium hover:underline hover:decoration-line-strong hover:underline-offset-4">
-                  {entry.title ?? entry.slug}
+        <ul className="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line" data-testid="review-queue">
+          {visible.map((entry) => {
+            const voted = address !== null && entry.voters.includes(address)
+            return (
+              <li key={`${entry.itemId}-${entry.version}`}>
+                <Link
+                  href={`/community/items/${entry.itemId}?v=${entry.version}`}
+                  className="grid gap-3 px-5 py-4 transition-colors duration-150 hover:bg-raised sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-[15px] font-medium">{entry.title ?? entry.slug}</p>
+                    <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-ink-faint">
+                      <span className="rounded-full bg-sunken px-2 py-px">{entry.version === 1 ? t('newItem') : t('newVersion', { version: entry.version })}</span>
+                      <span className="font-mono">{entry.slug}</span>
+                      <span>
+                        {t('by')} {personLabel(entry.submitter)}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4 text-[12.5px] tabular-nums">
+                    <span className="flex items-center gap-2 text-ink-muted">
+                      <VoteMeter votes={entry.votes} quorum={entry.quorum} />
+                      {t('votes', { votes: entry.votes, quorum: entry.quorum })}
+                    </span>
+                    <span className={`flex items-center gap-1 ${entry.overdue ? 'text-danger' : 'text-ink-faint'}`}>
+                      <ClockIcon className="size-3.5" />
+                      {entry.overdue ? t('overdue') : entry.deadline}
+                    </span>
+                    {voted && (
+                      <span className="flex items-center gap-1 text-success">
+                        <CheckIcon className="size-3.5" />
+                        {t('youVoted')}
+                      </span>
+                    )}
+                  </div>
                 </Link>
-                <p className="mt-1 flex flex-wrap items-center gap-x-3 text-[12.5px] text-ink-faint">
-                  <span className="font-mono">{entry.slug}</span>
-                  <span>{entry.version === 1 ? t('newItem') : t('newVersion', { version: entry.version })}</span>
-                  <span>
-                    {t('by')} <PersonLink person={entry.submitter} />
-                  </span>
-                </p>
-              </div>
-              <div className="flex items-center gap-5 text-[12.5px] tabular-nums">
-                <span className="text-ink-muted">{t('votes', { votes: entry.votes, quorum: entry.quorum })}</span>
-                <span className={entry.overdue ? 'text-danger' : 'text-ink-faint'}>{entry.overdue ? t('overdue') : entry.deadline}</span>
-                {address && entry.voters.includes(address) && <span className="text-success">{t('youVoted')}</span>}
-              </div>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>

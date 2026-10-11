@@ -5,8 +5,9 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import type { Hex } from 'viem'
 import { Link } from '@/i18n/navigation'
-import { parseProfileMetadata, PROFILE_LIMITS, type ProfileMetadata } from '@/lib/community/shared'
+import { parseProfileMetadata, PROFILE_LIMITS, shortAddress, type ProfileMetadata } from '@/lib/community/shared'
 import { ConnectGate } from './connect-gate'
+import { Avatar } from './people'
 import { useWriter } from './use-writer'
 import { useCommunity } from './wallet'
 
@@ -91,69 +92,101 @@ function Editor() {
 
   const field = 'w-full rounded-lg border border-line bg-sunken px-3 py-2 text-[14px] placeholder:text-ink-faint focus:border-line-strong focus:outline-none'
   return (
-    <form
-      className="max-w-xl space-y-6"
-      onSubmit={(event) => {
-        event.preventDefault()
-        void save()
-      }}
-    >
-      <label className="block">
-        <span className="text-[13.5px] font-medium">{t('handle')}</span>
-        <span className="mt-1 block text-[12.5px] text-ink-faint">{account.registered ? t('handleChangeHint') : t('handleHint')}</span>
-        <span className="mt-2 flex items-center rounded-lg border border-line bg-sunken focus-within:border-line-strong">
-          <span className="pl-3 text-ink-faint">@</span>
-          <input
-            value={handle}
-            onChange={(event) => setHandle(event.target.value.toLowerCase())}
-            maxLength={32}
-            required
-            spellCheck={false}
-            autoComplete="off"
-            data-testid="profile-handle"
-            className="w-full bg-transparent px-1.5 py-2 font-mono text-[14px] focus:outline-none"
-          />
-        </span>
-        {handleError && <span className="mt-1.5 block text-[12.5px] text-danger">{handleError}</span>}
-      </label>
-      <label className="block">
-        <span className="text-[13.5px] font-medium">{t('name')}</span>
-        <input value={name} onChange={(event) => setName(event.target.value.slice(0, PROFILE_LIMITS.name))} className={`mt-2 ${field}`} data-testid="profile-name" />
-      </label>
-      <label className="block">
-        <span className="text-[13.5px] font-medium">{t('bio')}</span>
-        <textarea value={bio} onChange={(event) => setBio(event.target.value.slice(0, PROFILE_LIMITS.bio))} rows={3} className={`mt-2 resize-y ${field}`} />
-        <span className="mt-1 block text-right text-[12px] text-ink-faint tabular-nums">
-          {bio.length}/{PROFILE_LIMITS.bio}
-        </span>
-      </label>
-      <label className="block">
-        <span className="text-[13.5px] font-medium">{t('links')}</span>
-        <span className="mt-1 block text-[12.5px] text-ink-faint">{t('linksHint', { max: PROFILE_LIMITS.links })}</span>
-        <textarea value={links} onChange={(event) => setLinks(event.target.value)} rows={3} placeholder="https://" className={`mt-2 resize-y font-mono text-[13px] ${field}`} />
-        {badLink && <span className="mt-1.5 block text-[12.5px] text-danger">{t('badLink', { link: badLink })}</span>}
-      </label>
-      <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="submit"
-          disabled={!valid || writer.busy}
-          data-testid="profile-save"
-          className="rounded-full bg-ink px-5 py-2 text-[14px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-40"
-        >
-          {writer.busy ? t(`phase.${writer.phase as 'signing' | 'pending' | 'syncing'}`) : account.registered ? t('save') : t('register')}
-        </button>
-        {writer.phase === 'done' && address && (
-          <Link href={`/community/u/${handle || address}`} className="text-[13.5px] text-ink-muted underline decoration-line-strong underline-offset-4 hover:text-ink">
-            {t('saved')}
-          </Link>
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,560px)_380px] lg:gap-16">
+      <form
+        className="space-y-6"
+        onSubmit={(event) => {
+          event.preventDefault()
+          void save()
+        }}
+      >
+        <label className="block">
+          <span className="text-[13.5px] font-medium">{t('handle')}</span>
+          <span className="mt-1 block text-[12.5px] text-ink-faint">{account.registered ? t('handleChangeHint') : t('handleHint')}</span>
+          <span className="mt-2 flex items-center rounded-lg border border-line bg-sunken focus-within:border-line-strong">
+            <span className="pl-3 text-ink-faint">@</span>
+            <input
+              value={handle}
+              onChange={(event) => setHandle(event.target.value.toLowerCase())}
+              maxLength={32}
+              required
+              spellCheck={false}
+              autoComplete="off"
+              data-testid="profile-handle"
+              className="w-full bg-transparent px-1.5 py-2 font-mono text-[14px] focus:outline-none"
+            />
+          </span>
+          {handleError && <span className="mt-1.5 block text-[12.5px] text-danger">{handleError}</span>}
+        </label>
+        <label className="block">
+          <span className="text-[13.5px] font-medium">{t('name')}</span>
+          <input value={name} onChange={(event) => setName(event.target.value.slice(0, PROFILE_LIMITS.name))} className={`mt-2 ${field}`} data-testid="profile-name" />
+        </label>
+        <label className="block">
+          <span className="text-[13.5px] font-medium">{t('bio')}</span>
+          <textarea value={bio} onChange={(event) => setBio(event.target.value.slice(0, PROFILE_LIMITS.bio))} rows={3} className={`mt-2 resize-y ${field}`} />
+          <span className="mt-1 block text-right text-[12px] text-ink-faint tabular-nums">
+            {bio.length}/{PROFILE_LIMITS.bio}
+          </span>
+        </label>
+        <label className="block">
+          <span className="text-[13.5px] font-medium">{t('links')}</span>
+          <span className="mt-1 block text-[12.5px] text-ink-faint">{t('linksHint', { max: PROFILE_LIMITS.links })}</span>
+          <textarea value={links} onChange={(event) => setLinks(event.target.value)} rows={3} placeholder="https://" className={`mt-2 resize-y font-mono text-[13px] ${field}`} />
+          {badLink && <span className="mt-1.5 block text-[12.5px] text-danger">{t('badLink', { link: badLink })}</span>}
+        </label>
+        <div className="flex flex-wrap items-center gap-4">
+          <button
+            type="submit"
+            disabled={!valid || writer.busy}
+            data-testid="profile-save"
+            className="rounded-full bg-ink px-5 py-2 text-[14px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-40"
+          >
+            {writer.busy ? t(`phase.${writer.phase as 'signing' | 'pending' | 'syncing'}`) : account.registered ? t('save') : t('register')}
+          </button>
+          {writer.phase === 'done' && address && (
+            <Link href={`/community/u/${handle || address}`} className="text-[13.5px] text-ink-muted underline decoration-line-strong underline-offset-4 hover:text-ink">
+              {t('saved')}
+            </Link>
+          )}
+        </div>
+        {writer.error && (
+          <p role="alert" className="text-[13px] text-danger">
+            {writer.error}
+          </p>
+        )}
+        <p className="text-[12.5px] leading-relaxed text-ink-faint">{t('publicNote')}</p>
+      </form>
+      <ProfilePreview address={account.address} handle={validHandle(handle) ? handle : null} name={name.trim()} bio={bio.trim()} links={linkList} />
+    </div>
+  )
+}
+
+/** 资料卡的实时预览：和创作者主页的页头一个样子，边填边看。 */
+function ProfilePreview({ address, handle, name, bio, links }: { address: string; handle: string | null; name: string; bio: string; links: string[] }) {
+  const t = useTranslations('community.profileEditor')
+  return (
+    <aside className="lg:sticky lg:top-20 lg:self-start">
+      <p className="mb-3 text-[12px] text-ink-faint">{t('preview')}</p>
+      <div className="rounded-[var(--radius-card)] border border-line bg-raised p-6">
+        <div className="flex items-center gap-4">
+          <Avatar address={address} className="size-14" />
+          <div className="min-w-0">
+            <p className={`truncate font-display text-[22px] leading-tight font-semibold tracking-[-0.02em] ${name ? '' : 'text-ink-faint'}`}>{name || t('previewName')}</p>
+            <p className="mt-0.5 truncate font-mono text-[13px] text-ink-faint">{handle ? `@${handle}` : shortAddress(address)}</p>
+          </div>
+        </div>
+        {bio && <p className="mt-5 text-[14px] leading-relaxed whitespace-pre-wrap text-ink-muted">{bio}</p>}
+        {links.length > 0 && (
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {links.map((link) => (
+              <li key={link} className="max-w-full truncate rounded-full border border-line px-2.5 py-0.5 text-[12px] text-ink-muted">
+                {link.replace(/^https?:\/\//, '')}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
-      {writer.error && (
-        <p role="alert" className="text-[13px] text-danger">
-          {writer.error}
-        </p>
-      )}
-      <p className="text-[12.5px] leading-relaxed text-ink-faint">{t('publicNote')}</p>
-    </form>
+    </aside>
   )
 }

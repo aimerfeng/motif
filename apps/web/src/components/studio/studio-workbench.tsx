@@ -5,7 +5,7 @@ import { defaultsOf, type ItemManifest, type ItemSource, type JsonValue, type Pa
 import dynamic from 'next/dynamic'
 import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
-import { DownloadIcon } from '@/components/icons'
+import { CopyIcon, DownloadIcon, UploadIcon } from '@/components/icons'
 import { InstallPanel, SkillPanel, type ExportData } from '@/components/item/export-panels'
 import { ItemTabs } from '@/components/item/item-tabs'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
@@ -24,6 +24,9 @@ import { useStudio } from './use-studio'
 const CodeEditor = dynamic(() => import('./code-editor').then((module) => module.CodeEditor), { ssr: false })
 
 const PAGE_KINDS = new Set(['template', 'style', 'section'])
+
+const ghost =
+  'inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink disabled:opacity-40'
 
 /** 工作台里的调参状态：和市场详情页同一个面板，但值来自会话（agent 也会改它），不写进地址栏。 */
 function useStudioTune(params: ItemManifest['params'], presets: TunePreset[], values: ParamValues, setValues: (values: ParamValues) => void): TuneState {
@@ -94,6 +97,7 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
   const title = manifest.title?.[locale] ?? manifest.slug
   const pageLike = PAGE_KINDS.has(manifest.kind)
   const dirty = Object.keys(drafts).length > 0
+  const budgetUsed = Math.min(100, Math.round((view.usage.used / view.usage.budget) * 100))
 
   // 预览挂载成功、报错或卡住时告诉服务端：agent 的 check_preview 在等它。
   const { report } = studio
@@ -180,11 +184,19 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
         <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
           <div className="min-w-0">
             <p className="truncate text-[13px] font-medium">{t('chat.title')}</p>
-            <p className="truncate text-[11.5px] text-ink-faint">{view.agent.available ? t('chat.agent', { label: view.agent.label ?? '' }) : t('chat.noAgent')}</p>
+            <p className="flex items-center gap-1.5 truncate text-[11.5px] text-ink-faint">
+              <span aria-hidden className={`size-1.5 shrink-0 rounded-full ${view.agent.available ? 'bg-success' : 'bg-line-strong'}`} />
+              {view.agent.available ? t('chat.agent', { label: view.agent.label ?? '' }) : t('chat.noAgent')}
+            </p>
           </div>
-          <span className="shrink-0 font-mono text-[11px] text-ink-faint tabular-nums" title={t('chat.budget')}>
-            {Math.round((view.usage.used / view.usage.budget) * 100)}%
-          </span>
+          {budgetUsed > 0 && (
+            <span className="flex shrink-0 items-center" title={t('chat.budget', { percent: budgetUsed })}>
+              <span aria-hidden className="h-1 w-14 overflow-hidden rounded-full bg-sunken">
+                <span className={`block h-full rounded-full ${budgetUsed >= 80 ? 'bg-danger' : 'bg-ink-faint'}`} style={{ width: `${budgetUsed}%` }} />
+              </span>
+              <span className="sr-only">{t('chat.budget', { percent: budgetUsed })}</span>
+            </span>
+          )}
         </div>
         <div className="min-h-0 flex-1">
           <ChatPanel
@@ -223,42 +235,34 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
             <h1 className="mt-2 truncate font-display text-[32px] leading-tight font-semibold tracking-[-0.03em]" data-testid="studio-title">
               {title}
             </h1>
-            <p className="mt-1 text-[12.5px]" data-testid="studio-status">
-              {running ? (
-                <span className="text-ink-faint">{t('status.running')}</span>
-              ) : evaluation?.ok ? (
-                <span className="text-[oklch(0.78_0.13_160)]">{t('status.ok', { version })}</span>
-              ) : (
-                <span className="text-danger">{t('status.errors', { count: errors.length })}</span>
-              )}
+            <p className="mt-1.5 text-[12.5px]" data-testid="studio-status">
+              <span className={`inline-flex items-center gap-1.5 ${running ? 'text-ink-faint' : evaluation?.ok ? 'text-success' : 'text-danger'}`}>
+                <span aria-hidden className={`size-1.5 rounded-full ${running ? 'animate-pulse bg-ink-faint' : evaluation?.ok ? 'bg-success' : 'bg-danger'}`} />
+                {running ? t('status.running') : evaluation?.ok ? t('status.ok', { version }) : t('status.errors', { count: errors.length })}
+              </span>
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap items-center gap-2">
-            <button
-              type="button"
-              disabled={!tune.changed || running || studio.busy}
-              onClick={() => void studio.applyDefaults(view.values)}
-              className="rounded-lg border border-line px-3.5 py-2 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink disabled:opacity-40"
-            >
-              {t('actions.applyDefaults')}
-            </button>
-            <button
-              type="button"
-              onClick={() => downloadJson(`${manifest.slug}.motif.json`, item)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3.5 py-2 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink"
-            >
+            {tune.changed && (
+              <button type="button" disabled={running || studio.busy} onClick={() => void studio.applyDefaults(view.values)} className={`${ghost} border-pending/40 text-ink`}>
+                <span aria-hidden className="size-1.5 rounded-full bg-pending" />
+                {t('actions.applyDefaults')}
+              </button>
+            )}
+            <button type="button" onClick={() => downloadJson(`${manifest.slug}.motif.json`, item)} className={ghost}>
               <DownloadIcon className="size-4" />
               .motif.json
             </button>
-            <button
-              type="button"
-              onClick={() => void copy('link', window.location.href.split('#')[0]!)}
-              className="rounded-lg border border-line px-3.5 py-2 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink"
-            >
+            <button type="button" onClick={() => void copy('link', window.location.href.split('#')[0]!)} className={ghost}>
+              <CopyIcon state={stateOf('link')} className="size-4" />
               {stateOf('link') === 'copied' ? t('actions.linkCopied') : t('actions.copyLink')}
             </button>
             {evaluation?.ok && !running ? (
-              <Link href={`/community/submit?studio=${view.id}`} className="rounded-lg bg-ink px-3.5 py-2 text-[13px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90">
+              <Link
+                href={`/community/submit?studio=${view.id}`}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-ink px-3.5 py-1.5 text-[13px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90"
+              >
+                <UploadIcon className="size-4" />
                 {t('actions.submit')}
               </Link>
             ) : null}
@@ -282,98 +286,101 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
           </div>
         )}
 
-        <div className="mt-6 grid gap-6 @4xl:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="mt-6 grid gap-6 @4xl:grid-cols-[minmax(0,1fr)_300px] @4xl:grid-rows-[auto_1fr] @4xl:gap-x-6 @4xl:gap-y-8">
           <div className="min-w-0">{preview}</div>
-          <div className="@4xl:sticky @4xl:top-6 @4xl:self-start">
-            {params.length > 0 ? <TunePanel params={params} presets={presets} tune={tune} /> : <p className="text-[13px] text-ink-faint">{t('noParams')}</p>}
+          <div className="@4xl:sticky @4xl:top-6 @4xl:col-start-2 @4xl:row-span-2 @4xl:row-start-1 @4xl:self-start">
+            {params.length > 0 ? (
+              <TunePanel params={params} presets={presets} tune={tune} />
+            ) : (
+              <p className="rounded-[var(--radius-card)] border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-faint">{t('noParams')}</p>
+            )}
           </div>
-        </div>
-
-        <div className="mt-10">
-          <ItemTabs
-            tabs={[
-              {
-                id: 'code',
-                label: dirty ? `${t('tabs.code')} •` : t('tabs.code'),
-                content: (
-                  <div className="overflow-hidden rounded-xl border border-line bg-sunken">
-                    <div className="flex items-center gap-1 overflow-x-auto border-b border-line px-2 py-1.5">
-                      {files.map((path) => (
-                        <button
-                          key={path}
-                          type="button"
-                          aria-pressed={path === file}
-                          onClick={() => setFile(path)}
-                          className="shrink-0 rounded-md px-2.5 py-1 font-mono text-[12px] text-ink-faint transition-colors duration-150 hover:text-ink aria-pressed:bg-white/8 aria-pressed:text-ink"
-                        >
-                          {path}
-                          {path in drafts ? ' •' : ''}
-                        </button>
-                      ))}
-                      <span className="ml-auto flex shrink-0 items-center gap-2 pl-3">
-                        {dirty && (
-                          <button type="button" onClick={() => setDrafts({})} className="rounded-md px-2.5 py-1 text-[12px] text-ink-faint transition-colors duration-150 hover:text-ink">
-                            {t('editor.discard')}
+          <div className="min-w-0 @4xl:col-start-1 @4xl:row-start-2">
+            <ItemTabs
+              tabs={[
+                {
+                  id: 'code',
+                  label: dirty ? `${t('tabs.code')} •` : t('tabs.code'),
+                  content: (
+                    <div className="overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken">
+                      <div className="flex items-center gap-1 overflow-x-auto border-b border-line px-2 py-1.5">
+                        {files.map((path) => (
+                          <button
+                            key={path}
+                            type="button"
+                            aria-pressed={path === file}
+                            onClick={() => setFile(path)}
+                            className="shrink-0 rounded-md px-2.5 py-1 font-mono text-[12px] text-ink-faint transition-colors duration-150 hover:text-ink aria-pressed:bg-raised aria-pressed:text-ink"
+                          >
+                            {path}
+                            {path in drafts ? ' •' : ''}
                           </button>
-                        )}
-                        <button
-                          type="button"
-                          disabled={!dirty || running || studio.busy}
-                          onClick={() => void saveDrafts()}
-                          className="rounded-md bg-ink px-2.5 py-1 text-[12px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-30"
-                          data-testid="studio-save"
-                        >
-                          {studio.busy ? t('editor.saving') : t('editor.save')}
-                        </button>
-                      </span>
+                        ))}
+                        <span className="ml-auto flex shrink-0 items-center gap-2 pl-3">
+                          {dirty && (
+                            <button type="button" onClick={() => setDrafts({})} className="rounded-md px-2.5 py-1 text-[12px] text-ink-faint transition-colors duration-150 hover:text-ink">
+                              {t('editor.discard')}
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            disabled={!dirty || running || studio.busy}
+                            onClick={() => void saveDrafts()}
+                            className="rounded-md bg-ink px-2.5 py-1 text-[12px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-30"
+                            data-testid="studio-save"
+                          >
+                            {studio.busy ? t('editor.saving') : t('editor.save')}
+                          </button>
+                        </span>
+                      </div>
+                      <div className="h-[560px]">
+                        <CodeEditor
+                          path={file}
+                          value={drafts[file] ?? original(file)}
+                          readOnly={running}
+                          onChange={(text) => setDrafts((current) => (text === original(file) ? Object.fromEntries(Object.entries(current).filter(([path]) => path !== file)) : { ...current, [file]: text }))}
+                          onSave={() => void saveDrafts()}
+                        />
+                      </div>
                     </div>
-                    <div className="h-[560px]">
-                      <CodeEditor
-                        path={file}
-                        value={drafts[file] ?? original(file)}
-                        readOnly={running}
-                        onChange={(text) => setDrafts((current) => (text === original(file) ? Object.fromEntries(Object.entries(current).filter(([path]) => path !== file)) : { ...current, [file]: text }))}
-                        onSave={() => void saveDrafts()}
-                      />
-                    </div>
-                  </div>
-                ),
-              },
-              {
-                id: 'problems',
-                label: evaluation?.problems.length ? `${t('tabs.problems')} ${evaluation.problems.length}` : t('tabs.problems'),
-                content:
-                  evaluation && evaluation.problems.length > 0 ? (
-                    <ul className="divide-y divide-line rounded-xl border border-line text-[13px]" data-testid="studio-problems">
-                      {evaluation.problems.map((problem, index) => (
-                        <li key={index} className="flex gap-3 px-4 py-3">
-                          <span className={`shrink-0 font-mono text-[11px] ${problem.level === 'error' ? 'text-danger' : 'text-[oklch(0.8_0.12_70)]'}`}>{problem.level}</span>
-                          <span className="min-w-0">
-                            <span className="font-mono text-[12px] text-ink-faint">
-                              {problem.rule}
-                              {problem.file ? ` · ${problem.file}` : ''}
-                            </span>
-                            <span className="mt-0.5 block text-ink-muted">{problem.message}</span>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-[13.5px] text-ink-faint">{t('noProblems')}</p>
                   ),
-              },
-              {
-                id: 'install',
-                label: t('tabs.install'),
-                content: evaluation?.ok ? <InstallPanel item={item} values={view.values} encoded={tune.encoded} data={exportData} registryPath={`/r/s/${view.id}.json`} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
-              },
-              {
-                id: 'skill',
-                label: t('tabs.skill'),
-                content: evaluation?.ok ? <SkillPanel item={item} values={view.values} data={exportData} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
-              },
-            ]}
-          />
+                },
+                {
+                  id: 'problems',
+                  label: evaluation?.problems.length ? `${t('tabs.problems')} ${evaluation.problems.length}` : t('tabs.problems'),
+                  content:
+                    evaluation && evaluation.problems.length > 0 ? (
+                      <ul className="divide-y divide-line rounded-[var(--radius-card)] border border-line text-[13px]" data-testid="studio-problems">
+                        {evaluation.problems.map((problem, index) => (
+                          <li key={index} className="flex gap-3 px-4 py-3">
+                            <span className={`shrink-0 font-mono text-[11px] ${problem.level === 'error' ? 'text-danger' : 'text-pending'}`}>{problem.level}</span>
+                            <span className="min-w-0">
+                              <span className="font-mono text-[12px] text-ink-faint">
+                                {problem.rule}
+                                {problem.file ? ` · ${problem.file}` : ''}
+                              </span>
+                              <span className="mt-0.5 block text-ink-muted">{problem.message}</span>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-[13.5px] text-ink-faint">{t('noProblems')}</p>
+                    ),
+                },
+                {
+                  id: 'install',
+                  label: t('tabs.install'),
+                  content: evaluation?.ok ? <InstallPanel item={item} values={view.values} encoded={tune.encoded} data={exportData} registryPath={`/r/s/${view.id}.json`} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
+                },
+                {
+                  id: 'skill',
+                  label: t('tabs.skill'),
+                  content: evaluation?.ok ? <SkillPanel item={item} values={view.values} data={exportData} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
+                },
+              ]}
+            />
+          </div>
         </div>
       </main>
     </div>

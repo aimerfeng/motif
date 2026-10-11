@@ -33,7 +33,7 @@ test('从市场条目进入工作台：agent 改坏、自己修好、调参，�
 
   await page.getByRole('button', { name: '应用为默认值' }).click()
   await expect(page.getByTestId('code-editor')).toContainText("colorFrom: '#22d3ee'")
-  await expect(page.getByRole('button', { name: '应用为默认值' })).toBeDisabled()
+  await expect(page.getByRole('button', { name: '应用为默认值' })).toBeHidden()
 
   const registry = await request.get(`/r/s/${id}.json`)
   expect(registry.ok()).toBe(true)

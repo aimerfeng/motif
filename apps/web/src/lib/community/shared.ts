@@ -54,6 +54,11 @@ export function formatMotif(amount: bigint): string {
   return `${Number(whole).toLocaleString('en-US')}${trimmed ? `.${trimmed}` : ''}`
 }
 
+/** 数据格里的大数：「5 亿」「500M」这样的简写，完整数字放在 title 里（手机上一格放不下九位数）。 */
+export function formatMotifCompact(amount: bigint, locale: string): string {
+  return new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 }).format(Number(formatUnits(amount, 18)))
+}
+
 /** 创作者资料（资料 JSON 托管在站点，链上存它的 sha256）。 */
 export interface ProfileMetadata {
   name?: string

@@ -15,7 +15,7 @@ export function CopyCommand({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => void copy('command', text)}
-        className="flex shrink-0 items-center gap-1.5 border-l border-line px-3 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink"
+        className="flex shrink-0 items-center gap-1.5 border-l border-line px-3 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-raised hover:text-ink"
       >
         <CopyIcon state={state} className="size-3.5" />
         <span aria-live="polite">{state === 'copied' ? t('copied') : state === 'failed' ? t('copyFailed') : t('copy')}</span>

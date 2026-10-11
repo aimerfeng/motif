@@ -3,6 +3,7 @@
 import type { TranscriptEntry } from '@motif/agent/client'
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { ArrowIcon, CheckIcon, ChevronIcon, SparklesIcon } from '@/components/icons'
 import { RichText } from './rich-text'
 
 type ToolEntry = Extract<TranscriptEntry, { role: 'tool' }>
@@ -42,14 +43,14 @@ function ToolRow({ entry, running }: { entry: ToolEntry; running: boolean }) {
   const pending = entry.output === null
   const state = pending ? (running ? 'pending' : 'stopped') : entry.isError ? 'error' : 'ok'
   return (
-    <details className="group rounded-lg border border-line bg-sunken/60 text-[12.5px]" data-state={state}>
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 text-ink-muted select-none hover:text-ink">
+    <details className="group text-[12.5px]" data-state={state}>
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-1.5 text-ink-muted select-none hover:text-ink [&::-webkit-details-marker]:hidden">
         <span
           aria-hidden
-          className={`size-1.5 shrink-0 rounded-full ${state === 'pending' ? 'animate-pulse bg-ink-faint' : state === 'error' ? 'bg-danger' : state === 'ok' ? 'bg-[oklch(0.78_0.13_160)]' : 'bg-white/20'}`}
+          className={`size-1.5 shrink-0 rounded-full ${state === 'pending' ? 'animate-pulse bg-ink-faint' : state === 'error' ? 'bg-danger' : state === 'ok' ? 'bg-success' : 'bg-line-strong'}`}
         />
-        <span className="min-w-0 flex-1 truncate">{label}</span>
-        <span aria-hidden className="text-ink-faint transition-transform duration-150 group-open:rotate-90">›</span>
+        <span className={`min-w-0 flex-1 truncate ${state === 'error' ? 'text-danger' : ''}`}>{label}</span>
+        <ChevronIcon aria-hidden className="size-3 shrink-0 text-ink-faint transition-transform duration-150 group-open:rotate-90" />
       </summary>
       {entry.output !== null && <pre className="max-h-64 overflow-auto border-t border-line px-3 py-2 font-mono text-[11.5px] leading-relaxed whitespace-pre-wrap text-ink-muted">{entry.output}</pre>}
     </details>
@@ -105,8 +106,11 @@ function Entry({ entry, running, revert }: { entry: TranscriptEntry; running: bo
     case 'notice':
       if (entry.kind === 'done') {
         return (
-          <div className="rounded-xl border border-[oklch(0.78_0.13_160/0.35)] bg-[oklch(0.78_0.13_160/0.08)] px-3.5 py-2.5 text-[13.5px] leading-relaxed text-ink">
-            <p className="mb-1 text-[11.5px] text-ink-faint">{t('done')}</p>
+          <div className="rounded-xl border border-success/35 bg-success/8 px-3.5 py-2.5 text-[13.5px] leading-relaxed text-ink">
+            <p className="mb-1 flex items-center gap-1.5 text-[11.5px] text-success">
+              <CheckIcon className="size-3.5" strokeWidth={2} />
+              {t('done')}
+            </p>
             <RichText text={entry.text} />
           </div>
         )
@@ -153,6 +157,15 @@ export function ChatPanel({
     if (element && stick.current) element.scrollTop = element.scrollHeight
   }, [transcript])
 
+  // agent 往往连着调好几个工具：放进同一个块里，读起来是「一段话、一组步骤、一段话」。
+  const groups: ({ kind: 'tools'; start: number; entries: ToolEntry[] } | { kind: 'entry'; index: number; entry: TranscriptEntry })[] = []
+  transcript.forEach((entry, index) => {
+    const last = groups.at(-1)
+    if (entry.role !== 'tool') groups.push({ kind: 'entry', index, entry })
+    else if (last?.kind === 'tools') last.entries.push(entry)
+    else groups.push({ kind: 'tools', start: index, entries: [entry] })
+  })
+
   const send = (text = draft) => {
     const prompt = text.trim()
     if (!prompt || running || !available) return
@@ -181,25 +194,37 @@ export function ChatPanel({
       >
         {transcript.length === 0 && (
           <div className="my-auto">
-            <p className="text-[14px] leading-relaxed text-ink-muted">{t('empty')}</p>
-            <div className="mt-4 flex flex-wrap gap-1.5">
+            <span className="grid size-9 place-items-center rounded-full border border-line bg-raised text-ink-muted">
+              <SparklesIcon className="size-4" />
+            </span>
+            <p className="mt-4 text-[14px] leading-relaxed text-ink-muted">{t('empty')}</p>
+            <div className="mt-4 flex flex-col gap-1.5">
               {suggestions.map((suggestion) => (
                 <button
                   key={suggestion}
                   type="button"
                   disabled={!available}
                   onClick={() => send(suggestion)}
-                  className="rounded-full border border-line px-3 py-1.5 text-left text-[12.5px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink disabled:opacity-40"
+                  className="group flex items-center justify-between gap-3 rounded-lg border border-line px-3 py-2 text-left text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:bg-raised hover:text-ink disabled:opacity-40"
                 >
                   {suggestion}
+                  <ArrowIcon className="size-3.5 shrink-0 text-ink-faint transition-transform duration-150 group-hover:translate-x-0.5" />
                 </button>
               ))}
             </div>
           </div>
         )}
-        {transcript.map((entry, index) => (
-          <Entry key={index} entry={entry} running={running && index === transcript.length - 1} revert={revert} />
-        ))}
+        {groups.map((group) =>
+          group.kind === 'tools' ? (
+            <div key={group.start} className="shrink-0 divide-y divide-line/60 overflow-hidden rounded-lg border border-line bg-sunken/60">
+              {group.entries.map((entry, offset) => (
+                <ToolRow key={group.start + offset} entry={entry} running={running && group.start + offset === transcript.length - 1} />
+              ))}
+            </div>
+          ) : (
+            <Entry key={group.index} entry={group.entry} running={running && group.index === transcript.length - 1} revert={revert} />
+          ),
+        )}
         {running && (
           <p className="flex items-center gap-2 text-[12.5px] text-ink-faint" role="status">
             <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-ink-faint" />
@@ -231,9 +256,10 @@ export function ChatPanel({
               type="button"
               onClick={() => send()}
               disabled={!draft.trim() || !available}
-              className="shrink-0 rounded-lg bg-ink px-3.5 py-1.5 text-[13px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-30"
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-ink px-3 py-1.5 text-[13px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-30"
             >
               {t('send')}
+              <ArrowIcon className="size-3.5" />
             </button>
           )}
         </div>

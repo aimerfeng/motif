@@ -193,7 +193,9 @@
       "overview": "概览",
       "submit": "投稿",
       "review": "审核",
-      "governance": "治理"
+      "governance": "治理",
+      "testnet": "本地测试链",
+      "testnetTitle": "{chain}：上面的资产没有价值，只用来试用"
     },
     "wallet": {
       "connect": "连接钱包",
@@ -222,26 +224,23 @@
       "failed": "领取失败，稍后再试"
     },
     "pause": {
-      "lead": "你是版主：遇到垃圾投稿潮时可以暂停新投稿。进行中的审核、撤回和关闭不受影响。",
-      "pausedLead": "新投稿已暂停。处理完之后记得恢复。",
+      "lead": "暂停新投稿（处理垃圾投稿时用）。进行中的审核不受影响。",
+      "pausedLead": "新投稿已暂停，处理完后记得恢复。",
       "pause": "暂停投稿",
       "resume": "恢复投稿",
       "busy": "请在钱包里确认…"
     },
     "offline": {
       "title": "社区",
-      "lead": "社区链还没有连接。投稿、审核和治理都记录在链上，链连上之后这里会显示社区的作品和动态。",
-      "dev": "本地开发：另开一个终端运行 <code>pnpm dev:chain</code>，它会启动一条本地链、部署合约并导入现有条目，站点会自动连上。"
+      "lead": "社区链还没有连接。连上之后这里会显示社区作品、审核和治理。",
+      "dev": "本地开发：另开一个终端运行 <code>pnpm dev:chain</code>，站点会自动连上。"
     },
     "hub": {
       "title": "社区",
-      "lead": "任何人都可以把作品投到 Motif。审核员按“效果质量第一、许可证先行”审核，通过的作品进入市场；署名、来源和 Remix 关系都记在链上，任何人都能核对。",
-      "localChain": "这是本地开发链（{chain}），上面的资产没有任何价值，只用来试用社区功能。",
-      "paused": "投稿暂时关闭：版主暂停了新投稿（通常是在处理垃圾投稿）。进行中的审核、撤回和关闭不受影响，押金不会被锁住。",
+      "lead": "投稿你的效果，审核通过后进入市场；署名和来源记在链上。",
+      "paused": "新投稿已暂停：版主正在处理垃圾投稿。进行中的审核和押金不受影响。",
       "cta": {
-        "submit": "投稿作品",
-        "review": "审核队列",
-        "governance": "社区治理"
+        "submit": "投稿作品"
       },
       "stats": {
         "registered": "链上条目",
@@ -254,26 +253,30 @@
         "title": "怎么参与",
         "submit": {
           "title": "投稿",
-          "body": "押 {bond} MOTIF 提交作品。源码由站点托管，链上记录内容哈希、许可证、来源和 Remix 关系。"
+          "body": "上传条目文件，检查通过后押上押金提交。",
+          "chip": "押金 {bond} MOTIF"
         },
         "review": {
           "title": "审核",
-          "body": "{quorum} 位审核员投票通过即上架，审核期 {days} 天。质量问题退回押金；抄袭、伪造许可证、恶意代码会罚没押金。"
+          "body": "{quorum} 位审核员通过即上架；违规会罚没押金。",
+          "chip": "审核期 {days} 天"
         },
         "reward": {
           "title": "奖励",
-          "body": "新作品通过得 {publish} MOTIF 和声誉。你的作品被别人 Remix 并通过时，你再得 {remix} MOTIF。"
+          "body": "作品通过得奖励和声誉；被别人 Remix 再得一份。",
+          "chip": "发布 +{publish} · Remix +{remix}"
         }
       },
       "works": {
-        "title": "最新社区作品",
+        "title": "最新作品",
         "inMarket": "在市场里查看",
-        "empty": "还没有审核通过的社区作品。来投第一个。"
+        "empty": "还没有通过审核的社区作品。",
+        "first": "投第一个"
       },
       "reviews": {
         "title": "正在审核",
         "all": "全部",
-        "empty": "现在没有待审核的投稿。",
+        "empty": "没有待审核的投稿。",
         "votes": "{votes}/{quorum} 票"
       },
       "contributors": {
@@ -302,12 +305,12 @@
     },
     "submit": {
       "title": "投稿",
-      "lead": "把条目文件（.motif.json）拖进来：站点会用和市场条目相同的检查器和编译器检查它，你可以先看实时预览，再押上押金提交到链上。",
+      "lead": "上传条目文件，站点检查并实时预览，确认后押上押金提交。",
       "notJson": "这不是有效的 JSON 文件。",
       "checking": "正在检查…",
       "replace": "换一个文件",
-      "drop": "把 .motif.json 拖到这里，或点击选择",
-      "dropHint": "条目文件包含清单（item.ts 的内容）和全部源码",
+      "drop": "拖入 .motif.json，或点击选择",
+      "dropHint": "一个文件包含清单和全部源码",
       "untitled": "未命名",
       "passed": "检查通过",
       "failed": "{count} 个问题需要修改",
@@ -322,16 +325,14 @@
       "hashMismatch": "浏览器算出的内容哈希和预检结果不一致，请重新选择文件。",
       "panel": {
         "title": "提交",
-        "waiting": "先选择条目文件。检查通过后在这里提交。",
         "asNew": "这会作为一个新条目提交审核。",
         "asVersion": "这是你维护的条目，会作为第 {version} 版提交审核。",
         "bond": "押金",
         "balance": "你的余额",
         "lowBalance": "余额不够付押金。",
-        "lowBalanceLocal": "余额不够付押金，先在社区概览页领取测试币。",
         "paused": "投稿暂时关闭。",
         "submit": "签名并提交",
-        "steps": "钱包会依次请你：签名确认上传源码 → 授权押金（第一次投稿时）→ 发送投稿交易。审核结束后押金按结果退回或罚没。"
+        "steps": "钱包会依次弹出：上传签名 → 授权押金（仅首次）→ 投稿交易。"
       },
       "blocked": {
         "taken": "这个 slug 已经被 {maintainer} 使用。改一个 slug 再投。",
@@ -348,21 +349,27 @@
         "failed": "签名并提交"
       },
       "remix": {
-        "lead": "Remix「{title}」：下载它的源文件，用 <code>pnpm item:unpack</code> 还原成条目目录，改好后打包投稿（清单里的 provenance.basedOn 写 <code>{slug}</code>）。",
+        "lead": "Remix「{title}」：下载源文件，用 <code>pnpm item:unpack</code> 还原后修改，清单里的 provenance.basedOn 写 <code>{slug}</code>。",
         "download": "下载源文件"
       },
       "prepare": {
-        "title": "准备条目文件",
-        "scratch": "从零开始：在仓库的 packages/registry/items/ 下按《条目编写指南》建一个条目目录（例如 my-effect），然后运行 <code>pnpm item:pack my-effect</code>。",
-        "remix": "Remix 现有条目：运行 <code>pnpm item:remix mesh-gradient my-gradient</code> 复制一份并记好来源，改完后打包。原作者会在你的作品通过时得到奖励。",
-        "community": "社区作品不在仓库里：在它的条目页下载源文件，再用 <code>pnpm item:unpack my-effect.motif.json</code> 还原成条目目录。"
+        "title": "用命令行准备条目文件",
+        "scratch": "从零开始：在 packages/registry/items/ 下建条目目录，然后 <code>pnpm item:pack my-effect</code>。",
+        "remix": "Remix 内置条目：<code>pnpm item:remix mesh-gradient my-gradient</code> 复制并记好来源，改完再打包。",
+        "community": "Remix 社区作品：在条目页下载源文件，<code>pnpm item:unpack my-effect.motif.json</code> 还原。"
       },
       "criteria": {
-        "title": "审核员看什么",
-        "quality": "默认参数就是最好看的状态，调参范围内的任何值都不难看。",
-        "license": "来源真实、许可证允许再分发，保留了原版权头。原创作品按 MIT 授权。",
-        "motion": "处理了“减少动态效果”，离开屏幕时暂停，不拖慢页面。",
+        "title": "审核标准",
+        "quality": "默认参数就好看，调参范围内都不难看。",
+        "license": "来源真实、许可证允许再分发、保留原版权头；原创按 MIT。",
+        "motion": "支持减少动态效果，离屏暂停，不拖慢页面。",
         "network": "不加载外部 CDN、字体或统计脚本，不往外发数据。"
+      },
+      "fromStudio": "没有条目文件？<link>在工作台里做一个</link>，完成后直接投稿。",
+      "flow": {
+        "pick": "选择条目文件",
+        "check": "检查与预览",
+        "sign": "签名并提交"
       }
     },
     "item": {
@@ -480,22 +487,23 @@
     },
     "review": {
       "title": "审核",
-      "lead": "每份投稿需要 {quorum} 位审核员的结论，审核期 {days} 天。审核员看的是：默认参数是否好看、调参范围内是否都不难看、来源和许可证是否真实。",
-      "open": "进行中（{count}）",
+      "lead": "{quorum} 位审核员给出结论即结算，审核期 {days} 天。",
+      "open": "进行中",
       "recent": "最近结算",
       "noneClosed": "还没有结算过的审核。",
-      "curators": "审核员（{count}）",
-      "howCurators": "审核员由 DAO 治理任免。每投一票得到声誉，奖励的是参与，不是“站对边”。",
-      "toGovernance": "去治理页提名审核员",
+      "curators": "审核员",
+      "howCurators": "审核员由治理投票任免，每投一票得声誉。",
+      "toGovernance": "提名审核员",
       "onlyMine": "只看需要我审核的",
       "nothingForYou": "没有需要你审核的投稿了。",
-      "empty": "现在没有待审核的投稿。",
+      "empty": "没有待审核的投稿。",
       "newItem": "新条目",
       "newVersion": "第 {version} 版",
       "by": "投稿者",
       "votes": "{votes}/{quorum} 票",
       "overdue": "已过期",
-      "youVoted": "已投票"
+      "youVoted": "已投票",
+      "criteria": "审核标准"
     },
     "profile": {
       "reputation": "声誉 {value}",
@@ -519,10 +527,10 @@
     },
     "profileEditor": {
       "title": "创作者资料",
-      "lead": "handle 是你在社区里的名字，记在链上，别人可以用它找到你的作品。名字、简介和链接由站点托管，链上记录它们的哈希。",
+      "lead": "handle 记在链上，是你在社区里的名字；其余资料由站点托管。",
       "loading": "正在读取账户…",
       "handle": "handle",
-      "handleHint": "3–32 个小写字母、数字或连字符。改名后旧 handle 仍归你所有，别人不能抢注冒充。",
+      "handleHint": "3–32 个小写字母、数字或连字符。改名后旧 handle 仍归你。",
       "handleChangeHint": "可以改名；旧 handle 仍归你所有。",
       "handleRule": "只能用 3–32 个小写字母、数字和单个连字符，不能以连字符开头或结尾。",
       "name": "显示名称",
@@ -538,11 +546,13 @@
         "signing": "请在钱包里确认…",
         "pending": "等待上链…",
         "syncing": "正在同步…"
-      }
+      },
+      "preview": "预览",
+      "previewName": "你的名字"
     },
     "governance": {
       "title": "治理",
-      "lead": "MOTIF 持有者委托投票权后可以发起和表决提案：任免审核员和版主、调整审核参数和奖励、动用金库、许可证白名单。通过的提案进入时间锁，延迟到期后任何人都可以执行。",
+      "lead": "委托 MOTIF 投票权后就能发起和表决提案，通过的提案经时间锁后执行。",
       "settings": {
         "delay": "投票延迟",
         "period": "投票期",
@@ -552,7 +562,6 @@
         "treasury": "金库",
         "supply": "总供应量"
       },
-      "proposals": "提案（{count}）",
       "noProposals": "还没有提案。",
       "states": {
         "pending": "等待投票",
@@ -577,8 +586,8 @@
         "title": "我的投票权",
         "balance": "持有",
         "votes": "投票权",
-        "threshold": "发起提案需要至少 {threshold} 票。",
-        "lead": "MOTIF 需要委托后才计入投票权（可以委托给自己）。委托只是授权投票，币不会离开你的钱包。",
+        "threshold": "发起提案门槛 {threshold}",
+        "lead": "委托后才计入投票权，可以委托给自己；币不会离开钱包。",
         "self": "委托给自己",
         "phase": {
           "signing": "请在钱包里确认…",
@@ -601,7 +610,7 @@
       },
       "composer": {
         "title": "发起提案",
-        "lead": "选一个模板，填好参数和说明。投票权达到门槛才能发起。",
+        "lead": "投票权达到门槛才能发起。",
         "template": "提案类型",
         "templates": {
           "appointCurator": "任命审核员",
@@ -631,8 +640,20 @@
           "signing": "请在钱包里确认…",
           "pending": "等待上链…",
           "syncing": "正在同步…"
-        }
-      }
+        },
+        "open": "发起提案",
+        "close": "收起"
+      },
+      "lifecycle": {
+        "title": "提案流程",
+        "propose": "发起",
+        "vote": "投票",
+        "queue": "排队",
+        "execute": "执行"
+      },
+      "active": "进行中",
+      "past": "已结束",
+      "calls": "执行内容（{count}）"
     },
     "badge": {
       "verified": "链上已验证 · v{version}",
@@ -776,16 +797,16 @@
   },
   "docs": {
     "title": "文档",
-    "toc": "本页目录"
+    "toc": "本页目录",
+    "start": "快速开始"
   },
   "studio": {
     "home": {
       "title": "工作台",
-      "lead": "用一句话描述想要的效果，agent 会写出组件、调好参数，在右边实时预览。也可以从市场里挑一个条目接着改。",
+      "lead": "描述想要的效果，agent 会写好组件、调好参数，边改边预览。",
       "placeholder": "比如：一个像极光一样缓慢流动的背景，配色偏冷，适合放在登录页",
       "hint": "Enter 发送，Shift + Enter 换行",
       "unavailable": "这个站点还没有配置 agent，可以先打开空白工作区手动编辑代码。",
-      "blank": "空白开始",
       "start": "开始",
       "starting": "正在准备…",
       "examples": {
@@ -794,16 +815,27 @@
         "pricing": "三档定价卡片，中间那档有光边",
         "text": "标题文字逐字浮现，带一点模糊"
       },
-      "remix": "想在现成的效果上改？去<link>市场</link>挑一个，点「在工作台里改」。",
       "recent": "最近的会话",
-      "remixOf": "基于 {slug}"
+      "remixOf": "基于 {slug}",
+      "try": "试试",
+      "paths": {
+        "market": {
+          "title": "改一个现成的",
+          "body": "在市场里挑一个条目，点「在工作台里改」。"
+        },
+        "blank": {
+          "title": "空白开始",
+          "body": "从模板开始手写代码，随时可以叫 agent。"
+        }
+      },
+      "turns": "{count} 轮对话"
     },
     "chat": {
       "title": "对话",
       "agent": "由 {label} 驱动",
       "noAgent": "没有配置 agent",
-      "budget": "本会话已用的模型额度",
-      "empty": "告诉 agent 你想怎么改：换配色、调节奏、加一个参数，或者干脆换个效果。",
+      "budget": "本会话已用 {percent}% 模型额度",
+      "empty": "告诉 agent 你想怎么改：换配色、调节奏、加参数，或者换个效果。",
       "placeholder": "描述你想要的改动…",
       "send": "发送",
       "stop": "停止",
