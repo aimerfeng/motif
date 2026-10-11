@@ -54,6 +54,9 @@ rmSync(communityData, { recursive: true, force: true })
 // Studio 的会话也放独立目录；agent 用脚本运行器，不调任何模型。
 const studioData = path.join(ROOT, '.data/e2e-studio')
 rmSync(studioData, { recursive: true, force: true })
+// 商店的订单同理。
+const ordersData = path.join(ROOT, '.data/e2e-orders')
+rmSync(ordersData, { recursive: true, force: true })
 
 // 2. 沙箱和站点。条目检查不通过时 build 以非 0 退出，但失败的条目只是不进市场，e2e 照常跑剩下的。
 shell('pnpm --filter @motif/preview build')
@@ -64,6 +67,7 @@ const webEnv = {
   MOTIF_CHAIN_DEPLOYMENT: path.join(ROOT, 'packages/contracts/ignition/deployments/e2e/deployed_addresses.json'),
   MOTIF_COMMUNITY_DATA: communityData,
   MOTIF_STUDIO_DATA: studioData,
+  MOTIF_ORDERS_DATA: ordersData,
   MOTIF_AGENT_PROVIDER: 'scripted',
 }
 must(shell('pnpm --filter @motif/web exec next build', webEnv))

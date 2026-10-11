@@ -199,6 +199,25 @@ The regulatory risk comes first: issuing a token is prohibited for operators in 
 - **C3 Deployment.** Testnet first (full governance cycle, seeding, a week of real submissions), then mainnet; seed the catalog and renounce the seeder role; hand curator appointments to governance. Prepared: the runbook `docs/deploy-community.md`; `arbitrumSepolia` / `arbitrumOne` networks with pinned chain ids that read the RPC and deployer key from the Hardhat keystore; a forked `arbitrumSepoliaFork` for free rehearsals; parameter templates `arbitrum-sepolia.example.json` and `arbitrum-one.example.json`; and `scripts/check-deployment.ts` (27 checks of the role structure after deployment). Executing it needs the user's addresses, a funded deployer key and the legal opinion.
 - Gate for each step: `pnpm verify` green, e2e for the new pages, and for C3 a recorded rehearsal of every governance action on testnet.
 
+## Scope change (2026-10-11): a store for agents
+
+The user wants the project to be agent-first: agents search for the UI they need, order it and pay with crypto. Decisions:
+- accept both USDC and MOTIF, priced in USDC with a discount for MOTIF;
+- open-source catalogue items stay free; custom orders and community works are paid, with an author share.
+
+Design: `docs/decisions/0008-agent-store.md`.
+
+- **S1 Entry, orders and custom orders (done 2026-10-11).**
+  - `/mcp` (MCP Streamable HTTP, stateless) and `/api/agent/<tool>` share one set of zod-defined tools: `search_ui`, `get_ui`, `preview_ui`, `get_quote`, `place_order`, `get_order`. `/llms.txt` describes the store.
+  - Orders are files in `.data/orders`; the order id is the credential.
+  - Custom orders run the Studio agent in the background (two at a time) and are delivered once they pass the checker.
+  - Prices are 0 for now.
+  - Gates: unit tests for pricing and search, and e2e over MCP and HTTP (catalogue order, custom order with the scripted runner, `llms.txt`).
+  - Manual check: Claude Code as the buyer searched, previewed, tuned within the safe ranges and ordered two items.
+- **S2 Payment.** USDC through x402 and MOTIF through a payment contract that splits revenue between author and treasury. Order states already include `awaiting_payment`. Local chain and testnet first.
+- **S3 Community pricing.** Authors set a price when submitting.
+- **S4 Mainnet payments.** Need an offshore operating entity and a legal opinion.
+
 ## Verification (end to end)
 
 1. `pnpm verify` is green: types, ESLint, Vitest (schema, bake, checker, param mapping, agent with MockLanguageModelV4 plus scripted runs), and build.

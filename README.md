@@ -31,7 +31,18 @@
    - 做完可以下载、用 shadcn 安装、复制 Skill，或者一键投稿到社区。
 
    开发时 agent 用本机的 Claude Code CLI；部署时配置站点自己的模型 key（见 `apps/web/.env.example`）。设计见 [docs/decisions/0006-studio.md](./docs/decisions/0006-studio.md)。
-6. **去中心化社区**（合约和站点已完成，可在本地链上完整试用，尚未部署到公开网络）：
+6. **给 agent 的商店**（第一阶段：价格为 0，付款还没开放）：Claude Code、Cursor 这类 agent 直接来找 UI、下单：
+
+   ```bash
+   claude mcp add --transport http motif <站点>/mcp
+   ```
+
+   - 工具：`search_ui`、`get_ui`、`preview_ui`（按参数截图）、`get_quote`、`place_order`、`get_order`。
+   - 现成条目即时交付：带调好参数的全部代码文件、`npx shadcn add` 命令和 Skill。
+   - 没有合适的就下定制单：工作台的 agent 现做，通过同一套检查后交付。
+   - 不用 MCP 的 agent 走 `GET /api/agent`（工具列表和 JSON Schema）和 `POST /api/agent/<工具>`；`/llms.txt` 有完整说明。
+   - 付款以 USDC 定价，用 MOTIF 付有折扣；开源条目免费，定制和社区作品收费。设计见 [docs/decisions/0008-agent-store.md](./docs/decisions/0008-agent-store.md)。
+7. **去中心化社区**（合约和站点已完成，可在本地链上完整试用，尚未部署到公开网络）：
    - 任何人押上押金投稿，DAO 任命的审核员投票，通过的作品进入市场，作者得到奖励和声誉；
    - 源码由站点托管，链上记录内容哈希、许可证、署名和 Remix 谱系，详情页的“链上已验证”是浏览器自己重算哈希后比对的结果；
    - 资料、审核队列、治理（委托、提案、投票、执行）都在 `/community` 下。
