@@ -59,7 +59,7 @@ pnpm dev:chain      # （可选，另开终端）本地社区链 http://127.0.0.
 | `pnpm smoke:agent` | 用本机 Claude CLI 真实跑几个工作台任务（会调用模型），记录写到 `.data/evals/` |
 | `pnpm skills:build` | 重新生成仓库根目录的 `skills/` |
 | `pnpm notices` | 重新生成 `THIRD_PARTY_NOTICES.md` |
-| `pnpm dev:chain` | 启动本地社区链（全新部署 + 导入目录），提供测试币 |
+| `pnpm dev:chain` | 启动本地社区链（全新部署 + 导入目录），提供测试币；开发管理员是账户 #9（所有角色、1 亿 MOTIF），`pnpm dev` 的站点里选「本地开发钱包 #9」直接登录 |
 | `pnpm item:pack <slug>` | 把条目目录打包成 `.motif.json`，用于社区投稿（`item:unpack` 还原，`item:remix` 开一个 Remix） |
 
 新增或修改效果请先读 [docs/authoring-items.md](./docs/authoring-items.md)。

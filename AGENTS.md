@@ -19,6 +19,8 @@
 
 - `pnpm dev`：同时启动站点（`localhost:3000`）和预览沙箱（`127.0.0.1:4100`）。
 - `pnpm dev:chain`：（可选）本地社区链（`127.0.0.1:8545`），全新部署合约并导入条目；开发模式的站点自动连上。
+  - 账户 #9 是开发管理员：所有角色、1 亿 MOTIF，见 `packages/contracts/scripts/dev-admin.ts`。
+  - 开发模式下钱包列表里有「本地开发钱包」，不用装扩展。
 - `pnpm verify`：类型检查 + ESLint + 单元测试 + 构建。**提交前必须通过。**
 - `pnpm e2e`：端到端测试（自己起 3100 / 4110 端口的服务）。
 - `pnpm smoke:agent`：（手动，会调用模型）用本机 Claude CLI 真实跑三个工作台任务，记录写到 `.data/evals/`。

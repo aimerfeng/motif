@@ -95,11 +95,59 @@ interface AnnounceDetail {
   provider: EIP1193Provider
 }
 
+interface DevWallet {
+  index: number
+  address: Address
+  admin: boolean
+  moderator: boolean
+  curator: boolean
+}
+
+/**
+ * 本地开发钱包的 provider：账户固定，签名和交易直接交给本地节点（开发账户是解锁的，不需要私钥）。
+ * 只在开发模式 + 本地链上出现，见 /api/community/dev-wallets。
+ */
+function devProvider(rpcUrl: string, address: Address): EIP1193Provider {
+  let id = 0
+  const request = async ({ method, params = [] }: { method: string; params?: unknown }) => {
+    if (method === 'eth_requestAccounts' || method === 'eth_accounts') return [address]
+    if (method === 'wallet_switchEthereumChain' || method === 'wallet_addEthereumChain') return null
+    const response = await fetch(rpcUrl, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method, params }) })
+    const json = (await response.json()) as { result?: unknown; error?: { code: number; message: string; data?: unknown } }
+    if (json.error) throw Object.assign(new Error(json.error.message), { code: json.error.code, data: json.error.data })
+    return json.result
+  }
+  // 账户和链都不会变，事件订阅什么也不用做。
+  const provider = { request, on: () => provider, removeListener: () => provider } as EIP1193Provider
+  return provider
+}
+
+function devWalletName(wallet: DevWallet): string {
+  const roles = wallet.admin ? ['管理员'] : [wallet.moderator && '版主', wallet.curator && '审核员'].filter((role): role is string => Boolean(role))
+  return `本地开发钱包 #${wallet.index}${roles.length > 0 ? `（${roles.join('、')}）` : ''}`
+}
+
 function useDiscoveredWallets(): DiscoveredWallet[] {
   const [wallets, setWallets] = useState<DiscoveredWallet[]>([])
   useEffect(() => {
     const found = new Map<string, DiscoveredWallet>()
     const publish = () => setWallets([...found.values()])
+    let alive = true
+    // 开发模式下接上本地链时，列出节点的开发账户：管理员在最前，然后是有角色的，最后是普通账户。
+    if (process.env.NODE_ENV === 'development') {
+      fetch('/api/community/dev-wallets')
+        .then((response) => (response.ok ? (response.json() as Promise<{ rpcUrl: string; wallets: DevWallet[] }>) : null))
+        .then((data) => {
+          if (!alive || !data) return
+          const rank = (wallet: DevWallet) => (wallet.admin ? 0 : wallet.moderator || wallet.curator ? 1 : 2)
+          for (const wallet of [...data.wallets].sort((a, b) => rank(a) - rank(b) || a.index - b.index)) {
+            const id = `dev-${wallet.index}`
+            found.set(id, { id, name: devWalletName(wallet), icon: null, provider: devProvider(data.rpcUrl, wallet.address) })
+          }
+          publish()
+        })
+        .catch(() => undefined)
+    }
     const onAnnounce = (event: Event) => {
       const { info, provider } = (event as CustomEvent<AnnounceDetail>).detail
       found.set(info.rdns || info.uuid, { id: info.rdns || info.uuid, name: info.name, icon: info.icon || null, provider })
@@ -110,12 +158,14 @@ function useDiscoveredWallets(): DiscoveredWallet[] {
     // 老式钱包只注入 window.ethereum，不发 EIP-6963 事件。
     const timer = window.setTimeout(() => {
       const injected = (window as { ethereum?: EIP1193Provider }).ethereum
-      if (found.size === 0 && injected) {
+      const extensions = [...found.keys()].filter((key) => !key.startsWith('dev-'))
+      if (extensions.length === 0 && injected) {
         found.set('injected', { id: 'injected', name: 'Browser wallet', icon: null, provider: injected })
         publish()
       }
     }, 300)
     return () => {
+      alive = false
       window.removeEventListener('eip6963:announceProvider', onAnnounce)
       window.clearTimeout(timer)
     }

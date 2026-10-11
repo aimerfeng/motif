@@ -47,13 +47,16 @@ for (let attempt = 0; !(await rpcReady()); attempt++) {
 // --reset：节点每次启动都是空链，旧的部署记录作废。
 hardhat('ignition deploy ignition/modules/motif.ts --network localhost --parameters ignition/parameters/local.json --reset')
 hardhat('run scripts/seed-catalog.ts --network localhost')
+// 开发用的管理员（默认账户 #9）：所有角色、1 亿 MOTIF、10 万 ETH。站点开发模式下可以直接用「本地开发钱包」登录它。
+hardhat('run scripts/dev-admin.ts --network localhost')
 
 console.log(`
 Motif 本地社区链已就绪：${RPC}（chain id 31337）
 - pnpm dev 启动的站点会自动连接；
 - 钱包里添加网络：RPC ${RPC}，链 id 31337，币种 ETH；
 - 连上钱包后在社区页领取测试币（1 ETH + 1000 MOTIF）；
-- 版主与审核员是 Hardhat 默认账户 #1–#4（私钥见 Hardhat 文档，只能用于本地）。
+- 版主与审核员是 Hardhat 默认账户 #1–#4，管理员是 #9（所有角色、1 亿 MOTIF）；
+- pnpm dev 的站点里可以直接选「本地开发钱包」，不用装钱包扩展。
 Ctrl+C 停止。`)
 
 const stop = () => {
