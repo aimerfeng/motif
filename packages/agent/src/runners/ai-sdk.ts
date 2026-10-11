@@ -83,7 +83,8 @@ export function aiSdkRunner(model: LanguageModel, options: AiSdkRunnerOptions = 
     async run({ prompt, system, session, state, signal, emit }) {
       const history = Array.isArray(state) ? (state as ModelMessage[]) : []
       const messages: ModelMessage[] = [...history, { role: 'user', content: prompt }]
-      const agent = new ToolLoopAgent({ model, instructions: system, tools: toolSet(session, imagesInToolResults), stopWhen: [isStepCount(maxSteps), hasToolCall('finish')], ...(imagesInToolResults ? {} : { prepareStep: screenshotsAsUserMessage }) })
+      // 一轮要调用几十次模型：网络抖一下（连接超时）不该让整轮失败。退避从 2 秒起翻倍，5 次能扛过约一分钟的中断。
+      const agent = new ToolLoopAgent({ model, instructions: system, tools: toolSet(session, imagesInToolResults), stopWhen: [isStepCount(maxSteps), hasToolCall('finish')], maxRetries: 5, ...(imagesInToolResults ? {} : { prepareStep: screenshotsAsUserMessage }) })
       const result = await agent.stream({ messages, abortSignal: signal })
 
       for await (const part of result.stream) {

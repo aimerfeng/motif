@@ -64,12 +64,24 @@ id 是 12 位随机 base36（约 62 位熵）。没有列出全部会话的接�
   - 工具结果只写「截图在下一条消息里」；
   - 截图由 `prepareStep` 作为紧跟其后的一条用户消息发出（`modelRunner` 按 provider 自动选择）。
 
-### 9. 站点的模型（2026-10-09）
+### 9. 站点的模型（2026-10-11）
 
-生产用「字字动画算力平台」（OpenAI 兼容的中转站，`https://zizidonghua.com/v1`）：
+生产用「字字动画算力平台」（OpenAI 兼容的中转站，`https://zizidonghua.com/v1`，`MOTIF_AGENT_PROVIDER=openai-compatible`），默认模型 `OmniG-6`。
 
-- `MOTIF_AGENT_PROVIDER=openai-compatible`；
-- 模型 `OmniC-5-standard`（Claude Opus 5 系列）。同平台的 `OmniC-5-light` 是 Sonnet 5 系列，单价相同。
+2026-10-11 的实测：
+
+- **Claude 通道不可用。** `OmniC-5-standard`（Opus 5）和 `OmniC-5-light`（Sonnet 5）都返回空内容、零 token。OpenAI 和 Anthropic 两种接口、流式与否都一样，这是中转站上游的问题。通道恢复后可以换回来。
+- 其余模型都能正确调用工具（`OmniG-6`、`OmniG-5.6-*`、`kimi-k2.5`、`glm-5.1`、`qwen3.8-max`、`qwen3.5-plus`、`MiniMax-M2.5`、`deepseek-v4-pro`）。
+- 同一个任务（「三个圆点依次弹跳的加载动画，放在一张白色卡片里」）的 `pnpm smoke:agent` 结果：
+
+| 模型 | 结果 | 用时 | token | 单价倍率 | 画面 |
+| --- | --- | --- | --- | --- | --- |
+| `OmniG-6` | 通过 | 511 秒 | 16 万 | 12 | 完整的加载卡片：图标、标题、说明、三点弹跳 |
+| `kimi-k2.5` | 通过 | 79 秒 | 19 万 | 2.4 | 很小的卡片，只有蓝点和「加载中…」 |
+
+效果质量第一，默认用 `OmniG-6`。要快、要省时换 `kimi-k2.5`，单轮约快 6 倍、便宜约 4 倍。
+
+一轮 agent 要调用几十次模型，2026-10-11 遇到过一次连接超时（10 秒）。AI SDK 默认只重试 2 次，这一次超时就让整轮失败了，所以运行器把重试提到 5 次，指数退避，能扛过约一分钟的中断。
 
 配置写在 `apps/web/.env.local`，不进仓库。环境变量到模型的映射只有一份（`modelConfigFromEnv`），站点和 `pnpm smoke:agent` 共用。配了站点模型时，冒烟测试就用它，而不是本机 CLI。
 
