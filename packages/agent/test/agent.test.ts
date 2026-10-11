@@ -2,7 +2,7 @@ import { defaultsOf } from '@motif/schema'
 import { simulateReadableStream } from 'ai'
 import { MockLanguageModelV4 } from 'ai/test'
 import { describe, expect, it } from 'vitest'
-import { AgentSession, aiSdkRunner, applyDefaults, appendEvent, callTool, carryValues, editFile, printManifest, remixItem, runAgent, scriptedRunner, starterItem, writeFile, type TranscriptEntry } from '../src/index.ts'
+import { AgentSession, aiSdkRunner, applyDefaults, appendEvent, callTool, carryValues, editFile, modelConfigFromEnv, printManifest, remixItem, runAgent, scriptedRunner, starterItem, writeFile, type TranscriptEntry } from '../src/index.ts'
 import { collect, testHost } from './support.ts'
 
 describe('workspace', () => {
@@ -96,6 +96,22 @@ describe('look_at_preview', () => {
     const output = await callTool(session, 'look_at_preview', { times: [1] })
     expect(requests).toEqual([[1]])
     expect(output.images).toEqual([{ mediaType: 'image/jpeg', data: 'aGVsbG8=' }])
+  })
+})
+
+describe('model config', () => {
+  const env = { MOTIF_AGENT_PROVIDER: 'openai-compatible', MOTIF_AGENT_API_KEY: 'test-key', MOTIF_AGENT_MODEL: 'some-model', MOTIF_AGENT_BASE_URL: 'https://relay.example/v1' }
+
+  it('reads the site model from the environment and assumes it can see images', () => {
+    expect(modelConfigFromEnv(env)).toEqual({ provider: 'openai-compatible', apiKey: 'test-key', model: 'some-model', baseURL: 'https://relay.example/v1', vision: true })
+    expect(modelConfigFromEnv({ ...env, MOTIF_AGENT_VISION: 'false' })?.vision).toBe(false)
+    expect(modelConfigFromEnv({ ...env, MOTIF_AGENT_VISION: '0' })?.vision).toBe(false)
+  })
+
+  it('returns nothing when a required value is missing', () => {
+    expect(modelConfigFromEnv({ ...env, MOTIF_AGENT_API_KEY: ' ' })).toBeNull()
+    expect(modelConfigFromEnv({ ...env, MOTIF_AGENT_BASE_URL: undefined })).toBeNull()
+    expect(modelConfigFromEnv({ ...env, MOTIF_AGENT_PROVIDER: 'claude-cli' })).toBeNull()
   })
 })
 

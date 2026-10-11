@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import type { AgentHost, Evaluation, MarketHit, Problem } from '@motif/agent'
+import { modelConfigFromEnv, type AgentHost, type Evaluation, type MarketHit, type Problem } from '@motif/agent'
 import { checkItem } from '@motif/checker'
 import type { ItemSource } from '@motif/schema'
 import { FONT_FAMILIES, VENDOR_IDS } from '@motif/vendor/manifest'
@@ -58,7 +58,8 @@ export function studioHost(sessionId: string, nextVersion: () => number): AgentH
       return item ? { manifest: item.manifest, files: item.files } : null
     },
     previewStatus: (build, timeoutMs) => waitForPreview(sessionId, build, timeoutMs),
-    ...(captureAvailable() ? { capture: capturePreview } : {}),
+    // 模型看不了图（MOTIF_AGENT_VISION=false）时不给截图；本机 CLI 和脚本运行器没有这项配置，按能看图处理。
+    ...(captureAvailable() && (modelConfigFromEnv(process.env)?.vision ?? true) ? { capture: capturePreview } : {}),
   }
 }
 

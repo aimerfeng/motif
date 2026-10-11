@@ -5,9 +5,10 @@ import { callTool, type AgentRunner } from '../runner.ts'
 import type { AgentSession } from '../session.ts'
 import { TOOLS, type ToolOutput } from '../tools.ts'
 
+/** vision：模型能不能看图。看不了的（例如 deepseek-v4-pro）不给截图工具，否则图被丢掉，模型对着空白推理。 */
 export type ModelConfig =
-  | { provider: 'anthropic'; apiKey: string; model: string; baseURL?: string }
-  | { provider: 'openai-compatible'; apiKey: string; model: string; baseURL: string }
+  | { provider: 'anthropic'; apiKey: string; model: string; baseURL?: string; vision: boolean }
+  | { provider: 'openai-compatible'; apiKey: string; model: string; baseURL: string; vision: boolean }
 
 /** 站点内置的模型：key 放在服务端环境变量里（见 apps/web/.env.example），由 provider 接口选择。 */
 export function createModel(config: ModelConfig): LanguageModel {
@@ -23,9 +24,10 @@ export function modelConfigFromEnv(env: Record<string, string | undefined>): Mod
   const apiKey = env.MOTIF_AGENT_API_KEY?.trim()
   const model = env.MOTIF_AGENT_MODEL?.trim()
   const baseURL = env.MOTIF_AGENT_BASE_URL?.trim() || undefined
+  const vision = !/^(0|false|off|no)$/i.test(env.MOTIF_AGENT_VISION?.trim() ?? '')
   if (!apiKey || !model) return null
-  if (provider === 'anthropic') return { provider, apiKey, model, ...(baseURL ? { baseURL } : {}) }
-  if (provider === 'openai-compatible' && baseURL) return { provider, apiKey, model, baseURL }
+  if (provider === 'anthropic') return { provider, apiKey, model, vision, ...(baseURL ? { baseURL } : {}) }
+  if (provider === 'openai-compatible' && baseURL) return { provider, apiKey, model, baseURL, vision }
   return null
 }
 
