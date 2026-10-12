@@ -16,7 +16,7 @@
   },
   "home": {
     "headline": "Beautiful motion, ready to take home",
-    "lead": "Components, motion and shaders picked from open source. Tune them live, download code that runs, or hand the skill to your agent.",
+    "lead": "Components, motion and shaders picked from open source. Tune them live and take the code, or let your agent shop for them over MCP.",
     "browse": "Browse all {count} items",
     "heroCaption": "Running above:",
     "featured": "Featured",
@@ -38,13 +38,34 @@
     },
     "sourcesTitle": "Built on these open-source projects",
     "sourcesBody": "Integrated code keeps its original license and copyright notices, pinned to the commits we reviewed. Thank you to their authors.",
-    "github": "View on GitHub",
     "levelsTitle": "From a whole site to a single button",
-    "levelsLead": "Templates, styles, sections, components and effects: from an entire website down to one loading animation, everything can be previewed, tuned, downloaded, or copied as a skill."
+    "levelsLead": "Templates, styles, sections, components and effects: from an entire website down to one loading animation, everything can be previewed, tuned, downloaded, or copied as a skill.",
+    "studio": "Build one in Studio",
+    "agents": {
+      "title": "Let agents do the shopping",
+      "lead": "Over MCP, agents such as Claude Code and Cursor search the catalogue, look at previews and fetch code with the values they want. When nothing fits, they place a custom order and the Studio agent builds it.",
+      "docs": "Setup guide",
+      "example": "Example exchange",
+      "query": "pricing card with a glowing border",
+      "found": "3 found",
+      "shots": "2 screenshots",
+      "delivered": "free · delivered"
+    },
+    "more": {
+      "studio": {
+        "title": "Describe it, get it built",
+        "body": "Tell Studio what you want in a sentence; the agent writes the component and tunes it."
+      },
+      "community": {
+        "title": "Submit your work",
+        "body": "Approved work joins the market, with credit and provenance on chain."
+      }
+    },
+    "sourcesMore": "Show {count} more"
   },
   "market": {
     "title": "Market",
-    "lead": "{count} entries, from whole-site templates, design styles and page sections to functional components like loaders and toasts, and visual effects. All from open-source projects whose licenses allow redistribution. Preview, tune, download the code, or copy the skill for your agent.",
+    "lead": "{count} items, all from open source you are allowed to reuse. Preview and tune them live, then take the code or the skill.",
     "all": "All",
     "search": "Search names, categories, tags",
     "empty": "No items match",
@@ -419,7 +440,8 @@
           "violation": "Violation"
         },
         "noteMissing": "(the full note is not on this site)",
-        "reward": "Reward {amount} MOTIF"
+        "reward": "Reward {amount} MOTIF",
+        "rewardShort": "(owed {owed}; the reward pool ran short)"
       },
       "fullRecord": "See the full on-chain record"
     },
@@ -508,11 +530,11 @@
     "profile": {
       "reputation": "Reputation {value}",
       "curator": "Curator",
-      "works": "Works ({count})",
+      "works": "Works",
       "noWorks": "No submissions yet.",
       "delisted": "Delisted",
-      "remixedBy": "Remixed by others ({count})",
-      "votes": "Reviews ({count})",
+      "remixedBy": "Remixed by others",
+      "votes": "Reviews",
       "verdicts": {
         "approve": "Approve",
         "reject": "Reject",
@@ -523,7 +545,8 @@
         "lead": "Clear @{handle}'s profile and block the handle (impersonation, infringement, illegal content). The account and its reputation stay.",
         "reason": "Reason (public)",
         "button": "Clear profile and block handle"
-      }
+      },
+      "reputationLabel": "Reputation"
     },
     "profileEditor": {
       "title": "Creator profile",

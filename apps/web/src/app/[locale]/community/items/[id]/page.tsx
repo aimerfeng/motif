@@ -267,6 +267,8 @@ export default async function CommunityItemPage({ params, searchParams }: PagePr
                     {review.rewards.map((reward, index) => (
                       <li key={index}>
                         {t('review.reward', { amount: reward.paid })} → <PersonLink person={reward.to} />
+                        {/* 奖励池不够时合约只付一部分：如实写出来，不让人以为奖励是足额的。 */}
+                        {reward.paid !== reward.owed && <span className="ml-2 text-pending">{t('review.rewardShort', { owed: reward.owed })}</span>}
                       </li>
                     ))}
                   </ul>

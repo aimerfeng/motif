@@ -1,13 +1,15 @@
-import { REPO_URL } from '@motif/export'
 import { defaultsOf, KINDS } from '@motif/schema'
 import { getTranslations } from 'next-intl/server'
+import { CopyCommand } from '@/components/copy-command'
 import { HeroStage } from '@/components/home/hero-stage'
+import { ArrowIcon, ChevronIcon, SparklesIcon, UsersIcon } from '@/components/icons'
 import { ItemCard } from '@/components/market/item-card'
 import { Link } from '@/i18n/navigation'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { getPublishedItems, summarize } from '@/lib/catalog'
 import { FEATURED, HERO } from '@/lib/featured'
 import { mediaFor } from '@/lib/media'
+import { SITE_URL } from '@/lib/site'
 
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const locale = resolveRouteLocale((await params).locale)
@@ -32,6 +34,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     return [{ kind, count: inKind.length, poster: media.posterSmall ?? media.poster }]
   })
 
+  const exampleShot = mediaFor('border-beam').posterSmall ?? mediaFor('border-beam').poster
   const heroValues = hero ? { ...defaultsOf(hero.manifest.params), ...(hero.manifest.presets.find((preset) => preset.id === HERO.preset)?.values ?? {}) } : {}
 
   return (
@@ -56,14 +59,9 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
             <Link href="/market" className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90">
               {t('browse', { count: items.length })}
             </Link>
-            <a
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-white/25 px-5 py-2.5 text-[14px] text-ink backdrop-blur-md transition-colors duration-150 hover:border-white/50"
-            >
-              {t('github')}
-            </a>
+            <Link href="/studio" className="rounded-full border border-white/25 px-5 py-2.5 text-[14px] text-ink backdrop-blur-md transition-colors duration-150 hover:border-white/50">
+              {t('studio')}
+            </Link>
           </div>
           {hero && (
             <p className="pointer-events-auto mt-10 text-[12.5px] text-ink/55">
@@ -127,24 +125,124 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
         </div>
       </section>
 
+      <section className="mx-auto mt-28 grid max-w-[1400px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <h2 className="font-display text-[32px] leading-tight font-semibold tracking-[-0.03em] text-balance">{t('agents.title')}</h2>
+          <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-pretty text-ink-muted">{t('agents.lead')}</p>
+          <div className="mt-6 max-w-xl">
+            <CopyCommand text={`claude mcp add --transport http motif ${SITE_URL}/mcp`} />
+          </div>
+          <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[13.5px]">
+            <Link href="/docs#mcp" className="text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
+              {t('agents.docs')} →
+            </Link>
+            <a href="/llms.txt" className="text-ink-muted underline decoration-line-strong underline-offset-4 hover:text-ink hover:decoration-ink">
+              llms.txt
+            </a>
+          </p>
+        </div>
+
+        {/* 示意一次真实的工具调用顺序（search_ui → preview_ui → place_order），标明是示例。 */}
+        <figure className="overflow-hidden rounded-[var(--radius-card)] border border-line bg-raised">
+          <figcaption className="flex items-center gap-2 border-b border-line px-4 py-2.5 text-[12px] text-ink-faint">
+            <span aria-hidden className="flex gap-1">
+              <span className="size-2 rounded-full bg-line-strong" />
+              <span className="size-2 rounded-full bg-line-strong" />
+              <span className="size-2 rounded-full bg-line-strong" />
+            </span>
+            {t('agents.example')}
+          </figcaption>
+          <ol className="space-y-4 p-5 font-mono text-[12.5px] leading-relaxed">
+            <li>
+              <p>
+                <span className="text-ink-faint">→ </span>search_ui <span className="text-ink-muted">&quot;{t('agents.query')}&quot;</span>
+              </p>
+              <p className="mt-1 pl-4 text-ink-faint">
+                {t('agents.found')}: <span className="text-ink-muted">border-beam</span>, pricing-three-tier, magic-card
+              </p>
+            </li>
+            <li>
+              <p>
+                <span className="text-ink-faint">→ </span>preview_ui <span className="text-ink-muted">border-beam {'{'} colorFrom: &quot;#22d3ee&quot; {'}'}</span>
+              </p>
+              <div className="mt-2 flex items-center gap-3 pl-4">
+                {exampleShot && (
+                  // 海报是预先生成的 webp，不需要 next/image 再处理。
+                  <img src={exampleShot} alt="" loading="lazy" decoding="async" className="aspect-[16/10] w-36 rounded-md border border-line object-cover" />
+                )}
+                <span className="text-ink-faint">{t('agents.shots')}</span>
+              </div>
+            </li>
+            <li>
+              <p>
+                <span className="text-ink-faint">→ </span>place_order <span className="text-ink-muted">border-beam</span>
+              </p>
+              <p className="mt-1 pl-4">
+                <span className="text-success">{t('agents.delivered')}</span>
+                <span className="text-ink-faint"> · npx shadcn add …/r/border-beam.json</span>
+              </p>
+            </li>
+          </ol>
+        </figure>
+      </section>
+
+      <section className="mx-auto mt-20 grid max-w-[1400px] gap-4 px-5 sm:grid-cols-2 sm:px-8">
+        {(
+          [
+            ['studio', '/studio', SparklesIcon],
+            ['community', '/community', UsersIcon],
+          ] as const
+        ).map(([key, href, Glyph]) => (
+          <Link key={key} href={href} className="group flex items-start gap-4 rounded-[var(--radius-card)] border border-line p-5 transition-colors duration-150 hover:border-line-strong hover:bg-raised">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-raised text-ink-muted transition-colors duration-150 group-hover:text-ink">
+              <Glyph className="size-[18px]" />
+            </span>
+            <span>
+              <span className="flex items-center gap-1.5 text-[16px] font-medium">
+                {t(`more.${key}.title`)}
+                <ArrowIcon className="size-3.5 text-ink-faint transition-transform duration-150 group-hover:translate-x-0.5" />
+              </span>
+              <span className="mt-1 block text-[13.5px] text-ink-muted">{t(`more.${key}.body`)}</span>
+            </span>
+          </Link>
+        ))}
+      </section>
+
       <section className="mx-auto mt-28 mb-24 max-w-[1400px] px-5 sm:px-8">
         <div className="grid gap-8 border-t border-line pt-10 lg:grid-cols-[1fr_2fr]">
           <div>
             <h2 className="text-[15px] font-medium">{t('sourcesTitle')}</h2>
             <p className="mt-2 max-w-sm text-[13.5px] leading-relaxed text-pretty text-ink-muted">{t('sourcesBody')}</p>
           </div>
-          <ul className="grid grid-cols-1 gap-x-8 gap-y-2 text-[13.5px] sm:grid-cols-2 lg:grid-cols-3">
-            {sources.map(([repo, spdx]) => (
-              <li key={repo} className="flex items-baseline justify-between gap-3 border-b border-line py-2">
-                <a href={`https://github.com/${repo}`} target="_blank" rel="noreferrer" className="truncate text-ink-muted transition-colors duration-150 hover:text-ink">
-                  {repo}
-                </a>
-                <span className="shrink-0 font-mono text-[11px] text-ink-faint">{spdx}</span>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <SourceList sources={sources.slice(0, 12)} />
+            {sources.length > 12 && (
+              <details className="group mt-2">
+                <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 py-2 text-[13px] text-ink-muted transition-colors duration-150 hover:text-ink [&::-webkit-details-marker]:hidden">
+                  <ChevronIcon className="size-3.5 transition-transform duration-150 group-open:rotate-90" />
+                  {t('sourcesMore', { count: sources.length - 12 })}
+                </summary>
+                <SourceList sources={sources.slice(12)} />
+              </details>
+            )}
+          </div>
         </div>
       </section>
     </main>
+  )
+}
+
+function SourceList({ sources }: { sources: (readonly [string, string])[] }) {
+  return (
+    <ul className="grid grid-cols-1 gap-x-8 gap-y-2 text-[13.5px] sm:grid-cols-2 lg:grid-cols-3">
+      {sources.map(([repo, spdx]) => (
+        <li key={repo} className="flex items-baseline justify-between gap-3 border-b border-line py-2">
+          <a href={`https://github.com/${repo}`} target="_blank" rel="noreferrer" className="truncate text-ink-muted transition-colors duration-150 hover:text-ink">
+            {repo}
+          </a>
+          <span className="shrink-0 font-mono text-[11px] text-ink-faint">{spdx}</span>
+        </li>
+      ))}
+    </ul>
   )
 }

@@ -8,6 +8,7 @@ import { SkillButton } from '@/components/skill-button'
 import type { ItemSummary } from '@/lib/catalog'
 import { generalSkills } from '@/lib/general-skills'
 import { writeMarketQuery, type MarketQuery } from '@/lib/market-query'
+import { matchesAll, searchTerms } from '@/lib/store/search'
 import { replaceUrl, URL_WRITE_DELAY_MS } from '@/lib/url-state'
 import { ItemCard } from './item-card'
 
@@ -54,17 +55,17 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
   )
 
   // 搜索也匹配层级和分类的名字（搜「按钮」能找到所有按钮）；多个词之间是「且」。
+  // 切词和商店给 agent 的搜索同一套：中文不用空格也能搜（「发光卡片」），常见的同义词（spinner → loader）也认得。
   const haystacks = useMemo(
     () => new Map(items.map((item) => [item.slug, [item.title, item.summary, item.slug, ...item.tags, t(`kinds.${item.kind}`), t(`categories.${item.category}`)].join('\n').toLowerCase()])),
     [items, t],
   )
   const visible = useMemo(() => {
-    const terms = deferredQuery.trim().toLowerCase().split(/\s+/).filter(Boolean)
+    const concepts = searchTerms(deferredQuery, { stopwords: false })
     return items.filter((item) => {
       if (deferredKind && item.kind !== deferredKind) return false
       if (deferredCategory && item.category !== deferredCategory) return false
-      const haystack = haystacks.get(item.slug)!
-      return terms.every((term) => haystack.includes(term))
+      return matchesAll(haystacks.get(item.slug)!, concepts)
     })
   }, [items, haystacks, deferredKind, deferredCategory, deferredQuery])
 

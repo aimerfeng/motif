@@ -7,6 +7,8 @@ import { CommunityOffline } from '@/components/community/offline'
 import { Avatar } from '@/components/community/people'
 import { ProfileModeration } from '@/components/community/profile-moderation'
 import { Chip, VersionChip } from '@/components/community/status'
+import { EmptyState, SectionHeader, Stat, StatGrid } from '@/components/community/ui'
+import { LayersIcon } from '@/components/icons'
 import { Link } from '@/i18n/navigation'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { parseProfileMetadata, shortAddress } from '@/lib/community/shared'
@@ -64,7 +66,7 @@ export default async function ProfilePage({ params }: PageProps<'/[locale]/commu
       <header className="flex flex-col gap-6 sm:flex-row sm:items-center">
         <Avatar address={address} className="size-20" />
         <div className="min-w-0">
-          <h1 className="font-display text-[36px] leading-[1.1] font-semibold tracking-[-0.03em]">
+          <h1 className="font-display text-[34px] leading-[1.1] font-semibold tracking-[-0.025em] sm:text-[40px]">
             {metadata.name ?? (profile?.handle ? `@${profile.handle}` : shortAddress(address))}
           </h1>
           <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-ink-faint">
@@ -90,21 +92,30 @@ export default async function ProfilePage({ params }: PageProps<'/[locale]/commu
         </div>
       </header>
 
+      <StatGrid className="mt-10 grid-cols-2 sm:grid-cols-4">
+        <Stat label={t('works')} value={works.length} />
+        <Stat label={t('reputationLabel')} value={(profile?.reputation ?? 0n).toString()} />
+        <Stat label={t('votes')} value={votes.length} />
+        <Stat label={t('remixedBy')} value={remixes.length} />
+      </StatGrid>
+
       <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="space-y-12">
-          <section>
-            <h2 className="text-[15px] font-medium">{t('works', { count: works.length })}</h2>
+        <div className="min-w-0 space-y-12">
+          <section className="space-y-4">
+            <SectionHeader title={t('works')} count={works.length} />
             {works.length === 0 ? (
-              <p className="mt-3 text-[14px] text-ink-faint">{t('noWorks')}</p>
+              <EmptyState compact icon={LayersIcon} title={t('noWorks')} />
             ) : (
-              <ul className="mt-3 divide-y divide-line border-y border-line text-[14px]">
+              <ul className="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line text-[14px]">
                 {works.map(({ item, version, link }) => (
-                  <li key={link.id} className="flex items-center justify-between gap-4 py-3">
-                    <Link href={`/community/items/${link.id}`} className="min-w-0 truncate hover:underline hover:decoration-line-strong hover:underline-offset-4">
-                      {link.title ?? link.slug}
-                      <span className="ml-2 font-mono text-[12px] text-ink-faint">v{version.version}</span>
+                  <li key={link.id}>
+                    <Link href={`/community/items/${link.id}`} className="flex items-center justify-between gap-4 px-5 py-3 transition-colors duration-150 hover:bg-raised">
+                      <span className="min-w-0 truncate">
+                        {link.title ?? link.slug}
+                        <span className="ml-2 font-mono text-[12px] text-ink-faint">v{version.version}</span>
+                      </span>
+                      {item.delisted ? <Chip tone="danger">{t('delisted')}</Chip> : <VersionChip status={version.status} outcome={version.review?.outcome ?? null} />}
                     </Link>
-                    {item.delisted ? <Chip tone="danger">{t('delisted')}</Chip> : <VersionChip status={version.status} outcome={version.review?.outcome ?? null} />}
                   </li>
                 ))}
               </ul>
@@ -112,9 +123,9 @@ export default async function ProfilePage({ params }: PageProps<'/[locale]/commu
           </section>
 
           {remixes.length > 0 && (
-            <section>
-              <h2 className="text-[15px] font-medium">{t('remixedBy', { count: remixes.length })}</h2>
-              <ul className="mt-3 flex flex-wrap gap-2 text-[13.5px]">
+            <section className="space-y-4">
+              <SectionHeader title={t('remixedBy')} count={remixes.length} />
+              <ul className="flex flex-wrap gap-2 text-[13.5px]">
                 {remixes.map((remix) => (
                   <li key={remix.id}>
                     <Link href={`/community/items/${remix.id}`} className="block rounded-full border border-line px-3 py-1 text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink">
@@ -127,15 +138,15 @@ export default async function ProfilePage({ params }: PageProps<'/[locale]/commu
           )}
 
           {voteLinks.length > 0 && (
-            <section>
-              <h2 className="text-[15px] font-medium">{t('votes', { count: votes.length })}</h2>
-              <ul className="mt-3 divide-y divide-line border-y border-line text-[14px]">
+            <section className="space-y-4">
+              <SectionHeader title={t('votes')} count={votes.length} />
+              <ul className="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line text-[14px]">
                 {voteLinks.map(({ link, version, verdict }, index) => (
-                  <li key={index} className="flex items-center justify-between gap-4 py-3">
-                    <Link href={`/community/items/${link.id}?v=${version.version}`} className="min-w-0 truncate hover:underline hover:decoration-line-strong hover:underline-offset-4">
-                      {link.title ?? link.slug}
+                  <li key={index}>
+                    <Link href={`/community/items/${link.id}?v=${version.version}`} className="flex items-center justify-between gap-4 px-5 py-3 transition-colors duration-150 hover:bg-raised">
+                      <span className="min-w-0 truncate">{link.title ?? link.slug}</span>
+                      <Chip tone={verdict === 'approve' ? 'success' : 'danger'}>{t(`verdicts.${verdict as 'approve' | 'reject' | 'violation'}`)}</Chip>
                     </Link>
-                    <span className={verdict === 'approve' ? 'text-[12.5px] text-success' : 'text-[12.5px] text-danger'}>{t(`verdicts.${verdict as 'approve' | 'reject' | 'violation'}`)}</span>
                   </li>
                 ))}
               </ul>

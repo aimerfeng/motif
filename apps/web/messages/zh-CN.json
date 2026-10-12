@@ -16,7 +16,7 @@
   },
   "home": {
     "headline": "把好看的动效，带回你的项目",
-    "lead": "从开源世界精选的组件、动效与着色器。实时调参，下载能直接运行的代码，或者把 Skill 交给你的 agent。",
+    "lead": "从开源世界精选的组件、动效与着色器。实时调参、直接带走代码；你的 agent 也能通过 MCP 自己来挑、来下单。",
     "browse": "浏览全部 {count} 个条目",
     "heroCaption": "首屏正在运行的是",
     "featured": "精选",
@@ -38,13 +38,34 @@
     },
     "sourcesTitle": "来自这些开源项目",
     "sourcesBody": "整合的代码保留原来的许可证和版权声明，固定在审阅过的提交上。感谢这些作者。",
-    "github": "在 GitHub 上查看",
     "levelsTitle": "从整站到一个按钮",
-    "levelsLead": "整站模板、设计风格、页面区块、功能组件、视觉效果：大到一整个网站，小到一个加载动画，都能预览、调参、下载，或者复制 Skill。"
+    "levelsLead": "整站模板、设计风格、页面区块、功能组件、视觉效果：大到一整个网站，小到一个加载动画，都能预览、调参、下载，或者复制 Skill。",
+    "studio": "在工作台里现做",
+    "agents": {
+      "title": "让 agent 自己来挑",
+      "lead": "接入 MCP 后，Claude Code、Cursor 这样的 agent 能自己搜索、看预览、按参数取回代码；目录里没有的，就下一张定制单，由工作台的 agent 现做。",
+      "docs": "接入文档",
+      "example": "示例对话",
+      "query": "带光边的定价卡片",
+      "found": "找到 3 个",
+      "shots": "2 张截图",
+      "delivered": "免费 · 已交付"
+    },
+    "more": {
+      "studio": {
+        "title": "描述一下，现做一个",
+        "body": "在工作台里用一句话说出想要的效果，agent 写好组件、调好参数。"
+      },
+      "community": {
+        "title": "投稿你的作品",
+        "body": "审核通过就进入市场，署名和来源记在链上。"
+      }
+    },
+    "sourcesMore": "展开其余 {count} 个"
   },
   "market": {
     "title": "市场",
-    "lead": "{count} 个条目：从整站模板、设计风格、页面区块，到加载、通知这样的功能组件和视觉效果。全部来自许可证允许再分发的开源项目，每一个都能实时预览、调参、下载代码，或者直接复制 Skill 给你的 agent。",
+    "lead": "{count} 个条目，都来自允许再分发的开源项目：实时预览、调参，带走代码或 Skill。",
     "all": "全部",
     "search": "搜索名称、分类、标签",
     "empty": "没有找到匹配的条目",
@@ -419,7 +440,8 @@
           "violation": "违规"
         },
         "noteMissing": "（意见全文不在站点上）",
-        "reward": "奖励 {amount} MOTIF"
+        "reward": "奖励 {amount} MOTIF",
+        "rewardShort": "（应得 {owed}，奖励池不足）"
       },
       "fullRecord": "查看完整的链上记录"
     },
@@ -508,11 +530,11 @@
     "profile": {
       "reputation": "声誉 {value}",
       "curator": "审核员",
-      "works": "作品（{count}）",
+      "works": "作品",
       "noWorks": "还没有投稿。",
       "delisted": "已下架",
-      "remixedBy": "被 Remix（{count}）",
-      "votes": "审核记录（{count}）",
+      "remixedBy": "被 Remix",
+      "votes": "审核记录",
       "verdicts": {
         "approve": "通过",
         "reject": "驳回",
@@ -523,7 +545,8 @@
         "lead": "清空 @{handle} 的资料并封禁这个 handle（冒充、侵权、违法内容）。账号和声誉保留。",
         "reason": "处理理由（会公开）",
         "button": "清空资料并封禁 handle"
-      }
+      },
+      "reputationLabel": "声誉"
     },
     "profileEditor": {
       "title": "创作者资料",
