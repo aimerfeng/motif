@@ -25,12 +25,13 @@ export class AgentSession {
 
   /** 换上新的条目：检查、编译、通知浏览器，返回给 agent 看的结果。 */
   async update(item: ItemSource, note?: string): Promise<string> {
+    // 先检查编译、再换上：编译进程忙之类的暂时错误抛出去时，工作区保持原样，agent 重试同一个操作就行。
+    const evaluation = await this.host.evaluate(item)
     const previous = this.item
     this.item = item
-    const evaluation = await this.host.evaluate(item)
     this.evaluation = evaluation
     this.values = carryValues(previous, item, this.values)
-    this.emit({ type: 'workspace', item, evaluation })
+    this.emit({ type: 'workspace', item, evaluation, values: this.values })
     return [note, describeEvaluation(evaluation)].filter(Boolean).join('\n')
   }
 

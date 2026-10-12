@@ -1,16 +1,19 @@
 import { errorResponse, HttpError, readJson } from '@/lib/community/http'
-import { rateLimit } from '@/lib/community/rate-limit'
+import { dailyCap, rateLimit } from '@/lib/community/rate-limit'
 import { getRunner } from '@/lib/studio/runner'
 import { startRun } from '@/lib/studio/sessions'
 import { requireSession } from '@/lib/studio/view'
 
 const MAX_PROMPT = 4000
+const DAILY_RUNS = Number(process.env.MOTIF_STUDIO_DAILY_RUNS) || 300
 
 /** 跑一轮 agent：响应是 NDJSON，每行一个事件，直到这一轮结束。 */
 export async function POST(request: Request, { params }: RouteContext<'/api/studio/sessions/[id]/run'>) {
   try {
     rateLimit(request, 'studio-run', 6)
     const session = await requireSession((await params).id)
+    // 每一轮都花模型额度：全站每天的轮数有上限，就算有人轮换来源也烧不穿预算。
+    dailyCap('studio-runs', DAILY_RUNS)
     const body = (await readJson(request)) as { prompt?: unknown }
     const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : ''
     if (!prompt) throw new HttpError(400, 'prompt is empty')

@@ -2,7 +2,7 @@ import { defaultsOf } from '@motif/schema'
 import { simulateReadableStream } from 'ai'
 import { MockLanguageModelV4 } from 'ai/test'
 import { describe, expect, it } from 'vitest'
-import { AgentSession, aiSdkRunner, applyDefaults, appendEvent, callTool, carryValues, editFile, modelConfigFromEnv, printManifest, remixItem, runAgent, scriptedRunner, starterItem, writeFile, type TranscriptEntry } from '../src/index.ts'
+import { AgentSession, aiSdkRunner, applyDefaults, compactHistory, appendEvent, callTool, carryValues, editFile, modelConfigFromEnv, printManifest, remixItem, runAgent, scriptedRunner, starterItem, writeFile, type TranscriptEntry } from '../src/index.ts'
 import { collect, testHost } from './support.ts'
 
 describe('workspace', () => {
@@ -140,6 +140,16 @@ describe('AI SDK runner', () => {
             ],
           }),
         },
+        {
+          stream: simulateReadableStream({
+            chunks: [
+              { type: 'text-start', id: 't2' },
+              { type: 'text-delta', id: 't2', delta: 'I will stop here.' },
+              { type: 'text-end', id: 't2' },
+              { type: 'finish', finishReason: { unified: 'stop', raw: undefined }, usage },
+            ],
+          }),
+        },
       ],
     })
     const host = testHost()
@@ -161,11 +171,13 @@ describe('AI SDK runner', () => {
     expect(result.item.files['effect.tsx']).toContain('speed: 1.5,')
     // 只改了组件没改 item.json：检查器发现默认值区域对不上，并把这个错误交给了模型。
     expect(events.find((event) => event.type === 'tool-result' && event.name === 'edit_file')).toMatchObject({ output: expect.stringContaining('error') })
-    expect(events.at(-1)).toMatchObject({ type: 'done', summary: '加快了一点。' })
+    // 条目还有错时 finish 被拒绝，循环继续；模型自己停下、没能收尾时要明确告诉用户。
+    expect(events.find((event) => event.type === 'tool-result' && event.name === 'finish')).toMatchObject({ isError: true, output: expect.stringContaining('Not finished') })
+    expect(events.at(-1)).toMatchObject({ type: 'error', message: expect.stringContaining('stopped before finishing') })
     const history = result.state as { role: string }[]
     expect(history[0]).toMatchObject({ role: 'user', content: 'faster please' })
     expect(history.length).toBeGreaterThan(2)
-    expect(model.doStreamCalls).toHaveLength(2)
+    expect(model.doStreamCalls).toHaveLength(3)
   })
 
   it('moves screenshots into a user message for models that take only text tool results', async () => {
@@ -209,5 +221,28 @@ describe('AI SDK runner', () => {
     const toolMessage = prompt.find((message) => message.role === 'tool')!
     expect(JSON.stringify(toolMessage.content)).not.toContain('aGVsbG8=')
     expect(prompt.at(-1)).toMatchObject({ role: 'user', content: [{ type: 'text' }, { type: 'file', mediaType: 'image/jpeg' }] })
+  })
+})
+
+describe('history compaction', () => {
+  const big = 'x'.repeat(5_000)
+  const turn = (index: number) => [
+    { role: 'user' as const, content: `turn ${index}` },
+    { role: 'assistant' as const, content: [{ type: 'tool-call' as const, toolCallId: `c${index}`, toolName: 'read_file', input: { path: 'effect.tsx' } }] },
+    { role: 'tool' as const, content: [{ type: 'tool-result' as const, toolCallId: `c${index}`, toolName: 'read_file', output: { type: 'text' as const, value: big } }] },
+  ]
+
+  it('trims old tool outputs but keeps the latest turn intact', () => {
+    const history = compactHistory([...turn(1), ...turn(2)])
+    const output = (index: number) => ((history[index] as { content: { output: { value: string } }[] }).content[0]!.output.value)
+    expect(output(2).length).toBeLessThan(2_000)
+    expect(output(5)).toBe(big)
+  })
+
+  it('drops the oldest turns, never splitting a tool call from its result', () => {
+    const history = compactHistory(Array.from({ length: 400 }, (_, index) => turn(index)).flat())
+    expect(JSON.stringify(history).length).toBeLessThanOrEqual(400_000)
+    expect(history[0]).toMatchObject({ role: 'user', content: expect.stringContaining('Earlier turns of this conversation were dropped') })
+    expect(history.at(-3)).toMatchObject({ role: 'user', content: 'turn 399' })
   })
 })

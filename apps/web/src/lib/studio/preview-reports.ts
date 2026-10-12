@@ -26,8 +26,21 @@ export function hasViewer(sessionId: string): boolean {
   return Date.now() - (shared.seen.get(sessionId) ?? 0) < 30_000
 }
 
+const FORGET_AFTER_MS = 10 * 60_000
+
 export function touchViewer(sessionId: string): void {
-  shared.seen.set(sessionId, Date.now())
+  const now = Date.now()
+  shared.seen.set(sessionId, now)
+  // 只在内存里记，不能无限增长：表大了就忘掉十分钟没动静的会话。
+  if (shared.seen.size > 500) {
+    for (const [id, at] of shared.seen) {
+      if (now - at > FORGET_AFTER_MS && !shared.waiters.get(id)?.size) {
+        shared.seen.delete(id)
+        shared.latest.delete(id)
+        shared.waiters.delete(id)
+      }
+    }
+  }
 }
 
 export function reportPreview(sessionId: string, version: number, report: PreviewReport): void {
@@ -56,8 +69,8 @@ export function waitForPreview(sessionId: string, version: number, timeoutMs: nu
         resolve(report)
       },
     }
-    // 超时说明预览一直没挂载上（比如一直在加载），当作卡住处理。
-    const timer = setTimeout(() => waiter.resolve({ state: 'hung' }), timeoutMs)
+    // 超时不等于卡死：标签页在后台时浏览器会降频，回报可能晚到。真正卡死由浏览器那边检测并报 hung。
+    const timer = setTimeout(() => waiter.resolve({ state: 'timeout' }), timeoutMs)
     waiters.add(waiter)
   })
 }

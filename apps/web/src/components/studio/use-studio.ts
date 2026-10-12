@@ -38,6 +38,8 @@ async function* readEvents(response: Response): AsyncGenerator<AgentEvent> {
 export function useStudio(initial: StudioView) {
   const [view, setView] = useState(initial)
   const [running, setRunning] = useState(initial.running)
+  /** 这个页面正在读这一轮的事件流。没有在读、服务端却说在运行（刷新过页面、流断了、别的标签页发起的），就轮询。 */
+  const [streaming, setStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const id = initial.id
@@ -51,12 +53,12 @@ export function useStudio(initial: StudioView) {
     setRunning(next.running)
   }, [base])
 
-  // 页面在一轮进行中被刷新：事件流接不回来了，轮询到这一轮结束。
+  // 服务端在跑、这里却没有事件流（页面刷新过、网络断过、别的标签页发起的）：轮询到这一轮结束。
   useEffect(() => {
-    if (!running || initial.running === false) return
-    const timer = window.setInterval(() => void refresh(), 2000)
+    if (!running || streaming) return
+    const timer = window.setInterval(() => void refresh().catch(() => {}), 2000)
     return () => window.clearInterval(timer)
-  }, [running, initial.running, refresh])
+  }, [running, streaming, refresh])
 
   const apply = (event: AgentEvent) => {
     setView((current) => {
@@ -67,6 +69,7 @@ export function useStudio(initial: StudioView) {
       if (event.type === 'workspace') {
         next.item = event.item
         next.evaluation = event.evaluation
+        next.values = event.values
       } else if (event.type === 'params') {
         next.values = event.values
       } else if (event.type === 'usage') {
@@ -76,24 +79,35 @@ export function useStudio(initial: StudioView) {
     })
   }
 
-  const run = async (prompt: string) => {
+  /** 发一句话给 agent。返回服务端是否接受了（被拒绝时输入框里的话要留着）。 */
+  const run = async (prompt: string): Promise<boolean> => {
     setError(null)
     setRunning(true)
-    setView((current) => ({ ...current, transcript: [...current.transcript, { role: 'user', text: prompt, at: Date.now() }] }))
+    let accepted = false
     try {
       const response = await fetch(`${base}/run`, { method: 'POST', body: JSON.stringify({ prompt }) })
       if (!response.ok || !response.body) throw new Error(await readError(response))
+      accepted = true
+      setStreaming(true)
+      setView((current) => ({ ...current, transcript: [...current.transcript, { role: 'user', text: prompt, at: Date.now() }] }))
       for await (const event of readEvents(response)) apply(event)
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : String(caught))
     } finally {
-      await refresh()
-      setRunning(false)
+      setStreaming(false)
+      // 是否还在跑以服务端为准：流断了但服务端还在跑时，上面的轮询会接着跟。
+      await refresh().catch(() => setRunning(false))
     }
+    return accepted
   }
 
   const abort = async () => {
-    await fetch(`${base}/abort`, { method: 'POST' })
+    try {
+      const response = await fetch(`${base}/abort`, { method: 'POST' })
+      if (!response.ok) throw new Error(await readError(response))
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught))
+    }
   }
 
   const mutate = async (path: string, init: RequestInit) => {

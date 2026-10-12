@@ -84,7 +84,8 @@ export function checkItem(item: ItemSource, context: CheckContext): Finding[] {
         level: 'error',
         rule: 'defaults/mismatch',
         file: manifest.entry.file,
-        message: 'the defaults region does not match the params in item.ts; regenerate it with printDefaults(defaultsOf(params))',
+        // 直接给出应该是什么样：作者（或 agent）照着替换就行，不用猜格式。
+        message: `the defaults region does not match the default values declared in the params; replace it with exactly:\n${expected}`,
       })
     }
   }

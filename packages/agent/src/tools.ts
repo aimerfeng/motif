@@ -167,6 +167,12 @@ export const TOOLS = [
     description: 'Call once at the end with a short summary for the user (in the language they wrote in) of what you built or changed.',
     input: z.object({ summary: z.string() }),
     async run(session, { summary }) {
+      // 带着错误收尾，用户拿到的是一个跑不起来的条目：先让 agent 把问题修完。
+      const errors = session.evaluation?.problems.filter((problem) => problem.level === 'error') ?? []
+      if (session.evaluation && !session.evaluation.ok) {
+        const detail = errors.length > 0 ? errors.slice(0, 5).map((problem) => `- [${problem.rule}]${problem.file ? ` ${problem.file}` : ''} ${problem.message}`).join('\n') : '- the item does not build'
+        return { text: `Not finished: the item does not pass the checker yet. Fix these first, then call finish again:\n${detail}`, isError: true }
+      }
       session.finished = { summary }
       return { text: 'Done.' }
     },

@@ -10,6 +10,10 @@ const FILE_PATH = /^[a-z0-9][a-z0-9._-]*(?:\/[a-z0-9][a-z0-9._-]*)*$/i
 const ROLE_BY_EXTENSION: Record<string, ItemManifest['files'][number]['role']> = { tsx: 'component', ts: 'lib', css: 'style', glsl: 'shader', frag: 'shader', vert: 'shader' }
 const MAX_FILE_BYTES = 200_000
 const MAX_FILES = 40
+/** 所有文件加起来的上限：比社区投稿的上限（1.5 MB，含清单）小一点，agent 做出来的条目一定能保存、能投稿。 */
+const MAX_TOTAL_BYTES = 1_400_000
+const encoder = new TextEncoder()
+const utf8Bytes = (text: string) => encoder.encode(text).length
 
 export type WorkspaceResult = { ok: true; item: ItemSource; note?: string } | { ok: false; error: string }
 
@@ -69,8 +73,10 @@ export function writeFile(item: ItemSource, path: string, content: string): Work
   }
   if (!FILE_PATH.test(path) || path.split('/').includes('..')) return { ok: false, error: `"${path}" is not a valid relative file path (lowercase letters, digits, dots, dashes, slashes)` }
   if (content.length > MAX_FILE_BYTES) return { ok: false, error: `files are limited to ${MAX_FILE_BYTES / 1000} KB` }
-  const isNew = !(path in item.files)
+  const isNew = !Object.hasOwn(item.files, path)
   if (isNew && Object.keys(item.files).length >= MAX_FILES) return { ok: false, error: `an item can have at most ${MAX_FILES} files` }
+  const total = Object.entries(item.files).reduce((sum, [file, text]) => sum + (file === path ? 0 : utf8Bytes(text)), utf8Bytes(content))
+  if (total > MAX_TOTAL_BYTES) return { ok: false, error: `all files together are limited to ${MAX_TOTAL_BYTES / 1_000_000} MB; this write would make them ${(total / 1_000_000).toFixed(2)} MB` }
 
   const files = { ...item.files, [path]: content }
   let manifest = item.manifest
@@ -97,7 +103,7 @@ export function editFile(item: ItemSource, path: string, oldText: string, newTex
 
 export function deleteFile(item: ItemSource, path: string): WorkspaceResult {
   if (path === MANIFEST_PATH) return { ok: false, error: 'item.json cannot be deleted' }
-  if (!(path in item.files)) return { ok: false, error: `${path} does not exist` }
+  if (!Object.hasOwn(item.files, path)) return { ok: false, error: `${path} does not exist` }
   if (path === item.manifest.entry?.file || path === item.manifest.demo?.file) return { ok: false, error: `${path} is the entry or demo file; point item.json at another file first` }
   const files = { ...item.files }
   delete files[path]

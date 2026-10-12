@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto'
-import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises'
+import { access, mkdir, readdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import type { Evaluation, TranscriptEntry } from '@motif/agent'
 import type { ItemSource, ParamValues } from '@motif/schema'
@@ -52,6 +52,15 @@ function fileOf(id: string): string {
   return path.join(/*turbopackIgnore: true*/ SESSIONS_DIR, `${id}.json`)
 }
 
+/** 会话在不在（只看文件，不读内容）：预览心跳很频繁，不必每次都读整个会话。 */
+export async function sessionExists(id: string): Promise<boolean> {
+  if (!isSessionId(id)) return false
+  return access(fileOf(id)).then(
+    () => true,
+    () => false,
+  )
+}
+
 export async function loadSession(id: string): Promise<StudioSession | null> {
   if (!isSessionId(id)) return null
   try {
@@ -76,10 +85,12 @@ export async function pruneSessions(now = Date.now()): Promise<number> {
   let removed = 0
   const names = await readdir(SESSIONS_DIR).catch(() => [] as string[])
   for (const name of names) {
-    if (!name.endsWith('.json')) continue
+    // 写到一半进程退出留下的临时文件，一天后清掉。
+    const temporary = name.endsWith('.tmp')
+    if (!name.endsWith('.json') && !temporary) continue
     const file = path.join(/*turbopackIgnore: true*/ SESSIONS_DIR, name)
     try {
-      if (now - (await stat(file)).mtimeMs > maxAge) {
+      if (now - (await stat(file)).mtimeMs > (temporary ? 24 * HOUR : maxAge)) {
         await rm(file)
         removed++
       }
@@ -94,7 +105,8 @@ export async function pruneSessions(now = Date.now()): Promise<number> {
 export async function saveSession(session: StudioSession): Promise<void> {
   await mkdir(SESSIONS_DIR, { recursive: true })
   const target = fileOf(session.id)
-  const temp = `${target}.${process.pid}.tmp`
+  // 临时文件名每次都不同：同一个会话并发保存时不会写进同一个临时文件、互相截断。
+  const temp = `${target}.${randomBytes(6).toString('hex')}.tmp`
   await writeFile(temp, JSON.stringify({ ...session, updatedAt: Date.now() }))
   await rename(temp, target)
 }

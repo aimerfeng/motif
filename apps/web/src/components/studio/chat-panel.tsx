@@ -141,7 +141,8 @@ export function ChatPanel({
   transcript: TranscriptEntry[]
   running: boolean
   available: boolean
-  onSend: (prompt: string) => void
+  /** 返回服务端是否接受；不接受时把这句话放回输入框，不让用户白打。 */
+  onSend: (prompt: string) => Promise<boolean>
   onAbort: () => void
   suggestions: string[]
   revert: Revert
@@ -166,18 +167,18 @@ export function ChatPanel({
     else groups.push({ kind: 'tools', start: index, entries: [entry] })
   })
 
-  const send = (text = draft) => {
+  const send = async (text = draft) => {
     const prompt = text.trim()
     if (!prompt || running || !available) return
-    onSend(prompt)
     setDraft('')
     stick.current = true
+    if (!(await onSend(prompt))) setDraft((current) => current || prompt)
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
       event.preventDefault()
-      send()
+      void send()
     }
   }
 
@@ -204,7 +205,7 @@ export function ChatPanel({
                   key={suggestion}
                   type="button"
                   disabled={!available}
-                  onClick={() => send(suggestion)}
+                  onClick={() => void send(suggestion)}
                   className="group flex items-center justify-between gap-3 rounded-lg border border-line px-3 py-2 text-left text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:bg-raised hover:text-ink disabled:opacity-40"
                 >
                   {suggestion}
@@ -254,7 +255,7 @@ export function ChatPanel({
           ) : (
             <button
               type="button"
-              onClick={() => send()}
+              onClick={() => void send()}
               disabled={!draft.trim() || !available}
               className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-ink px-3 py-1.5 text-[13px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-30"
             >

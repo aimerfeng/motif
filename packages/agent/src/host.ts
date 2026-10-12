@@ -72,6 +72,8 @@ export type PreviewReport =
   | { state: 'mounted'; ms: number; blank?: boolean }
   | { state: 'error'; phase: string; message: string }
   | { state: 'hung' }
+  /** 浏览器开着页面，但在等待时间内没有回报这一版（标签页在后台时浏览器会降频）：结果未知，不等于卡死。 */
+  | { state: 'timeout' }
 
 /** 给 agent 看的检查结果：先说结论，再逐条列问题（最多 20 条，够它定位）。 */
 export function describeEvaluation(evaluation: Evaluation): string {
@@ -95,5 +97,7 @@ export function describePreview(report: PreviewReport | null): string {
       return `The preview failed during ${report.phase}: ${report.message}`
     case 'hung':
       return 'The preview stopped responding (an infinite loop or a blocked main thread) and was reloaded.'
+    case 'timeout':
+      return 'The browser showing the preview did not report back in time (its tab may be in the background), so only the compile result is known. Use look_at_preview if you need to see it.'
   }
 }

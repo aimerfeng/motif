@@ -48,10 +48,37 @@ function launch(): Promise<Browser> {
   return shared.browser
 }
 
+/** 同时最多几个截图：每个都要开一个浏览器上下文、逐帧推进几百步，并发太多会把服务器拖垮。多出来的排队等。 */
+const MAX_CAPTURES = 2
+const slots = ((globalThis as { __motifCaptureSlots?: { busy: number; waiting: (() => void)[] } }).__motifCaptureSlots ??= { busy: 0, waiting: [] })
+
+async function acquire(): Promise<() => void> {
+  if (slots.busy >= MAX_CAPTURES) await new Promise<void>((resolve) => slots.waiting.push(resolve))
+  else slots.busy += 1
+  // 释放时直接把位置交给下一个等待的人（busy 不变），没人等才减一。
+  return () => {
+    const next = slots.waiting.shift()
+    if (next) next()
+    else slots.busy -= 1
+  }
+}
+
 export async function capturePreview(request: CaptureRequest): Promise<Screenshot[]> {
+  const release = await acquire()
+  try {
+    return await capture(request)
+  } finally {
+    release()
+  }
+}
+
+async function capture(request: CaptureRequest): Promise<Screenshot[]> {
   const browser = await launch()
   const context = await browser.newContext({ viewport: request.page ? SIZES.page : SIZES.component, deviceScaleFactor: 1 })
   try {
+    // 截的可能是社区投稿的代码：除了预览沙箱本身，一律不许联网（不能拿服务器当跳板去探内网）。
+    const allowed = new URL(PREVIEW_BASE).origin
+    await context.route('**/*', (route) => (new URL(route.request().url()).origin === allowed || route.request().url().startsWith('data:') || route.request().url().startsWith('blob:') ? route.continue() : route.abort()))
     const page = await context.newPage()
     await page.goto(`${PREVIEW_BASE}/capture.html`)
     const options = {

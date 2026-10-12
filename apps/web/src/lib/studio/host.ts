@@ -6,7 +6,9 @@ import type { ItemSource } from '@motif/schema'
 import { FONT_FAMILIES, VENDOR_IDS } from '@motif/vendor/manifest'
 import { getItem, getPublishedItems } from '@/lib/catalog'
 import { compileInWorker } from '@/lib/community/compile'
+import { HttpError } from '@/lib/community/http'
 import { loadSources } from '@/lib/community/submission'
+import { searchListings } from '@/lib/store/search'
 import { captureAvailable, capturePreview } from './capture'
 import { waitForPreview } from './preview-reports'
 
@@ -27,26 +29,27 @@ export async function evaluateItem(item: ItemSource, version: number): Promise<E
       }
       if (compiled.ok) build = { js: compiled.js, css: compiled.css }
     } catch (error) {
+      // 编译进程忙（排队满了）是暂时的，不是这个条目的问题：抛给调用方（接口回 503，agent 的工具会重试），
+      // 不能记成一次编译失败存进会话，否则预览会无故变空。
+      if (error instanceof HttpError) throw error
       problems.push({ level: 'error', rule: 'compile', message: error instanceof Error ? error.message : String(error) })
     }
   }
   return { ok: build !== null && !problems.some((problem) => problem.level === 'error'), problems, build, version }
 }
 
-/** 市场搜索：标题、简介、标签、分类里都要包含每个关键词（中英文都比）。 */
+/** 市场搜索：和商店给外部 agent 的 search_ui 用同一套检索（中英文、同义词、按命中多少排序）。 */
 async function searchMarket(query: string, limit: number): Promise<MarketHit[]> {
-  const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
   const items = await getPublishedItems()
-  return items
-    .map(({ manifest }) => {
-      const text = [manifest.slug, manifest.title.en, manifest.title['zh-CN'], manifest.summary.en, manifest.summary['zh-CN'], manifest.kind, manifest.category, ...manifest.tags].join(' ').toLowerCase()
-      const score = terms.reduce((sum, term) => sum + (text.includes(term) ? 1 : 0), 0)
-      return { manifest, score }
-    })
-    .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(({ manifest }) => ({ slug: manifest.slug, title: manifest.title, summary: manifest.summary, kind: manifest.kind, category: manifest.category, tags: manifest.tags }))
+  const listings = items.map(({ manifest }) => ({ manifest, source: 'catalog' as const, author: null }))
+  return searchListings(listings, { query, limit }).map(({ manifest }) => ({
+    slug: manifest.slug,
+    title: manifest.title,
+    summary: manifest.summary,
+    kind: manifest.kind,
+    category: manifest.category,
+    tags: manifest.tags,
+  }))
 }
 
 export function studioHost(sessionId: string, nextVersion: () => number): AgentHost {

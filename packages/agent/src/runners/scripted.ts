@@ -25,9 +25,14 @@ export const DEFAULT_SCRIPT: ScriptStep[] = [
   { tool: 'check_preview', input: {} },
   {
     tool: 'set_params',
+    // 一定要改到一个参数（定制单要求交付物确实变过）：有颜色参数就调颜色，没有就把一个数值参数挪一格。
     input: (session) => {
-      const color = session.item.manifest.params.find((param) => param.type === 'color')
-      return { values: color ? { [color.key]: '#22d3ee' } : {} }
+      const params = session.item.manifest.params
+      const color = params.find((param) => param.type === 'color')
+      if (color) return { values: { [color.key]: '#22d3ee' } }
+      const number = params.find((param) => param.type === 'number')
+      if (number?.type === 'number') return { values: { [number.key]: number.default + number.step <= number.max ? number.default + number.step : number.default - number.step } }
+      return { values: {} }
     },
   },
   { tool: 'finish', input: { summary: 'Scripted run finished: fixed a compile error and tuned a colour.' } },

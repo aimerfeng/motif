@@ -1,7 +1,7 @@
 import type { PreviewReport } from '@motif/agent'
 import { errorResponse, HttpError, NO_STORE, readJson } from '@/lib/community/http'
 import { reportPreview, touchViewer } from '@/lib/studio/preview-reports'
-import { isSessionId } from '@/lib/studio/store'
+import { sessionExists } from '@/lib/studio/store'
 
 function parseReport(raw: unknown): PreviewReport | null {
   if (typeof raw !== 'object' || raw === null) return null
@@ -19,7 +19,8 @@ function parseReport(raw: unknown): PreviewReport | null {
 export async function POST(request: Request, { params }: RouteContext<'/api/studio/sessions/[id]/preview'>) {
   try {
     const { id } = await params
-    if (!isSessionId(id)) throw new HttpError(404, 'no such studio session')
+    // 只为真实存在的会话记状态：回报存在内存里，随便编的 id 不能让它一直涨。
+    if (!(await sessionExists(id))) throw new HttpError(404, 'no such studio session')
     const body = (await readJson(request)) as { version?: unknown; report?: unknown }
     const report = parseReport(body.report)
     if (report && typeof body.version === 'number') reportPreview(id, body.version, report)

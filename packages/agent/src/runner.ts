@@ -53,6 +53,14 @@ export interface RunAgentResult {
   evaluation: Evaluation | null
   /** 运行是否正常结束（没有出错、没有被中止）。 */
   completed: boolean
+  /** 被中止时的原因（AbortController.abort 的参数）；没被中止为 null。 */
+  abortReason: string | null
+}
+
+/** abort() 不带参数时 reason 是一个 AbortError；带了 Error 就用它的说明。 */
+function abortReasonOf(signal: AbortSignal): string {
+  const reason: unknown = signal.reason
+  return reason instanceof Error && reason.name !== 'AbortError' ? reason.message : 'aborted'
 }
 
 /**
@@ -68,10 +76,15 @@ export async function runAgent(options: RunAgentOptions): Promise<RunAgentResult
     const result = await runner.run({ prompt: options.prompt, system: options.system, session, state, signal: options.signal, emit: onEvent })
     state = result.state
     completed = !options.signal.aborted
-    onEvent({ type: 'done', summary: session.finished?.summary ?? null })
+    if (completed && !session.finished) {
+      // 步数用完、或者模型自己停了，却没有成功调用 finish：不能悄无声息地结束，用户会以为它做完了。
+      onEvent({ type: 'error', message: 'the agent stopped before finishing this turn; send "continue" to let it carry on' })
+    } else if (completed) {
+      onEvent({ type: 'done', summary: session.finished!.summary })
+    }
   } catch (error) {
-    if (options.signal.aborted) onEvent({ type: 'error', message: 'aborted' })
-    else onEvent({ type: 'error', message: error instanceof Error ? error.message : String(error) })
+    // 中止（用户停止、额度用完、超时）不在这里记：调用方知道原因，由它写进对话记录，免得记两遍。
+    if (!options.signal.aborted) onEvent({ type: 'error', message: error instanceof Error ? error.message : String(error) })
   }
-  return { state, item: session.item, values: session.values, evaluation: session.evaluation, completed }
+  return { state, item: session.item, values: session.values, evaluation: session.evaluation, completed, abortReason: options.signal.aborted ? abortReasonOf(options.signal) : null }
 }

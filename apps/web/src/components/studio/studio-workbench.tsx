@@ -131,8 +131,9 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
   }
 
   // 有没保存的手动修改时，先保存再交给 agent，免得它在旧版本上改。
-  const send = async (prompt: string) => {
-    if (await saveDrafts()) await studio.run(prompt)
+  const send = async (prompt: string): Promise<boolean> => {
+    if (!(await saveDrafts())) return false
+    return studio.run(prompt)
   }
 
   // 记住这个会话；从首页带着第一句话进来时，自动发出去（只发一次）。
@@ -203,7 +204,7 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
             transcript={view.transcript}
             running={running}
             available={view.agent.available}
-            onSend={(prompt) => void send(prompt)}
+            onSend={send}
             onAbort={() => void studio.abort()}
             suggestions={suggestions}
             revert={{ available: view.snapshots, disabled: running || studio.busy, onRevert: (snapshot, label) => void studio.revert(snapshot, label) }}
