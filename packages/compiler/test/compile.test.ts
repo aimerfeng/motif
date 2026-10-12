@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { compileItem, forbiddenCss } from '../src/index.ts'
+import { compileCss } from '../src/tailwind.ts'
 
 describe('compileItem', () => {
   it('bundles relative files, keeps vendor imports external and emits only the used Tailwind classes', async () => {
@@ -45,7 +46,31 @@ describe('compileItem', () => {
     }
   })
 
-  it('still allows the directives items actually use, including inside comments', () => {
-    expect(forbiddenCss('/* @import is not allowed */ @theme { --x: 1 } @keyframes a { to { opacity: 0 } } @utility b { color: red } @custom-variant c (&:hover);')).toBeNull()
+  it('still allows the directives items actually use', () => {
+    expect(forbiddenCss('/* glow */ @theme { --x: 1 } @keyframes a { to { opacity: 0 } } @utility b { color: red } @custom-variant c (&:hover);')).toBeNull()
+  })
+
+  // 用字符串里的注释符号骗过“先去注释”的检查：中间真实的 @import 一样要被拒绝。
+  it('is not fooled by comment markers inside strings', async () => {
+    const css = '.a::before { content: "/*" } @import "../../apps/web/.env.local"; .b::before { content: "*/" }'
+    expect(forbiddenCss(css)).not.toBeNull()
+    const result = await compileItem({ entry: 'demo.tsx', files: { 'demo.tsx': 'export const Demo = () => null', 'styles.css': css } })
+    expect(result.ok).toBe(false)
+  })
+})
+
+// 真正的边界：就算文本检查被绕过，Tailwind 也只能加载那三份基础样式表，插件和配置一律拒绝。
+describe('compileCss loaders', () => {
+  it('cannot read files or load plugins from item styles', async () => {
+    await expect(compileCss({ styles: ['@import "./package.json";'], contents: [] })).rejects.toThrow(/cannot be imported/)
+    await expect(compileCss({ styles: ['@import "../../apps/web/.env.local";'], contents: [] })).rejects.toThrow(/cannot be imported/)
+    await expect(compileCss({ styles: ['@plugin "./src/worker.ts";'], contents: [] })).rejects.toThrow(/not allowed/)
+    await expect(compileCss({ styles: ['@config "./package.json";'], contents: [] })).rejects.toThrow(/not allowed/)
+  })
+
+  it('still loads the shared base styles', async () => {
+    const css = await compileCss({ styles: [], contents: [{ content: '<div className="animate-in bg-primary" />', extension: 'tsx' }] })
+    expect(css).toContain('.animate-in')
+    expect(css).toContain('.bg-primary')
   })
 })

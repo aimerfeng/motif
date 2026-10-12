@@ -48,7 +48,7 @@ export async function compileItem(input: CompileInput): Promise<CompileResult> {
   const { files, entry, minify = false } = input
   const diagnostics: Diagnostic[] = []
 
-  if (!(entry in files)) {
+  if (!Object.hasOwn(files, entry)) {
     return { ok: false, js: '', css: '', diagnostics: [{ level: 'error', message: `entry file "${entry}" does not exist` }] }
   }
 
@@ -106,7 +106,7 @@ function virtualFiles(files: Record<string, string>): esbuild.Plugin {
     const base = path.posix.normalize(path.posix.join(path.posix.dirname(importer), specifier))
     for (const extension of RESOLVE_EXTENSIONS) {
       const candidate = `${base}${extension}`
-      if (candidate in files) return candidate
+      if (Object.hasOwn(files, candidate)) return candidate
     }
     return null
   }
@@ -141,12 +141,15 @@ function virtualFiles(files: Record<string, string>): esbuild.Plugin {
 
 const FORBIDDEN_AT_RULES = /@(import|plugin|config|source|reference)\b/i
 
-/** 条目 CSS 里不允许的指令（先去掉注释再找）。转义过的 at 规则名也拒绝，免得绕过检查。 */
+/**
+ * 条目 CSS 里不允许的指令。直接查原文、不先去注释：用正则“去注释”分不清字符串里的注释符号和真正的注释，
+ * 一对写在字符串里的注释开头、结尾就能把中间真实的 @import 藏过去。注释里提到这些词也一并拒绝，代价很小。
+ * 这只是第一道检查，真正的边界在 tailwind.ts 的加载器里。转义过的 at 规则名也拒绝。
+ */
 export function forbiddenCss(css: string): string | null {
-  const code = css.replace(/\/\*[\s\S]*?\*\//g, '')
-  const match = FORBIDDEN_AT_RULES.exec(code)
-  if (match) return `${match[0]} is not allowed in item styles; everything an item needs is already available in the sandbox`
-  if (/@[\w-]*\\/.test(code)) return 'escaped at-rule names are not allowed in item styles'
+  const match = FORBIDDEN_AT_RULES.exec(css)
+  if (match) return `${match[0]} is not allowed in item styles (not even in comments); everything an item needs is already available in the sandbox`
+  if (/@[\w-]*\\/.test(css)) return 'escaped at-rule names are not allowed in item styles'
   return null
 }
 
