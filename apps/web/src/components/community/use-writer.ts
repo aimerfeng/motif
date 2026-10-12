@@ -67,7 +67,10 @@ export function useWriter() {
       const receipt = await publicClient.waitForTransactionReceipt({ hash })
       if (receipt.status !== 'success') throw new Error(t('reverted'))
       setPhase('syncing')
-      await fetch('/api/community/sync', { method: 'POST', body: JSON.stringify({ block: receipt.blockNumber.toString() }) })
+      // 交易已经上链成功；让站点同步只是为了刷新后马上看到结果。同步慢或失败都不能把按钮卡在「正在同步」。
+      await fetch('/api/community/sync', { method: 'POST', body: JSON.stringify({ block: receipt.blockNumber.toString() }), signal: AbortSignal.timeout(10_000) }).catch(
+        (cause: unknown) => console.warn('[community] sync after write did not finish', cause),
+      )
       return receipt
     },
     [walletClient, publicClient, t],

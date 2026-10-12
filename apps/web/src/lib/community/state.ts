@@ -31,6 +31,11 @@ interface Synced {
   /** 下一次请求必须同步（刚有交易上链），不受 1 秒的间隔限制。 */
   force: boolean
   pending: Promise<void> | null
+  /**
+   * 每次拉多少个区块的事件。公开 RPC 常常限制 eth_getLogs 的区块跨度，出错时减半重试，并记住能用的大小。
+   * 可选：状态挂在 globalThis 上，开发时热更新会留下旧代码建的、没有这个字段的对象。
+   */
+  chunk?: bigint
 }
 
 export interface Community {
@@ -46,6 +51,9 @@ export interface Community {
 const MIN_SYNC_INTERVAL_MS = 1000
 const RETRY_AFTER_FAILURE_MS = 15_000
 const LOG_CHUNK = 5_000n
+const MIN_LOG_CHUNK = 250n
+/** 已经有可用的状态时，页面最多等这么久的同步：链慢或者正在整份重建时先用上一次的状态，不让整个社区卡住。 */
+const STALE_WAIT_MS = 2_500
 
 /**
  * Next 的生产构建里页面和接口路由分开打包，模块级变量会各有一份。挂在 globalThis 上，整个进程只有一份状态：
@@ -97,7 +105,11 @@ export async function getCommunity(options: { atLeastBlock?: bigint } = {}): Pro
       })
   }
   try {
-    if (target.pending) await target.pending
+    if (target.pending) {
+      // 要求包含某个区块（刚发完交易）或者从没同步成功过：只能等。其余情况等一小会儿，超时就用上一次的状态。
+      const mustWait = options.atLeastBlock !== undefined || target.syncedAt === 0
+      await (mustWait ? target.pending : Promise.race([target.pending, new Promise((resolve) => setTimeout(resolve, STALE_WAIT_MS))]))
+    }
   } catch (error) {
     console.error('[community] sync failed', error)
   }
@@ -107,31 +119,51 @@ export async function getCommunity(options: { atLeastBlock?: bigint } = {}): Pro
 }
 
 function fresh(key: string): Synced {
-  return { key, state: createCommunityState(), blockHash: null, blockTimes: new Map(), now: 0, syncedAt: 0, retryAt: 0, force: false, pending: null }
+  return { key, state: createCommunityState(), blockHash: null, blockTimes: new Map(), now: 0, syncedAt: 0, retryAt: 0, force: false, pending: null, chunk: LOG_CHUNK }
 }
 
 async function sync(target: Synced, config: CommunityConfig, client: PublicClient): Promise<void> {
-  // 上次同步到的区块还在不在原来的链上：不在就整份重建。
+  // 上次同步到的区块还在不在原来的链上（本地链重启、重组）：不在就整份重建。
+  // 重建在一份新的状态上做，做完才替换：重建期间页面看到的仍是上一次完整的状态，不会突然变空。
+  let state = target.state
+  let blockTimes = target.blockTimes
   if (target.blockHash !== null) {
     const block = await client.getBlock({ blockNumber: target.state.block }).catch(() => null)
-    // 保留 pending：这一轮同步还在进行，清掉它会让并发的请求再起一轮，同一批事件被折叠两次。
-    if (block?.hash !== target.blockHash) Object.assign(target, { ...fresh(target.key), pending: target.pending })
+    if (block?.hash !== target.blockHash) {
+      state = createCommunityState()
+      blockTimes = new Map()
+    }
   }
+  const rebuilding = state !== target.state
 
   const head = await client.getBlock({ blockTag: 'latest' })
   const addresses = [config.contracts.registry, config.contracts.curation, config.contracts.identity, config.contracts.governor]
-  let from = target.state.block < config.startBlock ? config.startBlock : target.state.block + 1n
+  let from = state.block < config.startBlock ? config.startBlock : state.block + 1n
   while (from <= head.number) {
-    const to = from + LOG_CHUNK - 1n < head.number ? from + LOG_CHUNK - 1n : head.number
-    const logs = await client.getLogs({ address: addresses, fromBlock: from, toBlock: to })
+    const chunk = target.chunk ?? LOG_CHUNK
+    const to = from + chunk - 1n < head.number ? from + chunk - 1n : head.number
+    let logs: Awaited<ReturnType<typeof client.getLogs>>
+    try {
+      logs = await client.getLogs({ address: addresses, fromBlock: from, toBlock: to })
+    } catch (error) {
+      if (chunk <= MIN_LOG_CHUNK) throw error
+      target.chunk = chunk / 2n
+      continue
+    }
     const events = decodeCommunityLogs(logs, config.contracts)
-    const blocks = [...new Set(events.map((event) => event.blockNumber))].filter((block) => !target.blockTimes.has(block))
+    const blocks = [...new Set(events.map((event) => event.blockNumber))].filter((block) => !blockTimes.has(block))
     const times = await Promise.all(blocks.map((blockNumber) => client.getBlock({ blockNumber })))
-    for (const block of times) target.blockTimes.set(block.number, Number(block.timestamp))
-    applyCommunityEvents(target.state, events)
+    for (const block of times) blockTimes.set(block.number, Number(block.timestamp))
+    applyCommunityEvents(state, events)
+    // 每折叠完一段就记下进度：中途出错时下次从这里接着拉，已经折叠过的事件不会再折叠一次。
+    // 这一段末尾的区块哈希没有取，先置空（下次跳过重组检查），整轮完成时再记上链头的哈希。
+    state.block = to
+    if (!rebuilding) target.blockHash = null
     from = to + 1n
   }
-  target.state.block = head.number
+  state.block = head.number
+  target.state = state
+  target.blockTimes = blockTimes
   target.blockHash = head.hash
   target.now = Number(head.timestamp)
   target.syncedAt = Date.now()

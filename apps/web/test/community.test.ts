@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { sha256Hex, validateBlob } from '../src/lib/community/blobs'
 import { HttpError } from '../src/lib/community/http'
 import { decodeActions, splitDescription } from '../src/lib/community/proposals'
-import { rateLimit } from '../src/lib/community/rate-limit'
+import { clientKey, dailyCap, rateLimit } from '../src/lib/community/rate-limit'
 import { formatMotif, parseProfileMetadata, uploadMessage } from '../src/lib/community/shared'
 import { inspectSubmission, parseItemSource } from '../src/lib/community/submission'
 import { relativeTime } from '../src/lib/community/time'
@@ -81,13 +81,39 @@ describe('profile metadata read back from storage', () => {
 })
 
 describe('rate limit', () => {
+  const from = (forwarded: string) => new Request('http://localhost/api/community/check', { headers: { 'x-forwarded-for': forwarded } })
+
+  it('trusts only the address its own proxy saw', () => {
+    // 没配置代理：请求头是客户端自己写的，所有请求算同一个来源。
+    expect(clientKey(from('203.0.113.7'))).toBe('all')
+    process.env.MOTIF_TRUSTED_PROXY_HOPS = '1'
+    try {
+      // 一层代理：取最右边那段（代理追加的），客户端在左边伪造的地址不算数。
+      expect(clientKey(from('6.6.6.6, 203.0.113.7'))).toBe('203.0.113.7')
+      expect(clientKey(from('203.0.113.7'))).toBe('203.0.113.7')
+    } finally {
+      delete process.env.MOTIF_TRUSTED_PROXY_HOPS
+    }
+  })
+
   it('allows the limit per minute and then refuses', () => {
-    const request = new Request('http://localhost/api/community/check', { headers: { 'x-forwarded-for': '203.0.113.7' } })
-    for (let i = 0; i < 3; i++) rateLimit(request, 'test-scope', 3)
-    expect(() => rateLimit(request, 'test-scope', 3)).toThrow(/too many requests/)
-    // 其他来源和其他接口各自计数。
-    expect(() => rateLimit(new Request('http://localhost', { headers: { 'x-forwarded-for': '203.0.113.8' } }), 'test-scope', 3)).not.toThrow()
-    expect(() => rateLimit(request, 'other-scope', 3)).not.toThrow()
+    process.env.MOTIF_TRUSTED_PROXY_HOPS = '1'
+    try {
+      const request = from('203.0.113.7')
+      for (let i = 0; i < 3; i++) rateLimit(request, 'test-scope', 3)
+      expect(() => rateLimit(request, 'test-scope', 3)).toThrow(/too many requests/)
+      // 换一个伪造的左段不能绕过；真正不同的来源和其他接口各自计数。
+      expect(() => rateLimit(from('1.2.3.4, 203.0.113.7'), 'test-scope', 3)).toThrow(/too many requests/)
+      expect(() => rateLimit(from('203.0.113.8'), 'test-scope', 3)).not.toThrow()
+      expect(() => rateLimit(request, 'other-scope', 3)).not.toThrow()
+    } finally {
+      delete process.env.MOTIF_TRUSTED_PROXY_HOPS
+    }
+  })
+
+  it('caps an action per day across all sources', () => {
+    for (let i = 0; i < 2; i++) dailyCap('test-daily', 2)
+    expect(() => dailyCap('test-daily', 2)).toThrow(/daily capacity/)
   })
 })
 

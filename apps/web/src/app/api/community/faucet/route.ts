@@ -7,6 +7,15 @@ import { chainOf } from '@/lib/community/shared'
 import { getCommunity } from '@/lib/community/state'
 
 const GAS_GRANT = parseEther('1')
+const LOOPBACK = new Set(['127.0.0.1', 'localhost', '[::1]'])
+
+function onThisMachine(rpcUrl: string): boolean {
+  try {
+    return LOOPBACK.has(new URL(rpcUrl).hostname)
+  } catch {
+    return false
+  }
+}
 const MOTIF_GRANT = parseEther('1000')
 
 /**
@@ -16,7 +25,8 @@ const MOTIF_GRANT = parseEther('1000')
 export async function POST(request: Request) {
   try {
     const community = await getCommunity()
-    if (!community?.config.local) throw new HttpError(404, 'the faucet only exists on the local development chain')
+    // 链 id 是 31337 还不够：只认本机上的节点，免得哪天有人把一条远程链也配成 31337，水龙头就成了提款机。
+    if (!community?.config.local || !onThisMachine(community.config.serverRpcUrl)) throw new HttpError(404, 'the faucet only exists on the local development chain')
     rateLimit(request, 'faucet', 10)
     const body = (await readJson(request)) as { address?: unknown }
     if (typeof body.address !== 'string' || !isAddress(body.address)) throw new HttpError(400, '"address" must be an address')
