@@ -46,12 +46,37 @@ export function priceOf(usdc: string, config: PricingConfig): Price {
   return { usdc: fromUnits(units), motif: fromUnits(motifUnits), free: units === 0n }
 }
 
+const DEFAULTS: PricingConfig = { customUsdc: '0', motifPerUsdc: '100', motifDiscount: 0.2 }
+const warned = new Set<string>()
+
+/** 配置写错时只报一次，然后用默认值：一个格式不对的环境变量不该让搜索、下单和 llms.txt 全部报错。 */
+function fallback<T>(name: string, raw: string, value: T): T {
+  if (!warned.has(name)) {
+    warned.add(name)
+    console.error(`[store] ${name}="${raw}" is not valid; using ${String(value)} instead`)
+  }
+  return value
+}
+
+function decimal(env: Record<string, string | undefined>, name: string, defaultValue: string): string {
+  const raw = env[name]?.trim()
+  // 空字符串当作没设置。
+  if (!raw) return defaultValue
+  try {
+    toUnits(raw)
+    return raw
+  } catch {
+    return fallback(name, raw, defaultValue)
+  }
+}
+
 export function pricingFromEnv(env: Record<string, string | undefined> = process.env): PricingConfig {
-  const discount = Number(env.MOTIF_STORE_MOTIF_DISCOUNT ?? '0.2')
+  const rawDiscount = env.MOTIF_STORE_MOTIF_DISCOUNT?.trim()
+  const discount = rawDiscount ? Number(rawDiscount) : DEFAULTS.motifDiscount
   return {
-    customUsdc: env.MOTIF_STORE_CUSTOM_PRICE_USDC?.trim() || '0',
-    motifPerUsdc: env.MOTIF_STORE_MOTIF_PER_USDC?.trim() || '100',
-    motifDiscount: Number.isFinite(discount) && discount >= 0 && discount < 1 ? discount : 0.2,
+    customUsdc: decimal(env, 'MOTIF_STORE_CUSTOM_PRICE_USDC', DEFAULTS.customUsdc),
+    motifPerUsdc: decimal(env, 'MOTIF_STORE_MOTIF_PER_USDC', DEFAULTS.motifPerUsdc),
+    motifDiscount: Number.isFinite(discount) && discount >= 0 && discount < 1 ? discount : fallback('MOTIF_STORE_MOTIF_DISCOUNT', rawDiscount ?? '', DEFAULTS.motifDiscount),
   }
 }
 

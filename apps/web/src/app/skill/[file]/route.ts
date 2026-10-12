@@ -3,6 +3,7 @@ import { defaultsOf } from '@motif/schema'
 import { getCatalog } from '@/lib/catalog'
 import { marketSource } from '@/lib/community/market-source'
 import { readSkillFiles, readSkillMarkdown } from '@/lib/skills'
+import { publicOrigin } from '@/lib/site'
 
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=300' }
 
@@ -26,7 +27,7 @@ async function communitySkill(name: string, origin: string): Promise<Record<stri
  */
 export async function GET(request: Request, { params }: RouteContext<'/skill/[file]'>) {
   const { file } = await params
-  const origin = new URL(request.url).origin
+  const origin = publicOrigin(request)
   if (file.endsWith('.md')) {
     const name = file.slice(0, -'.md'.length)
     const markdown = (await readSkillMarkdown(name)) ?? (await communitySkill(name, origin))?.['SKILL.md'] ?? null

@@ -69,15 +69,23 @@ test('a custom order is built by the studio agent and delivered over HTTP', asyn
   expect(placed.data.status).toBe('queued')
   const id = placed.data.id as string
 
-  // 脚本运行器先改坏再修好，几秒钟就能交付。
-  await expect.poll(async () => (await (await request.post('/api/agent/get_order', { data: { orderId: id } })).json()).data.status, { timeout: 60_000 }).toBe('delivered')
-  const order = (await (await request.post('/api/agent/get_order', { data: { orderId: id } })).json()).data
+  // 脚本运行器先改坏再修好、再调一个参数，几秒钟就能交付。等到结束（交付或失败），失败时把原因带进断言信息。
+  const fetchOrder = async () => (await (await request.post('/api/agent/get_order', { data: { orderId: id } })).json()).data
+  await expect.poll(async () => ['delivered', 'failed'].includes((await fetchOrder()).status), { timeout: 60_000 }).toBe(true)
+  const order = await fetchOrder()
+  expect(order.status, order.error ?? '').toBe('delivered')
   expect(order.studio).toMatch(/\/studio\//)
-  expect(order.delivery.install).toMatch(/\/r\/s\/.+\.json"$/)
+  // 安装的是交付时存下的快照（订单号就是凭证）。
+  expect(order.delivery.install).toMatch(new RegExp(`/r/o/${id}\\.json"$`))
   expect(order.delivery.registryItem.files.length).toBeGreaterThan(0)
+  const registry = await request.get(`/r/o/${id}.json`)
+  expect(registry.ok()).toBe(true)
+  expect((await registry.json()).files.length).toBeGreaterThan(0)
 
-  const invalid = await request.post('/api/agent/place_order', { data: { slug: 'loader-dots', brief: 'both at once' } })
-  expect(invalid.status()).toBe(400)
+  // 参数不适用时直接报错，不悄悄忽略。
+  for (const data of [{ slug: 'loader-dots', brief: 'both at once' }, { slug: 'loader-dots', base: 'border-beam' }, { brief: 'A glowing pricing card for a SaaS', preset: 'aurora' }]) {
+    expect((await request.post('/api/agent/place_order', { data })).status()).toBe(400)
+  }
 })
 
 test('llms.txt tells agents how to connect', async ({ request }) => {

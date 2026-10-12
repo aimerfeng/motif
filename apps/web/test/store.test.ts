@@ -2,7 +2,7 @@ import path from 'node:path'
 import { ITEMS_DIR, loadItemSource } from '@motif/registry'
 import { describe, expect, it } from 'vitest'
 import { customPrice, fromUnits, itemPrice, priceOf, pricingFromEnv, toUnits } from '../src/lib/store/pricing'
-import { searchListings, type Listing } from '../src/lib/store/search'
+import { matchesAll, searchListings, searchTerms, type Listing } from '../src/lib/store/search'
 
 describe('store pricing', () => {
   const config = { customUsdc: '2.5', motifPerUsdc: '100', motifDiscount: 0.2 }
@@ -25,6 +25,8 @@ describe('store pricing', () => {
   it('reads its configuration from the environment with safe defaults', () => {
     expect(pricingFromEnv({})).toEqual({ customUsdc: '0', motifPerUsdc: '100', motifDiscount: 0.2 })
     expect(pricingFromEnv({ MOTIF_STORE_CUSTOM_PRICE_USDC: '5', MOTIF_STORE_MOTIF_DISCOUNT: '2' })).toEqual({ customUsdc: '5', motifPerUsdc: '100', motifDiscount: 0.2 })
+    // 写错的值不让整个商店报错：用默认值；空字符串当作没设置。
+    expect(pricingFromEnv({ MOTIF_STORE_CUSTOM_PRICE_USDC: '$2', MOTIF_STORE_MOTIF_PER_USDC: '1,000', MOTIF_STORE_MOTIF_DISCOUNT: '' })).toEqual({ customUsdc: '0', motifPerUsdc: '100', motifDiscount: 0.2 })
   })
 })
 
@@ -32,11 +34,29 @@ describe('store search', () => {
   const load = async (slugs: string[]): Promise<Listing[]> =>
     Promise.all(slugs.map(async (slug) => ({ manifest: (await loadItemSource(path.join(ITEMS_DIR, slug))).manifest, source: 'catalog' as const, author: null })))
 
-  it('ranks title and tag matches first and requires every term', async () => {
+  it('ranks items that match more of the request first', async () => {
     const listings = await load(['border-beam', 'loader-dots', 'loader-orbits', 'pricing-three-tier', 'mesh-gradient'])
     expect(searchListings(listings, { query: 'loading dots', limit: 5 }).map((listing) => listing.manifest.slug)[0]).toBe('loader-dots')
     expect(searchListings(listings, { query: 'pricing', limit: 5 }).map((listing) => listing.manifest.slug)).toContain('pricing-three-tier')
-    expect(searchListings(listings, { query: 'loader zebra', limit: 5 })).toEqual([])
+    // 一半的词命中就够：多出来的一个词不该让结果变成空。
+    expect(searchListings(listings, { query: 'loader zebra', limit: 5 }).map((listing) => listing.manifest.slug)).toContain('loader-dots')
+    expect(searchListings(listings, { query: 'zebra giraffe', limit: 5 })).toEqual([])
+  })
+
+  it('understands natural-language and Chinese requests', async () => {
+    const listings = await load(['border-beam', 'loader-dots', 'loader-orbits', 'pricing-three-tier', 'mesh-gradient'])
+    expect(searchListings(listings, { query: 'I need a spinner for buttons', limit: 5 }).map((listing) => listing.manifest.slug)[0]).toMatch(/^loader-/)
+    expect(searchListings(listings, { query: '发光边框卡片', limit: 5 }).map((listing) => listing.manifest.slug)[0]).toBe('border-beam')
+    expect(searchTerms('Glowing cards, with a modal')).toEqual([['glow'], ['card'], ['dialog']])
+  })
+
+  it('filters the market grid with the same tokenizer', () => {
+    const haystack = ['边框光束', '一束渐变光沿卡片边框匀速绕行，发光的边缘', 'border-beam'].join('\n')
+    expect(matchesAll(haystack, searchTerms('发光卡片'))).toBe(true)
+    expect(matchesAll(haystack, searchTerms('发光 表格'))).toBe(false)
+    // 人在搜索框里输入的 effect 不当虚词丢掉。
+    expect(searchTerms('effect', { stopwords: false })).toEqual([['effect']])
+    expect(searchTerms('effect')).toEqual([])
   })
 
   it('filters by level and category, and honours the limit', async () => {

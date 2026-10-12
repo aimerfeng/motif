@@ -18,7 +18,9 @@ export function createStoreServer(context: ToolContext): McpServer {
       try {
         return { content: toContent(await tool.run(input as never, context)) }
       } catch (error) {
-        const message = error instanceof HttpError || error instanceof Error ? error.message : String(error)
+        // 和 HTTP 接口一致：只有我们自己写的错误说明（HttpError）原样给 agent；其他异常可能带着服务器路径，记日志、只说内部错误。
+        if (!(error instanceof HttpError)) console.error(`[store] ${tool.name} failed`, error)
+        const message = error instanceof HttpError ? error.message : 'internal error; try again later'
         return { content: [{ type: 'text' as const, text: message }], isError: true }
       }
     })

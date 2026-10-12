@@ -2,6 +2,7 @@ import { exportRegistryItem, type ExportContext } from '@motif/export'
 import { getCatalog } from '@/lib/catalog'
 import { decodeValues } from '@/lib/share'
 import { loadSession } from '@/lib/studio/store'
+import { publicOrigin } from '@/lib/site'
 
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' }
 
@@ -18,7 +19,7 @@ export async function GET(request: Request, { params }: RouteContext<'/r/s/[file
 
   const url = new URL(request.url)
   const catalog = await getCatalog()
-  const context: ExportContext = { origin: url.origin, vendor: catalog.vendor, runtime: catalog.runtime }
+  const context: ExportContext = { origin: publicOrigin(request), vendor: catalog.vendor, runtime: catalog.runtime }
   const values = decodeValues(url.searchParams.get('v') ?? '', session.item.manifest.params, session.values)
   return Response.json(await exportRegistryItem(session.item, values, context), { headers: HEADERS })
 }

@@ -2,13 +2,14 @@ import { KINDS } from '@motif/schema/core'
 import { storeListings } from '@/lib/store/listings'
 import { customPrice, pricingFromEnv } from '@/lib/store/pricing'
 import { STORE_INSTRUCTIONS, STORE_TOOLS } from '@/lib/store/tools'
+import { publicOrigin } from '@/lib/site'
 
 /**
  * /llms.txt：用自然语言告诉 agent 这个站点是什么、怎么接入、怎么下单（docs/decisions/0008-agent-store.md）。
  * 目录的规模和价格按当前数据生成。
  */
 export async function GET(request: Request) {
-  const origin = new URL(request.url).origin
+  const origin = publicOrigin(request)
   const listings = await storeListings()
   const counts = KINDS.map((kind) => `${listings.filter((listing) => listing.manifest.kind === kind).length} ${kind}s`).join(', ')
   const custom = customPrice(pricingFromEnv())

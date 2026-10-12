@@ -1,16 +1,18 @@
+import { createHash } from 'node:crypto'
 import { KINDS } from '@motif/schema/core'
-import { defaultsOf, type ItemManifest, type ParamValues } from '@motif/schema'
+import type { Evaluation } from '@motif/agent'
+import { defaultsOf, type ItemManifest, type ItemSource, type ParamValues } from '@motif/schema'
 import { z } from 'zod'
 import { marketSource } from '@/lib/community/market-source'
 import { HttpError } from '@/lib/community/http'
-import { rateLimit } from '@/lib/community/rate-limit'
+import { dailyCap, rateLimit } from '@/lib/community/rate-limit'
 import { mediaFor } from '@/lib/media'
 import { captureAvailable, capturePreview } from '@/lib/studio/capture'
 import { evaluateItem } from '@/lib/studio/host'
 import { sanitizeValues } from '@/lib/studio/sessions'
 import { storeListings } from './listings'
-import { searchListings, type Listing } from './search'
-import { enqueueCustomOrder, loadOrder, newOrderId, orderView, saveOrder, type Order } from './orders'
+import { categoryOverview, searchListings, type Listing } from './search'
+import { assertQueueRoom, enqueueCustomOrder, loadOrder, newOrderId, orderView, pruneOrders, saveOrder, type Order } from './orders'
 import { customPrice, itemPrice, pricingFromEnv } from './pricing'
 
 /**
@@ -41,6 +43,26 @@ const tool = <Shape extends z.ZodRawShape>(definition: StoreTool<Shape>) => defi
 
 const slug = z.string().min(1).max(64).describe('Item slug, as returned by search_ui')
 const values = z.record(z.string(), z.unknown()).optional().describe('Parameter values to tune the item (see get_ui for keys and ranges). Unknown keys and out-of-range values are dropped.')
+
+/** 每天全站最多做多少次预览截图、接多少张定制单（都要花服务器算力或模型额度）。 */
+const DAILY_PREVIEWS = Number(process.env.MOTIF_STORE_DAILY_PREVIEWS) || 2000
+const DAILY_CUSTOM_ORDERS = Number(process.env.MOTIF_STORE_DAILY_CUSTOM_ORDERS) || 40
+
+/** 目录条目的编译结果：同一个条目每次预览都重新编译没有意义。条目内容变了（重新部署）缓存键就变了。 */
+const builds = ((globalThis as { __motifStoreBuilds?: Map<string, Promise<Evaluation>> }).__motifStoreBuilds ??= new Map())
+
+function cachedEvaluation(item: ItemSource): Promise<Evaluation> {
+  const key = `${item.manifest.slug}:${createHash('sha1').update(JSON.stringify(item)).digest('hex')}`
+  let evaluation = builds.get(key)
+  if (!evaluation) {
+    evaluation = evaluateItem(item, 1)
+    // 编译失败（包括编译进程忙）不缓存，下次重试。
+    evaluation.then((result: Evaluation) => !result.build && builds.delete(key)).catch(() => builds.delete(key))
+    builds.set(key, evaluation)
+    if (builds.size > 200) builds.delete(builds.keys().next().value!)
+  }
+  return evaluation
+}
 
 async function requireItem(name: string) {
   const item = await marketSource(name)
@@ -86,7 +108,17 @@ export const STORE_TOOLS = [
       limit: z.number().int().min(1).max(30).optional().describe('How many results (default 8)'),
     },
     async run(input, { origin }) {
-      const results = searchListings(await storeListings(), { query: input.query, kind: input.kind, category: input.category, limit: input.limit ?? 8 })
+      const listings = await storeListings()
+      const results = searchListings(listings, { query: input.query, kind: input.kind, category: input.category, limit: input.limit ?? 8 })
+      if (results.length === 0) {
+        return {
+          data: {
+            results: [],
+            hint: 'Nothing matched. Try fewer or broader words, search by one of these categories, or place_order with a brief for a custom build.',
+            categories: categoryOverview(listings, input.kind),
+          },
+        }
+      }
       return { data: { results: results.map((listing) => listingSummary(listing, origin)), hint: 'Call get_ui for parameters and presets, preview_ui to see it with your values, then place_order.' } }
     },
   }),
@@ -132,13 +164,14 @@ export const STORE_TOOLS = [
       slug,
       preset: z.string().max(64).optional().describe('Preset id from get_ui; values override it'),
       values,
-      times: z.array(z.number().min(0).max(12)).max(3).optional().describe('Seconds into the animation to capture (default 0.8 and 2.5)'),
+      times: z.array(z.number().min(0).max(12)).min(1).max(3).optional().describe('Seconds into the animation to capture, 1 to 3 values (default 0.8 and 2.5)'),
     },
     async run(input, { request }) {
       rateLimit(request, 'store-preview', 10)
       if (!captureAvailable()) throw new HttpError(503, 'previews are not available on this server; use the poster from get_ui')
       const item = await requireItem(input.slug)
-      const evaluation = await evaluateItem(item, 1)
+      dailyCap('store-previews', DAILY_PREVIEWS)
+      const evaluation = await cachedEvaluation(item)
       if (!evaluation.build) throw new HttpError(500, 'this item failed to build')
       const tuned = tunedValues(item.manifest, input.preset, input.values)
       const shots = await capturePreview({
@@ -188,10 +221,15 @@ export const STORE_TOOLS = [
     },
     async run(input, { request, origin }) {
       if (!input.slug === !input.brief) throw new HttpError(400, 'give either "slug" (an existing item) or "brief" (a custom order)')
+      // 不适用的参数不悄悄忽略：agent 以为调了参数、其实没生效，拿到的东西会和预期不一样。
+      if (input.slug && input.base) throw new HttpError(400, '"base" only applies to custom orders (with "brief"); to order an existing item, pass just "slug"')
+      if (input.brief && (input.preset || input.values)) throw new HttpError(400, '"preset" and "values" only apply to existing items (with "slug"); describe the look you want in "brief" instead')
+      void pruneOrders().catch((error: unknown) => console.error('[store] prune failed', error))
       const pricing = pricingFromEnv()
       const now = Date.now()
       const base: Omit<Order, 'kind' | 'price' | 'status'> = { id: newOrderId(), createdAt: now, updatedAt: now, buyer: input.buyer ?? null }
       if (input.slug) {
+        rateLimit(request, 'store-order', 30)
         const item = await requireItem(input.slug)
         const price = itemPrice(pricing)
         const order = await saveOrder({ ...base, kind: 'item', price, status: price.free ? 'delivered' : 'awaiting_payment', slug: item.manifest.slug, values: tunedValues(item.manifest, input.preset, input.values) })
@@ -200,6 +238,10 @@ export const STORE_TOOLS = [
       rateLimit(request, 'store-custom-order', 3)
       if (input.base) await requireItem(input.base)
       const price = customPrice(pricing)
+      if (price.free) {
+        assertQueueRoom()
+        dailyCap('store-custom-orders', DAILY_CUSTOM_ORDERS)
+      }
       const order = await saveOrder({ ...base, kind: 'custom', price, status: price.free ? 'queued' : 'awaiting_payment', brief: input.brief!, base: input.base ?? null })
       if (price.free) enqueueCustomOrder(order.id)
       return { data: await orderView(order, origin) }

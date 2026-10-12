@@ -3,6 +3,7 @@ import { defaultsOf } from '@motif/schema'
 import { getCatalog } from '@/lib/catalog'
 import { marketSource } from '@/lib/community/market-source'
 import { decodeValues } from '@/lib/share'
+import { publicOrigin } from '@/lib/site'
 
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=300' }
 
@@ -16,7 +17,7 @@ export async function GET(request: Request, { params }: RouteContext<'/r/[file]'
   const slug = file.slice(0, -'.json'.length)
   const url = new URL(request.url)
   const catalog = await getCatalog()
-  const context: ExportContext = { origin: url.origin, vendor: catalog.vendor, runtime: catalog.runtime }
+  const context: ExportContext = { origin: publicOrigin(request), vendor: catalog.vendor, runtime: catalog.runtime }
 
   if (slug === 'motif-runtime') return Response.json(runtimeRegistryItem(context), { headers: HEADERS })
 
