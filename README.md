@@ -1,8 +1,12 @@
 # Motif 母题
 
 > 开源的前端设计素材站：组件、动效、Shader 与 Agent Skill 的市场。实时调参，下载能直接运行的代码，或者把 Skill 交给你的 agent。
+>
+> An open-source market of UI components, motion effects, shaders and agent skills. Tune them live and take the code, or let your agent find and order them over MCP.
 
-**状态：** 市场、调参、导出、Skill 库和 Agent 工作台（Studio）都已可在本地使用（145 个条目、153 个 Skill）。实施计划见 [docs/PLAN.md](./docs/PLAN.md)。
+![Motif 市场里的部分效果：流体模拟、合成波、地球、液态金属、宝石烟雾……](docs/assets/showcase.webp)
+
+**状态：** 市场、调参、导出、Skill 库、Agent 工作台（Studio）、给 agent 的商店和去中心化社区都已经能在本地完整使用（145 个条目、153 个 Skill），还没有部署到公网。实施计划见 [docs/PLAN.md](./docs/PLAN.md)。
 
 ## 能做什么
 
@@ -12,6 +16,8 @@
    - 需要图片的着色器（液态金属、凹槽玻璃、水面、CMYK 半调……）用 Canvas 现画输入图，仓库里没有图片素材。
    - 每个都能实时预览，标明来源、固定提交和许可证。
 2. **调参**：参数面板由条目定义自动生成（滑杆、颜色、调色板、缓动曲线、弹簧、随机种子），范围收紧到「拖到哪里都好看」；预设一键切换；参数写进链接可以分享。
+
+   ![条目详情页：左边实时预览，右边调参面板](docs/assets/tune.webp)
 3. **导出**：代码视图随参数实时更新，所见即所得。
    - 下载可运行的 Vite + React + Tailwind v4 项目（zip），
    - 用 shadcn 安装到现有项目：`npx shadcn add <站点>/r/<效果>.json?v=<参数>`，
@@ -29,6 +35,8 @@
    - agent 能对预览截图，看着画面再打磨。
    - 每一轮都能撤回；调好的参数可以应用为默认值。
    - 做完可以下载、用 shadcn 安装、复制 Skill，或者一键投稿到社区。
+
+   ![工作台：左边是和 agent 的对话，中间实时预览，右边调参](docs/assets/studio.webp)
 
    开发时 agent 用本机的 Claude Code CLI；部署时配置站点自己的模型 key（见 `apps/web/.env.example`）。设计见 [docs/decisions/0006-studio.md](./docs/decisions/0006-studio.md)。
 6. **给 agent 的商店**（第一阶段：价格为 0，付款还没开放）：Claude Code、Cursor 这类 agent 直接来找 UI、下单：
@@ -66,6 +74,7 @@ pnpm dev:chain      # （可选，另开终端）本地社区链 http://127.0.0.
 | `pnpm e2e` | 端到端测试（构建后用已安装的 Edge 跑） |
 | `pnpm audit:items [slug]` | 检查条目：清单、依赖、许可证头、默认值区域、编译 |
 | `pnpm capture [slug]` | 生成海报与循环视频，并跑视觉闸门（帧率、空白、减少动态效果） |
+| `pnpm og` | 用条目海报重新生成分享链接的默认配图（`apps/web/public/og.jpg`） |
 | `pnpm check:export <slug>` | 真正安装并构建导出的项目（需要联网） |
 | `pnpm smoke:agent` | 用本机 Claude CLI 真实跑几个工作台任务（会调用模型），记录写到 `.data/evals/` |
 | `pnpm skills:build` | 重新生成仓库根目录的 `skills/` |
