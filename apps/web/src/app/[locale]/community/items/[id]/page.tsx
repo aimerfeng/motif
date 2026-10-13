@@ -14,13 +14,17 @@ import { contentOfVersion } from '@/lib/community/items'
 import { getCommunity } from '@/lib/community/state'
 import { readBlob } from '@/lib/community/storage'
 import { formatDate, relativeTime } from '@/lib/community/time'
-import { itemRecordView } from '@/lib/community/views'
+import { itemLink, itemRecordView } from '@/lib/community/views'
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/community/items/[id]'>): Promise<Metadata> {
   const { locale: raw, id } = await params
   const locale = resolveRouteLocale(raw)
   const t = await getTranslations({ locale, namespace: 'community.item' })
-  return { title: t('metaTitle', { id }) }
+  // 标签页标题用条目名（「流光连线」），拿不到时才退回编号。
+  const community = /^\d+$/.test(id) ? await getCommunity() : null
+  const item = community?.state.items.get(BigInt(id))
+  const link = item ? await itemLink(item, locale) : null
+  return { title: link?.title ?? link?.slug ?? t('metaTitle', { id }) }
 }
 
 const PAGE_KINDS = new Set(['template', 'style', 'section'])

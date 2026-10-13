@@ -23,6 +23,7 @@
     "verify": "pnpm lint && pnpm test && pnpm build",
     "sources:sync": "node scripts/sources-sync.mjs",
     "capture": "tsx scripts/capture.ts",
+    "og": "tsx scripts/og-image.ts",
     "audit:items": "pnpm --filter @motif/registry check",
     "items:sync-defaults": "pnpm --filter @motif/registry sync-defaults",
     "item:pack": "pnpm --filter @motif/registry run item:pack",

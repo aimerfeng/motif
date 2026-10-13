@@ -48,7 +48,8 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
       <header className="mt-5 mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         {/* 服务端传来的元素单独包一层，不和客户端的兄弟节点放在同一个子节点数组里（否则开发模式会报缺 key）。 */}
         <div className="max-w-3xl min-w-0">{header}</div>
-        <div className="flex shrink-0 items-center gap-2">
+        {/* 窄屏上按钮整颗换行，不把按钮里的字折成两行。 */}
+        <div className="flex flex-wrap items-center gap-2 *:whitespace-nowrap lg:shrink-0 lg:flex-nowrap">
           {pageLike && <ViewportSwitch value={viewport} onChange={setViewport} />}
           <ChainBadge item={item} />
           <OpenInStudio slug={item.manifest.slug} values={tune.values} />
@@ -60,7 +61,7 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
         {/* 手机上调参面板在预览下方：小尺寸的效果预览吸在顶部，边调边看。页面类条目太高，不吸。 */}
         <div className={`self-start ${pageLike ? '' : 'max-lg:sticky max-lg:top-14 max-lg:z-10 max-lg:-mx-5 max-lg:bg-canvas max-lg:px-5 max-lg:pt-2 max-lg:pb-3'}`}>
           <div
-            className={`group relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(78vh,860px)] min-h-[520px]' : 'aspect-[16/10]'}`}
+            className={`group relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(78vh,860px)] min-h-[520px]' : 'aspect-[4/3] sm:aspect-[16/10]'}`}
           >
             <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 transition-[width] duration-300 ease-(--ease-out-soft)" style={{ width: VIEWPORT_WIDTH[viewport] }}>
               <PreviewFrame

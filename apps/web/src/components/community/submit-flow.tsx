@@ -184,7 +184,7 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
           data-dragging={dragging || undefined}
-          className={`flex cursor-pointer items-center rounded-[var(--radius-card)] border border-dashed border-line-strong bg-sunken transition-colors duration-150 hover:border-ink-faint data-dragging:border-focus ${
+          className={`flex cursor-pointer items-center rounded-[var(--radius-card)] border border-dashed border-line-strong bg-sunken transition-colors duration-150 hover:border-ink-faint focus-within:border-focus data-dragging:border-focus ${
             item ? 'gap-3 px-4 py-3' : 'flex-col justify-center gap-3 px-6 py-14 text-center'
           }`}
         >
@@ -231,7 +231,7 @@ export function SubmitFlow({ locale, paused, initial = null }: { locale: 'zh-CN'
               <Chip tone={report.ok ? 'success' : 'danger'}>{report.ok ? t('passed') : t('failed', { count: errors.length })}</Chip>
             </div>
             {report.build && (
-              <div className="relative mt-5 aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken">
+              <div className="relative mt-5 aspect-[4/3] overflow-hidden sm:aspect-[16/10] rounded-[var(--radius-card)] border border-line bg-sunken">
                 <PreviewFrame
                   title={report.title?.[locale] ?? ''}
                   module={{ kind: 'code', code: report.build.js }}

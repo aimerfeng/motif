@@ -931,6 +931,7 @@
       "label": "Open in Studio",
       "busy": "Opening…",
       "failed": "Could not open; try again"
-    }
+    },
+    "lockedTune": "The agent is working; tune again when this turn ends."
   }
 }

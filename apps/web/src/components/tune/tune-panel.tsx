@@ -19,7 +19,10 @@ import {
 import type { TunePreset, TuneState } from './use-tune'
 
 /** 调参面板：预设、分组的控件、重置与分享。所有控件都由参数定义自动生成（零代码）。 */
-export function TunePanel({ params, presets, tune }: { params: readonly ParamSpec[]; presets: TunePreset[]; tune: TuneState }) {
+/**
+ * locked：暂时不能调（工作台里 agent 正在改参数，这时调的值会被它这一轮的结果覆盖）。lockedNote 说明原因。
+ */
+export function TunePanel({ params, presets, tune, locked = false, lockedNote }: { params: readonly ParamSpec[]; presets: TunePreset[]; tune: TuneState; locked?: boolean; lockedNote?: string }) {
   const t = useTranslations('tune')
   const locale = useLocale() as Locale
   // 分组名来自文案；条目里出现了文案没有的分组（比如 Studio 生成的）时，退回首字母大写的键名。
@@ -104,35 +107,44 @@ export function TunePanel({ params, presets, tune }: { params: readonly ParamSpe
         </div>
       </header>
 
-      {presets.length > 0 && (
-        <div className="border-b border-line px-4 py-3">
-          <p className="mb-2 text-[11.5px] text-ink-faint">{t('presets')}</p>
-          <div className="flex flex-wrap gap-1.5" data-testid="presets">
-            <PresetChip active={tune.activePreset === null && !tune.changed} onClick={() => tune.applyPreset(null)}>
-              {t('defaultPreset')}
-            </PresetChip>
-            {/* 工作台里 agent 改清单的中途，id 可能暂时重复或缺失：key 带上序号，不靠它唯一。 */}
-            {presets.map((preset, index) => (
-              <PresetChip key={`${preset.id}:${index}`} active={tune.activePreset === preset.id} onClick={() => tune.applyPreset(preset.id)}>
-                {preset.name}
-              </PresetChip>
-            ))}
-          </div>
-        </div>
+      {locked && lockedNote && (
+        <p role="status" className="border-b border-line bg-sunken/60 px-4 py-2 text-[12px] text-ink-faint">
+          {lockedNote}
+        </p>
       )}
 
-      <div className="overscroll-contain lg:max-h-[min(640px,calc(100dvh-220px))] lg:overflow-y-auto">
-        {groups.map((group) => (
-          <fieldset key={group.key || 'main'} className="space-y-4 border-b border-line px-4 py-4 last:border-b-0">
-            {group.key && <legend className="float-left mb-1 w-full text-[11px] tracking-wide text-ink-faint">{groupTitle(group.key)}</legend>}
-            {group.params.map((param, index) => (
-              <div key={`${param.key}:${index}`} className="clear-both">
-                {control(param)}
-              </div>
-            ))}
-          </fieldset>
-        ))}
-      </div>
+      {/* fieldset 的 disabled 会一并禁用里面所有原生控件。 */}
+      <fieldset disabled={locked} className={`min-w-0 transition-opacity duration-150 ${locked ? 'opacity-50' : ''}`}>
+        {presets.length > 0 && (
+          <div className="border-b border-line px-4 py-3">
+            <p className="mb-2 text-[11.5px] text-ink-faint">{t('presets')}</p>
+            <div className="flex flex-wrap gap-1.5" data-testid="presets">
+              <PresetChip active={tune.activePreset === null && !tune.changed} onClick={() => tune.applyPreset(null)}>
+                {t('defaultPreset')}
+              </PresetChip>
+              {/* 工作台里 agent 改清单的中途，id 可能暂时重复或缺失：key 带上序号，不靠它唯一。 */}
+              {presets.map((preset, index) => (
+                <PresetChip key={`${preset.id}:${index}`} active={tune.activePreset === preset.id} onClick={() => tune.applyPreset(preset.id)}>
+                  {preset.name}
+                </PresetChip>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="overscroll-contain lg:max-h-[min(640px,calc(100dvh-220px))] lg:overflow-y-auto">
+          {groups.map((group) => (
+            <fieldset key={group.key || 'main'} className="space-y-4 border-b border-line px-4 py-4 last:border-b-0">
+              {group.key && <legend className="float-left mb-1 w-full text-[11px] tracking-wide text-ink-faint">{groupTitle(group.key)}</legend>}
+              {group.params.map((param, index) => (
+                <div key={`${param.key}:${index}`} className="clear-both">
+                  {control(param)}
+                </div>
+              ))}
+            </fieldset>
+          ))}
+        </div>
+      </fieldset>
     </section>
   )
 }

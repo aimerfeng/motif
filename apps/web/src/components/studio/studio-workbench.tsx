@@ -155,7 +155,7 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
   const suggestions = view.base ? [t('suggest.palette'), t('suggest.calmer'), t('suggest.param')] : [t('suggest.aurora'), t('suggest.loader'), t('suggest.hero')]
 
   const preview = (
-    <div className={`relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(70vh,760px)] min-h-[480px]' : 'aspect-[16/10]'}`}>
+    <div className={`relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(70vh,760px)] min-h-[480px]' : 'aspect-[4/3] sm:aspect-[16/10]'}`}>
       {build ? (
         <PreviewFrame
           title={title}
@@ -291,7 +291,7 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
           <div className="min-w-0">{preview}</div>
           <div className="@4xl:sticky @4xl:top-6 @4xl:col-start-2 @4xl:row-span-2 @4xl:row-start-1 @4xl:self-start">
             {params.length > 0 ? (
-              <TunePanel params={params} presets={presets} tune={tune} />
+              <TunePanel params={params} presets={presets} tune={tune} locked={running} lockedNote={t('lockedTune')} />
             ) : (
               <p className="rounded-[var(--radius-card)] border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-faint">{t('noParams')}</p>
             )}

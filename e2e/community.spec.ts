@@ -133,7 +133,9 @@ test('治理：委托、提案、投票、排队、执行，任命新的审核�
   await holder.getByTestId('proposal-address').fill(ACCOUNTS.nominee)
   await holder.getByTestId('proposal-title').fill(title)
   await holder.getByTestId('propose-button').click()
-  const proposal = holder.getByTestId('proposals').locator('li', { hasText: title })
+  // 只认看得见的那一份：页面在 loading.tsx 的 Suspense 里流式渲染，客户端先从 RSC 数据渲染出来时，
+  // 晚到的 HTML 分段会作为隐藏的 <div hidden id="S:…"> 留在文档末尾，里面也有一份同样的提案。
+  const proposal = holder.getByTestId('proposals').filter({ visible: true }).locator('li', { hasText: title })
   await expect(proposal).toContainText('等待投票')
   await expect(proposal).toContainText(`curation.grantRole(CURATOR_ROLE, ${ACCOUNTS.nominee})`)
 

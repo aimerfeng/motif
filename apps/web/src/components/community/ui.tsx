@@ -70,6 +70,11 @@ export function VoteMeter({ votes, quorum }: { votes: number; quorum: number }) 
   )
 }
 
+/** 加载中的占位块：开了「减少动态效果」时不闪。 */
+export function Skeleton({ className = '' }: { className?: string }) {
+  return <div aria-hidden className={`rounded-md bg-raised motion-safe:animate-pulse ${className}`} />
+}
+
 export const buttonPrimary =
   'inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-2 text-[13.5px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-40'
 export const buttonSecondary =

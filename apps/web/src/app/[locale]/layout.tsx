@@ -23,7 +23,9 @@ export async function generateMetadata({ params }: LayoutProps<'/[locale]'>): Pr
     metadataBase: new URL(SITE_URL),
     title: { default: t('title'), template: `%s · ${t('title')}` },
     description: t('description'),
-    openGraph: { siteName: t('title'), type: 'website', locale: locale === 'zh-CN' ? 'zh_CN' : 'en_US' },
+    // 分享链接时的默认配图（条目页用自己的海报覆盖），由 scripts/og-image.ts 生成（pnpm og）。
+    openGraph: { siteName: t('title'), type: 'website', locale: locale === 'zh-CN' ? 'zh_CN' : 'en_US', images: [{ url: '/og.jpg', width: 1200, height: 630 }] },
+    twitter: { card: 'summary_large_image', images: ['/og.jpg'] },
     alternates: alternatesFor('/'),
   }
 }
