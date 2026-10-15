@@ -144,7 +144,7 @@ export default async function CommunityItemPage({ params, searchParams }: PagePr
                   <Link
                     href={`/community/items/${view.id}?v=${version.version}`}
                     aria-current={version.version === selected.version ? 'true' : undefined}
-                    className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-1 py-3 transition-colors duration-150 hover:bg-white/[0.02] aria-[current=true]:bg-white/[0.04]"
+                    className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-1 py-3 transition-colors duration-150 hover:bg-ink/[0.02] aria-[current=true]:bg-ink/[0.04]"
                   >
                     <span className="flex items-center gap-3">
                       <span className="font-mono text-ink-muted">v{version.version}</span>

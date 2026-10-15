@@ -10,7 +10,8 @@ import { modelConfigFromEnv, modelRunner, scriptedRunner, type AgentRunner } fro
  * 开发模式下不设时默认用本机 CLI；生产环境不设就关闭 agent，手动编辑仍然可用。
  */
 
-export type RunnerConfig = { provider: string; label: string } | null
+/** vision：模型能不能看图（用户附的参考图、agent 自己的截图）。 */
+export type RunnerConfig = { provider: string; label: string; vision: boolean } | null
 
 function provider(): string | null {
   const value = process.env.MOTIF_AGENT_PROVIDER?.trim()
@@ -24,12 +25,12 @@ export function runnerConfig(): RunnerConfig {
     case 'anthropic':
     case 'openai-compatible': {
       const model = modelConfigFromEnv(process.env)
-      return model ? { provider: name, label: model.model } : null
+      return model ? { provider: name, label: model.model, vision: model.vision } : null
     }
     case 'claude-cli':
-      return { provider: name, label: `${process.env.MOTIF_CLAUDE_MODEL ?? 'claude-sonnet-5-5'} (local CLI)` }
+      return { provider: name, label: `${process.env.MOTIF_CLAUDE_MODEL ?? 'claude-sonnet-5-5'} (local CLI)`, vision: true }
     case 'scripted':
-      return { provider: name, label: 'scripted' }
+      return { provider: name, label: 'scripted', vision: false }
     default:
       return null
   }

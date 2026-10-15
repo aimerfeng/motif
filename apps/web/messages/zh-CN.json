@@ -12,7 +12,9 @@
     "home": "Motif 首页",
     "menu": "菜单",
     "skip": "跳到正文",
-    "community": "社区"
+    "community": "社区",
+    "themeLight": "切换到浅色",
+    "themeDark": "切换到暗色"
   },
   "home": {
     "headline": "把好看的动效，带回你的项目",
@@ -148,7 +150,21 @@
       "motif-3d": "3D"
     },
     "results": "{count} 个结果",
-    "clearFilters": "清除筛选"
+    "clearFilters": "清除筛选",
+    "favorites": {
+      "filter": "只看收藏",
+      "add": "收藏",
+      "remove": "取消收藏",
+      "save": "收藏",
+      "saved": "已收藏",
+      "empty": "还没有收藏。点卡片左上角的心形就能收藏，只存在这个浏览器里。"
+    },
+    "sort": {
+      "label": "排序",
+      "featured": "精选",
+      "new": "最新"
+    },
+    "recent": "最近看过"
   },
   "item": {
     "back": "市场",
@@ -775,7 +791,13 @@
       "tint": "着色",
       "quality": "画质"
     },
-    "copyFailed": "复制失败"
+    "copyFailed": "复制失败",
+    "tips": {
+      "reset": "双击参数名，把这一项恢复成默认值。",
+      "safe": "数值变成橙色，说明离开了推荐区间，可能不如默认好看。",
+      "share": "调过的参数写在链接里，「复制链接」就能分享同样的效果。",
+      "ok": "知道了"
+    }
   },
   "export": {
     "copy": "复制",
@@ -851,7 +873,8 @@
           "body": "从模板开始手写代码，随时可以叫 agent。"
         }
       },
-      "turns": "{count} 轮对话"
+      "turns": "{count} 轮对话",
+      "recentNote": "· 只记在这个浏览器里"
     },
     "chat": {
       "title": "对话",
@@ -870,7 +893,14 @@
       "revert": "回到这一步之前",
       "reverted": "已回到「{label}」之前的版本",
       "undoRevert": "撤销这次回退",
-      "undoLabel": "回退之前"
+      "undoLabel": "回退之前",
+      "changes": {
+        "title": "改动了 {count} 个文件",
+        "added": "新文件",
+        "removed": "已删除",
+        "loading": "正在加载…",
+        "gone": "这个版本已经不保留了，看不到逐行差异。"
+      }
     },
     "tools": {
       "search_market": "搜索市场「{query}」",
@@ -932,6 +962,23 @@
       "busy": "正在打开…",
       "failed": "打开失败，再试一次"
     },
-    "lockedTune": "agent 正在修改，这一轮结束后再调参数。"
+    "lockedTune": "agent 正在修改，这一轮结束后再调参数。",
+    "panes": {
+      "label": "工作台视图",
+      "chat": "对话",
+      "preview": "预览"
+    },
+    "saveHint": {
+      "text": "这个会话只记在这个浏览器里。复制链接或下载文件存好，换设备也能接着改。",
+      "download": "下载 .motif.json"
+    },
+    "attach": {
+      "button": "附上参考图（也可以直接粘贴截图）",
+      "remove": "移除这张图",
+      "alt": "参考图 {index}",
+      "notImage": "只能附图片。",
+      "tooLarge": "图片太大了（最多 20 MB）。",
+      "tooMany": "最多附 {max} 张图。"
+    }
   }
 }

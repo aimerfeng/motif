@@ -53,7 +53,7 @@ export function NumberControl({ param, label, hint, value, changed, onChange, on
   return (
     <div className="space-y-1.5">
       <Label id={id} label={label} hint={hint} changed={changed} onReset={onReset}>
-        <output htmlFor={id} className={`font-mono text-[12px] tabular-nums ${outside ? 'text-[oklch(0.8_0.12_70)]' : 'text-ink'}`}>
+        <output htmlFor={id} className={`font-mono text-[12px] tabular-nums ${outside ? 'text-pending' : 'text-ink'}`}>
           {formatNumber(number, param.step)}
           {param.unit && param.unit !== 'x' ? <span className="text-ink-faint">{param.unit === 'deg' ? '°' : ` ${param.unit}`}</span> : null}
           {param.unit === 'x' ? <span className="text-ink-faint">×</span> : null}
@@ -183,9 +183,9 @@ export function SelectControl({ param, label, hint, value, changed, onChange, on
               role="radio"
               aria-checked={option.value === current}
               onClick={() => onChange(option.value)}
-              className="flex w-full items-center gap-2.5 border-b border-line px-2.5 py-2 text-left text-ink-muted transition-colors duration-150 last:border-b-0 hover:text-ink aria-checked:bg-white/[0.06] aria-checked:text-ink"
+              className="flex w-full items-center gap-2.5 border-b border-line px-2.5 py-2 text-left text-ink-muted transition-colors duration-150 last:border-b-0 hover:text-ink aria-checked:bg-ink/[0.06] aria-checked:text-ink"
             >
-              <span aria-hidden className={`size-1.5 shrink-0 rounded-full ${option.value === current ? 'bg-ink' : 'bg-white/15'}`} />
+              <span aria-hidden className={`size-1.5 shrink-0 rounded-full ${option.value === current ? 'bg-ink' : 'bg-ink/15'}`} />
               <span className="min-w-0">{optionLabel(option.value)}</span>
             </button>
           ))}
@@ -205,7 +205,7 @@ export function SelectControl({ param, label, hint, value, changed, onChange, on
               role="radio"
               aria-checked={option.value === current}
               onClick={() => onChange(option.value)}
-              className="truncate rounded-md px-2 py-1 text-ink-muted transition-colors duration-150 hover:text-ink aria-checked:bg-white/10 aria-checked:text-ink"
+              className="truncate rounded-md px-2 py-1 text-ink-muted transition-colors duration-150 hover:text-ink aria-checked:bg-ink/10 aria-checked:text-ink"
             >
               {optionLabel(option.value)}
             </button>
@@ -244,7 +244,7 @@ export function BooleanControl({ param, label, hint, value, changed, onChange, o
         role="switch"
         aria-checked={on}
         onClick={() => onChange(!on)}
-        className="relative h-5 w-9 rounded-full bg-white/12 transition-colors duration-200 aria-checked:bg-ink"
+        className="relative h-5 w-9 rounded-full bg-ink/12 transition-colors duration-200 aria-checked:bg-ink"
       >
         <span className={`absolute top-0.5 left-0.5 size-4 rounded-full bg-canvas shadow transition-transform duration-200 ease-(--ease-out-soft) ${on ? 'translate-x-4' : 'bg-ink-muted'}`} />
       </button>

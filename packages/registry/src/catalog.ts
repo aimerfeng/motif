@@ -14,6 +14,8 @@ export interface CatalogItem {
     cssBytes: number
   } | null
   findings: Finding[]
+  /** 第一次进仓库的时间（ISO 8601，取自 git）；还没提交或拿不到历史时为 null。 */
+  addedAt: string | null
 }
 
 export interface CatalogRuntime {

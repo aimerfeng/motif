@@ -25,7 +25,7 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
           key={link.href}
           href={link.href}
           aria-current={isActive(pathname, link.href) ? 'page' : undefined}
-          className="flex items-baseline gap-1.5 rounded-md px-3 py-1.5 transition-colors duration-150 hover:bg-white/5 hover:text-ink aria-[current=page]:text-ink"
+          className="flex items-baseline gap-1.5 rounded-md px-3 py-1.5 transition-colors duration-150 hover:bg-ink/5 hover:text-ink aria-[current=page]:text-ink"
         >
           {link.label}
           {link.badge && <span className="text-[10.5px] text-ink-faint">{link.badge}</span>}
@@ -58,7 +58,7 @@ export function MobileNav({ links, label }: { links: NavLink[]; label: string })
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((value) => !value)}
-        className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink"
+        className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink"
       >
         <MenuIcon open={open} className="size-[18px]" />
       </button>

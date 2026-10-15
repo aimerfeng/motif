@@ -39,7 +39,8 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
 
   return (
     <main>
-      <section className="relative isolate flex h-[calc(100dvh-56px)] min-h-[560px] items-end">
+      {/* 首屏是一张正在运行的「海报」：在浅色主题里也保持暗色，标题压在暗色的效果上才看得清。 */}
+      <section data-theme="dark" className="relative isolate flex h-[calc(100dvh-56px)] min-h-[560px] items-end bg-canvas text-ink">
         {hero?.build && (
           <HeroStage
             build={{ js: hero.build.js, css: hero.build.css }}
@@ -51,7 +52,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
           />
         )}
         {/* 左下角的压暗层只为标题可读，不盖住整个效果。 */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_0%_100%,oklch(0.12_0.01_275/0.85),transparent_60%)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_0%_100%,color-mix(in_oklab,var(--color-canvas)_85%,transparent),transparent_60%)]" />
         <div className="pointer-events-none mx-auto w-full max-w-[1400px] px-5 pb-16 sm:px-8 sm:pb-20">
           <h1 className="max-w-4xl font-display text-[clamp(44px,7.2vw,104px)] leading-[0.96] font-semibold tracking-[-0.04em] text-balance">{t('headline')}</h1>
           <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-pretty text-ink/80 sm:text-[17px]">{t('lead')}</p>
@@ -59,14 +60,14 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
             <Link href="/market" className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90">
               {t('browse', { count: items.length })}
             </Link>
-            <Link href="/studio" className="rounded-full border border-white/25 px-5 py-2.5 text-[14px] text-ink backdrop-blur-md transition-colors duration-150 hover:border-white/50">
+            <Link href="/studio" className="rounded-full border border-ink/25 px-5 py-2.5 text-[14px] text-ink backdrop-blur-md transition-colors duration-150 hover:border-ink/50">
               {t('studio')}
             </Link>
           </div>
           {hero && (
             <p className="pointer-events-auto mt-10 text-[12.5px] text-ink/55">
               {t('heroCaption')}{' '}
-              <Link href={`/market/${hero.manifest.slug}`} className="text-ink/80 underline decoration-white/25 underline-offset-4 hover:decoration-white/60">
+              <Link href={`/market/${hero.manifest.slug}`} className="text-ink/80 underline decoration-ink/25 underline-offset-4 hover:decoration-ink/60">
                 {hero.manifest.title[locale]}
               </Link>
             </p>

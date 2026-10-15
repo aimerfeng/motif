@@ -35,7 +35,7 @@ export default async function MarketPage({ params, searchParams }: PageProps<'/[
         <p className="mt-4 text-[15px] leading-relaxed text-pretty text-ink-muted">{t('lead', { count: items.length })}</p>
       </div>
       {/* 从别处带着新筛选点回市场时整个重建，不沿用上一次的状态。 */}
-      <MarketGrid key={`${initial.kind}/${initial.category}/${initial.q}`} items={items} initial={initial} />
+      <MarketGrid key={`${initial.kind}/${initial.category}/${initial.q}/${initial.sort}`} items={items} initial={initial} />
     </main>
   )
 }

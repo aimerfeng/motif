@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { ArrowIcon, CodeIcon, LayersIcon, SparklesIcon } from '@/components/icons'
 import { Link, useRouter } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
+import { AttachButton, AttachmentStrip, useAttachments } from './attachments'
 import { openStudio, RECENT_KEY } from './open-in-studio'
 
 interface Recent {
@@ -20,7 +21,7 @@ const pathCard =
   'group flex w-full items-start gap-3 rounded-[var(--radius-card)] border border-line p-4 text-left transition-colors duration-150 hover:border-line-strong hover:bg-raised disabled:pointer-events-none disabled:opacity-50'
 
 /** 工作台首页：一句话开始；也可以从市场条目或空白模板开始，或者接着做最近的会话。 */
-export function StudioHome({ available }: { available: boolean }) {
+export function StudioHome({ available, vision }: { available: boolean; vision: boolean }) {
   const t = useTranslations('studio.home')
   const locale = useLocale() as Locale
   const router = useRouter()
@@ -29,6 +30,7 @@ export function StudioHome({ available }: { available: boolean }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [recent, setRecent] = useState<Recent[]>([])
+  const attach = useAttachments()
 
   useEffect(() => {
     let ids: string[] = []
@@ -48,7 +50,7 @@ export function StudioHome({ available }: { available: boolean }) {
   const start = async (text = prompt) => {
     setBusy(true)
     setError(null)
-    const failure = await openStudio(router, text.trim() ? { prompt: text.trim() } : {})
+    const failure = await openStudio(router, text.trim() ? { prompt: text.trim(), attachments: attach.attachments } : {})
     if (failure) {
       setError(failure)
       setBusy(false)
@@ -76,9 +78,15 @@ export function StudioHome({ available }: { available: boolean }) {
       <h1 className="font-display text-[40px] leading-[1.05] font-semibold tracking-[-0.03em] sm:text-[52px]">{t('title')}</h1>
       <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-pretty text-ink-muted">{t('lead')}</p>
 
-      <div className="mt-9 rounded-2xl border border-line bg-raised p-3 shadow-[0_1px_0_0_var(--color-line)] transition-colors duration-150 focus-within:border-line-strong">
+      <div
+        className="mt-9 rounded-2xl border border-line bg-raised p-3 shadow-[0_1px_0_0_var(--color-line)] transition-colors duration-150 focus-within:border-line-strong"
+        onDragOver={(event) => vision && event.preventDefault()}
+        onDrop={(event) => vision && attach.onDrop(event)}
+      >
+        {vision && <AttachmentStrip state={attach} />}
         <textarea
           ref={input}
+          onPaste={(event) => vision && attach.onPaste(event)}
           value={prompt}
           onChange={(event) => setPrompt(event.target.value)}
           onKeyDown={onKeyDown}
@@ -91,7 +99,10 @@ export function StudioHome({ available }: { available: boolean }) {
           data-testid="studio-home-prompt"
         />
         <div className="flex items-center justify-between gap-3 px-1 pt-1">
-          <p className="min-w-0 truncate text-[12px] text-ink-faint">{available ? t('hint') : t('unavailable')}</p>
+          <span className="flex min-w-0 items-center gap-1">
+            {vision && <AttachButton state={attach} disabled={!available || busy} />}
+            <p className="min-w-0 truncate text-[12px] text-ink-faint">{available ? t('hint') : t('unavailable')}</p>
+          </span>
           <button
             type="button"
             onClick={() => void start()}
@@ -141,7 +152,10 @@ export function StudioHome({ available }: { available: boolean }) {
 
       {recent.length > 0 && (
         <section className="mt-14">
-          <h2 className="text-[13px] font-medium text-ink-faint">{t('recent')}</h2>
+          <h2 className="flex items-baseline gap-2 text-[13px] font-medium text-ink-faint">
+            {t('recent')}
+            <span className="font-normal">{t('recentNote')}</span>
+          </h2>
           <ul className="mt-3 grid gap-3 sm:grid-cols-2">
             {recent.map((session) => (
               <li key={session.id}>

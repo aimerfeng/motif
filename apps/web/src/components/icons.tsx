@@ -237,3 +237,42 @@ export function GitHubIcon(props: IconProps) {
     </svg>
   )
 }
+
+/** 收藏：心形，filled 时填满。 */
+export function HeartIcon({ filled = false, ...props }: IconProps & { filled?: boolean }) {
+  return (
+    <Icon {...props} fill={filled ? 'currentColor' : 'none'}>
+      <path d="M8 13.5S2.25 10.1 2.25 6.1A3.1 3.1 0 0 1 8 4.4a3.1 3.1 0 0 1 5.75 1.7C13.75 10.1 8 13.5 8 13.5Z" />
+    </Icon>
+  )
+}
+
+/** 图片：附参考图。 */
+export function ImageIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <rect x="2" y="2.75" width="12" height="10.5" rx="1.75" />
+      <circle cx="5.75" cy="6.25" r="1.1" />
+      <path d="m2.5 11.5 3.25-3.25 2.5 2.5 2-2 3.25 3.25" />
+    </Icon>
+  )
+}
+
+/** 太阳：切到浅色。 */
+export function SunIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="8" cy="8" r="2.75" />
+      <path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.6 3.6l1.05 1.05M11.35 11.35l1.05 1.05M3.6 12.4l1.05-1.05M11.35 4.65l1.05-1.05" />
+    </Icon>
+  )
+}
+
+/** 月亮：切到暗色。 */
+export function MoonIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M13.25 9.6A5.5 5.5 0 0 1 6.4 2.75a5.5 5.5 0 1 0 6.85 6.85Z" />
+    </Icon>
+  )
+}

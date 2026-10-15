@@ -107,7 +107,7 @@ function VoteForm({ itemId, version, review }: ItemActionsProps & { review: Revi
             role="radio"
             aria-checked={verdict === index}
             onClick={() => setVerdict(index as 0 | 1 | 2)}
-            className={`rounded-md px-2 py-1.5 text-[13px] transition-colors duration-150 aria-checked:bg-white/10 ${key === 'approve' ? 'aria-checked:text-success' : 'aria-checked:text-danger'} text-ink-muted hover:text-ink`}
+            className={`rounded-md px-2 py-1.5 text-[13px] transition-colors duration-150 aria-checked:bg-ink/10 ${key === 'approve' ? 'aria-checked:text-success' : 'aria-checked:text-danger'} text-ink-muted hover:text-ink`}
           >
             {t(`verdicts.${key}`)}
           </button>

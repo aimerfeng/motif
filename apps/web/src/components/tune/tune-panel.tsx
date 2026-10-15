@@ -4,6 +4,7 @@ import type { JsonValue, L10n, ParamSpec } from '@motif/schema/core'
 import { useLocale, useMessages, useTranslations } from 'next-intl'
 import type { Locale } from '@/i18n/routing'
 import { useCopy } from '@/lib/clipboard'
+import { useLocalFlag } from '@/lib/local-store'
 import {
   BooleanControl,
   ColorControl,
@@ -28,6 +29,7 @@ export function TunePanel({ params, presets, tune, locked = false, lockedNote }:
   // 分组名来自文案；条目里出现了文案没有的分组（比如 Studio 生成的）时，退回首字母大写的键名。
   const groupNames: Record<string, string> = useMessages().tune.groups
   const { copy, stateOf } = useCopy()
+  const [tipsSeen, setTipsSeen] = useLocalFlag('motif-tune-tips-seen')
   const text = (value: L10n | undefined) => value?.[locale]
 
   // 保持参数定义的顺序；没有分组的放在最前面。
@@ -93,19 +95,33 @@ export function TunePanel({ params, presets, tune, locked = false, lockedNote }:
             type="button"
             onClick={() => tune.reset()}
             disabled={!tune.changed}
-            className="rounded-md px-2 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink disabled:opacity-35 disabled:hover:bg-transparent"
+            className="rounded-md px-2 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink disabled:opacity-35 disabled:hover:bg-transparent"
           >
             {t('reset')}
           </button>
           <button
             type="button"
             onClick={() => void copy('share', tune.shareUrl())}
-            className={`rounded-md px-2 py-1 text-[12px] transition-colors duration-150 hover:bg-white/5 hover:text-ink ${shareState === 'failed' ? 'text-danger' : 'text-ink-muted'}`}
+            className={`rounded-md px-2 py-1 text-[12px] transition-colors duration-150 hover:bg-ink/5 hover:text-ink ${shareState === 'failed' ? 'text-danger' : 'text-ink-muted'}`}
           >
             <span aria-live="polite">{shareState === 'copied' ? t('linkCopied') : shareState === 'failed' ? t('copyFailed') : t('share')}</span>
           </button>
         </div>
       </header>
+
+      {/* 第一次用调参面板时说三件界面上看不出来的事；点「知道了」后不再出现。 */}
+      {tipsSeen === false && !locked && (
+        <div className="border-b border-line bg-sunken/60 px-4 py-3 text-[12px] leading-relaxed text-ink-muted" data-testid="tune-tips">
+          <ul className="space-y-1">
+            <li>· {t('tips.reset')}</li>
+            <li>· {t('tips.safe')}</li>
+            <li>· {t('tips.share')}</li>
+          </ul>
+          <button type="button" onClick={() => setTipsSeen(true)} className="mt-2 rounded-md px-2 py-0.5 text-[12px] text-ink transition-colors duration-150 hover:bg-raised">
+            {t('tips.ok')}
+          </button>
+        </div>
+      )}
 
       {locked && lockedNote && (
         <p role="status" className="border-b border-line bg-sunken/60 px-4 py-2 text-[12px] text-ink-faint">

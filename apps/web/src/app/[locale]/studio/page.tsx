@@ -16,5 +16,6 @@ export const dynamic = 'force-dynamic'
 
 export default async function StudioPage({ params }: PageProps<'/[locale]/studio'>) {
   resolveRouteLocale((await params).locale)
-  return <StudioHome available={runnerConfig() !== null} />
+  const config = runnerConfig()
+  return <StudioHome available={config !== null} vision={config?.vision ?? false} />
 }

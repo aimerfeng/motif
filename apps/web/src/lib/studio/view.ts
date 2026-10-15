@@ -14,7 +14,7 @@ export interface StudioView {
   evaluation: Evaluation | null
   transcript: TranscriptEntry[]
   running: boolean
-  agent: { available: boolean; label: string | null }
+  agent: { available: boolean; label: string | null; vision: boolean }
   usage: { used: number; budget: number }
   /** 还保留着、可以回去的快照编号。 */
   snapshots: number[]
@@ -30,7 +30,7 @@ export function toView(session: StudioSession): StudioView {
     evaluation: session.evaluation,
     transcript: session.transcript,
     running: isRunning(session.id),
-    agent: { available: config !== null, label: config?.label ?? null },
+    agent: { available: config !== null, label: config?.label ?? null, vision: config?.vision ?? false },
     usage: { used: session.usage.inputTokens + session.usage.outputTokens, budget: sessionTokenBudget() },
     snapshots: (session.snapshots ?? []).map((snapshot) => snapshot.id),
   }

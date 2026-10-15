@@ -11,7 +11,7 @@ export class HttpError extends Error {
 }
 
 /** 读取 JSON 请求体。不信任 Content-Length，边读边数字节，超过上限立刻中止，不把整个请求体读进内存。 */
-export async function readJson(request: Request): Promise<unknown> {
+export async function readJson(request: Request, maxBytes = MAX_BODY_BYTES): Promise<unknown> {
   const chunks: Uint8Array[] = []
   let size = 0
   const reader = request.body?.getReader()
@@ -19,7 +19,7 @@ export async function readJson(request: Request): Promise<unknown> {
     const { done, value } = await reader.read()
     if (done) break
     size += value.byteLength
-    if (size > MAX_BODY_BYTES) {
+    if (size > maxBytes) {
       await reader.cancel()
       throw new HttpError(413, 'request body is too large')
     }

@@ -4,6 +4,9 @@ import type { TranscriptEntry } from '@motif/agent/client'
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { ArrowIcon, CheckIcon, ChevronIcon, SparklesIcon } from '@/components/icons'
+import type { Hunk } from '@/lib/studio/diff'
+import type { Attachment } from '@/lib/studio/images'
+import { AttachButton, AttachmentStrip, useAttachments } from './attachments'
 import { RichText } from './rich-text'
 
 type ToolEntry = Extract<TranscriptEntry, { role: 'tool' }>
@@ -81,12 +84,95 @@ function RevertButton({ snapshot, label, revert, children }: { snapshot: number 
 
 const short = (text: string) => (text.length > 40 ? `${text.slice(0, 40)}…` : text)
 
-function Entry({ entry, running, revert }: { entry: TranscriptEntry; running: boolean; revert: Revert }) {
+type ChangesEntry = Extract<TranscriptEntry, { role: 'changes' }>
+export type LoadDiff = (snapshot: number, path: string) => Promise<Hunk[]>
+
+/** 这一轮改了哪些文件；点开一个文件看逐行差异（按需取，不随对话一起存）。 */
+function ChangesCard({ entry, loadDiff }: { entry: ChangesEntry; loadDiff: LoadDiff }) {
+  const t = useTranslations('studio.chat.changes')
+  const added = entry.files.reduce((sum, file) => sum + file.added, 0)
+  const removed = entry.files.reduce((sum, file) => sum + file.removed, 0)
+  return (
+    <div className="shrink-0 overflow-hidden rounded-lg border border-line text-[12.5px]" data-testid="studio-changes">
+      <p className="flex items-center justify-between gap-2 border-b border-line bg-sunken/60 px-3 py-1.5 text-ink-faint">
+        <span>{t('title', { count: entry.files.length })}</span>
+        <span className="font-mono text-[11.5px] tabular-nums">
+          <span className="text-success">+{added}</span> <span className="text-danger">−{removed}</span>
+        </span>
+      </p>
+      <ul className="divide-y divide-line/60">
+        {entry.files.map((file) => (
+          <ChangedFile key={file.path} file={file} snapshot={entry.snapshot} loadDiff={loadDiff} />
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function ChangedFile({ file, snapshot, loadDiff }: { file: ChangesEntry['files'][number]; snapshot: number; loadDiff: LoadDiff }) {
+  const t = useTranslations('studio.chat.changes')
+  const [open, setOpen] = useState(false)
+  const [hunks, setHunks] = useState<Hunk[] | 'loading' | 'gone' | null>(null)
+  const toggle = () => {
+    setOpen((value) => !value)
+    if (hunks !== null) return
+    setHunks('loading')
+    loadDiff(snapshot, file.path).then(setHunks, () => setHunks('gone'))
+  }
+  return (
+    <li>
+      <button type="button" onClick={toggle} aria-expanded={open} className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-ink-muted transition-colors duration-150 hover:text-ink">
+        <ChevronIcon aria-hidden className={`size-3 shrink-0 text-ink-faint transition-transform duration-150 ${open ? 'rotate-90' : ''}`} />
+        <span className="min-w-0 truncate font-mono text-[12px]">{file.path}</span>
+        {file.status !== 'modified' && <span className="shrink-0 text-[11px] text-ink-faint">{t(file.status)}</span>}
+        <span className="ml-auto shrink-0 font-mono text-[11px] tabular-nums">
+          <span className="text-success">+{file.added}</span> <span className="text-danger">−{file.removed}</span>
+        </span>
+      </button>
+      {open && (
+        <div className="max-h-80 overflow-auto border-t border-line/60 bg-sunken py-1 font-mono text-[11.5px] leading-[1.6]">
+          {hunks === 'loading' || hunks === null ? (
+            <p className="px-3 py-1 text-ink-faint">{t('loading')}</p>
+          ) : hunks === 'gone' ? (
+            <p className="px-3 py-1 text-ink-faint">{t('gone')}</p>
+          ) : (
+            hunks.map((hunk, index) => (
+              <div key={index}>
+                <p className="px-3 text-ink-faint">
+                  @@ −{hunk.oldStart} +{hunk.newStart} @@
+                </p>
+                {hunk.lines.map((line, row) => (
+                  <p
+                    key={row}
+                    className={`px-3 whitespace-pre ${line.kind === 'add' ? 'bg-success/10 text-ink' : line.kind === 'del' ? 'bg-danger/10 text-ink-muted' : 'text-ink-faint'}`}
+                  >
+                    {line.kind === 'add' ? '+ ' : line.kind === 'del' ? '− ' : '  '}
+                    {line.text}
+                  </p>
+                ))}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </li>
+  )
+}
+
+function Entry({ entry, running, revert, loadDiff }: { entry: TranscriptEntry; running: boolean; revert: Revert; loadDiff: LoadDiff }) {
   const t = useTranslations('studio.chat')
   switch (entry.role) {
     case 'user':
       return (
         <div className="group ml-8 flex flex-col items-end gap-1 self-end">
+          {entry.images && entry.images.length > 0 && (
+            <span className="flex gap-1.5">
+              {entry.images.map((image, index) => (
+                // 缩略图是对话里存的 data URL。
+                <img key={index} src={image} alt="" className="size-16 rounded-lg border border-line object-cover" />
+              ))}
+            </span>
+          )}
           <div className="rounded-2xl rounded-br-md bg-ink px-3.5 py-2.5 text-[14px] leading-relaxed whitespace-pre-wrap text-canvas">{entry.text}</div>
           <span className="opacity-0 transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
             <RevertButton snapshot={entry.snapshot} label={short(entry.text)} revert={revert}>
@@ -103,6 +189,8 @@ function Entry({ entry, running, revert }: { entry: TranscriptEntry; running: bo
       )
     case 'tool':
       return <ToolRow entry={entry} running={running} />
+    case 'changes':
+      return <ChangesCard entry={entry} loadDiff={loadDiff} />
     case 'notice':
       if (entry.kind === 'done') {
         return (
@@ -137,18 +225,24 @@ export function ChatPanel({
   onAbort,
   suggestions,
   revert,
+  loadDiff,
+  vision,
 }: {
   transcript: TranscriptEntry[]
   running: boolean
   available: boolean
   /** 返回服务端是否接受；不接受时把这句话放回输入框，不让用户白打。 */
-  onSend: (prompt: string) => Promise<boolean>
+  onSend: (prompt: string, attachments: Attachment[]) => Promise<boolean>
+  /** 模型能看图时才能附参考图。 */
+  vision: boolean
   onAbort: () => void
   suggestions: string[]
   revert: Revert
+  loadDiff: LoadDiff
 }) {
   const t = useTranslations('studio.chat')
   const [draft, setDraft] = useState('')
+  const attach = useAttachments()
   const scroller = useRef<HTMLDivElement>(null)
   const stick = useRef(true)
 
@@ -172,7 +266,9 @@ export function ChatPanel({
     if (!prompt || running || !available) return
     setDraft('')
     stick.current = true
-    if (!(await onSend(prompt))) setDraft((current) => current || prompt)
+    // 服务端接受了才清掉附图；被拒绝时文字放回输入框，图也留着。
+    if (await onSend(prompt, attach.attachments)) attach.clear()
+    else setDraft((current) => current || prompt)
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -223,7 +319,7 @@ export function ChatPanel({
               ))}
             </div>
           ) : (
-            <Entry key={group.index} entry={group.entry} running={running && group.index === transcript.length - 1} revert={revert} />
+            <Entry key={group.index} entry={group.entry} running={running && group.index === transcript.length - 1} revert={revert} loadDiff={loadDiff} />
           ),
         )}
         {running && (
@@ -235,34 +331,43 @@ export function ChatPanel({
       </div>
       <div className="border-t border-line p-3">
         {!available && <p className="mb-2 text-[12px] text-ink-faint">{t('unavailable')}</p>}
-        <div className="flex items-end gap-2 rounded-xl border border-line bg-raised p-2 focus-within:border-line-strong">
-          <textarea
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            onKeyDown={onKeyDown}
-            rows={2}
-            maxLength={4000}
-            disabled={!available}
-            placeholder={t('placeholder')}
-            aria-label={t('placeholder')}
-            className="max-h-40 min-h-[44px] flex-1 resize-none bg-transparent px-1.5 py-1 text-[14px] leading-relaxed placeholder:text-ink-faint focus:outline-none disabled:opacity-50"
-            data-testid="studio-prompt"
-          />
-          {running ? (
-            <button type="button" onClick={onAbort} className="shrink-0 rounded-lg border border-line px-3 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink">
-              {t('stop')}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => void send()}
-              disabled={!draft.trim() || !available}
-              className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-ink px-3 py-1.5 text-[13px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-30"
-            >
-              {t('send')}
-              <ArrowIcon className="size-3.5" />
-            </button>
-          )}
+        <div
+          className="rounded-xl border border-line bg-raised p-2 focus-within:border-line-strong"
+          onDragOver={(event) => vision && event.preventDefault()}
+          onDrop={(event) => vision && attach.onDrop(event)}
+        >
+          {vision && <AttachmentStrip state={attach} />}
+          <div className="flex items-end gap-2">
+            {vision && <AttachButton state={attach} disabled={!available || running} />}
+            <textarea
+              onPaste={(event) => vision && attach.onPaste(event)}
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={onKeyDown}
+              rows={2}
+              maxLength={4000}
+              disabled={!available}
+              placeholder={t('placeholder')}
+              aria-label={t('placeholder')}
+              className="max-h-40 min-h-[44px] flex-1 resize-none bg-transparent px-1.5 py-1 text-[14px] leading-relaxed placeholder:text-ink-faint focus:outline-none disabled:opacity-50"
+              data-testid="studio-prompt"
+            />
+            {running ? (
+              <button type="button" onClick={onAbort} className="shrink-0 rounded-lg border border-line px-3 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink">
+                {t('stop')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => void send()}
+                disabled={!draft.trim() || !available}
+                className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-ink px-3 py-1.5 text-[13px] font-medium text-canvas transition-opacity duration-150 hover:opacity-90 disabled:opacity-30"
+              >
+                {t('send')}
+                <ArrowIcon className="size-3.5" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

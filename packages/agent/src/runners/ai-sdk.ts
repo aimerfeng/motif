@@ -96,14 +96,15 @@ function compactToolOutput(output: unknown, trim: boolean): unknown {
  * 截图一律不留；这一轮之前的长工具输出截断；还是太长就从最早的一轮丢起（至少留最近一轮），并在留下的第一条用户消息里说明。
  */
 export function compactHistory(history: ModelMessage[]): ModelMessage[] {
-  const turnStarts = history.flatMap((message, index) => (message.role === 'user' && typeof message.content === 'string' ? [index] : []))
+  // 一轮从用户说的那句话开始（带参考图时内容是数组，以文字开头；截图消息不算新的一轮）。
+  const turnStarts = history.flatMap((message, index) => (message.role === 'user' && (typeof message.content === 'string' || (Array.isArray(message.content) && message.content[0]?.type === 'text' && !message.content[0].text.startsWith('Screenshots from'))) ? [index] : []))
   const lastTurn = turnStarts.at(-1) ?? 0
   const compacted: ModelMessage[] = history.map((message, index) => {
     if (message.role === 'tool') {
       return { ...message, content: message.content.map((part) => (part.type === 'tool-result' ? { ...part, output: compactToolOutput(part.output, index < lastTurn) as typeof part.output } : part)) }
     }
     if (message.role === 'user' && Array.isArray(message.content)) {
-      return { ...message, content: message.content.map((part) => (part.type === 'text' ? part : { type: 'text' as const, text: '[screenshot omitted]' })) }
+      return { ...message, content: message.content.map((part) => (part.type === 'text' ? part : { type: 'text' as const, text: '[image omitted]' })) }
     }
     return message
   })
@@ -137,9 +138,12 @@ export function aiSdkRunner(model: LanguageModel, options: AiSdkRunnerOptions = 
   const imagesInToolResults = options.imagesInToolResults ?? true
   return {
     id: 'ai-sdk',
-    async run({ prompt, system, session, state, signal, emit }) {
+    async run({ prompt, images, system, session, state, signal, emit }) {
       const history = Array.isArray(state) ? compactHistory(state as ModelMessage[]) : []
-      const messages: ModelMessage[] = [...history, { role: 'user', content: prompt }]
+      // 带参考图时，图和这句话放在同一条用户消息里。
+      const content: ModelMessage['content'] =
+        images.length === 0 ? prompt : [{ type: 'text', text: prompt }, ...images.map((image) => ({ type: 'file' as const, mediaType: image.mediaType, data: image.data }))]
+      const messages: ModelMessage[] = [...history, { role: 'user', content } as ModelMessage]
       // 一轮要调用几十次模型：网络抖一下（连接超时）不该让整轮失败。退避从 2 秒起翻倍，5 次能扛过约一分钟的中断。
       const agent = new ToolLoopAgent({ model, instructions: system, tools: toolSet(session, imagesInToolResults), stopWhen: [isStepCount(maxSteps), () => session.finished !== null], maxRetries: 5, ...(imagesInToolResults ? {} : { prepareStep: screenshotsAsUserMessage }) })
       const result = await agent.stream({ messages, abortSignal: signal })

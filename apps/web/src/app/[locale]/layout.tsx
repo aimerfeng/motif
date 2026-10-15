@@ -9,6 +9,7 @@ import { SiteHeader } from '@/components/site-header'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { routing } from '@/i18n/routing'
 import { alternatesFor, SITE_URL } from '@/lib/site'
+import { THEME_SCRIPT } from '@/lib/theme'
 import '../globals.css'
 
 export function generateStaticParams() {
@@ -35,7 +36,11 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const t = await getTranslations({ locale, namespace: 'nav' })
 
   return (
-    <html lang={locale}>
+    // data-theme 由下面的脚本在首帧前写上（偏好或系统设置），和服务端渲染的不一样是预期的。
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="flex min-h-dvh flex-col">
         <NextIntlClientProvider>
           {/* 钱包连接是全站共享的状态：头部的钱包按钮和社区各页面用同一个连接。 */}

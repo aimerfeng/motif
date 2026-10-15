@@ -36,6 +36,8 @@ export interface ItemSummary {
   media: ItemMedia
   /** 社区投稿审核通过的作品（不在仓库目录里，源码由站点托管、记录在链上）。 */
   community?: boolean
+  /** 上架时间（ISO 8601）：目录条目取 git 里第一次提交的时间，社区作品取投稿所在区块的时间。不知道时为 null。 */
+  addedAt: string | null
 }
 
 export function summarize(item: CatalogItem, locale: Locale): ItemSummary {
@@ -51,5 +53,6 @@ export function summarize(item: CatalogItem, locale: Locale): ItemSummary {
     source: manifest.provenance.upstream?.repo ?? null,
     skill: skillName(manifest.slug),
     media: mediaFor(manifest.slug),
+    addedAt: item.addedAt ?? null,
   }
 }

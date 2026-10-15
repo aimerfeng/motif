@@ -1,7 +1,7 @@
 export { appendEvent, type AgentEvent, type TranscriptEntry } from './events.ts'
 export { describeEvaluation, describePreview, type AgentHost, type CaptureRequest, type Evaluation, type MarketHit, type PreviewReport, type Problem, type Screenshot } from './host.ts'
 export { buildSystemPrompt, type PromptContext } from './prompt.ts'
-export { callTool, runAgent, type AgentRunner, type RunAgentOptions, type RunAgentResult, type RunnerInput } from './runner.ts'
+export { callTool, runAgent, type AgentRunner, type PromptImage, type RunAgentOptions, type RunAgentResult, type RunnerInput } from './runner.ts'
 export { aiSdkRunner, compactHistory, createModel, modelConfigFromEnv, modelRunner, type AiSdkRunnerOptions, type ModelConfig } from './runners/ai-sdk.ts'
 export { DEFAULT_SCRIPT, scriptedRunner, type ScriptStep } from './runners/scripted.ts'
 export { AgentSession } from './session.ts'

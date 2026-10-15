@@ -1,8 +1,9 @@
-import { appendEvent, applyDefaults, buildSystemPrompt, carryValues, remixItem, runAgent, starterItem, type AgentEvent, type AgentRunner } from '@motif/agent'
+import { appendEvent, applyDefaults, buildSystemPrompt, carryValues, remixItem, runAgent, starterItem, type AgentEvent, type AgentRunner, type PromptImage } from '@motif/agent'
 import { checkParamValue, type ItemSource, type ParamValues } from '@motif/schema'
 import { FONT_FAMILIES, VENDOR_IDS } from '@motif/vendor/manifest'
 import { HttpError } from '@/lib/community/http'
 import { marketSource } from '@/lib/community/market-source'
+import { itemChanges } from './diff'
 import { evaluateItem, promptSkills, studioHost } from './host'
 import { sessionTokenBudget } from './runner'
 import { loadSession, newSessionId, pruneSessions, saveSession, type StudioSession } from './store'
@@ -163,7 +164,7 @@ const encoder = new TextEncoder()
  */
 const BUDGET_EXHAUSTED = 'this session has used up its model budget; start a new session'
 
-export function startRun(session: StudioSession, prompt: string, runner: AgentRunner): ReadableStream<Uint8Array> {
+export function startRun(session: StudioSession, prompt: string, runner: AgentRunner, attachments: { images: PromptImage[]; thumbnails: string[] } = { images: [], thumbnails: [] }): ReadableStream<Uint8Array> {
   if (isRunning(session.id)) throw new HttpError(409, 'the agent is already working on this item')
   if (locks.has(session.id)) throw new HttpError(409, 'your changes are still being saved; try again in a moment')
   const budget = sessionTokenBudget()
@@ -176,7 +177,7 @@ export function startRun(session: StudioSession, prompt: string, runner: AgentRu
   const { session: snapshotted, snapshot } = withSnapshot(session)
   const state: StudioSession = {
     ...snapshotted,
-    transcript: [...session.transcript, { role: 'user', text: prompt, at: Date.now(), snapshot }],
+    transcript: [...session.transcript, { role: 'user', text: prompt, at: Date.now(), snapshot, ...(attachments.thumbnails.length > 0 ? { images: attachments.thumbnails } : {}) }],
     usage: { ...session.usage },
     pendingNote: null,
   }
@@ -218,6 +219,7 @@ export function startRun(session: StudioSession, prompt: string, runner: AgentRu
           host: studioHost(session.id, () => ++version),
           system,
           prompt: agentPrompt,
+          images: attachments.images,
           item: state.item,
           values: state.values,
           evaluation: state.evaluation,
@@ -235,6 +237,10 @@ export function startRun(session: StudioSession, prompt: string, runner: AgentRu
           state.snapshots = state.snapshots?.filter((entry) => entry.id !== snapshot)
           const asked = state.transcript.findLast((entry) => entry.role === 'user')
           if (asked?.role === 'user' && asked.snapshot === snapshot) delete asked.snapshot
+        } else {
+          // 记下这一轮改了哪些文件，用户能看到 agent 到底动了什么（逐行差异按需从快照算）。
+          const files = itemChanges(session.item, state.item)
+          if (files.length > 0) state.transcript.push({ role: 'changes', at: Date.now(), snapshot, files })
         }
         if (result.abortReason !== null) state.transcript.push({ role: 'notice', kind: 'aborted', text: result.abortReason, at: Date.now() })
         // 没跑完的一轮（中止、出错）不会进模型的历史，但这一轮里改过的文件留下了：下一轮开头提醒它重新读文件。

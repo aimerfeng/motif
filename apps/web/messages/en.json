@@ -12,7 +12,9 @@
     "home": "Motif home",
     "menu": "Menu",
     "skip": "Skip to content",
-    "community": "Community"
+    "community": "Community",
+    "themeLight": "Switch to light",
+    "themeDark": "Switch to dark"
   },
   "home": {
     "headline": "Beautiful motion, ready to take home",
@@ -148,7 +150,21 @@
       "motif-3d": "3D"
     },
     "results": "{count, plural, one {# result} other {# results}}",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "favorites": {
+      "filter": "Saved only",
+      "add": "Save",
+      "remove": "Remove from saved",
+      "save": "Save",
+      "saved": "Saved",
+      "empty": "Nothing saved yet. Tap the heart on a card to save it; saves live in this browser."
+    },
+    "sort": {
+      "label": "Sort",
+      "featured": "Featured",
+      "new": "Newest"
+    },
+    "recent": "Recently viewed"
   },
   "item": {
     "back": "Market",
@@ -775,7 +791,13 @@
       "tint": "Tint",
       "quality": "Quality"
     },
-    "copyFailed": "Copy failed"
+    "copyFailed": "Copy failed",
+    "tips": {
+      "reset": "Double-click a parameter name to reset just that one.",
+      "safe": "A value turns orange outside its recommended range, where it may look worse.",
+      "share": "Your values live in the link; Copy link shares exactly this look.",
+      "ok": "Got it"
+    }
   },
   "export": {
     "copy": "Copy",
@@ -851,7 +873,8 @@
           "body": "Write the code from a template; call the agent any time."
         }
       },
-      "turns": "{count, plural, one {# turn} other {# turns}}"
+      "turns": "{count, plural, one {# turn} other {# turns}}",
+      "recentNote": "· kept in this browser only"
     },
     "chat": {
       "title": "Conversation",
@@ -870,7 +893,14 @@
       "revert": "Go back to before this",
       "reverted": "Restored the version from before \"{label}\"",
       "undoRevert": "Undo",
-      "undoLabel": "before the restore"
+      "undoLabel": "before the restore",
+      "changes": {
+        "title": "Changed {count, plural, one {# file} other {# files}}",
+        "added": "new",
+        "removed": "deleted",
+        "loading": "Loading…",
+        "gone": "That version is no longer kept, so the line diff is unavailable."
+      }
     },
     "tools": {
       "search_market": "Search the market for \"{query}\"",
@@ -932,6 +962,23 @@
       "busy": "Opening…",
       "failed": "Could not open; try again"
     },
-    "lockedTune": "The agent is working; tune again when this turn ends."
+    "lockedTune": "The agent is working; tune again when this turn ends.",
+    "panes": {
+      "label": "Studio view",
+      "chat": "Chat",
+      "preview": "Preview"
+    },
+    "saveHint": {
+      "text": "This session lives only in this browser. Copy its link or download the file to keep it, even on another device.",
+      "download": "Download .motif.json"
+    },
+    "attach": {
+      "button": "Attach a reference image (or paste a screenshot)",
+      "remove": "Remove this image",
+      "alt": "Reference image {index}",
+      "notImage": "Only images can be attached.",
+      "tooLarge": "That image is too large (20 MB at most).",
+      "tooMany": "Attach at most {max} images."
+    }
   }
 }

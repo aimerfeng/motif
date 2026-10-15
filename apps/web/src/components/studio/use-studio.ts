@@ -3,6 +3,8 @@
 import { appendEvent, type AgentEvent, type PreviewReport, type TranscriptEntry } from '@motif/agent/client'
 import type { ItemSource, ParamValues } from '@motif/schema/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { Hunk } from '@/lib/studio/diff'
+import type { Attachment } from '@/lib/studio/images'
 import type { StudioView } from '@/lib/studio/view'
 
 async function readError(response: Response): Promise<string> {
@@ -80,16 +82,18 @@ export function useStudio(initial: StudioView) {
   }
 
   /** 发一句话给 agent。返回服务端是否接受了（被拒绝时输入框里的话要留着）。 */
-  const run = async (prompt: string): Promise<boolean> => {
+  const run = async (prompt: string, attachments: Attachment[] = []): Promise<boolean> => {
     setError(null)
     setRunning(true)
     let accepted = false
     try {
-      const response = await fetch(`${base}/run`, { method: 'POST', body: JSON.stringify({ prompt }) })
+      const images = attachments.map(({ mediaType, data }) => ({ mediaType, data }))
+      const thumbnails = attachments.map((attachment) => attachment.thumbnail)
+      const response = await fetch(`${base}/run`, { method: 'POST', body: JSON.stringify(attachments.length > 0 ? { prompt, images, thumbnails } : { prompt }) })
       if (!response.ok || !response.body) throw new Error(await readError(response))
       accepted = true
       setStreaming(true)
-      setView((current) => ({ ...current, transcript: [...current.transcript, { role: 'user', text: prompt, at: Date.now() }] }))
+      setView((current) => ({ ...current, transcript: [...current.transcript, { role: 'user', text: prompt, at: Date.now(), ...(thumbnails.length > 0 ? { images: thumbnails } : {}) }] }))
       for await (const event of readEvents(response)) apply(event)
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : String(caught))
@@ -138,6 +142,16 @@ export function useStudio(initial: StudioView) {
     saveTimer.current = window.setTimeout(() => void fetch(`${base}/values`, { method: 'PUT', body: JSON.stringify({ values }) }), 600)
   }
 
+  /** 某一轮里一个文件的逐行差异。 */
+  const loadDiff = useCallback(
+    async (snapshot: number, path: string): Promise<Hunk[]> => {
+      const response = await fetch(`${base}/diff?snapshot=${snapshot}&path=${encodeURIComponent(path)}`)
+      if (!response.ok) throw new Error(await readError(response))
+      return ((await response.json()) as { hunks: Hunk[] }).hunks
+    },
+    [base],
+  )
+
   // 预览回报和心跳：agent 的 check_preview 靠它知道浏览器里的情况。
   const report = useCallback(
     (version: number, preview: PreviewReport) => {
@@ -154,5 +168,5 @@ export function useStudio(initial: StudioView) {
     return () => window.clearInterval(timer)
   }, [base])
 
-  return { view, running, error, busy, run, abort, save, applyDefaults, revert, setValues, report, dismissError: () => setError(null) }
+  return { view, running, error, busy, run, abort, save, applyDefaults, revert, setValues, report, loadDiff, dismissError: () => setError(null) }
 }

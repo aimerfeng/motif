@@ -4,6 +4,7 @@ import type { ParamValues } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { useRouter } from '@/i18n/navigation'
+import type { Attachment } from '@/lib/studio/images'
 
 /** 记住浏览器开过的会话（工作台首页的「最近」列表用）。 */
 export const RECENT_KEY = 'motif-studio-sessions'
@@ -21,14 +22,29 @@ export function rememberSession(id: string) {
 }
 
 /** 建一个会话（可以基于某个条目、带上调好的参数和第一句话），然后进入工作台。 */
-export async function openStudio(router: ReturnType<typeof useRouter>, options: { base?: string; values?: ParamValues; prompt?: string }): Promise<string | null> {
+/** 首页带过来的第一句话和参考图。旧格式只存了一句话的字符串，也认。 */
+export function readPending(raw: string | null): { prompt: string; attachments: Attachment[] } | null {
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(raw) as { prompt?: unknown; attachments?: unknown }
+    if (typeof parsed.prompt === 'string') return { prompt: parsed.prompt, attachments: Array.isArray(parsed.attachments) ? (parsed.attachments as Attachment[]) : [] }
+  } catch {
+    // 不是 JSON：旧格式。
+  }
+  return { prompt: raw, attachments: [] }
+}
+
+export async function openStudio(
+  router: ReturnType<typeof useRouter>,
+  options: { base?: string; values?: ParamValues; prompt?: string; attachments?: Attachment[] },
+): Promise<string | null> {
   const response = await fetch('/api/studio/sessions', { method: 'POST', body: JSON.stringify({ base: options.base ?? null, values: options.values }) })
   const json = (await response.json()) as { id?: string; error?: string }
   if (!response.ok || !json.id) return json.error ?? response.statusText
   rememberSession(json.id)
   if (options.prompt) {
     try {
-      sessionStorage.setItem(PENDING_KEY(json.id), options.prompt)
+      sessionStorage.setItem(PENDING_KEY(json.id), JSON.stringify({ prompt: options.prompt, attachments: options.attachments ?? [] }))
     } catch {
       // 存不了就让用户进去以后再说一遍。
     }

@@ -14,10 +14,12 @@ import type { TunePreset, TuneState } from '@/components/tune/use-tune'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
 import { useCopy } from '@/lib/clipboard'
+import { useLocalFlag } from '@/lib/local-store'
 import { encodeValues } from '@/lib/share'
 import type { StudioView } from '@/lib/studio/view'
 import { ChatPanel } from './chat-panel'
-import { PENDING_KEY, rememberSession } from './open-in-studio'
+import type { Attachment } from '@/lib/studio/images'
+import { PENDING_KEY, readPending, rememberSession } from './open-in-studio'
 import { useStudio } from './use-studio'
 
 // 编辑器只在打开「代码」页时才加载，不拖慢工作台的首屏。
@@ -90,6 +92,20 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
   const [file, setFile] = useState(manifest.entry?.file ?? MANIFEST_PATH)
   const [draftError, setDraftError] = useState<string | null>(null)
   const { copy, stateOf } = useCopy()
+  const [saved, setSaved] = useLocalFlag(`motif-studio-saved:${initial.id}`)
+  // 手机上默认看对话（新会话要先说话），已经有过对话的会话先看预览。
+  const [pane, setPane] = useState<'chat' | 'preview'>(initial.transcript.length > 0 ? 'preview' : 'chat')
+  const [unseen, setUnseen] = useState(false)
+  const showPane = (next: 'chat' | 'preview') => {
+    setPane(next)
+    if (next === 'preview') setUnseen(false)
+  }
+  const [seenVersion, setSeenVersion] = useState(initial.evaluation?.version ?? 0)
+  const currentVersion = view.evaluation?.version ?? 0
+  if (currentVersion !== seenVersion) {
+    setSeenVersion(currentVersion)
+    if (pane === 'chat') setUnseen(true)
+  }
 
   const build = evaluation?.build ?? null
   const version = evaluation?.version ?? 0
@@ -131,9 +147,9 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
   }
 
   // 有没保存的手动修改时，先保存再交给 agent，免得它在旧版本上改。
-  const send = async (prompt: string): Promise<boolean> => {
+  const send = async (prompt: string, attachments: Attachment[] = []): Promise<boolean> => {
     if (!(await saveDrafts())) return false
-    return studio.run(prompt)
+    return studio.run(prompt, attachments)
   }
 
   // 记住这个会话；从首页带着第一句话进来时，自动发出去（只发一次）。
@@ -147,7 +163,8 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
     } catch {
       // 存储不可用：用户自己再输入一遍。
     }
-    if (pending && view.agent.available) void run(pending)
+    const first = readPending(pending)
+    if (first && view.agent.available) void run(first.prompt, view.agent.vision ? first.attachments : [])
     // 只在进入页面时执行一次。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -181,7 +198,24 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
 
   return (
     <div className="grid lg:h-[calc(100dvh-56px)] lg:grid-cols-[400px_minmax(0,1fr)]">
-      <aside className="order-2 flex h-[70dvh] min-h-0 flex-col border-line lg:order-1 lg:h-auto lg:border-r">
+      {/* 手机上对话和预览分成两个标签：对话排在预览、调参和代码后面时，要先滚过整个编辑器才能和 agent 说话。 */}
+      <div role="tablist" aria-label={t('panes.label')} className="sticky top-14 z-20 grid grid-cols-2 border-b border-line bg-canvas lg:hidden">
+        {(['chat', 'preview'] as const).map((key) => (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            aria-selected={pane === key}
+            onClick={() => showPane(key)}
+            className="relative py-2.5 text-[13.5px] text-ink-muted transition-colors duration-150 aria-selected:text-ink"
+          >
+            {t(`panes.${key}`)}
+            {key === 'preview' && unseen && <span aria-hidden className="absolute top-2.5 ml-1 inline-block size-1.5 rounded-full bg-focus" />}
+            <span aria-hidden className={`absolute inset-x-6 bottom-0 h-0.5 rounded-full ${pane === key ? 'bg-ink' : 'bg-transparent'}`} />
+          </button>
+        ))}
+      </div>
+      <aside className={`flex h-[calc(100dvh-56px-45px)] min-h-0 flex-col border-line lg:h-auto lg:border-r ${pane === 'chat' ? '' : 'max-lg:hidden'}`}>
         <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
           <div className="min-w-0">
             <p className="truncate text-[13px] font-medium">{t('chat.title')}</p>
@@ -208,11 +242,13 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
             onAbort={() => void studio.abort()}
             suggestions={suggestions}
             revert={{ available: view.snapshots, disabled: running || studio.busy, onRevert: (snapshot, label) => void studio.revert(snapshot, label) }}
+            loadDiff={studio.loadDiff}
+            vision={view.agent.vision}
           />
         </div>
       </aside>
 
-      <main className="@container order-1 min-w-0 px-5 pt-6 pb-16 sm:px-8 lg:order-2 lg:overflow-y-auto">
+      <main className={`@container min-w-0 px-5 pt-6 pb-16 sm:px-8 lg:overflow-y-auto ${pane === 'preview' ? '' : 'max-lg:hidden'}`}>
         <header className="flex flex-col gap-4 @3xl:flex-row @3xl:items-end @3xl:justify-between">
           <div className="min-w-0">
             <p className="text-[13px] text-ink-faint">
@@ -270,6 +306,38 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
           </div>
         </header>
 
+        {/* 会话只记在这个浏览器里：做过事情之后提醒一次，复制链接或下载就算存好了。 */}
+        {saved === false && view.transcript.length > 0 && (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-lg border border-line bg-raised px-4 py-2.5 text-[13px]" data-testid="studio-save-hint">
+            <p className="text-ink-muted">{t('saveHint.text')}</p>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  void copy('link', window.location.href.split('#')[0]!)
+                  setSaved(true)
+                }}
+                className="rounded-md px-2.5 py-1 text-ink transition-colors duration-150 hover:bg-sunken"
+              >
+                {t('actions.copyLink')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  downloadJson(`${manifest.slug}.motif.json`, item)
+                  setSaved(true)
+                }}
+                className="rounded-md px-2.5 py-1 text-ink transition-colors duration-150 hover:bg-sunken"
+              >
+                {t('saveHint.download')}
+              </button>
+              <button type="button" onClick={() => setSaved(true)} aria-label={t('actions.dismiss')} className="rounded-md px-2 py-1 text-ink-faint transition-colors duration-150 hover:text-ink">
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+
         {(studio.error ?? draftError) && (
           <div role="alert" className="mt-4 flex items-start justify-between gap-4 rounded-lg border border-danger/40 bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger">
             <span>{studio.error ?? draftError}</span>
@@ -303,7 +371,8 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
                   id: 'code',
                   label: dirty ? `${t('tabs.code')} •` : t('tabs.code'),
                   content: (
-                    <div className="overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken">
+                    // 编辑器的配色只有暗色一套：在浅色主题里也保持暗色。
+                  <div data-theme="dark" className="overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken text-ink">
                       <div className="flex items-center gap-1 overflow-x-auto border-b border-line px-2 py-1.5">
                         {files.map((path) => (
                           <button

@@ -3,14 +3,16 @@
 import type { ModuleRef, PreviewTheme, StyleRef } from '@motif/preview/protocol'
 import type { ItemSource, Kind, ParamValues } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { ChainBadge } from '@/components/community/chain-badge'
 import { RefreshIcon } from '@/components/icons'
+import { FavoriteButton } from '@/components/market/favorite-button'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
 import { OpenInStudio } from '@/components/studio/open-in-studio'
 import { TunePanel } from '@/components/tune/tune-panel'
 import { useTune, type TunePreset } from '@/components/tune/use-tune'
 import type { HighlightedCode } from '@/lib/code-tokens'
+import { pushLocal, RECENT_ITEMS } from '@/lib/local-store'
 import { CodeView } from './code-view'
 import { InstallPanel, QuickActions, SkillPanel, type ExportData } from './export-panels'
 import { ItemTabs } from './item-tabs'
@@ -42,6 +44,8 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
   // 模板、风格、区块是「一页」：预览更高、可以滚动，并能切换设备宽度看响应式效果。
   const pageLike = PAGE_KINDS.has(item.manifest.kind)
   const [viewport, setViewport] = useState<Viewport>('desktop')
+  // 记进「最近看过」（只在这个浏览器里），市场页顶上会列出来。
+  useEffect(() => pushLocal(RECENT_ITEMS.key, item.manifest.slug, RECENT_ITEMS.max), [item.manifest.slug])
 
   return (
     <>
@@ -52,6 +56,7 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
         <div className="flex flex-wrap items-center gap-2 *:whitespace-nowrap lg:shrink-0 lg:flex-nowrap">
           {pageLike && <ViewportSwitch value={viewport} onChange={setViewport} />}
           <ChainBadge item={item} />
+          <FavoriteButton slug={item.manifest.slug} variant="button" />
           <OpenInStudio slug={item.manifest.slug} values={tune.values} />
           <QuickActions item={item} values={tune.values} data={exportData} />
         </div>
@@ -136,7 +141,7 @@ function ViewportSwitch({ value, onChange }: { value: Viewport; onChange: (value
           aria-label={t(option)}
           title={t(option)}
           onClick={() => onChange(option)}
-          className="grid size-8 place-items-center rounded-md text-ink-faint transition-colors duration-150 hover:text-ink aria-checked:bg-white/10 aria-checked:text-ink"
+          className="grid size-8 place-items-center rounded-md text-ink-faint transition-colors duration-150 hover:text-ink aria-checked:bg-ink/10 aria-checked:text-ink"
         >
           <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" aria-hidden>
             {icons[option]}

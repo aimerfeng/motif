@@ -3,10 +3,12 @@
 import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { memo, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { SearchIcon } from '@/components/icons'
+import { ChevronIcon, HeartIcon, SearchIcon } from '@/components/icons'
 import { SkillButton } from '@/components/skill-button'
+import { Link } from '@/i18n/navigation'
 import type { ItemSummary } from '@/lib/catalog'
 import { generalSkills } from '@/lib/general-skills'
+import { FAVORITES, RECENT_ITEMS, useLocalList } from '@/lib/local-store'
 import { writeMarketQuery, type MarketQuery } from '@/lib/market-query'
 import { matchesAll, searchTerms } from '@/lib/store/search'
 import { replaceUrl, URL_WRITE_DELAY_MS } from '@/lib/url-state'
@@ -21,6 +23,11 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
   const [kind, setKind] = useState<Kind | null>(initial.kind)
   const [category, setCategory] = useState<Category | null>(initial.category)
   const [query, setQuery] = useState(initial.q)
+  const [sort, setSort] = useState<MarketQuery['sort']>(initial.sort)
+  // 只看收藏：收藏存在这个浏览器里，这个开关不写进链接（别人打开链接看不到你的收藏）。
+  const [onlyFavorites, setOnlyFavorites] = useState(false)
+  const [favorites] = useLocalList(FAVORITES.key, FAVORITES.max)
+  const [recent] = useLocalList(RECENT_ITEMS.key, RECENT_ITEMS.max)
   // 卡片网格跟着「延后」的筛选值渲染：点击时先把选中的标签画出来，上百张卡片在后台重排（INP）。
   const deferredKind = useDeferredValue(kind)
   const deferredCategory = useDeferredValue(category)
@@ -30,9 +37,9 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
 
   // 搜索词边打边写会很密，停下来再写进链接。
   useEffect(() => {
-    const timer = window.setTimeout(() => replaceUrl((url) => writeMarketQuery(url, { kind, category, q: query })), URL_WRITE_DELAY_MS)
+    const timer = window.setTimeout(() => replaceUrl((url) => writeMarketQuery(url, { kind, category, q: query, sort })), URL_WRITE_DELAY_MS)
     return () => window.clearTimeout(timer)
-  }, [kind, category, query])
+  }, [kind, category, query, sort])
 
   // 「/」聚焦搜索框（输入框里打字时不抢）。
   useEffect(() => {
@@ -60,24 +67,32 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
     () => new Map(items.map((item) => [item.slug, [item.title, item.summary, item.slug, ...item.tags, t(`kinds.${item.kind}`), t(`categories.${item.category}`)].join('\n').toLowerCase()])),
     [items, t],
   )
+  const favoriteSet = useMemo(() => new Set(favorites ?? []), [favorites])
   const visible = useMemo(() => {
     const concepts = searchTerms(deferredQuery, { stopwords: false })
-    return items.filter((item) => {
+    const matched = items.filter((item) => {
       if (deferredKind && item.kind !== deferredKind) return false
       if (deferredCategory && item.category !== deferredCategory) return false
+      if (onlyFavorites && !favoriteSet.has(item.slug)) return false
       return matchesAll(haystacks.get(item.slug)!, concepts)
     })
-  }, [items, haystacks, deferredKind, deferredCategory, deferredQuery])
+    // 最新：上架时间从新到旧；还没提交（没有时间）的算最新。时间相同的保持精选顺序。
+    if (sort === 'new') return matched.toSorted((a, b) => (b.addedAt ?? '9999').localeCompare(a.addedAt ?? '9999'))
+    return matched
+  }, [items, haystacks, deferredKind, deferredCategory, deferredQuery, sort, onlyFavorites, favoriteSet])
+  // 最近看过：还在市场里的条目，按看的先后。
+  const recentItems = useMemo(() => (recent ?? []).flatMap((slug) => items.filter((item) => item.slug === slug)), [recent, items])
 
   const selectKind = (next: Kind | null) => {
     setKind(next)
     setCategory(null)
   }
-  const filtered = kind !== null || query.trim() !== ''
+  const filtered = kind !== null || query.trim() !== '' || onlyFavorites
   const clearAll = () => {
     setKind(null)
     setCategory(null)
     setQuery('')
+    setOnlyFavorites(false)
   }
 
   return (
@@ -113,7 +128,31 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
               <SkillButton key={name} source={{ name }} label={t(`skillNames.${name}` as 'skillNames.motif-design')} />
             ))}
           </span>
-          <label className="relative ml-1 block w-full sm:w-64">
+          <span className="flex items-center gap-1.5 sm:ml-1">
+            <button
+              type="button"
+              aria-pressed={onlyFavorites}
+              onClick={() => setOnlyFavorites((value) => !value)}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-line px-3 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink aria-pressed:border-ink aria-pressed:text-ink"
+            >
+              <HeartIcon filled={onlyFavorites} className={`size-4 ${onlyFavorites ? 'text-heart' : ''}`} />
+              {t('favorites.filter')}
+              {favorites && favorites.length > 0 && <span className="font-mono text-[11px] text-ink-faint tabular-nums">{favorites.length}</span>}
+            </button>
+            <label className="relative">
+              <span className="sr-only">{t('sort.label')}</span>
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value === 'new' ? 'new' : 'featured')}
+                className="h-9 appearance-none rounded-lg border border-line bg-raised pr-8 pl-3 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink focus:border-line-strong focus:outline-none"
+              >
+                <option value="featured">{t('sort.featured')}</option>
+                <option value="new">{t('sort.new')}</option>
+              </select>
+              <ChevronIcon className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 rotate-90 text-ink-faint" />
+            </label>
+          </span>
+          <label className="relative block w-full sm:w-64">
             <span className="sr-only">{t('search')}</span>
             <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-faint" />
             <input
@@ -149,7 +188,7 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
 
       {visible.length === 0 ? (
         <div className="flex flex-col items-center gap-4 py-24 text-center">
-          <p className="text-ink-muted">{t('empty')}</p>
+          <p className="text-ink-muted">{onlyFavorites && favoriteSet.size === 0 ? t('favorites.empty') : t('empty')}</p>
           <button type="button" onClick={clearAll} className="rounded-full border border-line px-4 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink">
             {t('clearFilters')}
           </button>
@@ -157,6 +196,7 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
       ) : (
         // 后台重排期间把旧的卡片调暗一点；样式放在外层，网格的 props 不变，memo 才生效。
         <div className={`transition-opacity duration-150 ${pending ? 'opacity-60' : ''}`}>
+          {!filtered && recentItems.length > 0 && <RecentStrip items={recentItems} />}
           <CardGrid items={visible} />
         </div>
       )}
@@ -209,6 +249,31 @@ const CardGrid = memo(function CardGrid({ items }: { items: ItemSummary[] }) {
   )
 })
 
+/** 最近看过的条目：一行小卡片，横向滚动。 */
+function RecentStrip({ items }: { items: ItemSummary[] }) {
+  const t = useTranslations('market')
+  return (
+    <section aria-label={t('recent')} className="mb-8" data-testid="recent-items">
+      <h2 className="mb-3 text-[13px] text-ink-faint">{t('recent')}</h2>
+      <ul className="-mx-5 flex gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:thin] sm:mx-0 sm:px-0">
+        {items.map((item) => (
+          <li key={item.slug} className="w-40 shrink-0">
+            <Link href={item.community ? `/community/works/${item.slug}` : `/market/${item.slug}`} className="group block">
+              <span className="relative block aspect-[16/10] overflow-hidden rounded-lg border border-line bg-sunken transition-colors duration-150 group-hover:border-line-strong">
+                {(item.media.posterSmall ?? item.media.poster) && (
+                  // 海报是预先生成的 webp，不需要 next/image 再处理。
+                  <img src={item.media.posterSmall ?? item.media.poster ?? ''} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover" />
+                )}
+              </span>
+              <span className="mt-1.5 block truncate text-[12.5px] text-ink-muted transition-colors duration-150 group-hover:text-ink">{item.title}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 function KindTab({ active, onClick, count, children }: { active: boolean; onClick: () => void; count: number; children: ReactNode }) {
   return (
     <button
@@ -230,7 +295,7 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className="rounded-full px-3.5 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink aria-pressed:bg-ink aria-pressed:text-canvas"
+      className="rounded-full px-3.5 py-1.5 text-[13px] text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink aria-pressed:bg-ink aria-pressed:text-canvas"
     >
       {children}
     </button>

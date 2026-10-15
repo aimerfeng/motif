@@ -6,6 +6,7 @@ import { SkillButton } from '@/components/skill-button'
 import { Link } from '@/i18n/navigation'
 import type { ItemSummary } from '@/lib/catalog'
 import { RUNTIME_LABELS } from '@/lib/labels'
+import { FavoriteButton } from './favorite-button'
 
 /**
  * 市场卡片：静态海报，悬停时播放循环视频（画廊里不放实时 WebGL，见 docs/decisions/0002）。
@@ -64,7 +65,8 @@ export function ItemCard({ item, categoryLabel, priority = false }: { item: Item
             </>
           ) : (
             <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(120%_90%_at_30%_20%,oklch(0.3_0.06_285),transparent_60%),radial-gradient(90%_80%_at_80%_90%,oklch(0.28_0.07_340),transparent_55%)]">
-              <span className="font-display text-2xl font-semibold tracking-tight text-ink/80">{item.title}</span>
+              {/* 占位图的底色总是深色（像一张海报），字用白色，不随主题变。 */}
+              <span className="font-display text-2xl font-semibold tracking-tight text-white/80">{item.title}</span>
             </div>
           )}
         </div>
@@ -86,6 +88,10 @@ export function ItemCard({ item, categoryLabel, priority = false }: { item: Item
           </p>
         )}
       </Link>
+      <FavoriteButton
+        slug={item.slug}
+        className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[state=on]:opacity-100 [@media(hover:none)]:opacity-100"
+      />
       <SkillButton
         source={{ name: item.skill }}
         variant="overlay"

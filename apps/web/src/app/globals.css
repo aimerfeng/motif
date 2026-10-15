@@ -15,27 +15,100 @@
   --font-display: 'Bricolage Grotesque Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', ui-sans-serif, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
-  --color-canvas: oklch(0.158 0.006 275);
-  --color-raised: oklch(0.192 0.007 275);
-  --color-sunken: oklch(0.128 0.005 275);
-  --color-line: oklch(1 0 0 / 0.075);
-  --color-line-strong: oklch(1 0 0 / 0.15);
-  --color-ink: oklch(0.965 0.004 270);
-  --color-ink-muted: oklch(0.74 0.008 270);
-  --color-ink-faint: oklch(0.56 0.01 270);
-  --color-focus: oklch(0.84 0.07 285);
-  --color-danger: oklch(0.72 0.16 25);
-  /* 社区里的状态：审核通过、进行中。明度和彩度与 danger 接近，几种状态并排时分量一致。 */
-  --color-success: oklch(0.78 0.13 160);
-  --color-pending: oklch(0.8 0.11 85);
+  /* 颜色指向下面 :root 里的色板；默认暗色，[data-theme] 规则按主题重新声明这些变量。 */
+  --color-canvas: var(--dark-canvas);
+  --color-raised: var(--dark-raised);
+  --color-sunken: var(--dark-sunken);
+  --color-line: var(--dark-line);
+  --color-line-strong: var(--dark-line-strong);
+  --color-ink: var(--dark-ink);
+  --color-ink-muted: var(--dark-ink-muted);
+  --color-ink-faint: var(--dark-ink-faint);
+  --color-focus: var(--dark-focus);
+  --color-danger: var(--dark-danger);
+  --color-success: var(--dark-success);
+  --color-pending: var(--dark-pending);
+  --color-heart: var(--dark-heart);
 
   --radius-card: 14px;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/*
+ * 两套色板。暗色是站点的本色（夜间画廊）；浅色给在白底上做设计的人。
+ * 页面跟随 <html data-theme>（layout 里的小脚本在首帧前按偏好或系统设置写上）；
+ * 任何子树都可以用 data-theme="dark" 留在暗色里，例如代码面板（高亮配色只有暗色一套）。
+ * 两条规则直接重新声明 --color-*：自定义属性里的 var() 在声明它的元素上就算好了，
+ * 只在子树里改「它引用的变量」传不下去。
+ * 社区状态色（success / pending / danger）在每套里明度和彩度相近，几种状态并排时分量一致。
+ */
+:root {
+  --dark-canvas: oklch(0.158 0.006 275);
+  --dark-raised: oklch(0.192 0.007 275);
+  --dark-sunken: oklch(0.128 0.005 275);
+  --dark-line: oklch(1 0 0 / 0.075);
+  --dark-line-strong: oklch(1 0 0 / 0.15);
+  --dark-ink: oklch(0.965 0.004 270);
+  --dark-ink-muted: oklch(0.74 0.008 270);
+  --dark-ink-faint: oklch(0.56 0.01 270);
+  --dark-focus: oklch(0.84 0.07 285);
+  --dark-danger: oklch(0.72 0.16 25);
+  --dark-success: oklch(0.78 0.13 160);
+  --dark-pending: oklch(0.8 0.11 85);
+  --dark-heart: oklch(0.72 0.17 15);
+
+  --light-canvas: oklch(0.982 0.002 270);
+  --light-raised: oklch(1 0 0);
+  --light-sunken: oklch(0.955 0.003 270);
+  --light-line: oklch(0.22 0.01 270 / 0.1);
+  --light-line-strong: oklch(0.22 0.01 270 / 0.2);
+  --light-ink: oklch(0.2 0.01 270);
+  --light-ink-muted: oklch(0.42 0.012 270);
+  --light-ink-faint: oklch(0.56 0.012 270);
+  --light-focus: oklch(0.52 0.16 285);
+  --light-danger: oklch(0.56 0.19 25);
+  --light-success: oklch(0.52 0.13 160);
+  --light-pending: oklch(0.58 0.13 70);
+  --light-heart: oklch(0.6 0.21 15);
+}
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-canvas: var(--dark-canvas);
+  --color-raised: var(--dark-raised);
+  --color-sunken: var(--dark-sunken);
+  --color-line: var(--dark-line);
+  --color-line-strong: var(--dark-line-strong);
+  --color-ink: var(--dark-ink);
+  --color-ink-muted: var(--dark-ink-muted);
+  --color-ink-faint: var(--dark-ink-faint);
+  --color-focus: var(--dark-focus);
+  --color-danger: var(--dark-danger);
+  --color-success: var(--dark-success);
+  --color-pending: var(--dark-pending);
+  --color-heart: var(--dark-heart);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --color-canvas: var(--light-canvas);
+  --color-raised: var(--light-raised);
+  --color-sunken: var(--light-sunken);
+  --color-line: var(--light-line);
+  --color-line-strong: var(--light-line-strong);
+  --color-ink: var(--light-ink);
+  --color-ink-muted: var(--light-ink-muted);
+  --color-ink-faint: var(--light-ink-faint);
+  --color-focus: var(--light-focus);
+  --color-danger: var(--light-danger);
+  --color-success: var(--light-success);
+  --color-pending: var(--light-pending);
+  --color-heart: var(--light-heart);
+}
+
 @layer base {
   html {
-    color-scheme: dark;
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -45,7 +118,7 @@
   }
 
   ::selection {
-    background: oklch(0.84 0.07 285 / 0.35);
+    background: color-mix(in oklab, var(--color-focus) 35%, transparent);
   }
 
   :focus-visible {
@@ -75,16 +148,16 @@
   border-radius: 999px;
   background:
     linear-gradient(to right, var(--color-ink) var(--fill), transparent var(--fill)),
-    linear-gradient(to right, transparent var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-end), transparent var(--safe-end)),
-    oklch(1 0 0 / 0.08);
+    linear-gradient(to right, transparent var(--safe-start), color-mix(in oklab, var(--color-ink) 10%, transparent) var(--safe-start), color-mix(in oklab, var(--color-ink) 10%, transparent) var(--safe-end), transparent var(--safe-end)),
+    color-mix(in oklab, var(--color-ink) 8%, transparent);
 }
 .motif-range::-moz-range-track {
   height: 4px;
   border-radius: 999px;
   background:
     linear-gradient(to right, var(--color-ink) var(--fill), transparent var(--fill)),
-    linear-gradient(to right, transparent var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-start), oklch(1 0 0 / 0.1) var(--safe-end), transparent var(--safe-end)),
-    oklch(1 0 0 / 0.08);
+    linear-gradient(to right, transparent var(--safe-start), color-mix(in oklab, var(--color-ink) 10%, transparent) var(--safe-start), color-mix(in oklab, var(--color-ink) 10%, transparent) var(--safe-end), transparent var(--safe-end)),
+    color-mix(in oklab, var(--color-ink) 8%, transparent);
 }
 .motif-range::-webkit-slider-thumb {
   appearance: none;

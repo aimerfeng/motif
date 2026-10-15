@@ -4,6 +4,7 @@ import { GitHubIcon } from '@/components/icons'
 import { Link } from '@/i18n/navigation'
 import { WalletButton } from './community/wallet-button'
 import { LocaleSwitcher } from './locale-switcher'
+import { ThemeToggle } from './theme-toggle'
 import { MotifMark } from './motif-mark'
 import { DesktopNav, MobileNav, type NavLink } from './site-nav'
 
@@ -28,6 +29,7 @@ export function SiteHeader() {
         <DesktopNav links={links} />
         <div className="ml-auto flex items-center gap-2">
           <WalletButton />
+          <ThemeToggle labels={{ light: t('themeLight'), dark: t('themeDark') }} />
           <LocaleSwitcher label={t('language')} />
           <a
             href={REPO_URL}
@@ -35,7 +37,7 @@ export function SiteHeader() {
             rel="noreferrer"
             aria-label={t('github')}
             // 手机上头部放不下；页脚里也有仓库链接。
-            className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink max-sm:hidden"
+            className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink max-sm:hidden"
           >
             <GitHubIcon className="size-[18px]" />
           </a>

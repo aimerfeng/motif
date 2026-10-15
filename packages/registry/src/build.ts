@@ -6,6 +6,7 @@ import { compileItem } from '@motif/compiler'
 import type { ItemSource } from '@motif/schema'
 import { FONT_FAMILIES, VENDOR_IDS } from '@motif/vendor'
 import { CATALOG_PATH, type Catalog, type CatalogItem, type CatalogRuntime } from './catalog.ts'
+import { itemAddedDates } from './added.ts'
 import { loadAllItems, loadSourceRecords, REPO_ROOT } from './load.ts'
 
 export interface BuildRegistryOptions {
@@ -63,7 +64,8 @@ export async function buildItem(item: ItemSource, sources: readonly SourceRecord
     const base = options.urlBase ?? '/items/'
     build = { js: `${base}${js}`, css: `${base}${css}`, jsBytes: Buffer.byteLength(compiled.js), cssBytes: Buffer.byteLength(compiled.css) }
   }
-  return { manifest: item.manifest, files: item.files, build, findings }
+  // 进仓库的时间由 buildRegistry 一次性从 git 里查出来再填上。
+  return { manifest: item.manifest, files: item.files, build, findings, addedAt: null }
 }
 
 /** 构建整个目录：检查、编译每个条目，写出产物和 catalog.json。 */
@@ -74,8 +76,9 @@ export async function buildRegistry(options: BuildRegistryOptions = {}): Promise
     await mkdir(options.outDir, { recursive: true })
   }
 
-  const [built, runtime] = await Promise.all([Promise.all(items.map((item) => buildItem(item, sources, options))), loadRuntime()])
-  const catalog: Catalog = { generatedAt: new Date().toISOString(), vendor: options.vendorVersions ?? {}, runtime, items: built }
+  const [built, runtime, added] = await Promise.all([Promise.all(items.map((item) => buildItem(item, sources, options))), loadRuntime(), itemAddedDates()])
+  const dated = built.map((item) => ({ ...item, addedAt: added.get(item.manifest.slug) ?? null }))
+  const catalog: Catalog = { generatedAt: new Date().toISOString(), vendor: options.vendorVersions ?? {}, runtime, items: dated }
   if (options.writeCatalog ?? true) await writeCatalog(catalog)
 
   const errors: BuildRegistryResult['errors'] = []

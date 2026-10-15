@@ -29,7 +29,7 @@ export function claudeCliRunner(options: ClaudeCliOptions = {}): AgentRunner {
 
   return {
     id: 'claude-cli',
-    async run({ prompt, system, session, state, signal, emit }) {
+    async run({ prompt, images, system, session, state, signal, emit }) {
       const server = createSdkMcpServer({
         name: SERVER,
         tools: TOOLS.map((spec) =>
@@ -46,8 +46,25 @@ export function claudeCliRunner(options: ClaudeCliOptions = {}): AgentRunner {
 
       let sessionId = typeof state === 'string' ? state : undefined
       try {
+        // 带参考图时用流式输入：一条用户消息里放文字和图片块（字符串形式的 prompt 放不了图）。
+        const input =
+          images.length === 0
+            ? prompt
+            : (async function* () {
+                yield {
+                  type: 'user' as const,
+                  parent_tool_use_id: null,
+                  message: {
+                    role: 'user' as const,
+                    content: [
+                      { type: 'text' as const, text: prompt },
+                      ...images.map((image) => ({ type: 'image' as const, source: { type: 'base64' as const, media_type: image.mediaType as 'image/png' | 'image/jpeg' | 'image/webp', data: image.data } })),
+                    ],
+                  },
+                }
+              })()
         const messages = query({
-          prompt,
+          prompt: input,
           options: {
             model,
             pathToClaudeCodeExecutable: executable,

@@ -12,7 +12,7 @@ function inline(text: string): ReactNode[] {
           {match[1]}
         </strong>
       ) : (
-        <code key={match.index} className="rounded bg-white/8 px-1 py-px font-mono text-[0.9em]">
+        <code key={match.index} className="rounded bg-ink/8 px-1 py-px font-mono text-[0.9em]">
           {match[2]}
         </code>
       ),

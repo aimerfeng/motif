@@ -48,9 +48,9 @@ export function EasingEditor({ id, value, onChange, label }: { id: string; value
   return (
     <div className="flex gap-3" id={id}>
       <svg ref={svgRef} viewBox={`0 0 ${SIZE} ${SIZE}`} className="size-[132px] shrink-0 touch-none overflow-visible rounded-lg border border-line bg-sunken" role="img" aria-label={label}>
-        <rect x={PAD} y={PAD} width={INNER} height={INNER} fill="none" stroke="oklch(1 0 0 / 0.06)" />
-        <line x1={toX(0)} y1={toY(0)} x2={toX(x1)} y2={toY(y1)} stroke="oklch(1 0 0 / 0.3)" />
-        <line x1={toX(1)} y1={toY(1)} x2={toX(x2)} y2={toY(y2)} stroke="oklch(1 0 0 / 0.3)" />
+        <rect x={PAD} y={PAD} width={INNER} height={INNER} fill="none" className="stroke-ink/6" />
+        <line x1={toX(0)} y1={toY(0)} x2={toX(x1)} y2={toY(y1)} className="stroke-ink/30" />
+        <line x1={toX(1)} y1={toY(1)} x2={toX(x2)} y2={toY(y2)} className="stroke-ink/30" />
         <path d={`M ${toX(0)} ${toY(0)} C ${toX(x1)} ${toY(y1)}, ${toX(x2)} ${toY(y2)}, ${toX(1)} ${toY(1)}`} fill="none" stroke="var(--color-ink)" strokeWidth="2" />
         <circle cx={toX(x1)} cy={toY(y1)} r="5.5" fill="var(--color-focus)" className="cursor-grab" onPointerDown={drag(0)} />
         <circle cx={toX(x2)} cy={toY(y2)} r="5.5" fill="var(--color-focus)" className="cursor-grab" onPointerDown={drag(1)} />

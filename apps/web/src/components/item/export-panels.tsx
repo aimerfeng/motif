@@ -147,7 +147,7 @@ function FileRow({ target, state, onCopy }: { target: string; state: CopyState; 
       <button
         type="button"
         onClick={onCopy}
-        className="flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink"
+        className="flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink"
       >
         <CopyIcon state={state} className="size-3.5" />
         <CopyLabel state={state} idle={t('copy')} />

@@ -28,8 +28,8 @@ export function SpringPlot({ visualDuration, bounce }: { visualDuration: number;
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-16 w-full rounded-lg border border-line bg-sunken" aria-hidden>
-      <line x1="0" x2={width} y1={target} y2={target} stroke="oklch(1 0 0 / 0.08)" strokeDasharray="3 3" />
-      <line x1={(visualDuration / total) * width} x2={(visualDuration / total) * width} y1="4" y2={height - 4} stroke="oklch(1 0 0 / 0.08)" />
+      <line x1="0" x2={width} y1={target} y2={target} className="stroke-ink/8" strokeDasharray="3 3" />
+      <line x1={(visualDuration / total) * width} x2={(visualDuration / total) * width} y1="4" y2={height - 4} className="stroke-ink/8" />
       <polyline points={points.join(' ')} fill="none" stroke="var(--color-ink)" strokeWidth="1.75" strokeLinejoin="round" />
     </svg>
   )

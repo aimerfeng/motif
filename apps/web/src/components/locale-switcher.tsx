@@ -27,7 +27,7 @@ export function LocaleSwitcher({ label }: { label: string }) {
           type="button"
           aria-pressed={option === locale}
           onClick={() => switchTo(option)}
-          className="rounded-md px-2 py-1 text-ink-faint transition-colors duration-150 hover:text-ink aria-pressed:bg-white/10 aria-pressed:text-ink"
+          className="rounded-md px-2 py-1 text-ink-faint transition-colors duration-150 hover:text-ink aria-pressed:bg-ink/10 aria-pressed:text-ink"
         >
           {LABELS[option]}
         </button>

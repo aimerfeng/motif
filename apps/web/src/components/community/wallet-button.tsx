@@ -130,7 +130,7 @@ function WalletList({ wallets, onPick, label }: { wallets: DiscoveredWallet[]; o
       <p className="px-2 pt-1 pb-2 text-[12px] text-ink-faint">{label}</p>
       {wallets.map((wallet) => (
         <MenuButton key={wallet.id} onClick={() => onPick(wallet)}>
-          {wallet.icon ? <img src={wallet.icon} alt="" className="size-5 rounded" /> : <span className="size-5 rounded bg-white/10" aria-hidden />}
+          {wallet.icon ? <img src={wallet.icon} alt="" className="size-5 rounded" /> : <span className="size-5 rounded bg-ink/10" aria-hidden />}
           {wallet.name}
         </MenuButton>
       ))}
@@ -143,7 +143,7 @@ function MenuButton({ children, onClick, tone }: { children: ReactNode; onClick:
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left transition-colors duration-150 hover:bg-white/5 ${tone === 'danger' ? 'text-danger' : 'text-ink-muted hover:text-ink'}`}
+      className={`flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left transition-colors duration-150 hover:bg-ink/5 ${tone === 'danger' ? 'text-danger' : 'text-ink-muted hover:text-ink'}`}
     >
       {children}
     </button>
@@ -152,7 +152,7 @@ function MenuButton({ children, onClick, tone }: { children: ReactNode; onClick:
 
 function MenuLink({ href, children, onNavigate }: { href: string; children: ReactNode; onNavigate: () => void }) {
   return (
-    <Link href={href} onClick={onNavigate} className="block rounded-lg px-2 py-2 text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink">
+    <Link href={href} onClick={onNavigate} className="block rounded-lg px-2 py-2 text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink">
       {children}
     </Link>
   )

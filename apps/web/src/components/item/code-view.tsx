@@ -75,7 +75,8 @@ export function CodeView({
   const paletteCss = code.palette.map((color, index) => `.code-tokens .t${index}{color:${color}}`).join('')
 
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-sunken">
+    // 高亮配色（vesper）只有暗色一套：代码面板在浅色主题里也保持暗色。
+    <div data-theme="dark" className="overflow-hidden rounded-xl border border-line bg-sunken text-ink">
       <style>{paletteCss}</style>
       <div className="flex items-center gap-1 overflow-x-auto border-b border-line px-2 py-1.5">
         {code.files.map((f) => (
@@ -84,14 +85,14 @@ export function CodeView({
             type="button"
             aria-pressed={f.path === file.path}
             onClick={() => setActive(f.path)}
-            className="shrink-0 rounded-md px-2.5 py-1 font-mono text-[12px] text-ink-faint transition-colors duration-150 hover:text-ink aria-pressed:bg-white/8 aria-pressed:text-ink"
+            className="shrink-0 rounded-md px-2.5 py-1 font-mono text-[12px] text-ink-faint transition-colors duration-150 hover:text-ink aria-pressed:bg-ink/8 aria-pressed:text-ink"
           >
             {f.path}
           </button>
         ))}
         <span className="ml-auto flex shrink-0 items-center gap-3">
           {isEntry && <span className="hidden text-[11.5px] text-ink-faint sm:inline">{labels.tuned}</span>}
-          <button type="button" onClick={() => void copy(file.path, text)} className="rounded-md px-2.5 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-white/5 hover:text-ink">
+          <button type="button" onClick={() => void copy(file.path, text)} className="rounded-md px-2.5 py-1 text-[12px] text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink">
             <span aria-live="polite">{state === 'copied' ? labels.copied : state === 'failed' ? labels.failed : labels.copy}</span>
           </button>
         </span>

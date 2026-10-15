@@ -20,14 +20,16 @@ export type AgentEvent =
   | { type: 'done'; summary: string | null }
   | { type: 'error'; message: string }
 
-/** 保存下来的对话：用户的话、agent 的话，以及 agent 调用过的工具（只留摘要）。 */
+/** 保存下来的对话：用户的话（附了参考图时只存缩略图的 data URL）、agent 的话，以及 agent 调用过的工具（只留摘要）。 */
 export type TranscriptEntry =
   /** snapshot：这一轮开始前的版本，可以回到那里。 */
-  | { role: 'user'; text: string; at: number; snapshot?: number }
+  | { role: 'user'; text: string; at: number; snapshot?: number; images?: string[] }
   | { role: 'assistant'; text: string; at: number }
   | { role: 'tool'; id: string; name: string; input: unknown; output: string | null; isError: boolean; at: number }
   /** reverted：用户回到了某个快照；snapshot 是回退前的版本，回退本身也能撤销。 */
   | { role: 'notice'; kind: 'done' | 'error' | 'aborted' | 'reverted'; text: string; at: number; snapshot?: number }
+  /** 这一轮改了哪些文件（站点在一轮结束时记下）；snapshot 是这一轮开始前的版本，逐行差异按需再取。 */
+  | { role: 'changes'; at: number; snapshot: number; files: { path: string; status: 'added' | 'removed' | 'modified'; added: number; removed: number }[] }
 
 const MAX_STORED_STRING = 2_000
 

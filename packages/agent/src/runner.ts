@@ -4,8 +4,16 @@ import type { AgentHost, Evaluation } from './host.ts'
 import { AgentSession } from './session.ts'
 import { findTool, type ToolOutput } from './tools.ts'
 
+/** 用户随这句话附上的参考图（截图、设计稿），base64 编码。 */
+export interface PromptImage {
+  mediaType: string
+  data: string
+}
+
 export interface RunnerInput {
   prompt: string
+  /** 参考图；没有就是空数组。看不了图的模型不会收到（站点在接口层就拒绝了）。 */
+  images: PromptImage[]
   system: string
   session: AgentSession
   /** 这个运行器上一轮返回的续接状态（AI SDK 的历史消息、Claude CLI 的会话 id），第一轮为 undefined。 */
@@ -38,6 +46,7 @@ export interface RunAgentOptions {
   host: AgentHost
   system: string
   prompt: string
+  images?: PromptImage[]
   item: ItemSource
   values: ParamValues
   evaluation: Evaluation | null
@@ -73,7 +82,7 @@ export async function runAgent(options: RunAgentOptions): Promise<RunAgentResult
   let state = options.state
   let completed = false
   try {
-    const result = await runner.run({ prompt: options.prompt, system: options.system, session, state, signal: options.signal, emit: onEvent })
+    const result = await runner.run({ prompt: options.prompt, images: options.images ?? [], system: options.system, session, state, signal: options.signal, emit: onEvent })
     state = result.state
     completed = !options.signal.aborted
     if (completed && !session.finished) {
