@@ -4,9 +4,12 @@ const MAX_BODY_BYTES = 2_000_000
 
 export class HttpError extends Error {
   readonly status: number
-  constructor(status: number, message: string) {
+  /** 给客户端的结构化信息（例如积分差多少），和错误说明一起返回。 */
+  readonly details?: Record<string, unknown>
+  constructor(status: number, message: string, details?: Record<string, unknown>) {
     super(message)
     this.status = status
+    this.details = details
   }
 }
 
@@ -34,7 +37,7 @@ export async function readJson(request: Request, maxBytes = MAX_BODY_BYTES): Pro
 }
 
 export function errorResponse(error: unknown): Response {
-  if (error instanceof HttpError) return Response.json({ error: error.message }, { status: error.status })
+  if (error instanceof HttpError) return Response.json({ error: error.message, ...error.details }, { status: error.status })
   console.error('[community]', error)
   return Response.json({ error: 'internal error' }, { status: 500 })
 }

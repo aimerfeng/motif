@@ -6,7 +6,7 @@
 
 ![Motif 市场里的部分效果：流体模拟、合成波、地球、液态金属、宝石烟雾……](docs/assets/showcase.webp)
 
-**状态：** 市场、调参、导出、Skill 库、Agent 工作台（Studio）、给 agent 的商店和去中心化社区都已经能在本地完整使用（145 个条目、153 个 Skill），还没有部署到公网。实施计划见 [docs/PLAN.md](./docs/PLAN.md)。
+**状态：** 市场、调参、导出、Skill 库、Agent 工作台（Studio）、给 agent 的商店和去中心化社区都已经能完整使用（145 个条目、153 个 Skill），站点部署在 [motifne.net](https://motifne.net)；社区的合约还没有部署到公开网络。实施计划见 [docs/PLAN.md](./docs/PLAN.md)。
 
 ## 能做什么
 
@@ -39,23 +39,30 @@
    ![工作台：左边是和 agent 的对话，中间实时预览，右边调参](docs/assets/studio.webp)
 
    开发时 agent 用本机的 Claude Code CLI；部署时配置站点自己的模型 key（见 `apps/web/.env.example`）。设计见 [docs/decisions/0006-studio.md](./docs/decisions/0006-studio.md)。
-6. **给 agent 的商店**（第一阶段：价格为 0，付款还没开放）：Claude Code、Cursor 这类 agent 直接来找 UI、下单：
+6. **给 agent 的商店**（用积分付款）：Claude Code、Cursor 这类 agent 直接来找 UI、下单：
 
    ```bash
-   claude mcp add --transport http motif <站点>/mcp
+   claude mcp add --transport http motif <站点>/mcp --header "Authorization: Bearer <API 密钥>"
    ```
 
    - 工具：`search_ui`、`get_ui`、`preview_ui`（按参数截图）、`get_quote`、`place_order`、`get_order`。
    - 现成条目即时交付：带调好参数的全部代码文件、`npx shadcn add` 命令和 Skill。
    - 没有合适的就下定制单：工作台的 agent 现做，通过同一套检查后交付。
    - 不用 MCP 的 agent 走 `GET /api/agent`（工具列表和 JSON Schema）和 `POST /api/agent/<工具>`；`/llms.txt` 有完整说明。
-   - 付款以 USDC 定价，用 MOTIF 付有折扣；开源条目免费，定制和社区作品收费。设计见 [docs/decisions/0008-agent-store.md](./docs/decisions/0008-agent-store.md)。
+   - 浏览、预览、报价免费；拿代码、拿 Skill、定制单用 API 密钥对应账号的积分付款，买过的不重复扣。设计见 [docs/decisions/0008-agent-store.md](./docs/decisions/0008-agent-store.md) 和 [0009](./docs/decisions/0009-accounts-credits-repos.md)。
 7. **去中心化社区**（合约和站点已完成，可在本地链上完整试用，尚未部署到公开网络）：
    - 任何人押上押金投稿，DAO 任命的审核员投票，通过的作品进入市场，作者得到奖励和声誉；
    - 源码由站点托管，链上记录内容哈希、许可证、署名和 Remix 谱系，详情页的“链上已验证”是浏览器自己重算哈希后比对的结果；
    - 资料、审核队列、治理（委托、提案、投票、执行）都在 `/community` 下。
 
    设计与风险见 [docs/decisions/0005-decentralized-community.md](./docs/decisions/0005-decentralized-community.md)，上线步骤见 [docs/deploy-community.md](./docs/deploy-community.md)。
+8. **账号、积分和用户仓库**：
+   - GitHub 登录，或邮箱注册（验证邮箱、找回密码）；
+   - 每个人有自己的仓库：从 GitHub 一键导入、fork 站内仓库或市场条目、在线编辑、推回 GitHub，条目仓库可以「在工作台打开」；
+   - 积分：工作台的 AI 按用量扣，下载完整项目、MCP 拿代码和 Skill 第一次花积分、以后免费；积分套餐和管理后台（`/admin`）；
+   - MCP 用 API 密钥认人（`/account/keys`）。
+
+   设计见 [docs/decisions/0009-accounts-credits-repos.md](./docs/decisions/0009-accounts-credits-repos.md)。
 
 ## 本地开发
 

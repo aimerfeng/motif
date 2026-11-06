@@ -14,7 +14,8 @@
     "skip": "跳到正文",
     "community": "社区",
     "themeLight": "切换到浅色",
-    "themeDark": "切换到暗色"
+    "themeDark": "切换到暗色",
+    "pricing": "积分"
   },
   "home": {
     "headline": "把好看的动效，带回你的项目",
@@ -979,6 +980,380 @@
       "notImage": "只能附图片。",
       "tooLarge": "图片太大了（最多 20 MB）。",
       "tooMany": "最多附 {max} 张图。"
+    },
+    "blockers": {
+      "login": "登录",
+      "credits": "购买积分",
+      "owner": "自己开一个会话"
+    }
+  },
+  "account": {
+    "menu": {
+      "signIn": "登录",
+      "open": "打开账号菜单",
+      "balance": "积分余额",
+      "credits": "积分",
+      "repos": "我的仓库",
+      "newRepo": "新建仓库",
+      "settings": "账号设置",
+      "keys": "API 密钥与 MCP",
+      "admin": "管理后台",
+      "signOut": "退出登录"
+    },
+    "nav": {
+      "overview": "概览",
+      "credits": "积分",
+      "keys": "API 密钥"
+    },
+    "overview": {
+      "title": "我的账号",
+      "lead": "登录邮箱：{email}",
+      "welcome": "欢迎！注册赠送的积分已经到账，可以开始逛市场、在工作台里做东西了。",
+      "balance": "积分余额",
+      "repos": "仓库",
+      "handle": "主页"
+    },
+    "profile": {
+      "title": "资料",
+      "name": "显示名",
+      "handle": "主页地址",
+      "handleHint": "3–32 位小写字母、数字或短横线。改了以后旧地址会失效。",
+      "bio": "一句话介绍",
+      "save": "保存",
+      "saving": "保存中…",
+      "saved": "已保存"
+    },
+    "connections": {
+      "title": "登录方式",
+      "passwordSet": "邮箱和密码登录",
+      "noPassword": "还没有设置密码，只能用 GitHub 登录",
+      "changePassword": "改密码",
+      "setPassword": "设置密码",
+      "githubWrite": "已关联 @{login}，可以把仓库推到 GitHub",
+      "githubLinked": "已关联 @{login}",
+      "githubNone": "未关联。关联后可以一键导入你的 GitHub 仓库",
+      "connect": "关联 GitHub",
+      "redirecting": "正在跳转…",
+      "grantWrite": "允许推送仓库",
+      "disconnect": "解除关联",
+      "failed": "没有成功，请再试一次",
+      "writeExplain": "登录时只读取你的公开资料和邮箱。要把站内的仓库推到 GitHub、或者在 GitHub 上 fork，需要再授权一次「public_repo」（只能操作公开仓库）。",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码（至少 8 位）",
+      "save": "保存",
+      "wrongPassword": "当前密码不对",
+      "passwordChanged": "密码已更新，其他设备上的登录已退出"
+    },
+    "keys": {
+      "title": "API 密钥与 MCP",
+      "lead": "让 Claude Code、Cursor 这类 agent 通过 MCP 直接找 UI、拿代码和 Skill。拿代码和 Skill 花的是这个账号的积分。",
+      "create": "新建密钥",
+      "namePlaceholder": "用途，例如「笔记本上的 Claude Code」",
+      "creating": "正在创建…",
+      "createButton": "创建",
+      "createdOnce": "这是你的新密钥，只显示这一次，请现在复制保存：",
+      "connect": "接入 MCP",
+      "connectLead": "把下面命令里的密钥换成你自己的（新建后会自动填进去）。接入以后，agent 可以搜索、预览、报价都免费；下单拿代码、拿 Skill 时才扣积分，买过的东西以后再拿不重复扣。",
+      "otherClients": "其他支持 MCP 的客户端（JSON 配置）",
+      "list": "我的密钥",
+      "none": "还没有密钥",
+      "created": "{date} 创建",
+      "used": "最近使用 {date}",
+      "neverUsed": "还没用过",
+      "revoke": "吊销",
+      "confirmRevoke": "吊销以后，用这个密钥的 agent 会立刻失去访问权限。确定吗？"
+    }
+  },
+  "auth": {
+    "errors": {
+      "invalid": "邮箱或密码不对",
+      "unverified": "这个邮箱还没有验证。我们刚又发了一封验证邮件，点里面的链接完成验证后再登录。",
+      "exists": "这个邮箱已经注册过了，直接登录就好",
+      "short": "密码至少 8 位",
+      "token": "链接无效或已过期，请重新申请",
+      "rateLimited": "尝试太频繁了，请稍后再试",
+      "generic": "出了点问题，请再试一次",
+      "oauth": "GitHub 登录没有完成（{code}），请再试一次"
+    },
+    "redirecting": "正在跳转到 GitHub…",
+    "or": "或者用邮箱",
+    "email": "邮箱",
+    "password": "密码",
+    "name": "名字",
+    "working": "请稍候…",
+    "emailDisabled": "邮箱注册暂未开放，请先用 GitHub 登录。",
+    "nothingConfigured": "登录暂未开放。",
+    "login": {
+      "title": "登录",
+      "lead": "登录后可以保存仓库、用积分在工作台里做东西、接入 MCP。",
+      "github": "用 GitHub 登录",
+      "forgot": "忘记密码？",
+      "submit": "登录",
+      "noAccount": "还没有账号？",
+      "toSignup": "注册"
+    },
+    "signup": {
+      "title": "注册",
+      "lead": "注册就送 {bonus} 积分。",
+      "github": "用 GitHub 注册",
+      "passwordHint": "至少 8 位",
+      "submit": "注册",
+      "bonus": "注册即表示同意按积分规则使用站点的付费功能。积分可以在「积分」页查看和购买。",
+      "sent": "验证邮件已经发到 {email}。点邮件里的链接完成注册（没收到的话看看垃圾邮件）。",
+      "resend": "重新发送",
+      "resent": "已重新发送",
+      "haveAccount": "已经有账号？",
+      "toLogin": "登录"
+    },
+    "forgot": {
+      "title": "找回密码",
+      "lead": "输入注册用的邮箱，我们会发一封重置密码的邮件。",
+      "submit": "发送重置邮件",
+      "sent": "如果 {email} 注册过，重置邮件已经发出，1 小时内有效。",
+      "back": "返回登录"
+    },
+    "reset": {
+      "title": "设置新密码",
+      "lead": "新密码至少 8 位。设置后其他设备上的登录会退出。",
+      "password": "新密码",
+      "submit": "保存新密码",
+      "done": "密码已更新，用新密码登录吧。"
+    }
+  },
+  "credits": {
+    "page": {
+      "title": "积分",
+      "lead": "用积分在工作台里让 AI 做东西、下载完整项目、通过 MCP 拿代码和 Skill。",
+      "balance": "当前余额",
+      "spent": "累计花费",
+      "pending": "待付款订单"
+    },
+    "packages": {
+      "title": "购买积分",
+      "names": {
+        "trial": "体验",
+        "standard": "标准",
+        "pro": "专业",
+        "studio": "工作室"
+      },
+      "popular": "最划算",
+      "credits": "积分",
+      "bonus": "多送 {percent}%",
+      "signInToBuy": "登录购买",
+      "working": "下单中…",
+      "buy": "购买",
+      "created": "订单 {id} 已创建",
+      "payManual": "在线支付还在接入中。请支付 {amount}，并把订单号 {id} 发到 {support}；确认收款后 {credits} 积分会自动到账。",
+      "payManualNoContact": "在线支付还在接入中。请联系站点管理员支付 {amount}，并提供订单号 {id}；确认收款后积分会自动到账。"
+    },
+    "orders": {
+      "title": "我的订单",
+      "confirmPaid": "确认已经收到订单 {id} 的款项？积分会立刻到账。",
+      "markPaid": "已收款",
+      "cancel": "取消",
+      "status": {
+        "pending": "待付款",
+        "paid": "已到账",
+        "cancelled": "已取消"
+      }
+    },
+    "ledger": {
+      "title": "积分明细",
+      "empty": "还没有积分变动",
+      "when": "时间",
+      "what": "事由",
+      "change": "变动",
+      "balance": "余额",
+      "kinds": {
+        "signup": "注册赠送",
+        "purchase": "购买积分",
+        "admin": "管理员调整",
+        "unlock-item": "解锁条目",
+        "unlock-skill": "解锁 Skill",
+        "studio": "工作台 AI",
+        "custom-order": "定制单",
+        "refund": "定制单退款"
+      }
+    },
+    "costs": {
+      "title": "价格",
+      "signup": "注册赠送",
+      "unlockItem": "解锁一个条目（下载完整项目、MCP 拿代码）",
+      "unlockSkill": "解锁一个 Skill",
+      "studio": "工作台 AI",
+      "studioRate": "每千 token：输入 {input} · 输出 {output}",
+      "customOrder": "MCP 定制单",
+      "free": "浏览、调参、预览、复制代码"
+    },
+    "pricing": {
+      "title": "积分与套餐",
+      "lead": "市场里的东西随便逛、随便调。要 AI 帮你做、要一键带走完整项目，就用积分。",
+      "note": "积分不过期。解锁过的条目和 Skill 以后再下载不再扣积分。",
+      "usesTitle": "积分用在哪里",
+      "uses": {
+        "studio": {
+          "title": "工作台里的 AI",
+          "text": "用一句话描述想要的效果，AI 写组件、调参数，按实际用的 token 扣积分。"
+        },
+        "mcp": {
+          "title": "MCP 和 agent",
+          "text": "Claude Code、Cursor 接入 MCP 后直接搜索、预览，下单拿代码和 Skill。"
+        },
+        "download": {
+          "title": "下载完整项目",
+          "text": "带着调好的参数下载可运行的 Vite + React 项目和 Skill 包。"
+        },
+        "custom": {
+          "title": "定制",
+          "text": "没有合适的？给 agent 一段需求，它现做一个，通过和市场同样的检查后交付。"
+        }
+      },
+      "freeNote": "代码本身是开源的（MIT 和上游许可证），代码视图、复制、shadcn 安装命令都免费。",
+      "keysLink": "创建 API 密钥接入 MCP →",
+      "costsTitle": "每样花多少"
+    },
+    "unlock": {
+      "buy": "购买积分",
+      "unlocked": "已解锁，下载不再扣积分",
+      "cost": "第一次下载花 {cost} 积分，以后免费",
+      "signIn": "登录后下载（第一次 {cost} 积分）"
+    }
+  },
+  "repos": {
+    "private": "私有",
+    "public": "公开",
+    "noDescription": "没有描述",
+    "sources": {
+      "empty": "新建",
+      "github": "导入自 GitHub",
+      "fork": "Fork",
+      "item": "来自市场",
+      "studio": "来自工作台"
+    },
+    "fileCount": "{count} 个文件",
+    "forkCount": "{count} 次 fork",
+    "updated": "更新于 {date}",
+    "emptyOwner": "仓库还是空的，新建一个文件开始吧",
+    "empty": "这个仓库还是空的",
+    "profile": {
+      "joined": "{date} 加入",
+      "newRepo": "新建仓库",
+      "repos": "仓库",
+      "emptyOwner": "还没有仓库。从 GitHub 导入你的项目，或者在市场里把喜欢的条目存下来。",
+      "empty": "还没有公开的仓库"
+    },
+    "origin": {
+      "github": "导入自 {repo}@{commit}",
+      "fork": "Fork 自 {repo}",
+      "item": "来自市场条目 {item}",
+      "studio": "来自工作台",
+      "pushed": "已推送到 {repo}"
+    },
+    "actions": {
+      "needGitHub": "需要 GitHub 授权，正在跳转…",
+      "working": "处理中…",
+      "openInStudio": "在工作台打开",
+      "fork": "Fork",
+      "download": "下载 zip",
+      "forkedOnGitHub": "已经在 GitHub 上 fork：",
+      "forkOnGitHub": "在 GitHub 上 fork",
+      "confirmSync": "用 {repo} 的最新提交替换这个仓库的全部文件？站内的修改会被覆盖。",
+      "synced": "已同步到最新提交",
+      "upToDate": "已经是最新的了",
+      "sync": "从 GitHub 同步",
+      "pushed": "已推送到 {repo}：",
+      "pushAgain": "再次推送到 GitHub",
+      "push": "推送到 GitHub",
+      "newFile": "新建文件",
+      "settings": "设置",
+      "edit": "编辑"
+    },
+    "settings": {
+      "name": "名字",
+      "visibility": "可见性",
+      "public": "公开",
+      "private": "私有（只有你能看到）",
+      "description": "描述",
+      "saving": "保存中…",
+      "save": "保存",
+      "confirmDelete": "删除后无法恢复。输入仓库名「{name}」确认删除：",
+      "delete": "删除仓库"
+    },
+    "editor": {
+      "pathRequired": "请填写文件路径",
+      "confirmDelete": "删除 {path}？",
+      "pathPlaceholder": "文件路径，例如 src/App.tsx",
+      "saving": "保存中…",
+      "save": "保存",
+      "cancel": "取消",
+      "delete": "删除文件"
+    },
+    "new": {
+      "title": "新建仓库",
+      "lead": "把你的项目从 GitHub 导入进来，或者新建一个空仓库。仓库可以 fork、在线编辑、再推回 GitHub。",
+      "tabs": {
+        "github": "从 GitHub 导入",
+        "empty": "新建空仓库"
+      },
+      "skipped": "有 {count} 个文件没有导入（二进制文件、依赖和构建目录、或者超出大小限制）。",
+      "yours": "你的 GitHub 仓库",
+      "connectFirst": "关联 GitHub 账号后，这里会列出你的公开仓库。",
+      "githubUnavailable": "GitHub 登录暂未开放，可以用右边粘贴地址导入公开仓库。",
+      "connect": "关联 GitHub",
+      "noRepos": "你的 GitHub 上还没有公开仓库",
+      "filter": "筛选仓库",
+      "isFork": "fork",
+      "importing": "导入中…",
+      "import": "导入",
+      "byUrl": "粘贴仓库地址",
+      "byUrlLead": "任何公开的 GitHub 仓库都可以，导入默认分支的最新提交。",
+      "limits": "只导入文本文件：最多 1000 个文件、合计 8 MB、单个文件 512 KB；node_modules、dist 这类目录会跳过。",
+      "name": "仓库名",
+      "nameHint": "字母、数字、点、短横线、下划线",
+      "description": "描述（可选）",
+      "public": "公开",
+      "private": "私有",
+      "creating": "创建中…",
+      "create": "创建仓库"
+    },
+    "forkItem": {
+      "label": "存到我的仓库",
+      "busy": "正在存…"
+    },
+    "saveFromStudio": {
+      "label": "存到我的仓库",
+      "open": "打开仓库 →",
+      "busy": "正在存…",
+      "failed": "没存成，再试一次"
+    }
+  },
+  "admin": {
+    "title": "管理后台",
+    "lead": "确认积分订单的收款、给用户加减积分。",
+    "totals": {
+      "users": "用户",
+      "repos": "仓库",
+      "credits": "流通积分",
+      "revenue": "已收款"
+    },
+    "pending": "待确认的订单",
+    "noPending": "没有待确认的订单",
+    "recentOrders": "最近处理的订单",
+    "users": "最近注册的用户",
+    "unverified": "未验证",
+    "columns": {
+      "user": "用户",
+      "email": "邮箱",
+      "balance": "积分",
+      "joined": "注册时间"
+    },
+    "grant": {
+      "title": "加减积分",
+      "user": "用户",
+      "delta": "数量（负数为扣）",
+      "note": "原因（记进流水）",
+      "submit": "提交",
+      "done": "完成，当前余额 {balance}"
     }
   }
 }

@@ -7,6 +7,7 @@ import { getCatalog } from '@/lib/catalog'
 import { HttpError } from '@/lib/community/http'
 import { marketSource } from '@/lib/community/market-source'
 import { encodeValues } from '@/lib/share'
+import { applyCredit } from '@/lib/credits/ledger'
 import { getRunner } from '@/lib/studio/runner'
 import { abortRun, createSession, sanitizeValues, startRun } from '@/lib/studio/sessions'
 import { loadSession } from '@/lib/studio/store'
@@ -38,6 +39,9 @@ export interface Order {
   /** 定制单交付时的条目快照：之后工作台会话再被改动或清理，交付物都不变。 */
   delivered?: { item: ItemSource; values: ParamValues }
   error?: string
+  /** 付积分的站点用户和扣了多少（docs/decisions/0009）：订单做失败时原样退回。 */
+  buyerId?: string | null
+  credits?: number
 }
 
 const ORDERS_DIR = process.env.MOTIF_ORDERS_DATA ?? path.resolve(/*turbopackIgnore: true*/ process.cwd(), '../..', '.data/orders')
@@ -116,8 +120,22 @@ function fingerprint(item: ItemSource, values: ParamValues): string {
 }
 
 /** 记录失败。写盘本身也可能失败（磁盘满），那就只记日志，不能让异常从队列里冒出去。 */
-async function failOrder(order: Order, error: string): Promise<void> {
-  await saveOrder({ ...order, status: 'failed', error }).catch((cause: unknown) => console.error(`[store] could not record the failure of ${order.id}`, cause))
+async function failOrder(order: Order, error: string): Promise<Order> {
+  refund(order)
+  return saveOrder({ ...order, status: 'failed', error }).catch((cause: unknown) => {
+    console.error(`[store] could not record the failure of ${order.id}`, cause)
+    return { ...order, status: 'failed' as const, error }
+  })
+}
+
+/** 没做成的定制单退回积分。流水关联订单号，同一张单只退一次。 */
+function refund(order: Order): void {
+  if (!order.buyerId || !order.credits) return
+  try {
+    applyCredit({ userId: order.buyerId, delta: order.credits, kind: 'refund', ref: order.id, note: 'custom order failed' })
+  } catch (error) {
+    console.error(`[store] could not refund ${order.id}`, error)
+  }
 }
 
 async function makeCustomOrder(id: string): Promise<void> {
@@ -303,7 +321,7 @@ async function deliveryFor(order: Order, origin: string): Promise<Delivery | nul
 }
 
 export async function orderView(order: Order, origin: string): Promise<OrderView> {
-  const current = orphaned(order) ? await saveOrder({ ...order, status: 'failed', error: 'the server restarted while this order was being made; place it again' }) : order
+  const current = orphaned(order) ? await failOrder(order, 'the server restarted while this order was being made; place it again') : order
   const delivery = current.status === 'delivered' ? await deliveryFor(current, origin) : null
   // 交付过但现在给不出代码：条目已经从市场下架。如实说，不让 agent 去读一个 null。
   const gone = current.status === 'delivered' && delivery === null

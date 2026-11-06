@@ -92,3 +92,13 @@ export async function highlightFiles(files: { path: string; source: string; isEn
   const highlighted = await Promise.all(files.map((file) => highlightFile(file.path, file.source, file.isEntry)))
   return { palette: [...palette], files: highlighted }
 }
+
+const REPO_LANGS: Record<string, string> = { ...LANGS, mjs: 'typescript', cjs: 'typescript', mts: 'typescript', cts: 'typescript', markdown: 'markdown' }
+
+/** 用户仓库里的一个文件：认识的语言才高亮（认不出的返回 null，按纯文本显示，不硬套 TS 的配色）。 */
+export async function highlightSource(path: string, source: string): Promise<{ palette: string[]; lines: CodeLine[] } | null> {
+  const lang = REPO_LANGS[path.split('.').pop()?.toLowerCase() ?? '']
+  if (!lang) return null
+  const lines = await tokenize(source.endsWith('\n') ? source.slice(0, -1) : source, lang)
+  return { palette: [...palette], lines }
+}

@@ -3,6 +3,7 @@
 import { appendEvent, type AgentEvent, type PreviewReport, type TranscriptEntry } from '@motif/agent/client'
 import type { ItemSource, ParamValues } from '@motif/schema/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { refreshMe } from '@/components/account/me'
 import type { Hunk } from '@/lib/studio/diff'
 import type { Attachment } from '@/lib/studio/images'
 import type { StudioView } from '@/lib/studio/view'
@@ -43,6 +44,7 @@ export function useStudio(initial: StudioView) {
   /** 这个页面正在读这一轮的事件流。没有在读、服务端却说在运行（刷新过页面、流断了、别的标签页发起的），就轮询。 */
   const [streaming, setStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [blocker, setBlocker] = useState<'login' | 'credits' | 'owner' | null>(null)
   const [busy, setBusy] = useState(false)
   const id = initial.id
   const base = `/api/studio/sessions/${id}`
@@ -84,13 +86,20 @@ export function useStudio(initial: StudioView) {
   /** 发一句话给 agent。返回服务端是否接受了（被拒绝时输入框里的话要留着）。 */
   const run = async (prompt: string, attachments: Attachment[] = []): Promise<boolean> => {
     setError(null)
+    setBlocker(null)
     setRunning(true)
     let accepted = false
     try {
       const images = attachments.map(({ mediaType, data }) => ({ mediaType, data }))
       const thumbnails = attachments.map((attachment) => attachment.thumbnail)
       const response = await fetch(`${base}/run`, { method: 'POST', body: JSON.stringify(attachments.length > 0 ? { prompt, images, thumbnails } : { prompt }) })
-      if (!response.ok || !response.body) throw new Error(await readError(response))
+      if (!response.ok || !response.body) {
+        // 跑 agent 要登录、要积分（docs/decisions/0009）：这几种情况页面上给出下一步（登录、买积分、自己开一个）。
+        if (response.status === 401) setBlocker('login')
+        else if (response.status === 402) setBlocker('credits')
+        else if (response.status === 403) setBlocker('owner')
+        throw new Error(await readError(response))
+      }
       accepted = true
       setStreaming(true)
       setView((current) => ({ ...current, transcript: [...current.transcript, { role: 'user', text: prompt, at: Date.now(), ...(thumbnails.length > 0 ? { images: thumbnails } : {}) }] }))
@@ -101,6 +110,8 @@ export function useStudio(initial: StudioView) {
       setStreaming(false)
       // 是否还在跑以服务端为准：流断了但服务端还在跑时，上面的轮询会接着跟。
       await refresh().catch(() => setRunning(false))
+      // 这一轮扣了积分：头部的余额跟着更新。
+      if (accepted) void refreshMe()
     }
     return accepted
   }
@@ -168,5 +179,9 @@ export function useStudio(initial: StudioView) {
     return () => window.clearInterval(timer)
   }, [base])
 
-  return { view, running, error, busy, run, abort, save, applyDefaults, revert, setValues, report, loadDiff, dismissError: () => setError(null) }
+  return { view, running, error, blocker, busy, run, abort, save, applyDefaults, revert, setValues, report, loadDiff, dismissError: () => {
+      setError(null)
+      setBlocker(null)
+    },
+  }
 }

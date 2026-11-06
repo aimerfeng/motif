@@ -11,7 +11,8 @@ import { ItemTabs } from '@/components/item/item-tabs'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
 import { TunePanel } from '@/components/tune/tune-panel'
 import type { TunePreset, TuneState } from '@/components/tune/use-tune'
-import { Link } from '@/i18n/navigation'
+import { SaveToRepo } from '@/components/repos/save-to-repo'
+import { Link, usePathname } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
 import { useCopy } from '@/lib/clipboard'
 import { useLocalFlag } from '@/lib/local-store'
@@ -77,6 +78,7 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
   const t = useTranslations('studio')
   const locale = useLocale() as Locale
   const studio = useStudio(initial)
+  const pathname = usePathname()
   const { view, running } = studio
   const { item, evaluation } = view
   const manifest = item.manifest
@@ -286,6 +288,7 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
                 {t('actions.applyDefaults')}
               </button>
             )}
+            <SaveToRepo sessionId={view.id} className={ghost} />
             <button type="button" onClick={() => downloadJson(`${manifest.slug}.motif.json`, item)} className={ghost}>
               <DownloadIcon className="size-4" />
               .motif.json
@@ -340,7 +343,17 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
 
         {(studio.error ?? draftError) && (
           <div role="alert" className="mt-4 flex items-start justify-between gap-4 rounded-lg border border-danger/40 bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger">
-            <span>{studio.error ?? draftError}</span>
+            <span>
+              {studio.error ?? draftError}
+              {studio.blocker && (
+                <Link
+                  href={studio.blocker === 'login' ? { pathname: '/login', query: { next: pathname } } : studio.blocker === 'credits' ? '/pricing' : '/studio'}
+                  className="ml-2 font-medium text-ink underline underline-offset-4"
+                >
+                  {t(`blockers.${studio.blocker}`)}
+                </Link>
+              )}
+            </span>
             <button
               type="button"
               onClick={() => {
@@ -441,12 +454,12 @@ export function StudioWorkbench({ initial, exportData }: { initial: StudioView; 
                 {
                   id: 'install',
                   label: t('tabs.install'),
-                  content: evaluation?.ok ? <InstallPanel item={item} values={view.values} encoded={tune.encoded} data={exportData} registryPath={`/r/s/${view.id}.json`} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
+                  content: evaluation?.ok ? <InstallPanel free item={item} values={view.values} encoded={tune.encoded} data={exportData} registryPath={`/r/s/${view.id}.json`} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
                 },
                 {
                   id: 'skill',
                   label: t('tabs.skill'),
-                  content: evaluation?.ok ? <SkillPanel item={item} values={view.values} data={exportData} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
+                  content: evaluation?.ok ? <SkillPanel free item={item} values={view.values} data={exportData} /> : <p className="text-[13.5px] text-ink-faint">{t('fixFirst')}</p>,
                 },
               ]}
             />

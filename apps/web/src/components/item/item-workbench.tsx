@@ -8,6 +8,7 @@ import { ChainBadge } from '@/components/community/chain-badge'
 import { RefreshIcon } from '@/components/icons'
 import { FavoriteButton } from '@/components/market/favorite-button'
 import { PreviewFrame, type PreviewStatus } from '@/components/preview-frame'
+import { ForkItem } from '@/components/repos/fork-item'
 import { OpenInStudio } from '@/components/studio/open-in-studio'
 import { TunePanel } from '@/components/tune/tune-panel'
 import { useTune, type TunePreset } from '@/components/tune/use-tune'
@@ -58,6 +59,7 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
           <ChainBadge item={item} />
           <FavoriteButton slug={item.manifest.slug} variant="button" />
           <OpenInStudio slug={item.manifest.slug} values={tune.values} />
+          <ForkItem slug={item.manifest.slug} />
           <QuickActions item={item} values={tune.values} data={exportData} />
         </div>
       </header>

@@ -1,6 +1,6 @@
 import { KINDS } from '@motif/schema/core'
 import { storeListings } from '@/lib/store/listings'
-import { customPrice, pricingFromEnv } from '@/lib/store/pricing'
+import { creditCosts } from '@/lib/credits/pricing'
 import { STORE_INSTRUCTIONS, STORE_TOOLS } from '@/lib/store/tools'
 import { publicOrigin } from '@/lib/site'
 
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const origin = publicOrigin(request)
   const listings = await storeListings()
   const counts = KINDS.map((kind) => `${listings.filter((listing) => listing.manifest.kind === kind).length} ${kind}s`).join(', ')
-  const custom = customPrice(pricingFromEnv())
+  const costs = creditCosts()
   const text = `# Motif
 
 > ${STORE_INSTRUCTIONS.split('\n')[0]}
@@ -22,8 +22,9 @@ Catalogue: ${listings.length} items (${counts}). Every item has tunable paramete
 ## Connect
 
 - MCP (Streamable HTTP): ${origin}/mcp
-  - Claude Code: \`claude mcp add --transport http motif ${origin}/mcp\`
-- Plain HTTP: GET ${origin}/api/agent lists the tools with JSON Schemas; call one with POST ${origin}/api/agent/<tool> and a JSON body.
+  - Claude Code: \`claude mcp add --transport http motif ${origin}/mcp --header "Authorization: Bearer <api key>"\`
+- API key: a signed-in user creates one at ${origin}/account/keys. Browsing works without it; code, skills and custom orders need it.
+- Plain HTTP: GET ${origin}/api/agent lists the tools with JSON Schemas; call one with POST ${origin}/api/agent/<tool>, a JSON body and the same Authorization header.
 
 ## Tools
 
@@ -33,10 +34,12 @@ ${STORE_TOOLS.map((tool) => `- ${tool.name}: ${tool.description}`).join('\n')}
 
 1. search_ui with what you need, then get_ui for parameters and presets.
 2. preview_ui to see it with your values (screenshots).
-3. place_order with the slug (and values or a preset). Open-source items are free and delivered at once: the order contains every file (path + content), an install command and a skill URL.
+3. place_order with the slug (and values or a preset). It is delivered at once: the order contains every file (path + content), an install command and a skill URL.
 4. Nothing fits? place_order with a brief: an agent builds a custom item that passes the same checks. Poll get_order until it is delivered.
 
-Prices are in USDC; paying in MOTIF is discounted. Custom orders currently cost ${custom.usdc} USDC.
+5. Skills: list_skills, then get_skill for every file of one.
+
+Prices are in Motif credits, paid from the account of your API key (${origin}/pricing): an item ${costs.unlockItem}, a skill ${costs.unlockSkill}, a custom order ${costs.customOrder}. Anything bought once stays free for that account. get_balance shows what is left.
 Keep order ids: they are the only way to fetch an order again.
 
 ## Humans

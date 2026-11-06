@@ -36,7 +36,8 @@ export interface DocStart {
 const AUTHORING = `${REPO_URL}/blob/main/docs/authoring-items.md`
 const REGISTRY_EXAMPLE = `npx shadcn@latest add "${SITE_URL}/r/border-beam.json"`
 const SKILL_EXAMPLE = `npx skills add ${REPO} --skill motif-border-beam`
-const MCP_EXAMPLE = `claude mcp add --transport http motif ${SITE_URL}/mcp`
+const MCP_EXAMPLE = `claude mcp add --transport http motif ${SITE_URL}/mcp --header "Authorization: Bearer <你的 API 密钥>"`
+const MCP_EXAMPLE_EN = `claude mcp add --transport http motif ${SITE_URL}/mcp --header "Authorization: Bearer <your API key>"`
 
 export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: DocSection[] }> = {
   'zh-CN': {
@@ -138,12 +139,12 @@ export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: D
             items: [
               { title: '找', text: '`search_ui` 按需求搜索，`get_ui` 看参数和预设。' },
               { title: '看', text: '`preview_ui` 用指定参数截图。' },
-              { title: '取', text: '`place_order` 下单。开源条目免费，立即交付全部文件、安装命令和 Skill。' },
+              { title: '取', text: '`place_order` 下单，立即交付全部文件、安装命令和 Skill；`list_skills`、`get_skill` 取 Skill。用 API 密钥对应账号的积分付款，买过的以后再取不重复扣。' },
               { title: '定制', text: '没有合适的就带上需求下定制单，用 `get_order` 查进度。交付的条目过同样的检查。' },
             ],
           },
           { type: 'p', text: '不用 MCP 的 agent 读 [llms.txt](/llms.txt)，或者直接 `POST /api/agent/<工具名>`。' },
-          { type: 'note', text: '定制单和社区作品以 USDC 计价，用 MOTIF 支付有折扣。支付还没开放，现阶段只交付免费订单。' },
+          { type: 'note', text: '搜索、详情、截图预览、报价都免费，不需要密钥。拿代码、拿 Skill 和定制单要在 [API 密钥](/account/keys) 页建一个密钥，按 [积分价格](/pricing) 扣积分。' },
         ],
       },
       {
@@ -276,18 +277,18 @@ export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: D
         title: 'Connecting agents (MCP)',
         blocks: [
           { type: 'p', text: 'Motif is also a store for agents: yours can search the catalogue, see previews, fetch code with your values, and place a custom order when nothing fits.' },
-          { type: 'command', text: MCP_EXAMPLE },
+          { type: 'command', text: MCP_EXAMPLE_EN },
           {
             type: 'steps',
             items: [
               { title: 'Find', text: '`search_ui` searches by need; `get_ui` shows parameters and presets.' },
               { title: 'See', text: '`preview_ui` takes screenshots with the values you pass.' },
-              { title: 'Take', text: '`place_order` orders it. Open-source items are free and delivered at once: every file, an install command and a skill.' },
+              { title: 'Take', text: '`place_order` orders it and delivers at once: every file, an install command and a skill; `list_skills` and `get_skill` fetch skills. Paid with the credits of your API key’s account; anything bought once is free again.' },
               { title: 'Custom', text: 'Nothing fits? Order with a brief and poll `get_order`. Delivered items pass the same checks.' },
             ],
           },
           { type: 'p', text: 'Agents without MCP can read [llms.txt](/llms.txt) or call `POST /api/agent/<tool>` directly.' },
-          { type: 'note', text: 'Custom orders and community works are priced in USDC, with a discount for paying in MOTIF. Payment is not open yet, so only free orders are delivered for now.' },
+          { type: 'note', text: 'Searching, details, previews and quotes are free and need no key. Code, skills and custom orders need a key from [API keys](/account/keys) and spend [credits](/pricing).' },
         ],
       },
       {

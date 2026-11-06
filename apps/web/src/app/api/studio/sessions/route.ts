@@ -1,3 +1,4 @@
+import { sessionUser } from '@/lib/auth/server'
 import { errorResponse, HttpError, NO_STORE, readJson } from '@/lib/community/http'
 import { rateLimit } from '@/lib/community/rate-limit'
 import { createSession } from '@/lib/studio/sessions'
@@ -10,7 +11,9 @@ export async function POST(request: Request) {
     const body = (await readJson(request)) as { base?: unknown; values?: unknown }
     const base = typeof body.base === 'string' && body.base ? body.base : null
     if (base && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(base)) throw new HttpError(400, 'invalid item slug')
-    const session = await createSession(base, body.values)
+    // 登录了就记下主人：只有主人能跑 agent（花他的积分）。没登录也能开会话、手动改。
+    const owner = await sessionUser(request.headers)
+    const session = await createSession(base, body.values, owner?.id ?? null)
     return Response.json({ id: session.id }, { headers: NO_STORE })
   } catch (error) {
     return errorResponse(error)

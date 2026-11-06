@@ -1,6 +1,9 @@
 import type { PromptImage } from '@motif/agent'
+import { requireUser } from '@/lib/auth/server'
 import { errorResponse, HttpError, readJson } from '@/lib/community/http'
 import { dailyCap, rateLimit } from '@/lib/community/rate-limit'
+import { balanceOf, InsufficientCredits } from '@/lib/credits/ledger'
+import { creditCosts } from '@/lib/credits/pricing'
 import { getRunner, runnerConfig } from '@/lib/studio/runner'
 import { startRun } from '@/lib/studio/sessions'
 import { requireSession } from '@/lib/studio/view'
@@ -32,7 +35,13 @@ const DAILY_RUNS = Number(process.env.MOTIF_STUDIO_DAILY_RUNS) || 300
 export async function POST(request: Request, { params }: RouteContext<'/api/studio/sessions/[id]/run'>) {
   try {
     rateLimit(request, 'studio-run', 6)
+    // 每一轮都按用量扣积分（docs/decisions/0009）：要登录，并且是会话的主人。
+    const user = await requireUser(request)
     const session = await requireSession((await params).id)
+    if (session.ownerId && session.ownerId !== user.id) throw new HttpError(403, 'this studio session belongs to someone else; remix the item to start your own', { code: 'not_owner' })
+    const minimum = creditCosts().studioMinimum
+    const balance = balanceOf(user.id)
+    if (balance < minimum) throw new InsufficientCredits(minimum, balance)
     // 每一轮都花模型额度：全站每天的轮数有上限，就算有人轮换来源也烧不穿预算。
     dailyCap('studio-runs', DAILY_RUNS)
     // 带两张参考图时请求体比一般接口大。
@@ -44,7 +53,7 @@ export async function POST(request: Request, { params }: RouteContext<'/api/stud
     if (!runner) throw new HttpError(503, 'no agent is configured on this site; set MOTIF_AGENT_PROVIDER (see apps/web/.env.example)')
     const attachments = parseAttachments(body.images, body.thumbnails)
     if (attachments.images.length > 0 && !runnerConfig()?.vision) throw new HttpError(400, 'the model on this site cannot see images; describe what you want in words')
-    return new Response(startRun(session, prompt, runner, attachments), {
+    return new Response(startRun(session, prompt, runner, attachments, { userId: user.id }), {
       headers: { 'Content-Type': 'application/x-ndjson; charset=utf-8', 'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no' },
     })
   } catch (error) {

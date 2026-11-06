@@ -2,6 +2,7 @@ import { REPO_URL } from '@motif/export'
 import { useTranslations } from 'next-intl'
 import { GitHubIcon } from '@/components/icons'
 import { Link } from '@/i18n/navigation'
+import { AccountButton } from './account/account-button'
 import { WalletButton } from './community/wallet-button'
 import { LocaleSwitcher } from './locale-switcher'
 import { ThemeToggle } from './theme-toggle'
@@ -14,6 +15,7 @@ export function SiteHeader() {
     { href: '/market', label: t('market') },
     { href: '/community', label: t('community') },
     { href: '/studio', label: t('studio') },
+    { href: '/pricing', label: t('pricing') },
     { href: '/docs', label: t('docs') },
   ]
 
@@ -41,6 +43,7 @@ export function SiteHeader() {
           >
             <GitHubIcon className="size-[18px]" />
           </a>
+          <AccountButton />
           <MobileNav links={links} label={t('menu')} />
         </div>
       </div>

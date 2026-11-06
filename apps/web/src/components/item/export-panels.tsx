@@ -16,8 +16,10 @@ import { bake, type ItemSource, type ParamValues } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { CopyCommand } from '@/components/copy-command'
+import { useUnlock } from '@/components/credits/use-unlock'
 import { CopyIcon, DownloadIcon } from '@/components/icons'
 import { SkillButton } from '@/components/skill-button'
+import { Link } from '@/i18n/navigation'
 import { useCopy, type CopyState } from '@/lib/clipboard'
 
 export type ExportData = Omit<ExportContext, 'origin'>
@@ -45,12 +47,16 @@ function saveFile(name: string, data: Uint8Array) {
 
 type DownloadState = 'idle' | 'busy' | 'failed'
 
-/** 打包下载：打包期间按钮不可再点，失败时提示一下再复原。 */
-function useDownload(make: () => Promise<{ name: string; data: Uint8Array }>) {
+/** 打包下载：先过 gate（解锁，docs/decisions/0009），打包期间按钮不可再点，失败时提示一下再复原。 */
+function useDownload(make: () => Promise<{ name: string; data: Uint8Array }>, gate: () => Promise<boolean> = async () => true) {
   const [state, setState] = useState<DownloadState>('idle')
   const run = async () => {
     setState('busy')
     try {
+      if (!(await gate())) {
+        setState('idle')
+        return
+      }
       const zip = await make()
       saveFile(zip.name, zip.data)
       setState('idle')
@@ -97,12 +103,14 @@ function DownloadButton({ state, onClick, label, className, testId }: { state: D
  * 「安装」：下载可运行的项目、shadcn 命令、手动复制。
  * registryPath 是 shadcn 安装地址的路径部分：默认是市场条目的 /r/<slug>.json，Studio 会话用 /r/s/<id>.json。
  */
-export function InstallPanel({ item, values, encoded, data, registryPath }: { item: ItemSource; values: ParamValues; encoded: string; data: ExportData; registryPath?: string }) {
+/** free：工作台里自己做的条目，下载不花积分（它不是市场条目，也没有可解锁的对象）。 */
+export function InstallPanel({ item, values, encoded, data, registryPath, free = false }: { item: ItemSource; values: ParamValues; encoded: string; data: ExportData; registryPath?: string; free?: boolean }) {
   const t = useTranslations('export')
   const context = useExportContext(data)
   const { copy, stateOf } = useCopy()
   const slug = item.manifest.slug
-  const starter = useDownload(() => exportStarterZip(item, values, context!))
+  const unlock = useUnlock('item', slug, !free)
+  const starter = useDownload(() => exportStarterZip(item, values, context!), unlock.ensure)
   // 手动复制要给全所有文件：多文件的条目只复制入口会缺相对导入。
   const files = useMemo(() => componentFiles(item, bake(item.files[item.manifest.entry.file] ?? '', values)), [item, values])
 
@@ -116,6 +124,7 @@ export function InstallPanel({ item, values, encoded, data, registryPath }: { it
     <div>
       <Section title={t('starterTitle')} description={t('starterLead')}>
         <DownloadButton state={starter.state} onClick={() => void starter.run()} label={t('downloadStarter', { name: `motif-${slug}.zip` })} className={buttonPrimary} testId="download-starter" />
+        <UnlockNote unlock={unlock} />
       </Section>
 
       <Section title={t('shadcnTitle')} description={t('shadcnLead')}>
@@ -139,6 +148,28 @@ export function InstallPanel({ item, values, encoded, data, registryPath }: { it
   )
 }
 
+/** 下载按钮下面的一行：要花多少积分（第一次）、已经解锁、或者积分不够。 */
+function UnlockNote({ unlock }: { unlock: ReturnType<typeof useUnlock> }) {
+  const t = useTranslations('credits.unlock')
+  if (unlock.error)
+    return (
+      <p className="mt-2 basis-full text-[12.5px] text-danger">
+        {unlock.error.text}{' '}
+        {unlock.error.buy && (
+          <Link href="/pricing" className="text-ink underline underline-offset-4">
+            {t('buy')}
+          </Link>
+        )}
+      </p>
+    )
+  if (!unlock.status || unlock.status.cost === 0) return null
+  return (
+    <p className="mt-2 basis-full text-[12.5px] text-ink-faint">
+      {unlock.status.unlocked ? t('unlocked') : unlock.signedIn ? t('cost', { cost: unlock.status.cost }) : t('signIn', { cost: unlock.status.cost })}
+    </p>
+  )
+}
+
 function FileRow({ target, state, onCopy }: { target: string; state: CopyState; onCopy: () => void }) {
   const t = useTranslations('export')
   return (
@@ -157,13 +188,14 @@ function FileRow({ target, state, onCopy }: { target: string; state: CopyState; 
 }
 
 /** 「Skill」：让用户自己的 agent 学会这个效果（含调好的参数）。 */
-export function SkillPanel({ item, values, data }: { item: ItemSource; values: ParamValues; data: ExportData }) {
+export function SkillPanel({ item, values, data, free = false }: { item: ItemSource; values: ParamValues; data: ExportData; free?: boolean }) {
   const t = useTranslations('skill')
   const context = useExportContext(data)
   const { copy, stateOf } = useCopy()
   const [markdown, setMarkdown] = useState('')
   const name = skillName(item.manifest.slug)
-  const zip = useDownload(() => exportSkillZip(item, values, context!))
+  const unlock = useUnlock('skill', name, !free)
+  const zip = useDownload(() => exportSkillZip(item, values, context!), unlock.ensure)
 
   useEffect(() => {
     if (!context) return
@@ -183,6 +215,7 @@ export function SkillPanel({ item, values, data }: { item: ItemSource; values: P
       <Section title={t('title')} description={t('lead')}>
         <div className="flex flex-wrap gap-2">
           <DownloadButton state={zip.state} onClick={() => void zip.run()} label={t('download', { name: `${name}.zip` })} className={buttonPrimary} testId="download-skill" />
+          <UnlockNote unlock={unlock} />
           <button type="button" className={buttonSecondary} disabled={!markdown} onClick={() => void copy('skill', markdown)}>
             <CopyIcon state={stateOf('skill')} className="size-3.5" />
             <span aria-live="polite">{stateOf('skill') === 'copied' ? t('copied') : stateOf('skill') === 'failed' ? t('failed') : t('copyMarkdown')}</span>
@@ -210,7 +243,8 @@ export function SkillPanel({ item, values, data }: { item: ItemSource; values: P
 export function QuickActions({ item, values, data }: { item: ItemSource; values: ParamValues; data: ExportData }) {
   const t = useTranslations('export')
   const context = useExportContext(data)
-  const starter = useDownload(() => exportStarterZip(item, values, context!))
+  const unlock = useUnlock('item', item.manifest.slug)
+  const starter = useDownload(() => exportStarterZip(item, values, context!), unlock.ensure)
   if (!context) return <div className="h-9" />
 
   const markdown = () => prepareExport(item, values).then(({ hash }) => skillMarkdown(item, values, context, { hash }))
@@ -219,6 +253,7 @@ export function QuickActions({ item, values, data }: { item: ItemSource; values:
     <div className="flex flex-wrap items-center gap-2" data-testid="quick-actions">
       <SkillButton source={{ markdown }} variant="primary" />
       <DownloadButton state={starter.state} onClick={() => void starter.run()} label={t('downloadShort')} className={buttonSecondary} />
+      {unlock.error && <UnlockNote unlock={unlock} />}
     </div>
   )
 }

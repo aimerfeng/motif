@@ -2,6 +2,8 @@ import { appendEvent, applyDefaults, buildSystemPrompt, carryValues, remixItem, 
 import { checkParamValue, type ItemSource, type ParamValues } from '@motif/schema'
 import { FONT_FAMILIES, VENDOR_IDS } from '@motif/vendor/manifest'
 import { HttpError } from '@/lib/community/http'
+import { chargeUsage } from '@/lib/credits/ledger'
+import { tokenCost } from '@/lib/credits/pricing'
 import { marketSource } from '@/lib/community/market-source'
 import { itemChanges } from './diff'
 import { evaluateItem, promptSkills, studioHost } from './host'
@@ -49,8 +51,7 @@ function withSession<T>(id: string, change: (session: StudioSession) => Promise<
 }
 
 /** 新会话：base 是要改的市场条目（目录条目或审核通过的社区作品），values 是用户在详情页调好的参数。 */
-export async function createSession(base: string | null, values?: unknown): Promise<StudioSession> {
-  void pruneSessions().catch((error: unknown) => console.error('[studio] prune failed', error))
+export async function createSession(base: string | null, values?: unknown, ownerId: string | null = null): Promise<StudioSession> {
   const id = newSessionId()
   let item: ItemSource
   if (base) {
@@ -60,7 +61,18 @@ export async function createSession(base: string | null, values?: unknown): Prom
   } else {
     item = starterItem(`studio-${id.slice(0, 6)}`)
   }
+  return openSession(id, base, item, values, ownerId)
+}
+
+/** 用一个现成的条目开会话（用户仓库里的条目「在工作台打开」）：原样接着改，不当作 remix。 */
+export function createSessionFromItem(item: ItemSource, ownerId: string): Promise<StudioSession> {
+  return openSession(newSessionId(), null, item, undefined, ownerId)
+}
+
+async function openSession(id: string, base: string | null, item: ItemSource, values: unknown, ownerId: string | null): Promise<StudioSession> {
+  void pruneSessions().catch((error: unknown) => console.error('[studio] prune failed', error))
   const session: StudioSession = {
+    ownerId,
     id,
     createdAt: Date.now(),
     updatedAt: Date.now(),
@@ -163,11 +175,24 @@ const encoder = new TextEncoder()
  * 事件同时并进对话记录；工作区每次变化、以及这一轮结束时都写盘，中途断线也不丢进度。
  */
 const BUDGET_EXHAUSTED = 'this session has used up its model budget; start a new session'
+const CREDITS_EXHAUSTED = 'your credits ran out; buy more credits to continue'
 
-export function startRun(session: StudioSession, prompt: string, runner: AgentRunner, attachments: { images: PromptImage[]; thumbnails: string[] } = { images: [], thumbnails: [] }): ReadableStream<Uint8Array> {
+/**
+ * billing：替谁扣积分（docs/decisions/0009）。网页上跑的每一轮都由登录用户付；商店的定制单下单时已经按单价扣过，不再按用量扣。
+ */
+export function startRun(
+  session: StudioSession,
+  prompt: string,
+  runner: AgentRunner,
+  attachments: { images: PromptImage[]; thumbnails: string[] } = { images: [], thumbnails: [] },
+  billing: { userId: string } | null = null,
+): ReadableStream<Uint8Array> {
   if (isRunning(session.id)) throw new HttpError(409, 'the agent is already working on this item')
   if (locks.has(session.id)) throw new HttpError(409, 'your changes are still being saved; try again in a moment')
   const budget = sessionTokenBudget()
+  // 这一轮自己的用量和流水号：一轮只记一条流水，金额随用量往上调。
+  const turnUsage = { inputTokens: 0, outputTokens: 0 }
+  const chargeRef = `${session.id}:${Date.now()}`
   if (session.usage.inputTokens + session.usage.outputTokens >= budget) throw new HttpError(429, BUDGET_EXHAUSTED)
 
   const controller = new AbortController()
@@ -180,6 +205,8 @@ export function startRun(session: StudioSession, prompt: string, runner: AgentRu
     transcript: [...session.transcript, { role: 'user', text: prompt, at: Date.now(), snapshot, ...(attachments.thumbnails.length > 0 ? { images: attachments.thumbnails } : {}) }],
     usage: { ...session.usage },
     pendingNote: null,
+    // 匿名开的会话：第一个跑 agent（付积分）的登录用户认领，之后只有他能改（lib/studio/access.ts）。
+    ownerId: session.ownerId ?? billing?.userId ?? null,
   }
   const agentPrompt = session.pendingNote ? `${session.pendingNote}\n\n${prompt}` : prompt
   let saving = Promise.resolve()
@@ -204,6 +231,13 @@ export function startRun(session: StudioSession, prompt: string, runner: AgentRu
           state.usage.outputTokens += event.outputTokens
           // 额度在每一步之后核对，不只是开始前：一轮几十步，每步都带着整段历史，开始时没超不代表跑完不超。
           if (state.usage.inputTokens + state.usage.outputTokens >= budget && !controller.signal.aborted) controller.abort(new Error(BUDGET_EXHAUSTED))
+          if (billing) {
+            turnUsage.inputTokens += event.inputTokens
+            turnUsage.outputTokens += event.outputTokens
+            // 每一步之后就扣：余额扣光时中止，不让一轮跑到一半才发现积分早就不够了。
+            const charge = chargeUsage(billing.userId, 'studio', chargeRef, tokenCost(turnUsage), session.item.manifest.slug)
+            if (charge.exhausted && !controller.signal.aborted) controller.abort(new Error(CREDITS_EXHAUSTED))
+          }
         }
         try {
           stream.enqueue(encoder.encode(`${JSON.stringify(event)}\n`))

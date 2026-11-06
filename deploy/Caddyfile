@@ -6,6 +6,11 @@
 	reverse_proxy web:3000
 }
 
+# www 统一跳到不带 www 的站点地址（登录的 cookie、OAuth 回调都只认一个地址）。
+www.{$SITE_HOST} {
+	redir https://{$SITE_HOST}{uri} permanent
+}
+
 {$PREVIEW_HOST} {
 	encode zstd gzip
 	reverse_proxy preview:4100

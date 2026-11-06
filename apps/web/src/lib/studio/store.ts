@@ -30,6 +30,8 @@ export interface StudioSession {
   snapshots?: Snapshot[]
   /** 回退以后要在下一轮告诉 agent 的话（它的对话历史里还是回退前的样子）。 */
   pendingNote?: string | null
+  /** 开这个会话的站点用户（docs/decisions/0009）：只有他能跑 agent（花他的积分）、存成他的仓库。匿名开的会话为空，第一个跑 agent 的登录用户认领。 */
+  ownerId?: string | null
 }
 
 export interface Snapshot {

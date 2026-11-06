@@ -13,6 +13,7 @@
 | `packages/agent` | 工作台（Studio）的 agent：工具（zod 定义一次）、运行器（AI SDK / 脚本）、系统提示词、工作区操作；设计见 `docs/decisions/0006-studio.md` |
 | `packages/agent-claude-cli` | 开发期运行器：本机 Claude Code CLI。Agent SDK 是专有许可证，站点只在运行时原生加载它，不打包、不部署 |
 | `apps/web/src/lib/store` | 给 agent 的商店：工具（zod 定义一次，MCP `/mcp` 和 HTTP `/api/agent/<工具>` 共用）、订单、定制单队列、价格；设计见 `docs/decisions/0008-agent-store.md` |
+| `apps/web/src/lib/auth`、`lib/credits`、`lib/repos`、`lib/db` | 账号（Better Auth：GitHub + 邮箱）、积分账本和套餐、用户仓库（GitHub 导入 / fork / 推送），数据在 SQLite（`node:sqlite`）；设计见 `docs/decisions/0009-accounts-credits-repos.md` |
 | `apps/web/src/lib/community` | 社区的服务端：链配置、事件同步、源码存储、投稿检查（编译在子进程里）；页面在 `app/[locale]/community` |
 | `e2e` | Playwright，本地用已安装的 Edge |
 

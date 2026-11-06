@@ -14,7 +14,8 @@
     "skip": "Skip to content",
     "community": "Community",
     "themeLight": "Switch to light",
-    "themeDark": "Switch to dark"
+    "themeDark": "Switch to dark",
+    "pricing": "Credits"
   },
   "home": {
     "headline": "Beautiful motion, ready to take home",
@@ -979,6 +980,380 @@
       "notImage": "Only images can be attached.",
       "tooLarge": "That image is too large (20 MB at most).",
       "tooMany": "Attach at most {max} images."
+    },
+    "blockers": {
+      "login": "Sign in",
+      "credits": "Buy credits",
+      "owner": "Start your own session"
+    }
+  },
+  "account": {
+    "menu": {
+      "signIn": "Sign in",
+      "open": "Open account menu",
+      "balance": "Credit balance",
+      "credits": "Credits",
+      "repos": "My repositories",
+      "newRepo": "New repository",
+      "settings": "Account settings",
+      "keys": "API keys & MCP",
+      "admin": "Admin",
+      "signOut": "Sign out"
+    },
+    "nav": {
+      "overview": "Overview",
+      "credits": "Credits",
+      "keys": "API keys"
+    },
+    "overview": {
+      "title": "My account",
+      "lead": "Signed in as {email}",
+      "welcome": "Welcome! Your sign-up credits are in. Browse the market or build something in the Studio.",
+      "balance": "Credit balance",
+      "repos": "Repositories",
+      "handle": "Profile"
+    },
+    "profile": {
+      "title": "Profile",
+      "name": "Display name",
+      "handle": "Profile address",
+      "handleHint": "3–32 lowercase letters, digits or dashes. The old address stops working when you change it.",
+      "bio": "One-line bio",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved"
+    },
+    "connections": {
+      "title": "Sign-in methods",
+      "passwordSet": "Email and password",
+      "noPassword": "No password yet: you sign in with GitHub",
+      "changePassword": "Change password",
+      "setPassword": "Set a password",
+      "githubWrite": "Connected as @{login}; can push repositories to GitHub",
+      "githubLinked": "Connected as @{login}",
+      "githubNone": "Not connected. Connect it to import your GitHub repositories in one click",
+      "connect": "Connect GitHub",
+      "redirecting": "Redirecting…",
+      "grantWrite": "Allow pushing repositories",
+      "disconnect": "Disconnect",
+      "failed": "That did not work; try again",
+      "writeExplain": "Signing in only reads your public profile and email. Pushing repositories to GitHub or forking on GitHub needs one more grant, \"public_repo\" (public repositories only).",
+      "currentPassword": "Current password",
+      "newPassword": "New password (8+ characters)",
+      "save": "Save",
+      "wrongPassword": "The current password is wrong",
+      "passwordChanged": "Password updated; other devices were signed out"
+    },
+    "keys": {
+      "title": "API keys & MCP",
+      "lead": "Let agents like Claude Code and Cursor find UI and get code and skills over MCP. Code and skills are paid with this account’s credits.",
+      "create": "New key",
+      "namePlaceholder": "What it is for, e.g. \"Claude Code on my laptop\"",
+      "creating": "Creating…",
+      "createButton": "Create",
+      "createdOnce": "Here is your new key. It is shown only once, so copy it now:",
+      "connect": "Connect over MCP",
+      "connectLead": "Replace the key in the command with yours (it fills in after you create one). Searching, previews and quotes are free; getting code or a skill spends credits, and anything you bought before is free again.",
+      "otherClients": "Other MCP clients (JSON config)",
+      "list": "My keys",
+      "none": "No keys yet",
+      "created": "created {date}",
+      "used": "last used {date}",
+      "neverUsed": "never used",
+      "revoke": "Revoke",
+      "confirmRevoke": "Agents using this key lose access immediately. Revoke it?"
+    }
+  },
+  "auth": {
+    "errors": {
+      "invalid": "Wrong email or password",
+      "unverified": "This email is not verified yet. We just sent another verification email; click its link, then sign in.",
+      "exists": "This email is already registered; sign in instead",
+      "short": "Use at least 8 characters",
+      "token": "This link is invalid or expired; request a new one",
+      "rateLimited": "Too many attempts; try again in a little while",
+      "generic": "Something went wrong; try again",
+      "oauth": "GitHub sign-in did not finish ({code}); try again"
+    },
+    "redirecting": "Redirecting to GitHub…",
+    "or": "or with email",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "working": "One moment…",
+    "emailDisabled": "Email sign-up is not open yet; sign in with GitHub for now.",
+    "nothingConfigured": "Sign-in is not open yet.",
+    "login": {
+      "title": "Sign in",
+      "lead": "Sign in to keep repositories, build in the Studio with credits and connect over MCP.",
+      "github": "Sign in with GitHub",
+      "forgot": "Forgot password?",
+      "submit": "Sign in",
+      "noAccount": "No account yet?",
+      "toSignup": "Sign up"
+    },
+    "signup": {
+      "title": "Sign up",
+      "lead": "Get {bonus} credits for signing up.",
+      "github": "Sign up with GitHub",
+      "passwordHint": "At least 8 characters",
+      "submit": "Sign up",
+      "bonus": "By signing up you agree to pay for the site’s paid features with credits. See and buy credits on the Credits page.",
+      "sent": "We sent a verification email to {email}. Click its link to finish signing up (check spam if it is not there).",
+      "resend": "Send again",
+      "resent": "Sent again",
+      "haveAccount": "Already have an account?",
+      "toLogin": "Sign in"
+    },
+    "forgot": {
+      "title": "Reset password",
+      "lead": "Enter the email you signed up with and we will send a reset link.",
+      "submit": "Send reset email",
+      "sent": "If {email} has an account, a reset email is on its way. The link works for 1 hour.",
+      "back": "Back to sign in"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "lead": "At least 8 characters. Other devices are signed out once you save it.",
+      "password": "New password",
+      "submit": "Save new password",
+      "done": "Password updated. Sign in with your new password."
+    }
+  },
+  "credits": {
+    "page": {
+      "title": "Credits",
+      "lead": "Spend credits on AI in the Studio, full project downloads, and code and skills over MCP.",
+      "balance": "Balance",
+      "spent": "Spent so far",
+      "pending": "Unpaid orders"
+    },
+    "packages": {
+      "title": "Buy credits",
+      "names": {
+        "trial": "Trial",
+        "standard": "Standard",
+        "pro": "Pro",
+        "studio": "Studio"
+      },
+      "popular": "Best value",
+      "credits": "credits",
+      "bonus": "{percent}% extra",
+      "signInToBuy": "Sign in to buy",
+      "working": "Ordering…",
+      "buy": "Buy",
+      "created": "Order {id} created",
+      "payManual": "Online payment is still being set up. Pay {amount} and send the order number {id} to {support}; the {credits} credits arrive as soon as the payment is confirmed.",
+      "payManualNoContact": "Online payment is still being set up. Contact the site admin to pay {amount} with order number {id}; the credits arrive as soon as the payment is confirmed."
+    },
+    "orders": {
+      "title": "My orders",
+      "confirmPaid": "Confirm the payment for order {id} was received? The credits are added right away.",
+      "markPaid": "Paid",
+      "cancel": "Cancel",
+      "status": {
+        "pending": "Awaiting payment",
+        "paid": "Credited",
+        "cancelled": "Cancelled"
+      }
+    },
+    "ledger": {
+      "title": "Credit history",
+      "empty": "No credit changes yet",
+      "when": "When",
+      "what": "What",
+      "change": "Change",
+      "balance": "Balance",
+      "kinds": {
+        "signup": "Sign-up bonus",
+        "purchase": "Purchase",
+        "admin": "Admin adjustment",
+        "unlock-item": "Item unlock",
+        "unlock-skill": "Skill unlock",
+        "studio": "Studio AI",
+        "custom-order": "Custom order",
+        "refund": "Custom order refund"
+      }
+    },
+    "costs": {
+      "title": "Prices",
+      "signup": "Sign-up bonus",
+      "unlockItem": "Unlock an item (full project download, code over MCP)",
+      "unlockSkill": "Unlock a skill",
+      "studio": "Studio AI",
+      "studioRate": "per 1k tokens: input {input} · output {output}",
+      "customOrder": "Custom order over MCP",
+      "free": "Browsing, tuning, previews, copying code"
+    },
+    "pricing": {
+      "title": "Credits and packages",
+      "lead": "Browse and tune anything in the market for free. Use credits when AI builds for you or when you take a whole project with you.",
+      "note": "Credits do not expire. Items and skills you unlocked stay free to download again.",
+      "usesTitle": "What credits are for",
+      "uses": {
+        "studio": {
+          "title": "AI in the Studio",
+          "text": "Describe an effect in a sentence; the AI writes the component and tunes the parameters. Charged by the tokens it actually uses."
+        },
+        "mcp": {
+          "title": "MCP and agents",
+          "text": "Claude Code and Cursor search and preview over MCP, then order code and skills."
+        },
+        "download": {
+          "title": "Full project downloads",
+          "text": "A runnable Vite + React project and a skill bundle, with your tuned parameters."
+        },
+        "custom": {
+          "title": "Custom builds",
+          "text": "Nothing fits? Give an agent a brief; it builds one that passes the same checks as the market."
+        }
+      },
+      "freeNote": "The code itself is open source (MIT and upstream licenses): the code view, copying and the shadcn install command stay free.",
+      "keysLink": "Create an API key for MCP →",
+      "costsTitle": "What things cost"
+    },
+    "unlock": {
+      "buy": "Buy credits",
+      "unlocked": "Unlocked; downloads are free from now on",
+      "cost": "The first download costs {cost} credits, later ones are free",
+      "signIn": "Sign in to download (first time {cost} credits)"
+    }
+  },
+  "repos": {
+    "private": "Private",
+    "public": "Public",
+    "noDescription": "No description",
+    "sources": {
+      "empty": "New",
+      "github": "From GitHub",
+      "fork": "Fork",
+      "item": "From the market",
+      "studio": "From the Studio"
+    },
+    "fileCount": "{count, plural, one {# file} other {# files}}",
+    "forkCount": "{count, plural, one {# fork} other {# forks}}",
+    "updated": "updated {date}",
+    "emptyOwner": "This repository is empty; add a file to start",
+    "empty": "This repository is empty",
+    "profile": {
+      "joined": "joined {date}",
+      "newRepo": "New repository",
+      "repos": "Repositories",
+      "emptyOwner": "No repositories yet. Import a project from GitHub, or save an item you like from the market.",
+      "empty": "No public repositories yet"
+    },
+    "origin": {
+      "github": "imported from {repo}@{commit}",
+      "fork": "forked from {repo}",
+      "item": "from market item {item}",
+      "studio": "from the Studio",
+      "pushed": "pushed to {repo}"
+    },
+    "actions": {
+      "needGitHub": "GitHub needs your permission; redirecting…",
+      "working": "Working…",
+      "openInStudio": "Open in Studio",
+      "fork": "Fork",
+      "download": "Download zip",
+      "forkedOnGitHub": "Forked on GitHub:",
+      "forkOnGitHub": "Fork on GitHub",
+      "confirmSync": "Replace every file with the latest commit of {repo}? Changes made here will be overwritten.",
+      "synced": "Synced to the latest commit",
+      "upToDate": "Already up to date",
+      "sync": "Sync from GitHub",
+      "pushed": "Pushed to {repo}:",
+      "pushAgain": "Push to GitHub again",
+      "push": "Push to GitHub",
+      "newFile": "New file",
+      "settings": "Settings",
+      "edit": "Edit"
+    },
+    "settings": {
+      "name": "Name",
+      "visibility": "Visibility",
+      "public": "Public",
+      "private": "Private (only you can see it)",
+      "description": "Description",
+      "saving": "Saving…",
+      "save": "Save",
+      "confirmDelete": "This cannot be undone. Type the repository name \"{name}\" to delete it:",
+      "delete": "Delete repository"
+    },
+    "editor": {
+      "pathRequired": "Enter a file path",
+      "confirmDelete": "Delete {path}?",
+      "pathPlaceholder": "File path, e.g. src/App.tsx",
+      "saving": "Saving…",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete file"
+    },
+    "new": {
+      "title": "New repository",
+      "lead": "Import your project from GitHub or start an empty repository. Repositories can be forked, edited online and pushed back to GitHub.",
+      "tabs": {
+        "github": "Import from GitHub",
+        "empty": "Empty repository"
+      },
+      "skipped": "{count, plural, one {# file was} other {# files were}} not imported (binary files, dependency or build folders, or over the size limits).",
+      "yours": "Your GitHub repositories",
+      "connectFirst": "Connect your GitHub account to list your public repositories here.",
+      "githubUnavailable": "GitHub sign-in is not open yet; paste a public repository address on the right instead.",
+      "connect": "Connect GitHub",
+      "noRepos": "You have no public repositories on GitHub yet",
+      "filter": "Filter repositories",
+      "isFork": "fork",
+      "importing": "Importing…",
+      "import": "Import",
+      "byUrl": "Paste a repository address",
+      "byUrlLead": "Any public GitHub repository works; we import the latest commit of its default branch.",
+      "limits": "Text files only: up to 1000 files, 8 MB in total and 512 KB per file; folders like node_modules and dist are skipped.",
+      "name": "Repository name",
+      "nameHint": "Letters, digits, dots, dashes and underscores",
+      "description": "Description (optional)",
+      "public": "Public",
+      "private": "Private",
+      "creating": "Creating…",
+      "create": "Create repository"
+    },
+    "forkItem": {
+      "label": "Save to my repos",
+      "busy": "Saving…"
+    },
+    "saveFromStudio": {
+      "label": "Save to my repos",
+      "open": "Open repository →",
+      "busy": "Saving…",
+      "failed": "Not saved; try again"
+    }
+  },
+  "admin": {
+    "title": "Admin",
+    "lead": "Confirm payments for credit orders and adjust user credits.",
+    "totals": {
+      "users": "Users",
+      "repos": "Repositories",
+      "credits": "Credits in circulation",
+      "revenue": "Received"
+    },
+    "pending": "Orders awaiting confirmation",
+    "noPending": "No orders to confirm",
+    "recentOrders": "Recently handled orders",
+    "users": "Newest users",
+    "unverified": "unverified",
+    "columns": {
+      "user": "User",
+      "email": "Email",
+      "balance": "Credits",
+      "joined": "Joined"
+    },
+    "grant": {
+      "title": "Adjust credits",
+      "user": "User",
+      "delta": "Amount (negative to deduct)",
+      "note": "Reason (goes in the history)",
+      "submit": "Apply",
+      "done": "Done; the balance is now {balance}"
     }
   }
 }

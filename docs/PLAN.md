@@ -160,7 +160,7 @@ Each item gets 3–5 presets, a bilingual title and description, reduced-motion 
     - **Image-based shaders done (2026-10-09):** liquid-metal, heatmap, pool-water, fluted-glass, halftone-cmyk and gem-smoke (Paper Shaders, Apache-2.0). Input images are drawn on a canvas at runtime (`useDrawnImage` / `useImageElement` in motif-runtime), so the repo holds no image assets.
     - Quiet items revisited: liquid-form gets a real dark background (its tone mapping lifted it to grey), ribbon-field is brighter, and the vortex and particles posters are captured closer.
 
-**Out of scope for now:** user accounts and user-published market items (needs a database and moderation), production deployment and filings, and the real production model key. These wait for the user's decision. (User-published items and identity were decided on 2026-10-08: see "Scope change: decentralized community" below.)
+**Out of scope for now:** user accounts and user-published market items (needs a database and moderation), production deployment and filings, and the real production model key. These wait for the user's decision. (User-published items and identity were decided on 2026-10-08: see "Scope change: decentralized community" below.) (Site accounts, credits and user repositories were added on 2026-11-06: see docs/decisions/0009-accounts-credits-repos.md.)
 
 ## Scope change (2026-09-30): market levels and skills on every item
 
