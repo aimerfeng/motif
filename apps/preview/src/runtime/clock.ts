@@ -64,6 +64,13 @@ export async function advanceTo(ms: number, onError: (error: unknown) => void): 
       born = previous
       animationBirth.set(animation, born)
     }
+    // 走到终点的有限动画要真正「播完」：暂停状态的动画不会触发 finished，
+    // motion 的退场（AnimatePresence）会一直等它，下一个元素永远不出现。
+    const end = animation.effect?.getComputedTiming().endTime
+    if (typeof end === 'number' && Number.isFinite(end) && ms - born >= end) {
+      animation.finish()
+      continue
+    }
     animation.pause()
     animation.currentTime = ms - born
   }

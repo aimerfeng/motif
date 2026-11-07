@@ -190,7 +190,8 @@ async function captureItem(item: CatalogItem): Promise<ItemReport> {
     })
     reducedMotionPixels = await changedPixels(a!, b!)
     if (reducedMotionPixels > 40) problems.push(`still moves under reduced motion (${reducedMotionPixels} px changed)`)
-    await loopPage.emulateMedia({ reducedMotion: null })
+    // 显式切回 no-preference：在 Edge 上 null 不会撤销上面的模拟，后面录的循环视频会变成静止画面。
+    await loopPage.emulateMedia({ reducedMotion: 'no-preference' })
   }
 
   // 3. 海报。
