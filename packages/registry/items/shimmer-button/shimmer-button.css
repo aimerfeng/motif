@@ -1,0 +1,61 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/public/r/shimmer-button.json
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* 光块和锥形渐变的尺寸都相对按钮：容器设成 size 容器，滑动距离 = 100cqw - 光块宽度。 */
+.msb-sparks {
+  container-type: size;
+}
+
+.msb-spark {
+  animation: msb-slide var(--msb-speed) ease-in-out infinite alternate;
+}
+
+.msb-cone {
+  background: conic-gradient(
+    from calc(270deg - (var(--msb-spread) * 0.5)),
+    transparent 0,
+    var(--msb-color) var(--msb-spread),
+    transparent var(--msb-spread)
+  );
+  animation: msb-spin calc(var(--msb-speed) * 2) linear infinite;
+}
+
+@keyframes msb-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+/* 在长边上停住（15%–35%、65%–85%），只在两端转弯：光看起来是沿着边缘走的。 */
+@keyframes msb-spin {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%,
+  35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%,
+  85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+/* 减少动态效果：光停在上边正中。 */
+@media (prefers-reduced-motion: reduce) {
+  .msb-spark {
+    animation: none;
+    transform: translate(calc(50cqw - 50%), 0);
+  }
+  .msb-cone {
+    animation: none;
+    transform: rotate(90deg);
+  }
+}

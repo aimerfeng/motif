@@ -1,0 +1,72 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'goal-rings',
+  status: 'published',
+  title: { 'zh-CN': '目标同心环', en: 'Goal Rings' },
+  summary: {
+    'zh-CN': '几个目标排成同心圆环，各自顺着弹簧画到完成度；超过 100% 的那一环会绕第二圈，环头压着一道阴影。悬停或聚焦图例会单独点亮一环，中间显示它的百分比。适合习惯打卡、每日目标和团队指标。',
+    en: 'Several goals as concentric rings, each sweeping to its completion on a spring; a ring past 100% runs a second lap with a shadow at its tip. Hover or focus a legend row to light up one ring and show its percentage in the middle. For habit trackers, daily goals and team targets.',
+  },
+  kind: 'component',
+  category: 'progress',
+  tags: ['progress', 'rings', 'goals', 'radial', 'chart', 'habits', 'dashboard'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'goal-rings.tsx', export: 'GoalRings' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'goal-rings.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'size', type: 'number', group: 'layout', label: { 'zh-CN': '尺寸', en: 'Size' }, default: 200, min: 140, max: 280, step: 4, unit: 'px', safe: [168, 240] },
+    { key: 'thickness', type: 'number', group: 'layout', label: { 'zh-CN': '环的粗细', en: 'Ring thickness' }, hint: { 'zh-CN': '放不下时会自动收细', en: 'Shrinks automatically when the rings would not fit' }, default: 20, min: 10, max: 28, step: 1, unit: 'px', safe: [14, 24] },
+    { key: 'gap', type: 'number', group: 'layout', label: { 'zh-CN': '环间距', en: 'Ring gap' }, default: 4, min: 2, max: 10, step: 1, unit: 'px', safe: [3, 7] },
+    { key: 'palette', type: 'palette', group: 'look', label: { 'zh-CN': '配色', en: 'Colors' }, hint: { 'zh-CN': '由外向内依次取色', en: 'Applied from the outer ring inward' }, default: ['#8a7dff', '#ff74b1', '#ffb347'], minItems: 1, maxItems: 5 },
+    { key: 'trackOpacity', type: 'number', group: 'look', label: { 'zh-CN': '底环亮度', en: 'Track opacity' }, default: 0.16, min: 0.06, max: 0.3, step: 0.01, safe: [0.1, 0.22] },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '填充弹簧', en: 'Fill spring' }, default: { visualDuration: 1.1, bounce: 0.05 } },
+    { key: 'stagger', type: 'number', group: 'motion', label: { 'zh-CN': '逐环延迟', en: 'Stagger' }, default: 0.12, min: 0, max: 0.3, step: 0.02, unit: 's' },
+    { key: 'showLegend', type: 'boolean', group: 'content', label: { 'zh-CN': '显示图例', en: 'Legend' }, default: true },
+    { key: 'showCenter', type: 'boolean', group: 'content', label: { 'zh-CN': '中间显示百分比', en: 'Center percentage' }, default: true },
+  ],
+  presets: [
+    { id: 'dusk', name: { 'zh-CN': '暮色', en: 'Dusk' }, values: { palette: ['#8a7dff', '#ff74b1', '#ffb347'], thickness: 20, gap: 4, trackOpacity: 0.16, spring: { visualDuration: 1.1, bounce: 0.05 } } },
+    { id: 'tide', name: { 'zh-CN': '潮汐', en: 'Tide' }, values: { palette: ['#5eb5ff', '#6fe3cf', '#c4b5fd'], thickness: 16, gap: 6, trackOpacity: 0.12, spring: { visualDuration: 1.4, bounce: 0 } } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { palette: ['#ff7a45', '#ffb347', '#ffe08a'], thickness: 24, gap: 3, trackOpacity: 0.2, spring: { visualDuration: 0.9, bounce: 0.2 } } },
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { palette: ['#ece9e4', '#b4ada6', '#857d76'], thickness: 12, gap: 7, trackOpacity: 0.08, spring: { visualDuration: 1.2, bounce: 0 }, stagger: 0.2 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  guidance: {
+    use: ['Use to compare progress on two to four goals that share a time frame (a day, a sprint). For a single goal use a single progress ring; for trends over time use a chart.'],
+    rules: [
+      'Pass rings as [{ id, label, value, goal, display?, goalDisplay? }] from the outer ring inward; display / goalDisplay format the numbers in the legend (for example "3h 12m" of "4h").',
+      'Values above the goal draw a second lap (up to 200%); keep that for genuinely exceeded goals, it is the most eye-catching state.',
+      'The rings are one labelled image for screen readers and the legend repeats every number as text; legend rows are buttons that highlight and pin a ring.',
+      'Controlled highlight: active + onActiveChange. Thickness shrinks automatically if the rings would not fit the size.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 2.6, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kokonutui',
+      repo: 'kokonut-labs/kokonutui',
+      sha: '83eec6d982d400a18438001a8efdbac1f159dd43',
+      paths: ['components/kokonutui/apple-activity-card.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 kokonutUI'],
+    },
+    modifications: [
+      'Renamed and re-themed: the three fixed fitness metrics, their colors and the card title became a rings prop with any labels, values, goals and a palette param; no third-party names or marks are used.',
+      'Ring radii are derived from size, thickness and gap (thickness shrinks to fit) instead of hard-coded 200 / 160 / 120 px rings.',
+      'Fill is driven by one motion value per ring on a spring with a stagger, and re-animates when values change; values above the goal draw a second lap with a shadowed tip, up to 200%.',
+      'Added an interactive legend (hover, focus or click to highlight and pin a ring) and a center percentage that follows the highlighted ring; the rings are a labelled role="img" with the full summary.',
+      'cn now comes from motif-runtime. Added reduced-motion handling (upstream has none): rings and numbers jump straight to their values.',
+      'Defaults moved into the generated defaults region.',
+    ],
+    assets: [],
+  },
+})

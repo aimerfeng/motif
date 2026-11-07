@@ -20,28 +20,28 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`d7207e5`](https://github.com/magicuidesign/magicui/tree/d7207e5692d14c00dceafa8488d6d01f197fa0e4)
 - Copyright (c) Magic UI
-- Used by: `animated-beam`, `blur-fade`, `border-beam`, `dock`, `magic-card`, `marquee`, `number-ticker`, `particles`, `retro-grid`, `stats-metric-tiles`, `testimonials-wall`, `text-animate`
+- Used by: `animated-beam`, `animated-list`, `aurora-text`, `blur-fade`, `border-beam`, `custom-pointer`, `dock`, `flickering-grid`, `glare-hover`, `interactive-grid`, `interactive-hover-button`, `light-rays`, `line-shadow-text`, `magic-card`, `marquee`, `morphing-text`, `neon-gradient-card`, `number-ticker`, `particles`, `rainbow-button`, `retro-grid`, `shimmer-button`, `smooth-cursor`, `sparkles-text`, `stats-metric-tiles`, `subscribe-button`, `terminal`, `testimonials-wall`, `text-animate`, `warp-tunnel`
 
 ### ibelick/motion-primitives
 
 - License: MIT
 - Commit: [`120f64f`](https://github.com/ibelick/motion-primitives/tree/120f64f6ca60348e251f929e9c81f11ccbe45eda)
 - Copyright (c) 2024 ibelick
-- Used by: `border-trail`, `infinite-slider`, `magnetic`, `morphing-dialog`, `sliding-number`, `spotlight`, `text-effect`, `text-scramble`, `tilt`
+- Used by: `border-trail`, `image-comparison`, `infinite-slider`, `magnetic`, `morphing-dialog`, `morphing-popover`, `sliding-number`, `spotlight`, `text-effect`, `text-loop`, `text-roll`, `text-scramble`, `tilt`, `toolbar-expandable`
 
 ### kokonut-labs/kokonutui
 
 - License: MIT
 - Commit: [`83eec6d`](https://github.com/kokonut-labs/kokonutui/tree/83eec6d982d400a18438001a8efdbac1f159dd43)
 - Copyright (c) 2025 kokonutUI
-- Used by: `background-paths`, `hold-button`, `particle-button`
+- Used by: `ai-prompt`, `background-paths`, `beams-background`, `card-flip`, `flow-field`, `glitch-text`, `goal-rings`, `hold-button`, `particle-button`
 
 ### nolly-studio/cult-ui
 
 - License: MIT
 - Commit: [`ee98a5d`](https://github.com/nolly-studio/cult-ui/tree/ee98a5dd2e319b63cc2e707dd968d6af04209b7e)
 - Copyright (c) 2023 Jordan-Gilliam
-- Used by: `dynamic-island`, `hero-dithering-orb`
+- Used by: `dynamic-island`, `hero-dithering-orb`, `metal-button`
 
 ### shuding/cobe
 

@@ -1,0 +1,46 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2025 kokonutUI
+ * Source: https://github.com/kokonut-labs/kokonutui/blob/83eec6d/components/kokonutui/card-flip.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* 正面的光：十个只有光晕的圆，依次从大到小收缩、淡出，看起来像一团呼吸的光。 */
+.mcf-ring {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 9999px;
+  opacity: 0;
+  box-shadow:
+    0 0 16px var(--mcf-glow),
+    0 0 48px var(--mcf-glow);
+  animation: mcf-pulse 3s linear infinite;
+}
+
+/* 上游同时改变 box-shadow；这里光晕固定（一圈紧的加一圈散的），只动 transform 和 opacity。 */
+@keyframes mcf-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(2);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(5px) scale(0.1);
+  }
+}
+
+/* 减少动态效果：光停住，只留一个圆。 */
+@media (prefers-reduced-motion: reduce) {
+  .mcf-ring {
+    animation: none;
+    opacity: 0.9;
+  }
+  .mcf-ring:not(:first-child) {
+    display: none;
+  }
+}

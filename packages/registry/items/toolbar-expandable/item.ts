@@ -1,0 +1,102 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'toolbar-expandable',
+  status: 'published',
+  title: { 'zh-CN': '展开式工具栏', en: 'Expandable Toolbar' },
+  summary: {
+    'zh-CN': '一排图标按钮，点哪个就从工具栏里长出它的面板：外框顺着弹簧变宽变高，内容在工具之间滑动切换，高亮块跟着滑到当前按钮。方向键切换、Esc 收起、点外面关闭。适合悬浮控制条、编辑器工具栏和智能家居面板。',
+    en: 'A row of icon buttons that grows the selected tool’s panel out of itself: the frame widens and rises on a spring, content slides between tools and a highlight glides to the active button. Arrow keys move, Esc collapses, clicking outside closes. For floating control bars, editor toolbars and smart-home panels.',
+  },
+  kind: 'component',
+  category: 'navigation',
+  tags: ['toolbar', 'panel', 'expand', 'morph', 'layout animation', 'spring', 'keyboard'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'toolbar-expandable.tsx', export: 'ToolbarExpandable' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'toolbar-expandable.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '展开弹簧', en: 'Expand spring' }, default: { visualDuration: 0.32, bounce: 0.12 } },
+    {
+      key: 'contentTransition',
+      type: 'select',
+      group: 'motion',
+      label: { 'zh-CN': '内容切换', en: 'Content switch' },
+      default: 'slide',
+      options: [
+        { value: 'slide', label: { 'zh-CN': '按方向滑动', en: 'Directional slide' } },
+        { value: 'fade', label: { 'zh-CN': '淡入淡出', en: 'Crossfade' } },
+        { value: 'blur', label: { 'zh-CN': '模糊过渡', en: 'Blur' } },
+      ],
+    },
+    {
+      key: 'placement',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '面板位置', en: 'Panel placement' },
+      default: 'top',
+      options: [
+        { value: 'top', label: { 'zh-CN': '工具栏上方', en: 'Above the toolbar' } },
+        { value: 'bottom', label: { 'zh-CN': '工具栏下方', en: 'Below the toolbar' } },
+      ],
+    },
+    { key: 'panelWidth', type: 'number', group: 'layout', label: { 'zh-CN': '面板宽度', en: 'Panel width' }, hint: { 'zh-CN': '展开后的宽度，不会小于工具栏本身', en: 'Width when open; never narrower than the toolbar itself' }, default: 300, min: 220, max: 380, step: 4, unit: 'px', safe: [260, 340] },
+    { key: 'buttonSize', type: 'number', group: 'layout', label: { 'zh-CN': '按钮尺寸', en: 'Button size' }, default: 40, min: 32, max: 48, step: 2, unit: 'px', safe: [36, 44] },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 20, min: 8, max: 28, step: 1, unit: 'px', safe: [14, 24] },
+    {
+      key: 'indicator',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '当前按钮标记', en: 'Active marker' },
+      default: 'pill',
+      options: [
+        { value: 'pill', label: { 'zh-CN': '滑动底块', en: 'Sliding pill' } },
+        { value: 'dot', label: { 'zh-CN': '下方圆点', en: 'Dot' } },
+      ],
+    },
+    { key: 'closeOnOutsideClick', type: 'boolean', group: 'interaction', label: { 'zh-CN': '点外面收起', en: 'Close on outside click' }, default: true },
+  ],
+  presets: [
+    { id: 'hearth', name: { 'zh-CN': '炉边', en: 'Hearth' }, values: { spring: { visualDuration: 0.32, bounce: 0.12 }, contentTransition: 'slide', panelWidth: 300, buttonSize: 40, radius: 20, indicator: 'pill' } },
+    { id: 'console', name: { 'zh-CN': '控制台', en: 'Console' }, values: { spring: { visualDuration: 0.24, bounce: 0 }, contentTransition: 'fade', panelWidth: 280, buttonSize: 36, radius: 12, indicator: 'dot' } },
+    { id: 'bubble', name: { 'zh-CN': '泡泡', en: 'Bubble' }, values: { spring: { visualDuration: 0.42, bounce: 0.3 }, contentTransition: 'blur', panelWidth: 320, buttonSize: 44, radius: 26, indicator: 'pill' } },
+    { id: 'ledge', name: { 'zh-CN': '檐下', en: 'Ledge' }, values: { placement: 'bottom', spring: { visualDuration: 0.3, bounce: 0.08 }, contentTransition: 'slide', panelWidth: 340, buttonSize: 40, radius: 16, indicator: 'pill' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  guidance: {
+    use: ['Use for a small set (3–6) of tools that each need a compact panel: playback, lights, filters, share. If panels hold forms the user fills in for a while, use a dialog or drawer instead.'],
+    rules: [
+      'Pass items as [{ id, label, icon, content }]; label is the accessible name of the icon button, so make it a clear noun ("Lights", "Climate").',
+      'Keep panels compact (under about 260 px tall) and similar in height so the frame does not jump far between tools.',
+      'The toolbar uses a roving tab stop: Tab enters on the active button, arrows / Home / End move between buttons, Enter or Space toggles, Esc collapses and keeps focus on the button. The panel follows the toolbar in tab order.',
+      'Controlled use: active + onActiveChange (null when collapsed).',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 2, posterTime: 7.4, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'motion-primitives',
+      repo: 'ibelick/motion-primitives',
+      sha: '120f64f6ca60348e251f929e9c81f11ccbe45eda',
+      paths: ['components/core/toolbar-expandable.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 ibelick'],
+    },
+    modifications: [
+      'cn now comes from motif-runtime; lucide-react icons were replaced by inline SVG, react-use-measure by ResizeObserver and the @/hooks/useClickOutside hook by a pointerdown listener that is only attached while open.',
+      'The frame springs between the measured toolbar size and the toolbar-plus-panel size and can also widen to panelWidth (upstream animates only the panel height); the content layer is pinned to the frame edge so the panel is revealed rather than squeezed and the toolbar never moves. The component only occupies the collapsed toolbar box, so opening never pushes the surrounding layout.',
+      'The hard-coded ITEMS became an items prop with a sample set; added controlled active / onActiveChange, a sliding active pill or dot, directional / fade / blur content switches and a below-the-toolbar placement.',
+      'Added toolbar keyboard support (roving tab stop, arrows, Home, End, Esc), aria-expanded / aria-controls on the buttons and a labelled region for the panel, which follows the toolbar in tab order.',
+      'Added reduced-motion handling (upstream has none): MotionConfig reducedMotion="user" makes the frame change instantly and keeps short fades.',
+      'Defaults moved into the generated defaults region.',
+    ],
+    assets: [],
+  },
+})

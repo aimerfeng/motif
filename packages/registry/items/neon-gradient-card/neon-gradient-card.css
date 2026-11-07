@@ -1,0 +1,47 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/public/r/neon-gradient-card.json
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* 描边层和光晕层：比卡片四周各大出 borderSize，圆角与卡片外缘一致。 */
+.ngc-layer {
+  position: absolute;
+  inset: calc(var(--ngc-border) * -1);
+  z-index: -1;
+  overflow: hidden;
+  border-radius: var(--ngc-radius);
+}
+
+/* 先裁剪再模糊：模糊的结果不受 overflow 限制，会向四周晕开。 */
+.ngc-glow {
+  filter: blur(var(--ngc-blur));
+}
+
+/*
+ * 上游是 background-size: 100% 200%，background-position 在 top 和 bottom 之间往返。
+ * 这里换成一条两倍高的渐变带，在 0 和 -50% 之间平移：画面一样，但只动 transform。
+ */
+.ngc-strip {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 200%;
+  background-image: var(--ngc-gradient);
+  animation: ngc-shift var(--ngc-speed) ease infinite alternate;
+}
+
+@keyframes ngc-shift {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* 减少动态效果：渐变停在中间位置，两种颜色都看得到。 */
+@media (prefers-reduced-motion: reduce) {
+  .ngc-strip {
+    animation: none;
+    transform: translateY(-25%);
+  }
+}

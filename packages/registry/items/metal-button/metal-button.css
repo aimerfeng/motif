@@ -1,0 +1,108 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2023 Jordan-Gilliam
+ * Source: https://github.com/nolly-studio/cult-ui/blob/ee98a5d/apps/www/registry/default/ui/metal-button.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* 金属环：内容盒被挖掉（exclude），只剩 padding 那一圈。 */
+.mmb-ring {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: inherit;
+  padding: var(--mmb-ring);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
+.mmb-halo {
+  position: absolute;
+  inset: calc(var(--mmb-ring) * -1.5);
+  z-index: -1;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: inherit;
+  filter: blur(9px);
+}
+
+.mmb-face {
+  position: absolute;
+  inset: var(--mmb-ring);
+}
+
+/* 三层都是以按钮中心为圆心的正方形，边长是按钮宽度的两倍，转动时始终盖住四角。 */
+.mmb-spin,
+.mmb-sheen,
+.mmb-chroma {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+}
+
+/* 底层：亮暗交替的反光带，顺时针慢转。 */
+.mmb-spin {
+  background: conic-gradient(var(--mmb-bands));
+  animation: mmb-turn var(--mmb-speed) linear infinite;
+}
+
+/* 高光：两道窄亮斑，反向、以不同速度转，和底层的亮带时而重合时而分开。 */
+.mmb-sheen {
+  background: conic-gradient(
+    from 30deg,
+    transparent 0deg 34deg,
+    rgb(255 255 255 / 0.95) 46deg,
+    transparent 58deg 196deg,
+    rgb(255 255 255 / 0.75) 206deg,
+    transparent 218deg
+  );
+  mix-blend-mode: screen;
+  opacity: 0.65;
+  transition: opacity 0.3s ease-out;
+  animation: mmb-turn calc(var(--mmb-speed) * 1.6) linear infinite reverse;
+}
+
+/* 彩虹色相：color 混合只借色相和饱和度，金属本身的明暗不变。 */
+.mmb-chroma {
+  background: conic-gradient(from 90deg, #ff6ad5, #ad8cff, #6ad5ff, #7af5c9, #f5e87a, #ff9a6a, #ff6ad5);
+  mix-blend-mode: color;
+  opacity: 0.55;
+  animation: mmb-turn calc(var(--mmb-speed) * 2.4) linear infinite;
+}
+
+.mmb-flat {
+  position: absolute;
+  inset: 0;
+  background: var(--mmb-flat);
+}
+
+/* 悬停：高光亮起来。 */
+.mmb:hover .mmb-sheen,
+.mmb:focus-visible .mmb-sheen {
+  opacity: 1;
+}
+
+@keyframes mmb-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* 减少动态效果：金属停在一个角度上，反光仍在。 */
+@media (prefers-reduced-motion: reduce) {
+  .mmb-spin,
+  .mmb-sheen,
+  .mmb-chroma {
+    animation: none;
+    transform: rotate(24deg);
+  }
+}

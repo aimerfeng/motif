@@ -1,0 +1,222 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2025 kokonutUI
+ * Source: https://github.com/kokonut-labs/kokonutui/blob/83eec6d/components/kokonutui/glitch-text.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+.mgt-root {
+  position: relative;
+  display: inline-grid;
+  isolation: isolate;
+  color: var(--mgt-color);
+}
+
+.mgt-layer {
+  grid-area: 1 / 1;
+}
+
+.mgt-base {
+  position: relative;
+  z-index: 1;
+  animation: mgt-base var(--mgt-cycle) steps(1, end) infinite;
+}
+
+/* 两层色彩通道：静止时左右各错开 split，形成一道细细的色差边。 */
+.mgt-a,
+.mgt-b {
+  pointer-events: none;
+  user-select: none;
+}
+
+.mgt-a {
+  color: var(--mgt-a);
+  transform: translateX(calc(var(--mgt-split) * -1));
+  animation: mgt-a var(--mgt-cycle) steps(1, end) infinite;
+}
+
+.mgt-b {
+  color: var(--mgt-b);
+  transform: translateX(var(--mgt-split));
+  animation: mgt-b var(--mgt-cycle) steps(1, end) infinite;
+}
+
+/* 持续抖动（上游的做法）：三层按不同方向来回漂移，用上游的缓动。 */
+.mgt-root[data-mode='constant'] .mgt-base {
+  animation: mgt-wobble-base var(--mgt-cycle) cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+.mgt-root[data-mode='constant'] .mgt-a {
+  animation: mgt-wobble-a var(--mgt-cycle) cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+.mgt-root[data-mode='constant'] .mgt-b {
+  animation: mgt-wobble-b var(--mgt-cycle) cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+/* 关掉切片：动画里的 clip-path 全部失效（!important 的声明优先于动画）。 */
+.mgt-root[data-slices='off'] .mgt-a,
+.mgt-root[data-slices='off'] .mgt-b {
+  clip-path: none !important;
+}
+
+/* 阵发模式：一个周期的前 14% 是一阵跳动，其余时间安静。steps(1, end) 让每一帧硬切，没有过渡。 */
+@keyframes mgt-base {
+  0%,
+  5%,
+  11%,
+  100% {
+    transform: none;
+  }
+  3% {
+    transform: translateX(calc(var(--mgt-shift) * 0.35)) skewX(calc(var(--mgt-skew) * 1deg));
+  }
+  9% {
+    transform: translateX(calc(var(--mgt-shift) * -0.3)) skewX(calc(var(--mgt-skew) * -0.6deg));
+  }
+}
+
+@keyframes mgt-a {
+  0%,
+  14%,
+  100% {
+    transform: translateX(calc(var(--mgt-split) * -1));
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+  2% {
+    transform: translate(calc(var(--mgt-shift) * -1), calc(var(--mgt-shift) * 0.2));
+    clip-path: inset(12% 0 58% 0);
+    opacity: 0.85;
+  }
+  4% {
+    transform: translateX(calc(var(--mgt-shift) * 0.6));
+    clip-path: inset(62% 0 8% 0);
+  }
+  6% {
+    transform: translate(calc(var(--mgt-shift) * -0.8), calc(var(--mgt-shift) * -0.2));
+    clip-path: inset(30% 0 40% 0);
+    opacity: 1;
+  }
+  8% {
+    transform: translateX(var(--mgt-shift));
+    clip-path: inset(78% 0 0 0);
+  }
+  10% {
+    transform: translateX(calc(var(--mgt-shift) * -0.45));
+    clip-path: inset(0 0 72% 0);
+    opacity: 0.8;
+  }
+  12% {
+    transform: translateX(calc(var(--mgt-shift) * -1.2));
+    clip-path: inset(44% 0 26% 0);
+  }
+}
+
+@keyframes mgt-b {
+  0%,
+  14%,
+  100% {
+    transform: translateX(var(--mgt-split));
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+  2% {
+    transform: translate(var(--mgt-shift), calc(var(--mgt-shift) * -0.2));
+    clip-path: inset(55% 0 18% 0);
+  }
+  4% {
+    transform: translateX(calc(var(--mgt-shift) * -0.7));
+    clip-path: inset(8% 0 66% 0);
+    opacity: 0.8;
+  }
+  6% {
+    transform: translateX(calc(var(--mgt-shift) * 1.1));
+    clip-path: inset(70% 0 6% 0);
+  }
+  8% {
+    transform: translate(calc(var(--mgt-shift) * -0.9), calc(var(--mgt-shift) * 0.2));
+    clip-path: inset(24% 0 50% 0);
+    opacity: 1;
+  }
+  10% {
+    transform: translateX(calc(var(--mgt-shift) * 0.5));
+    clip-path: inset(84% 0 0 0);
+  }
+  12% {
+    transform: translateX(calc(var(--mgt-shift) * 0.9));
+    clip-path: inset(0 0 80% 0);
+    opacity: 0.85;
+  }
+}
+
+@keyframes mgt-wobble-base {
+  0%,
+  100% {
+    transform: none;
+  }
+  20% {
+    transform: translate(calc(var(--mgt-shift) * 0.25), calc(var(--mgt-shift) * -0.25)) skewX(calc(var(--mgt-skew) * 0.15deg));
+  }
+  40% {
+    transform: translate(calc(var(--mgt-shift) * -0.25), calc(var(--mgt-shift) * 0.25)) skewX(calc(var(--mgt-skew) * -0.15deg));
+  }
+  60% {
+    transform: translate(calc(var(--mgt-shift) * -0.25), calc(var(--mgt-shift) * -0.25)) skewX(calc(var(--mgt-skew) * 0.15deg));
+  }
+  80% {
+    transform: translate(calc(var(--mgt-shift) * 0.25), calc(var(--mgt-shift) * 0.25)) skewX(calc(var(--mgt-skew) * -0.15deg));
+  }
+}
+
+@keyframes mgt-wobble-a {
+  0%,
+  100% {
+    transform: translateX(calc(var(--mgt-split) * -1));
+    opacity: 0.85;
+  }
+  20% {
+    transform: translate(calc(var(--mgt-split) * -1 - var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * 0.5));
+    opacity: 0.7;
+  }
+  40% {
+    transform: translate(calc(var(--mgt-split) * -1 + var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * -0.5));
+    opacity: 0.85;
+  }
+  60% {
+    transform: translate(calc(var(--mgt-split) * -1 + var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * 0.5));
+    opacity: 0.7;
+  }
+  80% {
+    transform: translate(calc(var(--mgt-split) * -1 - var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * -0.5));
+    opacity: 0.85;
+  }
+}
+
+@keyframes mgt-wobble-b {
+  0%,
+  100% {
+    transform: translateX(var(--mgt-split));
+    opacity: 0.85;
+  }
+  20% {
+    transform: translate(calc(var(--mgt-split) + var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * -0.5));
+    opacity: 0.7;
+  }
+  40% {
+    transform: translate(calc(var(--mgt-split) - var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * 0.5));
+    opacity: 0.85;
+  }
+  60% {
+    transform: translate(calc(var(--mgt-split) - var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * -0.5));
+    opacity: 0.7;
+  }
+  80% {
+    transform: translate(calc(var(--mgt-split) + var(--mgt-shift) * 0.5), calc(var(--mgt-shift) * 0.5));
+    opacity: 0.85;
+  }
+}
+
+/* 减少动态效果：不再跳动，只保留静止的色差边。 */
+@media (prefers-reduced-motion: reduce) {
+  .mgt-layer {
+    animation: none !important;
+  }
+}

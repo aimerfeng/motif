@@ -1,0 +1,60 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/registry/registry-ui.ts
+ * Modified by Motif; see the item's provenance.
+ */
+.mat-root {
+  position: relative;
+  display: inline-grid;
+  /* 字形会伸出行框（降部、重音符号），而裁成文字的背景只画在盒子里：两层加内边距，外层用负外边距抵消，排版不变。 */
+  margin: -0.16em -0.08em;
+}
+
+.mat-layer {
+  grid-area: 1 / 1;
+  padding: 0.16em 0.08em;
+  background-image: var(--mat-gradient);
+  background-size: var(--mat-size) var(--mat-size);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /* 横向、纵向各自往返，相位差四分之一个周期，合起来是一条没有停顿的椭圆轨迹。 */
+  animation:
+    mat-x var(--mat-duration) ease-in-out infinite alternate,
+    mat-y var(--mat-duration) ease-in-out calc(var(--mat-duration) * -0.5) infinite alternate;
+}
+
+.mat-glow {
+  filter: blur(0.22em);
+  opacity: var(--mat-glow);
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes mat-x {
+  from {
+    background-position-x: 0%;
+  }
+  to {
+    background-position-x: 100%;
+  }
+}
+
+@keyframes mat-y {
+  from {
+    background-position-y: 0%;
+  }
+  to {
+    background-position-y: 100%;
+  }
+}
+
+/* 减少动态效果：颜色停在一个各色都露出来的位置，不再流动。 */
+@media (prefers-reduced-motion: reduce) {
+  .mat-layer {
+    animation: none;
+    background-position: 30% 40%;
+  }
+}

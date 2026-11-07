@@ -1,0 +1,75 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/registry/magicui/interactive-hover-button.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+
+/*
+ * 两段文案同向滑动，中途会叠在一起：离场的那段用一半时长先淡出，入场的那段晚四分之一再淡入，
+ * 交错开就不会糊成一团。规则写在目标状态上，进、出两个方向各自生效。
+ */
+.ihb-dot {
+  background: var(--ihb-color);
+  transition: transform var(--ihb-duration) var(--ihb-ease);
+}
+
+.ihb-label {
+  transition:
+    transform var(--ihb-duration) var(--ihb-ease),
+    opacity calc(var(--ihb-duration) * 0.75) var(--ihb-ease) calc(var(--ihb-duration) * 0.25);
+}
+
+.ihb-reveal {
+  color: var(--ihb-ink);
+  opacity: 0;
+  transform: translateX(3rem);
+  transition:
+    transform var(--ihb-duration) var(--ihb-ease),
+    opacity calc(var(--ihb-duration) * 0.5) var(--ihb-ease);
+}
+
+.ihb-fill {
+  display: none;
+  background: var(--ihb-color);
+  opacity: 0;
+  transition: opacity var(--ihb-duration) var(--ihb-ease);
+}
+
+/* 悬停、键盘聚焦、外部强制（data-active）三种情况都展开。 */
+/* --ihb-scale 由组件按按钮尺寸测出来（刚好盖住最远的角），测量前先用一个够大的值。 */
+.ihb:is(:hover, :focus-visible, [data-active]) .ihb-dot {
+  transform: scale(var(--ihb-scale, 60));
+}
+.ihb:is(:hover, :focus-visible, [data-active]) .ihb-label {
+  opacity: 0;
+  transform: translateX(3rem);
+  transition:
+    transform var(--ihb-duration) var(--ihb-ease),
+    opacity calc(var(--ihb-duration) * 0.5) var(--ihb-ease);
+}
+.ihb:is(:hover, :focus-visible, [data-active]) .ihb-reveal {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    transform var(--ihb-duration) var(--ihb-ease),
+    opacity calc(var(--ihb-duration) * 0.75) var(--ihb-ease) calc(var(--ihb-duration) * 0.25);
+}
+
+/* 减少动态效果：不滑动、不缩放，底色和两段文案原地交叉淡入淡出。 */
+@media (prefers-reduced-motion: reduce) {
+  .ihb-fill {
+    display: block;
+  }
+  .ihb:is(:hover, :focus-visible, [data-active]) .ihb-dot {
+    transform: none;
+  }
+  .ihb-reveal,
+  .ihb:is(:hover, :focus-visible, [data-active]) .ihb-label,
+  .ihb:is(:hover, :focus-visible, [data-active]) .ihb-reveal {
+    transform: none;
+  }
+  .ihb:is(:hover, :focus-visible, [data-active]) .ihb-fill {
+    opacity: 1;
+  }
+}

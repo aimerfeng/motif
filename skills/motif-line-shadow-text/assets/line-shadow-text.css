@@ -1,0 +1,50 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/registry/registry-ui.ts
+ * Modified by Motif; see the item's provenance.
+ */
+.mls-root {
+  position: relative;
+  display: inline-grid;
+  isolation: isolate;
+}
+
+.mls-text,
+.mls-shadow {
+  grid-area: 1 / 1;
+}
+
+.mls-shadow {
+  z-index: -1;
+  /* 内边距让降部、标点也落在裁剪背景的范围里；负外边距抵消，不改变网格尺寸，与正文逐字对齐。 */
+  margin: -0.2em -0.12em;
+  padding: 0.2em 0.12em;
+  translate: var(--mls-offset) var(--mls-offset);
+  background-image: var(--mls-pattern);
+  background-size: var(--mls-tile) var(--mls-tile);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: mls-drift var(--mls-duration) linear infinite;
+  animation-play-state: var(--mls-play);
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes mls-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: var(--mls-tile) 0;
+  }
+}
+
+/* 减少动态效果：斜线停住，影子保留。 */
+@media (prefers-reduced-motion: reduce) {
+  .mls-shadow {
+    animation: none;
+  }
+}

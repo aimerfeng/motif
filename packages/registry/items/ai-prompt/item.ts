@@ -1,0 +1,83 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'ai-prompt',
+  status: 'published',
+  title: { 'zh-CN': 'AI 对话输入框', en: 'AI Prompt Input' },
+  summary: {
+    'zh-CN': '聊天式 AI 应用的输入框：随内容长高的文本框、附件卡片、可以用键盘操作的模型选择、回车发送，生成中发送键变成停止键。顶部可以挂一条活动横幅。适合 AI 助手、写作工具和客服机器人的主输入区。',
+    en: 'The composer for a chat-style AI app: a textarea that grows with its content, attachment chips, a keyboard-friendly model picker, Enter to send, and a send button that turns into stop while a reply is generating. An optional banner sits on top. For assistants, writing tools and support bots.',
+  },
+  kind: 'component',
+  category: 'input',
+  tags: ['ai', 'chat', 'prompt', 'composer', 'textarea', 'model picker', 'attachments'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'ai-prompt.tsx', export: 'AiPrompt' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'ai-prompt.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, hint: { 'zh-CN': '发送键、焦点光圈和选中标记', en: 'Send button, focus glow and selection marks' }, default: '#ece8e1' },
+    {
+      key: 'surface',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '外观', en: 'Surface' },
+      default: 'soft',
+      options: [
+        { value: 'soft', label: { 'zh-CN': '叠层', en: 'Layered' } },
+        { value: 'solid', label: { 'zh-CN': '实心卡片', en: 'Solid card' } },
+        { value: 'outline', label: { 'zh-CN': '描边', en: 'Outline' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 22, min: 10, max: 28, step: 1, unit: 'px', safe: [14, 24] },
+    { key: 'minHeight', type: 'number', group: 'layout', label: { 'zh-CN': '最小高度', en: 'Min height' }, default: 64, min: 44, max: 120, step: 2, unit: 'px', safe: [52, 96] },
+    { key: 'maxHeight', type: 'number', group: 'layout', label: { 'zh-CN': '最大高度', en: 'Max height' }, hint: { 'zh-CN': '超过之后文本框内部滚动', en: 'Past this the textarea scrolls' }, default: 220, min: 140, max: 360, step: 10, unit: 'px', safe: [180, 300] },
+    { key: 'placeholder', type: 'text', group: 'content', label: { 'zh-CN': '占位文案', en: 'Placeholder' }, default: 'Ask anything, or drop a file…', maxLength: 48 },
+    { key: 'showBanner', type: 'boolean', group: 'content', label: { 'zh-CN': '顶部横幅', en: 'Banner' }, default: true },
+    { key: 'banner', type: 'text', group: 'content', label: { 'zh-CN': '横幅文案', en: 'Banner text' }, default: 'Sable Deep is free on every plan this week', maxLength: 60 },
+    { key: 'sendOnEnter', type: 'boolean', group: 'interaction', label: { 'zh-CN': '回车发送', en: 'Enter sends' }, hint: { 'zh-CN': '开启时 Shift + Enter 换行；关闭时 Ctrl / ⌘ + Enter 发送', en: 'Shift + Enter adds a line; when off, Ctrl / ⌘ + Enter sends' }, default: true },
+  ],
+  presets: [
+    { id: 'porcelain', name: { 'zh-CN': '瓷白', en: 'Porcelain' }, values: { accent: '#ece8e1', surface: 'soft', radius: 22 } },
+    { id: 'harbor', name: { 'zh-CN': '港湾', en: 'Harbor' }, values: { accent: '#8fb8ff', surface: 'solid', radius: 16, minHeight: 72 } },
+    { id: 'apricot', name: { 'zh-CN': '杏色', en: 'Apricot' }, values: { accent: '#ffb48a', surface: 'outline', radius: 26 } },
+    { id: 'quiet', name: { 'zh-CN': '安静', en: 'Quiet' }, values: { accent: '#b8f0d8', surface: 'soft', radius: 12, showBanner: false, minHeight: 52 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  guidance: {
+    use: ['Use as the main input of a chat-style assistant: a new-chat page or the bottom of a conversation. For one-line search use a search field or command palette instead.'],
+    rules: [
+      'Handle onSubmit({ text, model, attachments }); while the reply streams set status="streaming" and handle onStop, which the send button turns into.',
+      'Pass your own models as [{ id, name, description?, icon? }]; never use real vendors’ logos or marks unless you have the rights to them.',
+      'Attachments come from the attach button (a real file input) or your own drop handler via attachments / onAttachmentsChange; each chip has a labelled remove button.',
+      'Keyboard: Enter sends and Shift + Enter adds a line (or Ctrl / ⌘ + Enter when sendOnEnter is off); IME composition is respected. The model picker is a listbox: arrows, Home / End, Enter, Esc. Set menuSide="top" when the composer sits at the bottom of the screen.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 5.5, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kokonutui',
+      repo: 'kokonut-labs/kokonutui',
+      sha: '83eec6d982d400a18438001a8efdbac1f159dd43',
+      paths: ['components/kokonutui/ai-prompt.tsx', 'hooks/use-auto-resize-textarea.ts'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 kokonutUI'],
+    },
+    modifications: [
+      'Removed every third-party brand: the vendor logos and real model names were replaced by an invented model family with neutral glyphs, and the header promo became a configurable banner whose action selects a model.',
+      'lucide-react icons became inline SVG; the radix DropdownMenu, shadcn Button and Textarea were replaced by a native listbox picker (arrows, Home / End, Enter, Esc; Tab or a click outside closes it) and native elements; useAutoResizeTextarea was folded into a layout effect.',
+      'The attach label (not keyboard-reachable upstream) became a button driving a hidden file input, with removable attachment chips; the send button now submits, is disabled only when there is nothing to send and turns into a stop button while status is streaming.',
+      'Enter / Shift + Enter handling respects IME composition; added sendOnEnter, controlled value, model, attachments and status props, and three surface styles, accent, radius and height params.',
+      'Added reduced-motion handling (upstream has none): the picker and model label change without movement and the streaming ring does not spin.',
+      'cn now comes from motif-runtime. Defaults moved into the generated defaults region.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,34 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/public/r/rainbow-button.json
+ * Modified by Motif; see the item's provenance.
+ */
+
+/*
+ * 上游是 background-size: 200% 的渐变，background-position 从 0% 走到 200%（正好一格）。
+ * 这里换成一条宽 400% 的带子、平铺两格，向左平移半条带子：画面一样，但只动 transform。
+ */
+.mrb-strip {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 400%;
+  background-image: var(--mrb-rainbow);
+  background-size: 50% 100%;
+  background-repeat: repeat-x;
+  animation: mrb-flow var(--mrb-speed) linear infinite;
+}
+
+@keyframes mrb-flow {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 减少动态效果：彩虹停住不流动。 */
+@media (prefers-reduced-motion: reduce) {
+  .mrb-strip {
+    animation: none;
+  }
+}
