@@ -31,7 +31,22 @@
   --color-heart: var(--dark-heart);
 
   --radius-card: 14px;
+
+  /*
+   * 动效身份（docs/decisions/0010）：安静、高级。进入用 out，离开用 in，两个位置之间移动用 in-out；
+   * 时长三档：fast 悬停和按下，base 菜单、面板、卡片，slow 页面切换和共享元素。离开比进入短。
+   */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-soft: cubic-bezier(0.5, 0, 0.75, 0);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --duration-fast: 150ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+  /* 吸顶的头部高度：吸顶的目录、锚点跳转的留白都以它为准。 */
+  --header-height: 56px;
 }
 
 /*
@@ -215,4 +230,153 @@
 }
 .code-line[data-tuned] {
   background: oklch(0.84 0.07 285 / 0.07);
+}
+
+/*
+ * 站点的鼠标样式（components/site-cursor.tsx，docs/decisions/0010 第 3 节）。
+ * 启用时 <html data-custom-cursor>，系统光标只在要打字的地方出现。
+ * 点和圈用 difference 混合：深浅主题、各种海报上都看得见；「查看」胶囊用主题色，保证字能读。
+ */
+html[data-custom-cursor],
+html[data-custom-cursor] * {
+  cursor: none;
+}
+html[data-custom-cursor] :is(input:not([type='button'], [type='submit'], [type='reset'], [type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file']), textarea, select),
+html[data-custom-cursor] [contenteditable]:not([contenteditable='false']),
+html[data-custom-cursor] [contenteditable]:not([contenteditable='false']) * {
+  cursor: text;
+}
+html[data-custom-cursor] select {
+  cursor: default;
+}
+
+.motif-cursor {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+}
+.motif-cursor-anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.motif-cursor-ring,
+.motif-cursor-dot,
+.motif-cursor-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  translate: -50% -50%;
+  border-radius: 999px;
+  transition:
+    scale var(--duration-base) var(--ease-out-soft),
+    opacity var(--duration-fast) linear,
+    background-color var(--duration-fast) linear,
+    border-color var(--duration-fast) linear;
+}
+.motif-cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgb(255 255 255 / 0.6);
+  mix-blend-mode: difference;
+}
+.motif-cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  mix-blend-mode: difference;
+}
+.motif-cursor-label {
+  padding: 6px 12px;
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px -8px oklch(0 0 0 / 0.5);
+  opacity: 0;
+  scale: 0.6;
+}
+
+/* 链接、按钮：圈放大、淡淡填满，点退场。 */
+.motif-cursor[data-state='link'] .motif-cursor-ring {
+  scale: 1.4;
+  border-color: transparent;
+  background: rgb(255 255 255 / 0.14);
+}
+.motif-cursor[data-state='link'] .motif-cursor-dot {
+  scale: 0;
+}
+/* 市场卡片：变成「查看」胶囊。 */
+.motif-cursor[data-state='view'] :is(.motif-cursor-ring, .motif-cursor-dot) {
+  opacity: 0;
+  scale: 0.5;
+}
+.motif-cursor[data-state='view'] .motif-cursor-label {
+  opacity: 1;
+  scale: 1;
+}
+/* 文字上：点拉成 2×20 的竖线（还能选中），圈退场。 */
+.motif-cursor[data-state='text'] .motif-cursor-ring {
+  opacity: 0;
+  scale: 0.5;
+}
+.motif-cursor[data-state='text'] .motif-cursor-dot {
+  scale: 0.34 3.4;
+}
+.motif-cursor[data-state='hidden'] :is(.motif-cursor-ring, .motif-cursor-dot, .motif-cursor-label) {
+  opacity: 0;
+}
+/* 按下：收一下。 */
+.motif-cursor[data-pressed][data-state='default'] .motif-cursor-ring {
+  scale: 0.82;
+}
+.motif-cursor[data-pressed][data-state='link'] .motif-cursor-ring {
+  scale: 1.2;
+}
+.motif-cursor[data-pressed][data-state='view'] .motif-cursor-label {
+  scale: 0.92;
+}
+@media (prefers-reduced-motion: reduce) {
+  .motif-cursor :is(.motif-cursor-ring, .motif-cursor-dot, .motif-cursor-label) {
+    transition: none;
+  }
+}
+
+/*
+ * 页面切换（docs/decisions/0010 第 1 节）。唯一的「大动作」：从卡片点进条目页时，海报变形成详情页的预览
+ * （React <ViewTransition name="item-<slug>" share="morph">）。其余部分只做一次很短的交叉淡化。
+ * 两端宽高比不同（页面类条目的预览更高）：新旧画面都按 cover 铺满正在变形的框，不会被拉伸。
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+}
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-in-out-soft);
+}
+::view-transition-old(.morph),
+::view-transition-new(.morph) {
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+::view-transition-image-pair(.morph) {
+  animation-name: motif-morph-blur;
+}
+@keyframes motif-morph-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-image-pair(*) {
+    animation: none !important;
+  }
 }

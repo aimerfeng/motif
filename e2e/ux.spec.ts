@@ -18,7 +18,7 @@ test('明暗切换立即生效，刷新后还在', async ({ page }) => {
 
 test('在卡片上收藏，市场里只看收藏', async ({ page }) => {
   await page.goto('/market')
-  const card = page.getByTestId('market-grid').locator('[data-testid^="card-"]').first()
+  const card = page.locator('[data-testid^="card-"]').first()
   const slug = ((await card.getAttribute('data-testid')) ?? '').replace('card-', '')
   await card.hover()
   await card.getByRole('button', { name: '收藏' }).click()

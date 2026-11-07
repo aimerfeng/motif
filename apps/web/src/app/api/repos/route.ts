@@ -1,9 +1,11 @@
+import { after } from 'next/server'
 import { ensureProfile } from '@/lib/accounts/profile'
 import { githubToken, requireUser } from '@/lib/auth/server'
 import { errorResponse, HttpError, NO_STORE, readJson } from '@/lib/community/http'
 import { rateLimit } from '@/lib/community/rate-limit'
 import { parseRepoInput } from '@/lib/repos/github'
 import { createRepo, importFromGitHub, itemToFiles, repoFromItem, type Visibility } from '@/lib/repos/repos'
+import { track } from '@/lib/stats/track'
 import { loadSession } from '@/lib/studio/store'
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -40,8 +42,12 @@ export async function POST(request: Request) {
     }
     if (body.mode === 'item') {
       rateLimit(request, 'repo-create', 20)
-      if (typeof body.item !== 'string' || !SLUG.test(body.item)) throw new HttpError(400, 'item must be a market item slug')
-      return Response.json({ repo: await repoFromItem(body.item, user.id) }, { headers: NO_STORE })
+      const slug = body.item
+      if (typeof slug !== 'string' || !SLUG.test(slug)) throw new HttpError(400, 'item must be a market item slug')
+      const repo = await repoFromItem(slug, user.id)
+      // fork 成自己的仓库：排行榜的「改编」。
+      after(() => track(request, slug, 'remix'))
+      return Response.json({ repo }, { headers: NO_STORE })
     }
     if (body.mode === 'studio') {
       rateLimit(request, 'repo-create', 20)

@@ -9,7 +9,8 @@ test('市场按层级和分类筛选，筛选状态写进链接', async ({ page 
   await page.goto('/market')
   await page.getByRole('tab', { name: /功能组件/ }).click()
   await expect(page).toHaveURL(/kind=component/)
-  await expect(page.getByTestId('card-dock')).toBeVisible()
+  // 按分类分组，dock 在「导航」那一组，滚到附近才渲染。
+  await scrollToCard(page, 'dock')
   await expect(page.getByTestId('card-mesh-gradient')).toHaveCount(0)
 
   await page.getByRole('group', { name: '分类' }).getByRole('button', { name: '按钮', exact: true }).click()

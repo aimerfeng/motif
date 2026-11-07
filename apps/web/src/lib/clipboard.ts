@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { reportStat } from '@/lib/stats/report'
 
 export type CopyState = 'idle' | 'copied' | 'failed'
 
@@ -44,8 +45,9 @@ const FEEDBACK_MS = 1800
 /**
  * 复制按钮的反馈：成功或失败都显示一会儿再复原。
  * 同一组里有多个按钮时用 key 区分，只有被点的那个变状态。
+ * stat：复制的是哪个市场条目的东西，成功时给排行榜记一次「复制」。
  */
-export function useCopy() {
+export function useCopy(stat?: string) {
   const [status, setStatus] = useState<{ key: string; state: Exclude<CopyState, 'idle'> } | null>(null)
   const timer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(timer.current), [])
@@ -60,7 +62,8 @@ export function useCopy() {
     setStatus({ key, state })
     window.clearTimeout(timer.current)
     timer.current = window.setTimeout(() => setStatus(null), FEEDBACK_MS)
-  }, [])
+    if (state === 'copied' && stat) reportStat(stat, 'copy')
+  }, [stat])
 
   const stateOf = useCallback((key: string): CopyState => (status?.key === key ? status.state : 'idle'), [status])
   return { copy, stateOf }

@@ -2,23 +2,31 @@
 
 import { CATEGORIES_BY_KIND, KINDS, type Category, type Kind } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
-import { memo, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ChevronIcon, HeartIcon, SearchIcon } from '@/components/icons'
 import { SkillButton } from '@/components/skill-button'
 import { Link } from '@/i18n/navigation'
 import type { ItemSummary } from '@/lib/catalog'
+import { FEATURED } from '@/lib/featured'
 import { generalSkills } from '@/lib/general-skills'
 import { FAVORITES, RECENT_ITEMS, useLocalList } from '@/lib/local-store'
-import { writeMarketQuery, type MarketQuery } from '@/lib/market-query'
+import { MARKET_SORTS, writeMarketQuery, type MarketQuery, type MarketSort } from '@/lib/market-query'
 import { matchesAll, searchTerms } from '@/lib/store/search'
 import { replaceUrl, URL_WRITE_DELAY_MS } from '@/lib/url-state'
+import { Catalog } from './catalog'
+import { buildCatalog, SHELF_SIZE } from './catalog-groups'
 import { ItemCard } from './item-card'
+
+/** 还没有排名数据时用的空表（固定一个对象，memo 才不会每次都失效）。 */
+const NO_RANKS: Record<string, number> = {}
 
 /**
  * 市场：先按层级（模板 / 风格 / 区块 / 组件 / 效果），再按分类和关键词筛选。
  * 初始筛选由服务端从链接解析好传进来；之后的改动写回链接（不产生历史记录），可以分享。
+ * 没有搜索、没选具体分类、不是「最新」也没开「只看收藏」时，按层级和分类分组，左边是跟着滚动的目录（docs/decisions/0010）。
+ * ranks：本周综合榜的名次（slug → 名次），「热门」排序和卡片上的名次标记用。
  */
-export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: MarketQuery }) {
+export function MarketGrid({ items, initial, ranks = NO_RANKS }: { items: ItemSummary[]; initial: MarketQuery; ranks?: Record<string, number> }) {
   const t = useTranslations('market')
   const [kind, setKind] = useState<Kind | null>(initial.kind)
   const [category, setCategory] = useState<Category | null>(initial.category)
@@ -78,8 +86,27 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
     })
     // 最新：上架时间从新到旧；还没提交（没有时间）的算最新。时间相同的保持精选顺序。
     if (sort === 'new') return matched.toSorted((a, b) => (b.addedAt ?? '9999').localeCompare(a.addedAt ?? '9999'))
+    // 热门：本周上榜的按名次在前，其余保持精选顺序。
+    if (sort === 'hot') return matched.toSorted((a, b) => (ranks[a.slug] ?? Infinity) - (ranks[b.slug] ?? Infinity))
     return matched
-  }, [items, haystacks, deferredKind, deferredCategory, deferredQuery, sort, onlyFavorites, favoriteSet])
+  }, [items, haystacks, deferredKind, deferredCategory, deferredQuery, sort, onlyFavorites, favoriteSet, ranks])
+
+  // 分组目录。最前面一组：「热门」排序且本周有至少 3 个上榜时是本周热门，否则是精选。
+  const grouped = deferredQuery.trim() === '' && deferredCategory === null && !onlyFavorites && sort !== 'new'
+  const groups = useMemo(() => {
+    if (!grouped) return []
+    const ranked = visible.filter((item) => ranks[item.slug] !== undefined)
+    const shelf =
+      sort === 'hot' && ranked.length >= 3
+        ? { type: 'hot' as const, items: ranked }
+        : { type: 'featured' as const, items: FEATURED.flatMap((slug) => visible.filter((item) => item.slug === slug)).slice(0, SHELF_SIZE) }
+    return buildCatalog(visible, { kind: deferredKind, shelf })
+  }, [grouped, visible, ranks, sort, deferredKind])
+  const filterTo = useCallback((nextKind: Kind, nextCategory: Category) => {
+    setKind(nextKind)
+    setCategory(nextCategory)
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  }, [])
   // 最近看过：还在市场里的条目，按看的先后。
   const recentItems = useMemo(() => (recent ?? []).flatMap((slug) => items.filter((item) => item.slug === slug)), [recent, items])
 
@@ -143,10 +170,11 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
               <span className="sr-only">{t('sort.label')}</span>
               <select
                 value={sort}
-                onChange={(event) => setSort(event.target.value === 'new' ? 'new' : 'featured')}
+                onChange={(event) => setSort((MARKET_SORTS as readonly string[]).includes(event.target.value) ? (event.target.value as MarketSort) : 'featured')}
                 className="h-9 appearance-none rounded-lg border border-line bg-raised pr-8 pl-3 text-[13px] text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink focus:border-line-strong focus:outline-none"
               >
                 <option value="featured">{t('sort.featured')}</option>
+                <option value="hot">{t('sort.hot')}</option>
                 <option value="new">{t('sort.new')}</option>
               </select>
               <ChevronIcon className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 rotate-90 text-ink-faint" />
@@ -197,7 +225,7 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
         // 后台重排期间把旧的卡片调暗一点；样式放在外层，网格的 props 不变，memo 才生效。
         <div className={`transition-opacity duration-150 ${pending ? 'opacity-60' : ''}`}>
           {!filtered && recentItems.length > 0 && <RecentStrip items={recentItems} />}
-          <CardGrid items={visible} />
+          {grouped ? <Catalog groups={groups} ranks={ranks} onFilter={filterTo} /> : <CardGrid items={visible} ranks={ranks} />}
         </div>
       )}
     </section>
@@ -211,7 +239,7 @@ export function MarketGrid({ items, initial }: { items: ItemSummary[]; initial: 
 const BATCH = 24
 
 /** 卡片网格单独成组件并 memo：只改了选中状态的那次渲染不会碰到上百张卡片。 */
-const CardGrid = memo(function CardGrid({ items }: { items: ItemSummary[] }) {
+const CardGrid = memo(function CardGrid({ items, ranks }: { items: ItemSummary[]; ranks: Record<string, number> }) {
   const t = useTranslations('market')
   const [limit, setLimit] = useState(BATCH)
   // 筛选结果变了就从第一批重新开始（渲染期间根据上一次的结果调整状态，不用 effect）。
@@ -240,7 +268,7 @@ const CardGrid = memo(function CardGrid({ items }: { items: ItemSummary[] }) {
         {items.slice(0, limit).map((item, index) => (
           <li key={item.slug}>
             {/* 第一行（宽屏三列）是首屏，海报往往就是 LCP。 */}
-            <ItemCard item={item} categoryLabel={t(`categories.${item.category}`)} priority={index < 3} />
+            <ItemCard item={item} categoryLabel={t(`categories.${item.category}`)} rank={ranks[item.slug]} priority={index < 3} />
           </li>
         ))}
       </ul>

@@ -4,10 +4,10 @@ import { useTranslations } from 'next-intl'
 import { CopyIcon } from '@/components/icons'
 import { useCopy } from '@/lib/clipboard'
 
-/** 一行可复制的命令。 */
-export function CopyCommand({ text }: { text: string }) {
+/** 一行可复制的命令。stat：这是哪个市场条目的命令（排行榜记一次「复制」）。 */
+export function CopyCommand({ text, stat }: { text: string; stat?: string }) {
   const t = useTranslations('export')
-  const { copy, stateOf } = useCopy()
+  const { copy, stateOf } = useCopy(stat)
   const state = stateOf('command')
   return (
     <div className="flex items-stretch overflow-hidden rounded-lg border border-line bg-sunken">

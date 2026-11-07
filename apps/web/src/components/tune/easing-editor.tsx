@@ -52,8 +52,8 @@ export function EasingEditor({ id, value, onChange, label }: { id: string; value
         <line x1={toX(0)} y1={toY(0)} x2={toX(x1)} y2={toY(y1)} className="stroke-ink/30" />
         <line x1={toX(1)} y1={toY(1)} x2={toX(x2)} y2={toY(y2)} className="stroke-ink/30" />
         <path d={`M ${toX(0)} ${toY(0)} C ${toX(x1)} ${toY(y1)}, ${toX(x2)} ${toY(y2)}, ${toX(1)} ${toY(1)}`} fill="none" stroke="var(--color-ink)" strokeWidth="2" />
-        <circle cx={toX(x1)} cy={toY(y1)} r="5.5" fill="var(--color-focus)" className="cursor-grab" onPointerDown={drag(0)} />
-        <circle cx={toX(x2)} cy={toY(y2)} r="5.5" fill="var(--color-focus)" className="cursor-grab" onPointerDown={drag(1)} />
+        <circle cx={toX(x1)} cy={toY(y1)} r="5.5" fill="var(--color-focus)" className="cursor-grab" data-cursor="grab" onPointerDown={drag(0)} />
+        <circle cx={toX(x2)} cy={toY(y2)} r="5.5" fill="var(--color-focus)" className="cursor-grab" data-cursor="grab" onPointerDown={drag(1)} />
       </svg>
       <div className="flex flex-col gap-1">
         {PRESETS.map((preset) => {

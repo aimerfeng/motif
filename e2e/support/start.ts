@@ -57,6 +57,9 @@ rmSync(studioData, { recursive: true, force: true })
 // 商店的订单同理。
 const ordersData = path.join(ROOT, '.data/e2e-orders')
 rmSync(ordersData, { recursive: true, force: true })
+// 账号、积分、排行榜的数据库也每次从空开始，不碰开发用的 .data/motif.sqlite。
+const database = path.join(ROOT, '.data/e2e-db/motif.sqlite')
+rmSync(path.dirname(database), { recursive: true, force: true })
 
 // 2. 沙箱和站点。条目检查不通过时 build 以非 0 退出，但失败的条目只是不进市场，e2e 照常跑剩下的。
 shell('pnpm --filter @motif/preview build')
@@ -69,6 +72,9 @@ const webEnv = {
   MOTIF_STUDIO_DATA: studioData,
   MOTIF_ORDERS_DATA: ordersData,
   MOTIF_AGENT_PROVIDER: 'scripted',
+  // next start 是生产模式，登录模块要求密钥（32 位以上）：给一个只在 e2e 里用的固定值。
+  MOTIF_AUTH_SECRET: 'e2e-only-secret-not-used-anywhere-else-0123456789',
+  MOTIF_DB_PATH: database,
 }
 must(shell('pnpm --filter @motif/web exec next build', webEnv))
 

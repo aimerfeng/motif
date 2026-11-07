@@ -113,4 +113,23 @@ export const MIGRATIONS: string[] = [
     created_at INTEGER NOT NULL
   );
   `,
+  // 排行榜的计数（docs/decisions/0010-motion-cursor-ranking.md）：每天每个条目每种事件一行。
+  // seen 是去重表（同一访客同一天同一事件只算一次），只留两天；visitor 是每天换盐的哈希，还原不出 IP。
+  `
+  CREATE TABLE item_stat_daily (
+    day TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    event TEXT NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (day, slug, event)
+  ) WITHOUT ROWID;
+
+  CREATE TABLE item_stat_seen (
+    day TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    event TEXT NOT NULL,
+    visitor TEXT NOT NULL,
+    PRIMARY KEY (day, slug, event, visitor)
+  ) WITHOUT ROWID;
+  `,
 ]

@@ -12,13 +12,24 @@ const published = (JSON.parse(readFileSync(catalogPath, 'utf8')) as CatalogFile)
 
 test('市场列出所有已发布条目，并能切换到英文', async ({ page }) => {
   await page.goto('/market')
-  // 卡片分批渲染：首屏只有一批，滚到底时全部出现。
-  await expect(page.getByTestId('market-grid').locator('[data-testid^="card-"]')).toHaveCount(24)
+  // 按层级和分类分组；每组离视口近了才把骨架换成卡片，一路滚下去全部出现。
+  await expect(page.getByTestId('market-catalog')).toBeVisible()
+  await expect(page.locator('[data-testid^="card-"]').first()).toBeVisible()
   for (const item of published) await scrollToCard(page, item.manifest.slug)
 
   await page.getByRole('button', { name: 'EN' }).click()
   await expect(page).toHaveURL(/\/en\/market$/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Market')
+})
+
+test('左侧目录：点层级跳到那一段，滚动时当前分类跟着高亮', async ({ page }) => {
+  await page.goto('/market')
+  const rail = page.getByRole('navigation', { name: '目录' }).first()
+  await rail.getByRole('button', { name: /^视觉效果/ }).click()
+  await expect(page.getByRole('heading', { level: 2, name: /^视觉效果/ })).toBeInViewport()
+  // 目录接手导航后展开这一层级的分类，正在看的那一类标成当前位置。
+  await expect(rail.locator('[aria-current="location"]').first()).toBeVisible()
+  await expect(page).toHaveURL(/\/market$/)
 })
 
 for (const item of published) {

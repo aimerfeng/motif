@@ -15,7 +15,8 @@
     "community": "Community",
     "themeLight": "Switch to light",
     "themeDark": "Switch to dark",
-    "pricing": "Credits"
+    "pricing": "Credits",
+    "rank": "Leaderboard"
   },
   "home": {
     "headline": "Beautiful motion, ready to take home",
@@ -64,7 +65,12 @@
         "body": "Approved work joins the market, with credit and provenance on chain."
       }
     },
-    "sourcesMore": "Show {count} more"
+    "sourcesMore": "Show {count} more",
+    "trending": {
+      "title": "Trending this week",
+      "lead": "Ranked by this week's real views, saves and installs.",
+      "all": "Full leaderboard"
+    }
   },
   "market": {
     "title": "Market",
@@ -163,9 +169,18 @@
     "sort": {
       "label": "Sort",
       "featured": "Featured",
-      "new": "Newest"
+      "new": "Newest",
+      "hot": "Trending"
     },
-    "recent": "Recently viewed"
+    "recent": "Recently viewed",
+    "rankBadge": "#{rank} this week",
+    "catalog": {
+      "label": "Contents",
+      "featured": "Featured",
+      "hot": "Trending this week",
+      "only": "Only these",
+      "fullRanking": "Full leaderboard"
+    }
   },
   "item": {
     "back": "Market",
@@ -1355,5 +1370,51 @@
       "submit": "Apply",
       "done": "Done; the balance is now {balance}"
     }
+  },
+  "rank": {
+    "title": "Leaderboard",
+    "lead": "Ranked by real use: views, copies, saves, and how often items are actually taken and remixed. Counting since {since}; each visitor counts once a day.",
+    "periodsLabel": "Period",
+    "periods": {
+      "7d": "This week",
+      "30d": "This month",
+      "all": "All time"
+    },
+    "boardsLabel": "Board",
+    "boards": {
+      "score": "Overall",
+      "favorite": "Most saved",
+      "take": "Most taken"
+    },
+    "kindsLabel": "Level",
+    "allKinds": "All",
+    "metrics": {
+      "view": "Views",
+      "copy": "Copies",
+      "favorite": "Saves",
+      "take": "Taken",
+      "remix": "Remixes",
+      "score": "Score"
+    },
+    "change": {
+      "up": "Up {count}",
+      "down": "Down {count}",
+      "same": "No change",
+      "new": "New entry"
+    },
+    "newBadge": "New",
+    "rankLabel": "Rank {rank}",
+    "trend": "Last 14 days",
+    "empty": "Nothing has ranked in this period yet.",
+    "sparse": "Still gathering data: counting started {since}.",
+    "picks": "Featured, not ranked yet",
+    "howTitle": "How it's ranked",
+    "how": "Score = views × 1 + copies × 3 + saves × 4 + taken × 6 + remixes × 5. Taken covers shadcn installs, project downloads and MCP deliveries; remixes are opening an item in the Studio or forking it into your own repository. One visitor counts once per item, action and day, and no IP addresses are stored."
+  },
+  "cursor": {
+    "view": "View",
+    "toggle": "Cursor effect",
+    "on": "on",
+    "off": "off"
   }
 }

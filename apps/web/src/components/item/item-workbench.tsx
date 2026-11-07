@@ -3,7 +3,7 @@
 import type { ModuleRef, PreviewTheme, StyleRef } from '@motif/preview/protocol'
 import type { ItemSource, Kind, ParamValues } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, ViewTransition, type ReactNode } from 'react'
 import { ChainBadge } from '@/components/community/chain-badge'
 import { RefreshIcon } from '@/components/icons'
 import { FavoriteButton } from '@/components/market/favorite-button'
@@ -14,6 +14,7 @@ import { TunePanel } from '@/components/tune/tune-panel'
 import { useTune, type TunePreset } from '@/components/tune/use-tune'
 import type { HighlightedCode } from '@/lib/code-tokens'
 import { pushLocal, RECENT_ITEMS } from '@/lib/local-store'
+import { reportStat } from '@/lib/stats/report'
 import { CodeView } from './code-view'
 import { InstallPanel, QuickActions, SkillPanel, type ExportData } from './export-panels'
 import { ItemTabs } from './item-tabs'
@@ -34,10 +35,12 @@ interface ItemWorkbenchProps {
   license: ReactNode
   /** 额外的标签页（例如链上记录），排在最后。 */
   extraTabs?: { id: string; label: string; content: ReactNode }[]
+  /** 预先生成的海报：实时预览挂载之前先显示它，也是从市场卡片变形过来的那一张。社区作品没有。 */
+  poster?: string | null
 }
 
 /** 详情页的工作区：实时预览 + 调参面板，下方是随参数变化的代码、安装、Skill 与许可证。 */
-export function ItemWorkbench({ item, title, preview, theme, defaults, presets, code, exportData, header, license, extraTabs = [] }: ItemWorkbenchProps) {
+export function ItemWorkbench({ item, title, preview, theme, defaults, presets, code, exportData, header, license, extraTabs = [], poster = null }: ItemWorkbenchProps) {
   const t = useTranslations('item')
   const [status, setStatus] = useState<PreviewStatus>({ state: 'loading' })
   const [replay, setReplay] = useState(0)
@@ -46,7 +49,11 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
   const pageLike = PAGE_KINDS.has(item.manifest.kind)
   const [viewport, setViewport] = useState<Viewport>('desktop')
   // 记进「最近看过」（只在这个浏览器里），市场页顶上会列出来。
-  useEffect(() => pushLocal(RECENT_ITEMS.key, item.manifest.slug, RECENT_ITEMS.max), [item.manifest.slug])
+  useEffect(() => {
+    pushLocal(RECENT_ITEMS.key, item.manifest.slug, RECENT_ITEMS.max)
+    // 排行榜的「浏览」：服务端按访客每天去重。
+    reportStat(item.manifest.slug, 'view')
+  }, [item.manifest.slug])
 
   return (
     <>
@@ -67,35 +74,46 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* 手机上调参面板在预览下方：小尺寸的效果预览吸在顶部，边调边看。页面类条目太高，不吸。 */}
         <div className={`self-start ${pageLike ? '' : 'max-lg:sticky max-lg:top-14 max-lg:z-10 max-lg:-mx-5 max-lg:bg-canvas max-lg:px-5 max-lg:pt-2 max-lg:pb-3'}`}>
-          <div
-            className={`group relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(78vh,860px)] min-h-[520px]' : 'aspect-[4/3] sm:aspect-[16/10]'}`}
-          >
-            <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 transition-[width] duration-300 ease-(--ease-out-soft)" style={{ width: VIEWPORT_WIDTH[viewport] }}>
-              <PreviewFrame
-                title={title}
-                module={preview.module}
-                styles={preview.styles}
-                exportName={item.manifest.demo.export}
-                theme={theme}
-                props={tune.values}
-                onStatus={setStatus}
-                replayToken={replay}
-                className={`absolute inset-0 size-full ${viewport === 'desktop' ? '' : 'border-x border-line'}`}
-              />
+          <ViewTransition name={`item-${item.manifest.slug}`} share="morph" default="none">
+            <div
+              className={`group relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-sunken ${pageLike ? 'h-[min(78vh,860px)] min-h-[520px]' : 'aspect-[4/3] sm:aspect-[16/10]'}`}
+            >
+              <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 transition-[width] duration-300 ease-(--ease-out-soft)" style={{ width: VIEWPORT_WIDTH[viewport] }}>
+                <PreviewFrame
+                  title={title}
+                  module={preview.module}
+                  styles={preview.styles}
+                  exportName={item.manifest.demo.export}
+                  theme={theme}
+                  props={tune.values}
+                  onStatus={setStatus}
+                  replayToken={replay}
+                  className={`absolute inset-0 size-full ${viewport === 'desktop' ? '' : 'border-x border-line'}`}
+                />
+              </div>
+              {poster && (
+                // 海报是预先生成的 webp；页面类条目的海报是页顶，所以靠上对齐。
+                <img
+                  src={poster}
+                  alt=""
+                  aria-hidden
+                  className={`pointer-events-none absolute inset-0 size-full object-cover object-top transition-opacity duration-(--duration-slow) ${status.state === 'mounted' ? 'opacity-0' : 'opacity-100'}`}
+                />
+              )}
+              <PreviewStatusOverlay status={status} onRetry={() => setReplay((n) => n + 1)} />
+              {status.state === 'mounted' && (
+                <button
+                  type="button"
+                  onClick={() => setReplay((n) => n + 1)}
+                  aria-label={t('replay')}
+                  title={t('replay')}
+                  className="absolute right-3 bottom-3 grid size-8 place-items-center rounded-full bg-black/55 text-white/85 opacity-0 ring-1 ring-white/15 backdrop-blur-md transition-opacity duration-150 group-hover:opacity-100 hover:text-white focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
+                >
+                  <RefreshIcon className="size-4" />
+                </button>
+              )}
             </div>
-            <PreviewStatusOverlay status={status} onRetry={() => setReplay((n) => n + 1)} />
-            {status.state === 'mounted' && (
-              <button
-                type="button"
-                onClick={() => setReplay((n) => n + 1)}
-                aria-label={t('replay')}
-                title={t('replay')}
-                className="absolute right-3 bottom-3 grid size-8 place-items-center rounded-full bg-black/55 text-white/85 opacity-0 ring-1 ring-white/15 backdrop-blur-md transition-opacity duration-150 group-hover:opacity-100 hover:text-white focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
-              >
-                <RefreshIcon className="size-4" />
-              </button>
-            )}
-          </div>
+          </ViewTransition>
         </div>
         <div className="lg:sticky lg:top-20 lg:self-start">
           <TunePanel params={item.manifest.params} presets={presets} tune={tune} />
@@ -108,7 +126,7 @@ export function ItemWorkbench({ item, title, preview, theme, defaults, presets, 
             {
               id: 'code',
               label: t('tabs.code'),
-              content: <CodeView code={code} sources={item.files} entry={item.manifest.entry.file} values={tune.values} labels={{ copy: t('copy'), copied: t('copied'), failed: t('copyFailed'), tuned: t('tunedNote') }} />,
+              content: <CodeView code={code} sources={item.files} entry={item.manifest.entry.file} values={tune.values} stat={item.manifest.slug} labels={{ copy: t('copy'), copied: t('copied'), failed: t('copyFailed'), tuned: t('tunedNote') }} />,
             },
             { id: 'install', label: t('tabs.install'), content: <InstallPanel item={item} values={tune.values} encoded={tune.encoded} data={exportData} /> },
             { id: 'skill', label: t('tabs.skill'), content: <SkillPanel item={item} values={tune.values} data={exportData} /> },

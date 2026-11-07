@@ -1,6 +1,7 @@
 import { defaultsOf, KINDS } from '@motif/schema'
 import { getTranslations } from 'next-intl/server'
 import { CopyCommand } from '@/components/copy-command'
+import { ImmersiveHeader, TrendingStrip } from '@/components/home/home-motion'
 import { HeroStage } from '@/components/home/hero-stage'
 import { ArrowIcon, ChevronIcon, SparklesIcon, UsersIcon } from '@/components/icons'
 import { ItemCard } from '@/components/market/item-card'
@@ -39,8 +40,12 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
 
   return (
     <main>
-      {/* 首屏是一张正在运行的「海报」：在浅色主题里也保持暗色，标题压在暗色的效果上才看得清。 */}
-      <section data-theme="dark" className="relative isolate flex h-[calc(100dvh-56px)] min-h-[560px] items-end bg-canvas text-ink">
+      {/*
+        首屏是一张正在运行的「海报」：在浅色主题里也保持暗色，标题压在暗色的效果上才看得清。
+        往上伸到头部下面（-mt 一个头部高度），头部在首屏时是透明的（ImmersiveHeader），效果铺满整个屏幕。
+      */}
+      <ImmersiveHeader />
+      <section data-theme="dark" data-hero className="relative isolate -mt-(--header-height) flex h-dvh min-h-[600px] items-end bg-canvas text-ink">
         {hero?.build && (
           <HeroStage
             build={{ js: hero.build.js, css: hero.build.css }}
@@ -51,6 +56,8 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
             title={hero.manifest.title[locale]}
           />
         )}
+        {/* 顶上一条很淡的压暗：透明的头部叠在亮的画面上时，导航的字还看得清。 */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-black/45 to-transparent" />
         {/* 左下角的压暗层只为标题可读，不盖住整个效果。 */}
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_0%_100%,color-mix(in_oklab,var(--color-canvas)_85%,transparent),transparent_60%)]" />
         <div className="pointer-events-none mx-auto w-full max-w-[1400px] px-5 pb-16 sm:px-8 sm:pb-20">
@@ -90,6 +97,8 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
           ))}
         </ul>
       </section>
+
+      <TrendingStrip locale={locale} />
 
       <section className="mx-auto mt-24 max-w-[1400px] px-5 sm:px-8">
         <h2 className="font-display text-[32px] leading-tight font-semibold tracking-[-0.03em]">{t('levelsTitle')}</h2>

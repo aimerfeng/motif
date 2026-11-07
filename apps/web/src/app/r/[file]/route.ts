@@ -1,9 +1,11 @@
 import { exportRegistryItem, runtimeRegistryItem, type ExportContext } from '@motif/export'
 import { defaultsOf } from '@motif/schema'
+import { after } from 'next/server'
 import { getCatalog } from '@/lib/catalog'
 import { marketSource } from '@/lib/community/market-source'
 import { decodeValues } from '@/lib/share'
 import { publicOrigin } from '@/lib/site'
+import { track } from '@/lib/stats/track'
 
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=300' }
 
@@ -27,5 +29,7 @@ export async function GET(request: Request, { params }: RouteContext<'/r/[file]'
   const defaults = defaultsOf(item.manifest.params)
   const values = decodeValues(url.searchParams.get('v') ?? '', item.manifest.params, defaults)
   const json = await exportRegistryItem(item, values, context)
+  // 有人用 shadcn 装了它：排行榜的「拿走」。
+  after(() => track(request, slug, 'take'))
   return Response.json(json, { headers: HEADERS })
 }

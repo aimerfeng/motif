@@ -14,6 +14,7 @@ import type { Community } from '@/lib/community/state'
 import { versionView } from '@/lib/community/views'
 import { marketOrder } from '@/lib/featured'
 import { RUNTIME_LABELS } from '@/lib/labels'
+import { mediaFor } from '@/lib/media'
 
 export interface DetailItem {
   manifest: ItemManifest
@@ -107,6 +108,7 @@ export async function ItemDetail({ item, locale }: { item: DetailItem; locale: L
         exportData={{ vendor: catalog.vendor, runtime: catalog.runtime }}
         header={header}
         license={<ProvenancePanel manifest={manifest} locale={locale} />}
+        poster={item.community ? null : mediaFor(slug).poster}
         extraTabs={item.community ? [{ id: 'chain', label: t('tabs.chain'), content: <ChainRecord {...item.community} locale={locale} /> }] : []}
       />
 

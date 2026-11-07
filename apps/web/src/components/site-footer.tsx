@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
 import { getCatalog } from '@/lib/catalog'
 import { MotifMark } from './motif-mark'
+import { CursorToggle } from './site-cursor'
 
 export async function SiteFooter({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'footer' })
@@ -17,7 +18,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
           <MotifMark className="size-4 opacity-70" />
           <span>{t('line', { date: catalog.generatedAt.slice(0, 10) })}</span>
         </div>
-        <nav className="flex gap-5">
+        <nav className="flex flex-wrap gap-x-5 gap-y-2">
           <Link href="/market" className="transition-colors duration-150 hover:text-ink">
             {tn('market')}
           </Link>
@@ -27,6 +28,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
           <a href={`${REPO_URL}/blob/main/THIRD_PARTY_NOTICES.md`} target="_blank" rel="noreferrer" className="transition-colors duration-150 hover:text-ink">
             {t('notices')}
           </a>
+          <CursorToggle />
         </nav>
       </div>
     </footer>

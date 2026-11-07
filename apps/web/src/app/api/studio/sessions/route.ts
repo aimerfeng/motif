@@ -1,8 +1,10 @@
+import { after } from 'next/server'
 import { sessionUser } from '@/lib/auth/server'
 import { errorResponse, HttpError, NO_STORE, readJson } from '@/lib/community/http'
 import { rateLimit } from '@/lib/community/rate-limit'
 import { createSession } from '@/lib/studio/sessions'
 import { isSessionId, loadSession } from '@/lib/studio/store'
+import { track } from '@/lib/stats/track'
 
 /** 新建会话：{ base: 条目 slug, values } 是改一个市场条目（带上详情页调好的参数），不给 base 就从起点模板开始。 */
 export async function POST(request: Request) {
@@ -14,6 +16,8 @@ export async function POST(request: Request) {
     // 登录了就记下主人：只有主人能跑 agent（花他的积分）。没登录也能开会话、手动改。
     const owner = await sessionUser(request.headers)
     const session = await createSession(base, body.values, owner?.id ?? null)
+    // 在工作台里改一个市场条目：排行榜的「改编」。
+    if (base) after(() => track(request, base, 'remix'))
     return Response.json({ id: session.id }, { headers: NO_STORE })
   } catch (error) {
     return errorResponse(error)

@@ -14,6 +14,7 @@
 | `packages/agent-claude-cli` | 开发期运行器：本机 Claude Code CLI。Agent SDK 是专有许可证，站点只在运行时原生加载它，不打包、不部署 |
 | `apps/web/src/lib/store` | 给 agent 的商店：工具（zod 定义一次，MCP `/mcp` 和 HTTP `/api/agent/<工具>` 共用）、订单、定制单队列、价格；设计见 `docs/decisions/0008-agent-store.md` |
 | `apps/web/src/lib/auth`、`lib/credits`、`lib/repos`、`lib/db` | 账号（Better Auth：GitHub + 邮箱）、积分账本和套餐、用户仓库（GitHub 导入 / fork / 推送），数据在 SQLite（`node:sqlite`）；设计见 `docs/decisions/0009-accounts-credits-repos.md` |
+| `apps/web/src/lib/stats` | 排行榜：使用统计（浏览、复制、收藏、拿走、改编，按访客每天去重、不存 IP）和排名，页面在 `app/[locale]/rank`；设计见 `docs/decisions/0010-motion-cursor-ranking.md` |
 | `apps/web/src/lib/community` | 社区的服务端：链配置、事件同步、源码存储、投稿检查（编译在子进程里）；页面在 `app/[locale]/community` |
 | `e2e` | Playwright，本地用已安装的 Edge |
 

@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { CommunityProvider } from '@/components/community/wallet'
 import { FooterGate } from '@/components/footer-gate'
 import { SiteFooter } from '@/components/site-footer'
+import { SiteCursor } from '@/components/site-cursor'
 import { SiteHeader } from '@/components/site-header'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { routing } from '@/i18n/routing'
@@ -55,6 +56,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
             <FooterGate>
               <SiteFooter locale={locale} />
             </FooterGate>
+            <SiteCursor />
           </CommunityProvider>
         </NextIntlClientProvider>
       </body>

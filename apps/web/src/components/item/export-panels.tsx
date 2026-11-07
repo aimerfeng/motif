@@ -21,6 +21,7 @@ import { CopyIcon, DownloadIcon } from '@/components/icons'
 import { SkillButton } from '@/components/skill-button'
 import { Link } from '@/i18n/navigation'
 import { useCopy, type CopyState } from '@/lib/clipboard'
+import { reportStat } from '@/lib/stats/report'
 
 export type ExportData = Omit<ExportContext, 'origin'>
 
@@ -48,7 +49,7 @@ function saveFile(name: string, data: Uint8Array) {
 type DownloadState = 'idle' | 'busy' | 'failed'
 
 /** 打包下载：先过 gate（解锁，docs/decisions/0009），打包期间按钮不可再点，失败时提示一下再复原。 */
-function useDownload(make: () => Promise<{ name: string; data: Uint8Array }>, gate: () => Promise<boolean> = async () => true) {
+function useDownload(make: () => Promise<{ name: string; data: Uint8Array }>, gate: () => Promise<boolean> = async () => true, stat?: string) {
   const [state, setState] = useState<DownloadState>('idle')
   const run = async () => {
     setState('busy')
@@ -60,6 +61,8 @@ function useDownload(make: () => Promise<{ name: string; data: Uint8Array }>, ga
       const zip = await make()
       saveFile(zip.name, zip.data)
       setState('idle')
+      // 下载了市场条目：排行榜的「拿走」。
+      if (stat) reportStat(stat, 'take')
     } catch (error) {
       console.error(error)
       setState('failed')
@@ -107,10 +110,12 @@ function DownloadButton({ state, onClick, label, className, testId }: { state: D
 export function InstallPanel({ item, values, encoded, data, registryPath, free = false }: { item: ItemSource; values: ParamValues; encoded: string; data: ExportData; registryPath?: string; free?: boolean }) {
   const t = useTranslations('export')
   const context = useExportContext(data)
-  const { copy, stateOf } = useCopy()
   const slug = item.manifest.slug
+  // 工作台里自己做的条目（free）不是市场条目，不进排行榜。
+  const stat = free ? undefined : slug
+  const { copy, stateOf } = useCopy(stat)
   const unlock = useUnlock('item', slug, !free)
-  const starter = useDownload(() => exportStarterZip(item, values, context!), unlock.ensure)
+  const starter = useDownload(() => exportStarterZip(item, values, context!), unlock.ensure, stat)
   // 手动复制要给全所有文件：多文件的条目只复制入口会缺相对导入。
   const files = useMemo(() => componentFiles(item, bake(item.files[item.manifest.entry.file] ?? '', values)), [item, values])
 
@@ -128,12 +133,12 @@ export function InstallPanel({ item, values, encoded, data, registryPath, free =
       </Section>
 
       <Section title={t('shadcnTitle')} description={t('shadcnLead')}>
-        <CopyCommand text={shadcn} />
+        <CopyCommand text={shadcn} stat={stat} />
       </Section>
 
       <Section title={t('manualTitle')} description={t('manualLead')}>
         <div className="space-y-3">
-          {deps.length > 0 && <CopyCommand text={install} />}
+          {deps.length > 0 && <CopyCommand text={install} stat={stat} />}
           <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line">
             {files.map((file) => (
               <FileRow key={file.path} target={`src/${file.target}`} state={stateOf(file.path)} onCopy={() => void copy(file.path, file.content)} />
@@ -191,11 +196,12 @@ function FileRow({ target, state, onCopy }: { target: string; state: CopyState; 
 export function SkillPanel({ item, values, data, free = false }: { item: ItemSource; values: ParamValues; data: ExportData; free?: boolean }) {
   const t = useTranslations('skill')
   const context = useExportContext(data)
-  const { copy, stateOf } = useCopy()
+  const stat = free ? undefined : item.manifest.slug
+  const { copy, stateOf } = useCopy(stat)
   const [markdown, setMarkdown] = useState('')
   const name = skillName(item.manifest.slug)
   const unlock = useUnlock('skill', name, !free)
-  const zip = useDownload(() => exportSkillZip(item, values, context!), unlock.ensure)
+  const zip = useDownload(() => exportSkillZip(item, values, context!), unlock.ensure, stat)
 
   useEffect(() => {
     if (!context) return
@@ -244,14 +250,14 @@ export function QuickActions({ item, values, data }: { item: ItemSource; values:
   const t = useTranslations('export')
   const context = useExportContext(data)
   const unlock = useUnlock('item', item.manifest.slug)
-  const starter = useDownload(() => exportStarterZip(item, values, context!), unlock.ensure)
+  const starter = useDownload(() => exportStarterZip(item, values, context!), unlock.ensure, item.manifest.slug)
   if (!context) return <div className="h-9" />
 
   const markdown = () => prepareExport(item, values).then(({ hash }) => skillMarkdown(item, values, context, { hash }))
 
   return (
     <div className="flex flex-wrap items-center gap-2" data-testid="quick-actions">
-      <SkillButton source={{ markdown }} variant="primary" />
+      <SkillButton source={{ markdown }} variant="primary" stat={item.manifest.slug} />
       <DownloadButton state={starter.state} onClick={() => void starter.run()} label={t('downloadShort')} className={buttonSecondary} />
       {unlock.error && <UnlockNote unlock={unlock} />}
     </div>

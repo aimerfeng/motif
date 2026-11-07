@@ -10,6 +10,7 @@ import { applyCredit, balanceOf, isUnlocked, unlock, unlocksOf } from '@/lib/cre
 import { creditCosts } from '@/lib/credits/pricing'
 import { listAllSkills, skillFilesFor } from '@/lib/skills'
 import { mediaFor } from '@/lib/media'
+import { track } from '@/lib/stats/track'
 import { captureAvailable, capturePreview } from '@/lib/studio/capture'
 import { evaluateItem } from '@/lib/studio/host'
 import { getRunner } from '@/lib/studio/runner'
@@ -260,6 +261,8 @@ export const STORE_TOOLS = [
         // 先确认参数合法再扣积分：参数写错的单不该花钱。
         const values = tunedValues(item.manifest, input.preset, input.values)
         const paid = unlock(buyer, 'item', item.manifest.slug, creditCosts().unlockItem)
+        // agent 通过 MCP 拿走了代码：排行榜的「拿走」（按账号去重）。
+        void track({ userId: buyer }, item.manifest.slug, 'take')
         const price = itemPrice(pricing)
         const order = await saveOrder({ ...base, kind: 'item', price, status: price.free ? 'delivered' : 'awaiting_payment', slug: item.manifest.slug, values })
         return { data: { ...(await orderView(order, origin)), credits: { charged: paid.charged, balance: paid.balance } } }

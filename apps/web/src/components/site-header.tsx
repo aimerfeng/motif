@@ -13,6 +13,7 @@ export function SiteHeader() {
   const t = useTranslations('nav')
   const links: NavLink[] = [
     { href: '/market', label: t('market') },
+    { href: '/rank', label: t('rank') },
     { href: '/community', label: t('community') },
     { href: '/studio', label: t('studio') },
     { href: '/pricing', label: t('pricing') },
@@ -20,7 +21,11 @@ export function SiteHeader() {
   ]
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-canvas/80 backdrop-blur-xl">
+    // data-over-hero：在首页首屏上时由 ImmersiveHeader 写上，头部变透明（components/home/home-motion.tsx）。
+    <header
+      data-site-header
+      className="sticky top-0 z-40 border-b border-line bg-canvas/80 text-ink backdrop-blur-xl transition-[background-color,border-color,backdrop-filter] duration-(--duration-base) ease-(--ease-out-soft) data-[over-hero]:border-transparent data-[over-hero]:bg-transparent data-[over-hero]:backdrop-blur-none"
+    >
       <div className="relative mx-auto flex h-14 max-w-[1400px] items-center gap-8 px-5 sm:px-8">
         <Link href="/" aria-label={t('home')} className="flex items-center gap-2.5 rounded-md">
           <MotifMark className="size-6" />

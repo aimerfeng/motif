@@ -17,11 +17,13 @@ interface SkillButtonProps {
   label?: string
   variant?: 'overlay' | 'chip' | 'primary'
   className?: string
+  /** 这是哪个市场条目的 Skill（排行榜记一次「复制」）。 */
+  stat?: string
 }
 
-export function SkillButton({ source, label, variant = 'chip', className = '' }: SkillButtonProps) {
+export function SkillButton({ source, label, variant = 'chip', className = '', stat }: SkillButtonProps) {
   const t = useTranslations('skill')
-  const { copy, stateOf } = useCopy()
+  const { copy, stateOf } = useCopy(stat)
   const state = stateOf('skill')
 
   const onClick = () => {

@@ -15,7 +15,8 @@
     "community": "社区",
     "themeLight": "切换到浅色",
     "themeDark": "切换到暗色",
-    "pricing": "积分"
+    "pricing": "积分",
+    "rank": "排行榜"
   },
   "home": {
     "headline": "把好看的动效，带回你的项目",
@@ -64,7 +65,12 @@
         "body": "审核通过就进入市场，署名和来源记在链上。"
       }
     },
-    "sourcesMore": "展开其余 {count} 个"
+    "sourcesMore": "展开其余 {count} 个",
+    "trending": {
+      "title": "本周热门",
+      "lead": "按这一周里真实的浏览、收藏和拿走排名。",
+      "all": "完整榜单"
+    }
   },
   "market": {
     "title": "市场",
@@ -163,9 +169,18 @@
     "sort": {
       "label": "排序",
       "featured": "精选",
-      "new": "最新"
+      "new": "最新",
+      "hot": "热门"
     },
-    "recent": "最近看过"
+    "recent": "最近看过",
+    "rankBadge": "本周 #{rank}",
+    "catalog": {
+      "label": "目录",
+      "featured": "精选",
+      "hot": "本周热门",
+      "only": "只看这一类",
+      "fullRanking": "完整榜单"
+    }
   },
   "item": {
     "back": "市场",
@@ -1355,5 +1370,51 @@
       "submit": "提交",
       "done": "完成，当前余额 {balance}"
     }
+  },
+  "rank": {
+    "title": "排行榜",
+    "lead": "按真实使用排名：浏览、复制、收藏，以及真正拿走和改编的次数。统计从 {since} 开始，每个访客每天只算一次。",
+    "periodsLabel": "时间范围",
+    "periods": {
+      "7d": "本周",
+      "30d": "本月",
+      "all": "全部"
+    },
+    "boardsLabel": "榜单",
+    "boards": {
+      "score": "综合",
+      "favorite": "收藏最多",
+      "take": "拿走最多"
+    },
+    "kindsLabel": "层级",
+    "allKinds": "全部",
+    "metrics": {
+      "view": "浏览",
+      "copy": "复制",
+      "favorite": "收藏",
+      "take": "拿走",
+      "remix": "改编",
+      "score": "综合分"
+    },
+    "change": {
+      "up": "上升 {count} 位",
+      "down": "下降 {count} 位",
+      "same": "名次不变",
+      "new": "新上榜"
+    },
+    "newBadge": "新",
+    "rankLabel": "第 {rank} 名",
+    "trend": "近 14 天走势",
+    "empty": "这段时间还没有条目上榜。",
+    "sparse": "数据还在积累：统计从 {since} 开始。",
+    "picks": "还没上榜的精选",
+    "howTitle": "怎么排的",
+    "how": "综合分 = 浏览 × 1 + 复制 × 3 + 收藏 × 4 + 拿走 × 6 + 改编 × 5。拿走包括 shadcn 安装、下载项目和 MCP 交付；改编是在工作台里打开或 fork 成自己的仓库。同一个访客同一天对同一个条目的同一种操作只算一次，不保存 IP。"
+  },
+  "cursor": {
+    "view": "查看",
+    "toggle": "鼠标效果",
+    "on": "开",
+    "off": "关"
   }
 }

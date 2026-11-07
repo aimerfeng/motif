@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { HeartIcon } from '@/components/icons'
 import { FAVORITES, useLocalList } from '@/lib/local-store'
+import { reportStat } from '@/lib/stats/report'
 
 /**
  * 收藏一个条目（只存在这个浏览器里）。overlay：卡片海报左上角的圆钮；button：详情页里带文字的按钮。
@@ -15,6 +16,7 @@ export function FavoriteButton({ slug, variant = 'overlay', className = '' }: { 
   const toggle = () => {
     if (!favorites) return
     setFavorites(on ? favorites.filter((entry) => entry !== slug) : [slug, ...favorites])
+    reportStat(slug, on ? 'unfavorite' : 'favorite')
   }
   const label = on ? t('remove') : t('add')
 

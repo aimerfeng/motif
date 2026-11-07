@@ -55,6 +55,7 @@ export function CodeView({
   entry,
   values,
   labels,
+  stat,
 }: {
   code: HighlightedCode
   /** 条目文件的原文（复制用），和导出共用同一份。 */
@@ -62,9 +63,11 @@ export function CodeView({
   entry: string
   values: ParamValues
   labels: { copy: string; copied: string; failed: string; tuned: string }
+  /** 这是哪个市场条目的代码（排行榜记一次「复制」）。 */
+  stat?: string
 }) {
   const [active, setActive] = useState(code.files[0]?.path)
-  const { copy, stateOf } = useCopy()
+  const { copy, stateOf } = useCopy(stat)
   const file = code.files.find((f) => f.path === active) ?? code.files[0]
   if (!file) return null
 
