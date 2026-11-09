@@ -1,0 +1,73 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'date-period-selector',
+  status: 'published',
+  title: { 'zh-CN': '时间周期选择器', en: 'Period Selector' },
+  summary: {
+    'zh-CN': '一个日期筛选弹层：先选比较方式（等于、早于、晚于、介于），再选粒度（日、月、季度、半年、年），下面换成对应的日历或月份、季度、年份网格，最后应用或取消。适合报表、财务和数据分析里的时间筛选。',
+    en: 'A date filter popover: pick an operator (is, before, after, between) and a granularity (day, month, quarter, half-year, year), then choose from the matching calendar or month, quarter and year grid, and apply or cancel. Built for report, finance and analytics filters.',
+  },
+  kind: 'component',
+  category: 'date',
+  tags: ['date', 'filter', 'period', 'quarter', 'range', 'popover', 'analytics'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'date-period-selector.tsx', export: 'DatePeriodSelector' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'date-period-selector.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, default: '#6366f1' },
+    {
+      key: 'defaultPeriod',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '默认粒度', en: 'Default period' },
+      default: 'day',
+      options: [
+        { value: 'day', label: { 'zh-CN': '日', en: 'Day' } },
+        { value: 'month', label: { 'zh-CN': '月', en: 'Month' } },
+        { value: 'quarter', label: { 'zh-CN': '季度', en: 'Quarter' } },
+        { value: 'half-year', label: { 'zh-CN': '半年', en: 'Half-year' } },
+        { value: 'year', label: { 'zh-CN': '年', en: 'Year' } },
+      ],
+    },
+    { key: 'allowRange', type: 'boolean', group: 'interaction', label: { 'zh-CN': '允许区间', en: 'Allow range' }, hint: { 'zh-CN': '开启后出现「between」', en: 'Adds the "between" operator' }, default: true },
+    { key: 'showOperators', type: 'boolean', group: 'interaction', label: { 'zh-CN': '显示比较方式', en: 'Show operators' }, default: true },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 8, min: 0, max: 14, step: 1, unit: 'px', safe: [4, 12] },
+    { key: 'yearSpan', type: 'number', group: 'layout', label: { 'zh-CN': '年份数', en: 'Years shown' }, default: 12, min: 2, max: 30, step: 1, safe: [5, 15] },
+    { key: 'maxYear', type: 'number', group: 'layout', label: { 'zh-CN': '最晚年份', en: 'Latest year' }, default: 2026, min: 2000, max: 2040, step: 1 },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '选项卡弹簧', en: 'Tab spring' }, default: { visualDuration: 0.3, bounce: 0.2 } },
+  ],
+  presets: [
+    { id: 'ledger', name: { 'zh-CN': '账本', en: 'Ledger' }, values: { accent: '#6366f1', radius: 8 } },
+    { id: 'fiscal', name: { 'zh-CN': '财年', en: 'Fiscal' }, values: { accent: '#10b981', radius: 4, defaultPeriod: 'quarter', spring: { visualDuration: 0.22, bounce: 0.05 } } },
+    { id: 'citrus', name: { 'zh-CN': '柑橘', en: 'Citrus' }, values: { accent: '#facc15', radius: 12, spring: { visualDuration: 0.4, bounce: 0.4 } } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 4.4, loop: 10 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'reui',
+      repo: 'keenthemes/reui',
+      sha: '6e433ddaba3a4be38182c8c8883b6cc335183c42',
+      paths: ['registry-reui/bases/base/reui/date-selector.tsx', 'registry-reui/bases/base/components/date-selector/c-date-selector-2.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Keenthemes Inc'],
+    },
+    modifications: [
+      'date-fns replaced with small month/day helpers; react-day-picker replaced with a hand-written single-month day grid.',
+      'base-ui Tabs, Popover, Button, Input, ScrollArea and Separator replaced with hand-rolled elements (tablist with arrow keys, dialog popover with Escape / outside click).',
+      'Icons inlined as SVG; free-text input parsing, presetMode, periodTypes filter and two-month layout dropped.',
+      'Added accent, radius, year span and spring params; the tab indicator slides with a motion layoutId spring; the grid scrolls to the selected year.',
+      'The popover wrapper from the upstream example became the exported DatePeriodSelector, with controlled open / draft props for the demo autoplay.',
+    ],
+    assets: [],
+  },
+})

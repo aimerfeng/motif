@@ -13,93 +13,93 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: Apache-2.0
 - Commit: [`43cd68d`](https://github.com/paper-design/shaders/tree/43cd68db79fa0b1759f72ffc941b3238e2a3954c)
 - Paper Shaders (https://shaders.paper.design)
-- Used by: `dithering`, `dot-orbit`, `fluted-glass`, `gem-smoke`, `god-rays`, `grain-gradient`, `halftone-cmyk`, `heatmap`, `liquid-metal`, `mesh-gradient`, `metaballs`, `neuro-noise`, `pool-water`, `pulsing-border`, `simplex-noise`, `smoke-ring`, `spiral`, `swirl`, `warp`, `waves`
+- Used by: `chromatic-lens`, `color-panels`, `dithered-image`, `dithering`, `dot-orbit`, `fluted-glass`, `gem-smoke`, `god-rays`, `grain-gradient`, `halftone-cmyk`, `halftone-dots`, `heatmap`, `liquid-metal`, `mesh-gradient`, `metaballs`, `neuro-noise`, `paper-texture`, `pool-water`, `pulsing-border`, `simplex-noise`, `smoke-ring`, `spiral`, `swirl`, `warp`, `waves`
 
 ### magicuidesign/magicui
 
 - License: MIT
 - Commit: [`d7207e5`](https://github.com/magicuidesign/magicui/tree/d7207e5692d14c00dceafa8488d6d01f197fa0e4)
 - Copyright (c) Magic UI
-- Used by: `animated-beam`, `animated-list`, `aurora-text`, `blur-fade`, `border-beam`, `custom-pointer`, `dock`, `flickering-grid`, `glare-hover`, `interactive-grid`, `interactive-hover-button`, `light-rays`, `line-shadow-text`, `magic-card`, `marquee`, `morphing-text`, `neon-gradient-card`, `number-ticker`, `particles`, `rainbow-button`, `retro-grid`, `shimmer-button`, `smooth-cursor`, `sparkles-text`, `stats-metric-tiles`, `subscribe-button`, `terminal`, `testimonials-wall`, `text-animate`, `warp-tunnel`
+- Used by: `ambient-backlight`, `animated-beam`, `animated-list`, `aurora-text`, `badge-announcement`, `blur-fade`, `border-beam`, `button-ripple`, `cursor-particle-fountain`, `custom-pointer`, `device-frames`, `dock`, `flickering-grid`, `glare-hover`, `icon-sphere`, `image-tile-reveal`, `interactive-grid`, `interactive-hover-button`, `lens-magnifier`, `light-rays`, `line-shadow-text`, `magic-card`, `marquee`, `morphing-text`, `neon-gradient-card`, `number-ticker`, `particles`, `pattern-backdrop`, `rainbow-button`, `retro-grid`, `shimmer-button`, `smooth-cursor`, `sparkles-text`, `stats-metric-tiles`, `subscribe-button`, `terminal`, `testimonials-wall`, `text-animate`, `text-highlighter`, `text-typewriter`, `text-weight-wave`, `theme-toggle-reveal`, `warp-tunnel`
 
 ### ibelick/motion-primitives
 
 - License: MIT
 - Commit: [`120f64f`](https://github.com/ibelick/motion-primitives/tree/120f64f6ca60348e251f929e9c81f11ccbe45eda)
 - Copyright (c) 2024 ibelick
-- Used by: `border-trail`, `image-comparison`, `infinite-slider`, `magnetic`, `morphing-dialog`, `morphing-popover`, `sliding-number`, `spotlight`, `text-effect`, `text-loop`, `text-roll`, `text-scramble`, `tilt`, `toolbar-expandable`
+- Used by: `border-trail`, `card-disclosure`, `cursor-preview-list`, `dialog-modal`, `image-comparison`, `infinite-slider`, `magnetic`, `morphing-dialog`, `morphing-popover`, `progressive-blur`, `scroll-progress`, `sliding-number`, `spotlight`, `text-effect`, `text-loop`, `text-morph-letters`, `text-roll`, `text-scramble`, `tilt`, `toolbar-expandable`
 
 ### kokonut-labs/kokonutui
 
 - License: MIT
 - Commit: [`83eec6d`](https://github.com/kokonut-labs/kokonutui/tree/83eec6d982d400a18438001a8efdbac1f159dd43)
 - Copyright (c) 2025 kokonutUI
-- Used by: `ai-prompt`, `background-paths`, `beams-background`, `card-flip`, `flow-field`, `glitch-text`, `goal-rings`, `hold-button`, `particle-button`
+- Used by: `ai-prompt`, `background-paths`, `beams-background`, `button-share-reveal`, `card-flip`, `flow-field`, `glitch-text`, `goal-rings`, `hold-button`, `input-team-stepper`, `particle-button`, `scroll-focus-list`
 
 ### nolly-studio/cult-ui
 
 - License: MIT
 - Commit: [`ee98a5d`](https://github.com/nolly-studio/cult-ui/tree/ee98a5dd2e319b63cc2e707dd968d6af04209b7e)
 - Copyright (c) 2023 Jordan-Gilliam
-- Used by: `dynamic-island`, `hero-dithering-orb`, `metal-button`
+- Used by: `card-expandable`, `carousel-3d-cylinder`, `carousel-autoplay-progress`, `dot-field-ripple`, `drawer-multi-view`, `dynamic-island`, `hero-dithering-orb`, `logos-cycling-slots`, `metal-button`, `poll-results`, `text-font-cycle`
 
 ### shuding/cobe
 
 - License: MIT
 - Commit: [`7e94076`](https://github.com/shuding/cobe/tree/7e94076fa8c38707f4c9cd114ff4f7c5c880971e)
 - Copyright (c) 2021 Shu Ding
-- Used by: `globe`
+- Used by: `globe`, `hero-globe-horizon`
 
 ### PavelDoGreat/WebGL-Fluid-Simulation
 
 - License: MIT
 - Commit: [`a2d2929`](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/tree/a2d292931f19d9b3b9f564e23e6c32729d2121c3)
 - Copyright (c) 2017 Pavel Dobryakov
-- Used by: `fluid-simulation`
+- Used by: `fluid-ink-reveal`, `fluid-simulation`
 
 ### gl-transitions/gl-transitions
 
 - License: MIT
 - Commit: [`902218a`](https://github.com/gl-transitions/gl-transitions/tree/902218a1b63773ac0d0d9f491951da3392365bfe)
 - Copyright (c) 2017-present gl-transitions contributors
-- Used by: `image-transitions`
-- Upstream-declared origins: Each transition keeps its own Author and License header (all MIT): crosswarp by Eke Péter, CrossZoom by rectalogic, directionalwarp by pschroen, ripple, cube and circleopen by gre, swirl by Sergey Kosarevsky, GlitchMemories by Gunnar Roth, PolkaDotsCurtain by bobylito, DreamyZoom by Zeh Fernando.
+- Used by: `image-transitions`, `melt-transition`, `page-flip-lookbook`, `pixel-hover-card`, `shatter-transition`, `showroom-carousel`, `sketch-edge-transition`, `tile-flip-transition`
+- Upstream-declared origins: Each transition keeps its own Author and License header (all MIT): crosswarp by Eke Péter, CrossZoom by rectalogic, directionalwarp by pschroen, ripple, cube and circleopen by gre, swirl by Sergey Kosarevsky, GlitchMemories by Gunnar Roth, PolkaDotsCurtain by bobylito, DreamyZoom by Zeh Fernando.; Each transition keeps its own Author and License header (both MIT): DoomScreenTransition by Zeh Fernando, luminance_melt by 0gust1 (its simplex noise is by Ian McEwan, Ashima Arts, MIT).; BookFlip.glsl keeps its own header: Author hong, License MIT.; Each transition keeps its own Author and License header (all MIT): pixelize by gre (forked from a gist by benraziel), hexagonalize by Fernando Kuteken, AdvancedMosaic by Sergey Kosarevsky.; The fragment transition keeps its own Author and License header (lbl, MIT).; swap.glsl and doorway.glsl are by gre (MIT); their Author and License headers are kept in shaders.ts.; EdgeTransition keeps its own Author and License header: Woohyun Kim, MIT.; Each transition keeps its own Author and License header (all MIT): GridFlip by TimDonselaar (ported by gre), TilesWave by numb3r23, randomsquares and squareswire by gre.
 
 ### MengTo/threeui
 
 - License: MIT
 - Commit: [`68802d5`](https://github.com/MengTo/threeui/tree/68802d5428071ada5c20db8094b1649e6bb770ed)
 - Copyright (c) 2026 Meng To
-- Used by: `bell-field`, `crt`, `energy-orb`, `laser`, `liquid-form`, `ribbon-field`, `stream-convergence`, `typography-vortex`
-- Upstream-declared origins: Neuform export; HTML Pages + Neuform export; ThreeUI original variants + preserved Neuform export; Neuform export (as declared by threeui); the simplex noise is Ashima Arts’ MIT-licensed webgl-noise.; Sable V1
+- Used by: `bell-field`, `condensation`, `crt`, `energy-orb`, `features-isometric-cards`, `laser`, `liquid-form`, `neon-sign`, `ribbon-field`, `stream-convergence`, `topo-contours`, `typography-vortex`
+- Upstream-declared origins: Neuform export; HTML Pages + Neuform export; ThreeUI original variants + preserved Neuform export; Neuform export (as declared by threeui); the simplex noise is Ashima Arts’ MIT-licensed webgl-noise.; Neuform export (as declared by threeui); Sable V1
 
 ### moumen-soliman/uitripled
 
 - License: MIT
 - Commit: [`05d1837`](https://github.com/moumen-soliman/uitripled/tree/05d18376db775072ed61d0cab8ea184f8f527429)
 - Copyright (c) 2026 uitripled
-- Used by: `changelog-timeline`, `contact-newsletter`, `features-tabbed-showcase`, `hero-glowy-waves`, `posts-list`, `pricing-usage-slider`, `stats-counters`, `team-grid`
+- Used by: `about-journey-timeline`, `changelog-timeline`, `contact-newsletter`, `features-tabbed-showcase`, `gallery-filter-lightbox`, `hero-glowy-waves`, `hero-video-preview`, `posts-list`, `pricing-usage-slider`, `showcase-now-playing`, `showcase-studio-bento`, `stats-counters`, `team-grid`, `workflow-node-canvas`
 
 ### karthikmudunuri/eldoraui
 
 - License: MIT
 - Commit: [`6bb8fd2`](https://github.com/karthikmudunuri/eldoraui/tree/6bb8fd211ecbdfa983f5780bead27d9f3890f20a)
 - Copyright (c) Mudunuri Bhaskara Karthikeya Varma
-- Used by: `cta-ripple-panel`, `features-bento-grid`, `footer-giant-wordmark`, `logos-cloud`, `showcase-integrations`
+- Used by: `cta-circuit-pulse`, `cta-ripple-panel`, `features-bento-grid`, `footer-giant-wordmark`, `logos-cloud`, `showcase-integrations`
 
 ### shadcn-ui/ui
 
 - License: MIT
 - Commit: [`08ab84f`](https://github.com/shadcn-ui/ui/tree/08ab84f7d1952cc1f36055aa8931213a86b01bbd)
 - Copyright (c) 2023 shadcn
-- Used by: `dashboard-area-chart`, `dashboard-kpi-cards`
+- Used by: `auth-magic-link`, `chart-bar-categorical`, `chat-thread`, `dashboard-area-chart`, `dashboard-kpi-cards`, `settings-dialog-nav`, `sidebar-app-collapsible`, `sidebar-calendar-lists`
 
 ### tremorlabs/tremor-blocks
 
 - License: MIT
 - Commit: [`b319e8d`](https://github.com/tremorlabs/tremor-blocks/tree/b319e8d3d3678a4f60f4802f7e85bc1abc52d598)
 - Copyright (c) 2025 Tremor Labs, Inc.
-- Used by: `dashboard-activity-feed`, `dashboard-data-table`, `dashboard-usage-billing`
+- Used by: `auth-glow-tiles`, `banner-workspace-welcome`, `billing-plan-seats`, `card-folded-corner`, `config-resource-form`, `dashboard-activity-feed`, `dashboard-cloud-monitoring`, `dashboard-data-table`, `dashboard-portfolio-holdings`, `dashboard-repo-insights`, `dashboard-uptime-monitor`, `dashboard-usage-billing`, `drawer-ticket-wizard`, `empty-state-ghost-chart`, `features-chart-stack`, `footer-hatched-rails`, `kpi-category-bar`, `kpi-health-signals`, `pricing-single-plan`, `select-chart-type`, `status-uptime-page`, `table-bulk-select`, `table-cohort-retention`
 
 ### launch-ui/launch-ui
 
@@ -113,7 +113,14 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`2b5aebb`](https://github.com/markmead/hyperui/tree/2b5aebbc50d2c9ac89650f51b554f53895b4803c)
 - Copyright (c) Mark Mead
-- Used by: `features-steps`
+- Used by: `chart-radar-polar`, `features-steps`, `footer-link-columns`, `helpdesk-inbox`, `shop-product-cards`
+
+### arthelokyo/astrowind
+
+- License: MIT
+- Commit: [`14e1a69`](https://github.com/arthelokyo/astrowind/tree/14e1a691f80548dcc36370847b1a02c0d0b12821)
+- Copyright (c) 2023 onWidget
+- Used by: `design-conference-site`, `solar-quote-leadgen`, `waitlist-countdown-site`
 
 ### gonzalochale/saas-landing-template
 
@@ -148,14 +155,14 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`e730b6a`](https://github.com/NextJSTemplates/startup-nextjs/tree/e730b6a99c77b96c835f11347231faa4f4e9f767)
 - Copyright (c) 2023 Next.js Templates
-- Used by: `tidepool-startup-landing`
+- Used by: `online-magazine`, `tidepool-startup-landing`
 
 ### mearashadowfax/ScrewFast
 
 - License: MIT
 - Commit: [`aa9da9a`](https://github.com/mearashadowfax/ScrewFast/tree/aa9da9ad278a2bdb005e04ab644a980543797157)
 - Copyright (c) 2024 Emil Gulamov
-- Used by: `ferrant-product-site`
+- Used by: `consulting-firm-site`, `ferrant-product-site`
 
 ### magicuidesign/portfolio
 
@@ -190,7 +197,7 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`c8eaf2c`](https://github.com/webtui/webtui/tree/c8eaf2c10a08e33082602be353ec20affc43770e)
 - Copyright (c) 2025 WebTUI
-- Used by: `style-terminal`
+- Used by: `hackathon-terminal-site`, `style-terminal`
 
 ### jdan/98.css
 
@@ -204,21 +211,21 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`c51f501`](https://github.com/saadeghi/daisyui/tree/c51f50130ffefb293179e6fce8de7ad3f307e45f)
 - Copyright (c) 2020 Pouya Saadeghi
-- Used by: `style-luxury`, `style-synthwave`
+- Used by: `style-corporate`, `style-luxury`, `style-synthwave`
 
 ### jnsahaj/tweakcn
 
 - License: Apache-2.0
 - Commit: [`a3b47b3`](https://github.com/jnsahaj/tweakcn/tree/a3b47b37cba97dd637de517aab52c45ec0f83456)
 - tweakcn (https://github.com/jnsahaj/tweakcn)
-- Used by: `style-claymorphism`
+- Used by: `style-claymorphism`, `style-industrial`
 
 ### catppuccin/catppuccin
 
 - License: MIT
 - Commit: [`d09787d`](https://github.com/catppuccin/catppuccin/tree/d09787dd98ca6fba08af5ef2ae94a7e09f17daca)
 - Copyright (c) 2021 Catppuccin
-- Used by: `style-soft-pastel`
+- Used by: `style-code-editor`, `style-soft-pastel`
 
 ### rose-pine/rose-pine-theme
 
@@ -234,7 +241,7 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - Commit: [`dbdb854`](https://github.com/radix-ui/colors/tree/dbdb85470547c7d34b9001f48fddb08ded335979)
 - Copyright (c) 2021-2022 Modulz
 - Copyright (c) 2022-Present WorkOS
-- Used by: `style-swiss`
+- Used by: `style-dark-pro`, `style-swiss`
 
 ### papercss/papercss
 
@@ -248,7 +255,7 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`b5d7b7b`](https://github.com/edwardtufte/tufte-css/tree/b5d7b7bbe5ce9c4c50fcfad4f19ee3646cfd7ae1)
 - Copyright (c) 2014 Dave Liepmann
-- Used by: `style-editorial`
+- Used by: `analytics-data-ink`, `style-data-ink`, `style-editorial`
 
 ### Logging-Studio/RetroUI
 
@@ -262,7 +269,7 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - License: MIT
 - Commit: [`f759f65`](https://github.com/GriffinJohnston/ldrs/tree/f759f65beb8ab4f4a1f010438072180693ca01ec)
 - Copyright (c) 2022 Griffin Johnston
-- Used by: `loader-dots`, `loader-orbits`
+- Used by: `loader-depth-particles`, `loader-dots`, `loader-echo-lines`, `loader-gooey-blobs`, `loader-kinetic-toys`, `loader-orbits`, `loader-path-trace`
 - Upstream-declared origins: The chase and fading-tick variants follow SpinKit (Copyright (c) 2020 Tobias Ahlin, MIT), tobiasahlin/SpinKit@742a712 spinkit.css.
 
 ### tobiasahlin/SpinKit
@@ -271,6 +278,20 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - Commit: [`742a712`](https://github.com/tobiasahlin/SpinKit/tree/742a71277c49b69053b5beb9fad80d720840a2ab)
 - Copyright (c) 2020 Tobias Ahlin
 - Used by: `loader-bars`
+
+### lukehaas/css-loaders
+
+- License: MIT
+- Commit: [`c7fdf5a`](https://github.com/lukehaas/css-loaders/tree/c7fdf5ac73c71fec3142414adf8d592c7d2c6bf4)
+- Copyright (c) 2014 Luke Haas
+- Used by: `loader-comet-sweep`
+
+### jh3y/whirl
+
+- License: MIT
+- Commit: [`a43ebd5`](https://github.com/jh3y/whirl/tree/a43ebd524ca890e87d651e2530c5596ab1f0a563)
+- Copyright (c) 2019 Jhey Tompkins (jh3y)
+- Used by: `loader-radial-bloom`
 
 ### dvtng/react-loading-skeleton
 
@@ -307,55 +328,85 @@ We only integrate code whose license allows redistribution (MIT, Apache-2.0, ISC
 - Copyright (c) 2023 Emil Kowalski
 - Used by: `dialog-drawer`
 
+### mui/base-ui
+
+- License: MIT
+- Commit: [`6a29b4b`](https://github.com/mui/base-ui/tree/6a29b4b3b414251bf0ed23aa36e145d55e947c37)
+- Copyright (c) 2019 Material-UI SAS
+- Used by: `context-menu-nested`, `emoji-picker-grid`, `input-number-scrub`, `link-preview-card`, `menubar-app`, `scroll-area-fade`, `select-aligned-listbox`, `slider-range-marks`
+
 ### ibelick/prompt-kit
 
 - License: MIT
 - Commit: [`5a94966`](https://github.com/ibelick/prompt-kit/tree/5a9496635cc0e1bf7679fe2a9e35d9b36b99c08a)
 - Copyright (c) 2025 Julien Thibeaut
-- Used by: `loader-text-shimmer`
+- Used by: `ai-agent-steps`, `ai-feedback-bar`, `ai-prompt-suggestions`, `ai-reasoning-trace`, `loader-text-shimmer`
+
+### elevenlabs/ui
+
+- License: MIT
+- Commit: [`23c31bd`](https://github.com/elevenlabs/ui/tree/23c31bd3088814215a8b5d0bfb56b327cad1a578)
+- Copyright (c) 2025 Eleven Labs Inc.
+- Used by: `audio-playlist-player`, `live-transcription-aura`, `transcript-word-sync`, `voice-call-bar`, `voice-dictation-button`
 
 ### shadcnblocks/kibo
 
 - License: MIT
 - Commit: [`3d63cdb`](https://github.com/shadcnblocks/kibo/tree/3d63cdb15b79d972e3dc38a10997987672f9b263)
 - Copyright (c) 2023 — Present shadcnblocks
-- Used by: `avatar-stack`, `badge-status`, `input-dropzone`, `input-rating`
+- Used by: `avatar-stack`, `badge-status`, `color-picker-panel`, `contribution-heatmap`, `date-week-strip`, `dialog-stack-steps`, `gantt-timeline`, `input-dropzone`, `input-rating`, `kanban-board`, `presence-cursors`, `relative-time-zones`, `stories-viewer`, `swipe-deck`, `upload-avatar-crop`
 
 ### xxtomm/spell-ui
 
 - License: MIT
 - Commit: [`fffe96d`](https://github.com/xxtomm/spell-ui/tree/fffe96db7b67b44243bf35815916fdfc58fe5014)
 - Copyright (c) 2025 Spell UI
-- Used by: `button-copy`
+- Used by: `button-copy`, `input-exploding`
 
 ### educlopez/smoothui
 
 - License: MIT
 - Commit: [`b6312bc`](https://github.com/educlopez/smoothui/tree/b6312bce2b6f2ed95d8a6e98a592857884f5ea9e)
 - Copyright (c) 2024 Eduardo Calvo
-- Used by: `input-floating-label`, `loader-ai-thinking`, `scrubber`, `slide-to-confirm`, `switchboard-card`, `tabs-animated`, `time-machine-stack`, `toggle-spring`, `tooltip-spring`, `unlock-face-id`, `wallet-card-stack`
-- Upstream-declared origins: The shimmering status line follows prompt-kit text-shimmer (Copyright (c) 2025 Julien Thibeaut, MIT).
+- Used by: `ai-approval-card`, `ai-orb-face`, `aurora-curtain`, `avatar-generative`, `comment-pin`, `exposure-slider`, `folder-fan-reveal`, `image-generation-panel`, `input-floating-label`, `loader-ai-thinking`, `parallax-layers`, `pinned-list`, `record-play-toggle`, `scroll-kinetic-type`, `scrubber`, `shape-mask-morph`, `slide-to-confirm`, `switchboard-card`, `tabs-animated`, `testimonials-rotating-quote`, `text-gravity-letters`, `text-kinetic-build`, `text-perspective-plane`, `text-split-flap`, `theme-toggle-scenes`, `time-machine-stack`, `toggle-spring`, `tooltip-spring`, `unlock-face-id`, `wallet-card-stack`
+- Upstream-declared origins: The orb shader contains the public-domain MurmurHash3 finalizer (Austin Appleby) and OkLab matrices (Björn Ottosson), as declared upstream.; The shimmering status line follows prompt-kit text-shimmer (Copyright (c) 2025 Julien Thibeaut, MIT).
 
 ### codse/animata
 
 - License: MIT
 - Commit: [`36674e4`](https://github.com/codse/animata/tree/36674e4e9cfdc0f237693d8b736a2bf41065ca1d)
 - Copyright (c) Animata
-- Used by: `blurry-blob`, `card-spread`, `circular-text`, `shooting-stars`, `speed-dial`, `swipe-button`
+- Used by: `blurry-blob`, `boids-flock`, `button-ai-sparkle`, `button-ink-fill`, `card-spread`, `circular-text`, `hero-fanned-cards`, `hero-sticker-headline`, `link-underline-hover`, `shooting-stars`, `speed-dial`, `swipe-button`, `text-cursor-mask`
+- Upstream-declared origins: The metis variant follows Codrops LineHoverStyles (codrops/LineHoverStyles), as cited by the upstream MetisText component.
 
 ### iurvish/uselayouts
 
 - License: MIT
 - Commit: [`678a478`](https://github.com/iurvish/uselayouts/tree/678a478e30272d8101cea97bc6147e0df9dcd652)
 - Copyright (c) 2025 Urvish Mali
-- Used by: `menu-dropdown`, `toggle-segmented`
+- Used by: `book-3d`, `button-async-states`, `button-delete-undo`, `empty-wall-of-love`, `gallery-dynamic-grid`, `infinite-canvas-grid`, `input-search-generate`, `menu-dropdown`, `polaroid-table`, `pricing-plan-picker`, `rocker-glass`, `scroll-split-panels`, `text-stacked-outline`, `toggle-segmented`
+
+### keenthemes/reui
+
+- License: MIT
+- Commit: [`6e433dd`](https://github.com/keenthemes/reui/tree/6e433ddaba3a4be38182c8c8883b6cc335183c42)
+- Copyright (c) 2025 Keenthemes Inc
+- Used by: `chart-area-forecast`, `data-grid-columns`, `date-period-selector`, `dialog-destructive-confirm`, `dialog-shortcuts-cheatsheet`, `filter-chips-builder`, `icon-toggle-morph`, `issue-property-picker`, `onboarding-checklist`, `pagination-pages`, `resizable-panels`, `scrollspy-toc`, `settings-api-keys`, `settings-preferences-form`, `share-access-dialog`, `whats-new-popover`
 
 ### guilhermerodz/input-otp
 
 - License: MIT
 - Commit: [`cf81845`](https://github.com/guilhermerodz/input-otp/tree/cf81845e59ff43c5885c66b4755085a36f071cc1)
 - Copyright (c) 2024 Guilherme Rodz
-- Used by: `input-otp`
+- Used by: `input-otp`, `isometric-layer-explode`
+
+### origin-space/originui
+
+- License: MIT
+- Commit: [`fe6ffa8`](https://github.com/origin-space/originui/tree/fe6ffa81f434a4afe1c01564c13bb237564c42e2)
+- Copyright (c) 2025 coss.com
+- Originally Copyright (c) 2025 Origin UI
+- Used by: `alert-inline-callouts`, `banner-announcement`, `button-reaction-counter`, `checkbox-conditional-reveal`, `checkbox-task-list`, `checkbox-weekday-picker`, `chip-filter-group`, `choice-cards`, `code-install-tabs`, `dialog-onboarding-carousel`, `hover-card-profile`, `input-character-limit`, `input-date-segments`, `input-password-strength`, `input-phone-country`, `input-search-field`, `navbar-ai-chat`, `navbar-app-header`, `navbar-collab-presence`, `navbar-service-status`, `navbar-workspace-switcher`, `notification-action-cards`, `popover-onboarding-tour`, `radio-color-swatches`, `radio-theme-preview`, `rating-scale`, `settings-profile-form`, `sidebar-docs-tree`, `slider-parameter-panel`, `slider-price-histogram`, `table-style-set`, `timeline-issue-thread`, `timeline-milestones`, `tooltip-rich-content`, `tree-file-explorer`, `upload-image-gallery`
 
 ## Bundled runtimes and fonts
 

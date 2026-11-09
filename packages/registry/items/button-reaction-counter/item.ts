@@ -1,0 +1,97 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'button-reaction-counter',
+  status: 'published',
+  title: { 'zh-CN': '投票与点赞计数按钮', en: 'Vote & Reaction Counter' },
+  summary: {
+    'zh-CN': '赞 / 踩成对按钮，以及带计数的点赞、收藏按钮：按下切换状态，图标填色，数字上下滚动。横排、竖排和「按钮 | 计数」分段三种布局。适合论坛、更新日志、代码仓库和反馈墙。',
+    en: 'Upvote / downvote pairs and like or star buttons with an attached count: pressing toggles the state, the icon fills and the number rolls up or down. Horizontal, vertical and split (button | count) layouts. Made for forums, changelogs, repositories and feedback boards.',
+  },
+  kind: 'component',
+  category: 'button',
+  tags: ['vote', 'upvote', 'like', 'star', 'counter', 'button', 'a11y'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'button-reaction-counter.tsx', export: 'ReactionCounter' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'button-reaction-counter.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'kind',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '类型', en: 'Kind' },
+      default: 'vote',
+      options: [
+        { value: 'vote', label: { 'zh-CN': '赞 / 踩', en: 'Up / down vote' } },
+        { value: 'like', label: { 'zh-CN': '点赞', en: 'Like' } },
+        { value: 'star', label: { 'zh-CN': '收藏', en: 'Star' } },
+      ],
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '布局', en: 'Layout' },
+      default: 'horizontal',
+      options: [
+        { value: 'horizontal', label: { 'zh-CN': '横排', en: 'Horizontal' } },
+        { value: 'vertical', label: { 'zh-CN': '竖排', en: 'Vertical' } },
+        { value: 'split', label: { 'zh-CN': '按钮 | 计数', en: 'Split' } },
+      ],
+    },
+    { key: 'initialCount', type: 'number', group: 'content', label: { 'zh-CN': '初始计数', en: 'Initial count' }, default: 235, min: 0, max: 99999, step: 1 },
+    { key: 'activeColor', type: 'color', group: 'look', label: { 'zh-CN': '激活色', en: 'Active color' }, default: '#f97316' },
+    { key: 'rollDuration', type: 'number', group: 'motion', label: { 'zh-CN': '滚动时长', en: 'Roll duration' }, default: 0.35, min: 0.15, max: 0.8, step: 0.05, unit: 's', safe: [0.25, 0.5] },
+    {
+      key: 'size',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '尺寸', en: 'Size' },
+      default: 'md',
+      options: [
+        { value: 'sm', label: { 'zh-CN': '小', en: 'Small' } },
+        { value: 'md', label: { 'zh-CN': '中', en: 'Medium' } },
+        { value: 'lg', label: { 'zh-CN': '大', en: 'Large' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 6, min: 0, max: 20, step: 1, unit: 'px', safe: [4, 20] },
+  ],
+  presets: [
+    { id: 'forum', name: { 'zh-CN': '论坛', en: 'Forum' }, values: { kind: 'vote', layout: 'horizontal', activeColor: '#f97316', radius: 6 } },
+    { id: 'repo', name: { 'zh-CN': '仓库星标', en: 'Repo Star' }, values: { kind: 'star', layout: 'split', activeColor: '#facc15', initialCount: 729, radius: 6 } },
+    { id: 'pill', name: { 'zh-CN': '胶囊点赞', en: 'Pill Like' }, values: { kind: 'like', layout: 'horizontal', activeColor: '#38bdf8', initialCount: 86, radius: 20 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.8, posterTime: 3, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: [
+        'apps/origin/registry/default/components/comp-102.tsx',
+        'apps/origin/registry/default/components/comp-103.tsx',
+        'apps/origin/registry/default/components/comp-117.tsx',
+        'apps/origin/registry/default/components/comp-118.tsx',
+        'apps/origin/registry/default/ui/button.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Merged the static samples into one component with a kind (vote, like, star) and a layout (horizontal, vertical, split) parameter.',
+      'Inlined the base and outline classes of ui/button (no cva / radix Slot); lucide icons are inline SVG.',
+      'Added toggle state (controlled or uncontrolled), aria-pressed, an accent-filled icon and a rolling count animated with motion/react; reduced motion turns the roll into a fade.',
+      'Size, corner radius, active color, initial count and roll duration are parameters.',
+    ],
+    assets: [],
+  },
+})

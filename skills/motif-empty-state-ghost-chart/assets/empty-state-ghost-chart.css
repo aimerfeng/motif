@@ -1,0 +1,25 @@
+/* SPDX-License-Identifier: MIT */
+/* Copyright (c) 2025 Tremor Labs, Inc. */
+/* Source: https://github.com/tremorlabs/tremor-blocks/blob/b319e8d/src/content/components/empty-states/empty-state-01.tsx */
+/* Modified by Motif; see the item's provenance. */
+
+/* 占位图形缓慢明暗呼吸，像数据正在路上；只动 opacity。 */
+.esg-shimmer .esg-ghost {
+  animation: esg-pulse 2.4s ease-in-out infinite;
+}
+@keyframes esg-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esg-shimmer .esg-ghost {
+    animation: none;
+    opacity: 0.7;
+  }
+}

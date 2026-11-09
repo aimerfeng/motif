@@ -1,0 +1,96 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2022 Griffin Johnston
+ * Source: https://github.com/GriffinJohnston/ldrs/tree/f759f65/src/elements (infinity.scss, squircle.scss, trefoil.scss, reuleaux.scss, square.scss, cardio.scss)
+ * Modified by Motif; see the item's provenance.
+ */
+.mpt-root {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 0;
+  color: var(--mpt-color);
+}
+
+.mpt-svg {
+  display: block;
+  overflow: visible;
+}
+
+/*
+ * 线段绕行：pathLength 固定为 100，dashoffset 走完 100 正好一圈，接缝处无跳变。
+ * 动画只改 stroke-dashoffset：描线类加载器只能这样做，而这里只是两条很短的 SVG 路径，重绘成本可以忽略。
+ */
+.mpt-car {
+  stroke-dashoffset: 0;
+  animation: mpt-travel var(--mpt-dur) linear infinite;
+}
+.mpt-car.mpt-reverse {
+  animation-name: mpt-travel-reverse;
+}
+@keyframes mpt-travel {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+@keyframes mpt-travel-reverse {
+  to {
+    stroke-dashoffset: 100;
+  }
+}
+
+/* 心跳线：从左往右画出整条，停留片刻再淡出，下一拍重新开始。 */
+.mpt-draw .mpt-car {
+  stroke-dashoffset: 100;
+  animation:
+    mpt-cardio-draw var(--mpt-dur) cubic-bezier(0.45, 0, 0.4, 1) infinite,
+    mpt-cardio-fade var(--mpt-dur) ease-out infinite;
+}
+@keyframes mpt-cardio-draw {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  68%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes mpt-cardio-fade {
+  0% {
+    opacity: 0;
+  }
+  14%,
+  62% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+ * 减少动态效果：线段停在轮廓上一段好看的弯处（心跳线完整显示），只做缓慢的明暗呼吸，
+ * 让人仍然知道「正在加载」，而不是误以为卡死。
+ */
+@media (prefers-reduced-motion: reduce) {
+  .mpt-car,
+  .mpt-car.mpt-reverse,
+  .mpt-draw .mpt-car {
+    stroke-dashoffset: var(--mpt-rest);
+    animation: mpt-breathe 2.4s ease-in-out infinite;
+  }
+  .mpt-draw .mpt-car {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes mpt-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}

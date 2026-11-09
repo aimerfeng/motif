@@ -1,0 +1,85 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'live-transcription-aura',
+  status: 'published',
+  title: { 'zh-CN': '实时转写', en: 'Live Transcription' },
+  summary: {
+    'zh-CN': '整屏的听写界面：识别出的每个字从模糊里浮现，还没确认的尾巴保持暗淡、确认后才变亮，画面始终停在最新一行；聆听时底边聚起一片会呼吸的多色极光。适合会议记录、实时字幕和语音日记类应用。',
+    en: 'A full-panel dictation screen: each recognised character blurs into focus, the unconfirmed tail stays dimmed until it is committed, the view keeps the newest line in sight, and a multi-color aurora pools and pulses along the bottom edge while listening. For meeting notes, live captions and voice journaling apps.',
+  },
+  kind: 'component',
+  category: 'audio',
+  tags: ['audio', 'speech-to-text', 'transcription', 'captions', 'dictation', 'aurora'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'live-transcription-aura.tsx', export: 'LiveTranscriptionAura' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'live-transcription-aura.tsx', role: 'component' },
+    { path: 'live-transcription-aura.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'auraColors',
+      type: 'palette',
+      group: 'look',
+      label: { 'zh-CN': '极光颜色', en: 'Aura colors' },
+      hint: { 'zh-CN': '依次用于中间、左右两角和流光层，不足时循环取色', en: 'Used for the center pool, the two corners and the shimmer band; fewer colors wrap around' },
+      default: ['#22d3ee', '#a855f7', '#fb923c', '#86efac', '#c084fc'],
+      minItems: 2,
+      maxItems: 5,
+    },
+    { key: 'auraIntensity', type: 'number', group: 'look', label: { 'zh-CN': '极光强度', en: 'Aura intensity' }, default: 1, min: 0.4, max: 1.4, step: 0.05, unit: 'x', safe: [0.7, 1.2] },
+    { key: 'blurAmount', type: 'number', group: 'motion', label: { 'zh-CN': '文字浮现模糊', en: 'Character blur' }, default: 3.5, min: 0, max: 10, step: 0.5, unit: 'px', safe: [2, 6] },
+    { key: 'charDelay', type: 'number', group: 'motion', label: { 'zh-CN': '逐字间隔', en: 'Character stagger' }, default: 0.012, min: 0.004, max: 0.04, step: 0.002, unit: 's', safe: [0.008, 0.024] },
+    { key: 'fontSize', type: 'number', group: 'layout', label: { 'zh-CN': '字号', en: 'Font size' }, default: 20, min: 16, max: 32, step: 1, unit: 'px', safe: [18, 28] },
+    { key: 'partialOpacity', type: 'number', group: 'look', label: { 'zh-CN': '未确认文字亮度', en: 'Unconfirmed opacity' }, hint: { 'zh-CN': '识别中、还没确认的尾巴', en: 'The tail that is still being recognised' }, default: 0.6, min: 0.35, max: 0.8, step: 0.05, safe: [0.45, 0.7] },
+    {
+      key: 'align',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '对齐', en: 'Alignment' },
+      default: 'start',
+      options: [
+        { value: 'start', label: { 'zh-CN': '左对齐', en: 'Start' } },
+        { value: 'center', label: { 'zh-CN': '居中', en: 'Center' } },
+      ],
+    },
+    { key: 'showControls', type: 'boolean', group: 'interaction', label: { 'zh-CN': '显示停止按钮', en: 'Show Stop button' }, hint: { 'zh-CN': '聆听时底部的停止按钮和快捷键提示', en: 'The Stop button and shortcut hint shown while listening' }, default: true },
+  ],
+  presets: [
+    { id: 'prism', name: { 'zh-CN': '棱镜', en: 'Prism' }, values: { auraColors: ['#22d3ee', '#a855f7', '#fb923c', '#86efac', '#c084fc'], auraIntensity: 1 } },
+    { id: 'tidewater', name: { 'zh-CN': '潮汐', en: 'Tidewater' }, values: { auraColors: ['#38bdf8', '#6366f1', '#2dd4bf', '#a5f3fc'], auraIntensity: 0.9, align: 'center', fontSize: 24 } },
+    { id: 'campfire', name: { 'zh-CN': '篝火', en: 'Campfire' }, values: { auraColors: ['#f97316', '#e11d48', '#facc15', '#fb7185'], auraIntensity: 0.85, partialOpacity: 0.5, blurAmount: 5 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  guidance: {
+    rules: [
+      'The component is controlled: feed it `status` (idle / connecting / connected), the committed segments and the current partial from any speech-to-text source; `onStart` / `onStop` are called from the buttons and Cmd/Ctrl+K.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.25, posterTime: 9.5, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'elevenlabs-ui',
+      repo: 'elevenlabs/ui',
+      sha: '23c31bd3088814215a8b5d0bfb56b327cad1a578',
+      paths: ['apps/www/registry/elevenlabs-ui/blocks/realtime-transcriber-01/page.tsx', 'apps/www/registry/elevenlabs-ui/ui/shimmering-text.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Eleven Labs Inc.'],
+    },
+    modifications: [
+      'The useScribe realtime connection, token server action, sounds and latency tracking are removed; the component is controlled by status, committed segments and a partial, so any speech-to-text source can drive it (the demo uses a scripted feed on useFrameLoop time).',
+      'framer-motion is replaced by motion/react; the per-character motion spans are a CSS blur-in with staggered delays, and only the unconfirmed tail is dimmed instead of the whole transcript.',
+      'The fixed-viewport aura and controls are positioned inside the panel (vh/vw became percentages); aura colors and intensity, blur, stagger, font size, partial opacity, alignment and the Stop button are params.',
+      'The language selector, next/link badge, lucide icon, shadcn Button/Badge and ShimmeringText are replaced by plain elements, an inline SVG and a CSS shimmer.',
+      'Auto-scroll keeps the newest line in view without timers and stops while the reader scrolls up; a screen-reader log announces committed segments; reduced motion turns off the aura, shimmer and blur-in animations.',
+    ],
+    assets: [],
+  },
+})

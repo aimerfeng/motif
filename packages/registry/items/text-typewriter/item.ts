@@ -1,0 +1,83 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'text-typewriter',
+  status: 'published',
+  title: { 'zh-CN': '打字机', en: 'Typewriter' },
+  summary: {
+    'zh-CN': '逐字打出一个短语，停一下再删掉，换下一个，光标可选竖线、方块或下划线。适合首屏标语、搜索框占位和聊天演示。',
+    en: 'Types a phrase one character at a time, pauses, deletes it and moves on to the next, with a line, block or underscore caret. For hero taglines, search placeholders and chat demos.',
+  },
+  kind: 'effect',
+  category: 'text',
+  tags: ['text', 'typewriter', 'typing', 'caret', 'headline', 'motion'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'text-typewriter.tsx', export: 'TypingAnimation' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'text-typewriter.tsx', role: 'component' },
+    { path: 'text-typewriter.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'words',
+      type: 'text',
+      group: 'content',
+      label: { 'zh-CN': '短语', en: 'Phrases' },
+      hint: { 'zh-CN': '用英文逗号分隔，依次打出', en: 'Comma-separated, typed in order' },
+      default: 'Design,Build,Ship',
+      maxLength: 120,
+    },
+    { key: 'typeSpeed', type: 'number', group: 'motion', label: { 'zh-CN': '打字间隔', en: 'Type interval' }, default: 100, min: 30, max: 250, step: 5, unit: 'ms', safe: [50, 160] },
+    { key: 'deleteSpeed', type: 'number', group: 'motion', label: { 'zh-CN': '删除间隔', en: 'Delete interval' }, default: 50, min: 15, max: 200, step: 5, unit: 'ms', safe: [25, 100] },
+    { key: 'pauseDelay', type: 'number', group: 'motion', label: { 'zh-CN': '停顿', en: 'Pause' }, default: 1000, min: 300, max: 3000, step: 50, unit: 'ms', safe: [600, 2000] },
+    { key: 'loop', type: 'boolean', group: 'motion', label: { 'zh-CN': '循环', en: 'Loop' }, default: true },
+    {
+      key: 'cursorStyle',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '光标', en: 'Cursor' },
+      default: 'line',
+      options: [
+        { value: 'line', label: { 'zh-CN': '竖线', en: 'Line' } },
+        { value: 'block', label: { 'zh-CN': '方块', en: 'Block' } },
+        { value: 'underscore', label: { 'zh-CN': '下划线', en: 'Underscore' } },
+      ],
+    },
+    { key: 'showCursor', type: 'boolean', group: 'look', label: { 'zh-CN': '显示光标', en: 'Show cursor' }, default: true },
+    { key: 'blinkCursor', type: 'boolean', group: 'look', label: { 'zh-CN': '光标闪烁', en: 'Blink cursor' }, default: true },
+  ],
+  presets: [
+    { id: 'studio', name: { 'zh-CN': '工作室', en: 'Studio' }, values: { typeSpeed: 100, deleteSpeed: 50, pauseDelay: 1000, cursorStyle: 'line' } },
+    { id: 'terminal', name: { 'zh-CN': '终端', en: 'Terminal' }, values: { typeSpeed: 60, deleteSpeed: 30, pauseDelay: 1400, cursorStyle: 'block' } },
+    { id: 'telegram', name: { 'zh-CN': '电报', en: 'Telegram' }, values: { typeSpeed: 160, deleteSpeed: 80, pauseDelay: 1800, cursorStyle: 'underscore' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 0.9, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: [
+        'apps/www/registry/magicui/typing-animation.tsx',
+        'apps/www/public/r/typing-animation.json',
+        'apps/www/registry/example/typing-animation-demo-2.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'The setTimeout-driven state machine now advances on useFrameLoop time, so it pauses off-screen and plays in captures; the typing, pause and delete logic is unchanged.',
+      'Phrases come from a comma-separated words parameter (an array can still be passed as wordList); typeSpeed, deleteSpeed, pauseDelay, loop, cursor style, showCursor and blinkCursor are parameters. loop defaults to true.',
+      'Dropped startOnView/useInView and the duration alias; the blink-cursor keyframes moved into the item stylesheet.',
+      'Added reduced-motion handling (the first phrase is shown complete, cursor does not blink) and a screen-reader copy of all phrases.',
+    ],
+    assets: [],
+  },
+})

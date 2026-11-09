@@ -1,0 +1,120 @@
+import { defineItem } from '@motif/schema'
+
+const UP = 'apps/origin/registry/default/components/'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'choice-cards',
+  status: 'published',
+  title: { 'zh-CN': '可选卡片组', en: 'Selectable Option Cards' },
+  summary: {
+    'zh-CN': '整张卡片就是一个复选框或单选框：图标、标题带副标题、一行说明，角上一个勾选标记；可以排成列表、两列网格或紧凑小块（2 CPU / 4 CPU 那种），售罄的块变灰不能选。适合附加服务、服务器配置、付款方式和引导页偏好。',
+    en: 'Whole cards act as checkboxes or radios: a mark, a label with sublabel, a description and an indicator in the corner, laid out as a list, a grid or compact tiles (2 CPU / 4 CPU style) with sold-out tiles disabled. Made for add-ons, server configuration, payment methods and onboarding preferences.',
+  },
+  kind: 'component',
+  category: 'checkbox',
+  tags: ['checkbox', 'radio', 'card', 'options', 'form', 'a11y'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'choice-cards.tsx', export: 'ChoiceCards' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'choice-cards.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'mode',
+      type: 'select',
+      group: 'interaction',
+      label: { 'zh-CN': '选择方式', en: 'Mode' },
+      default: 'checkbox',
+      options: [
+        { value: 'checkbox', label: { 'zh-CN': '多选', en: 'Checkbox' } },
+        { value: 'radio', label: { 'zh-CN': '单选', en: 'Radio' } },
+      ],
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '布局', en: 'Layout' },
+      default: 'list',
+      options: [
+        { value: 'list', label: { 'zh-CN': '列表', en: 'List' } },
+        { value: 'grid', label: { 'zh-CN': '网格', en: 'Grid' } },
+        { value: 'tiles', label: { 'zh-CN': '小块', en: 'Tiles' } },
+      ],
+    },
+    { key: 'columns', type: 'number', group: 'layout', label: { 'zh-CN': '列数', en: 'Columns' }, hint: { 'zh-CN': '网格和小块布局的列数', en: 'Columns for the grid and tiles layouts' }, default: 3, min: 2, max: 4, step: 1, safe: [2, 3] },
+    {
+      key: 'indicator',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '勾选标记', en: 'Indicator' },
+      default: 'corner',
+      options: [
+        { value: 'corner', label: { 'zh-CN': '角上', en: 'Corner' } },
+        { value: 'hidden', label: { 'zh-CN': '隐藏（只看边框）', en: 'Hidden (border only)' } },
+      ],
+    },
+    { key: 'showIcon', type: 'boolean', group: 'content', label: { 'zh-CN': '显示图标', en: 'Show icon' }, default: true },
+    { key: 'showDescription', type: 'boolean', group: 'content', label: { 'zh-CN': '显示说明', en: 'Show description' }, default: true },
+    {
+      key: 'density',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '密度', en: 'Density' },
+      default: 'comfortable',
+      options: [
+        { value: 'comfortable', label: { 'zh-CN': '宽松', en: 'Comfortable' } },
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 6, min: 0, max: 16, step: 1, unit: 'px', safe: [4, 12] },
+    {
+      key: 'accent',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '强调色', en: 'Accent' },
+      hint: { 'zh-CN': '选中的边框和标记；标记里的勾按亮度取白色或近黑色', en: 'Selected border and indicator; the check uses white or near-black by luminance' },
+      default: '#e4e4e7',
+    },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '素白', en: 'Origin' }, values: { mode: 'checkbox', layout: 'list', indicator: 'corner', accent: '#e4e4e7', radius: 6 } },
+    { id: 'harbor', name: { 'zh-CN': '港湾', en: 'Harbor' }, values: { mode: 'radio', layout: 'grid', columns: 2, indicator: 'corner', accent: '#3b82f6', radius: 10 } },
+    { id: 'rack', name: { 'zh-CN': '机柜', en: 'Rack' }, values: { mode: 'radio', layout: 'tiles', columns: 3, indicator: 'hidden', accent: '#34d399', radius: 6, density: 'compact' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.6, posterTime: 2.4, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: [
+        `${UP}comp-144.tsx`,
+        `${UP}comp-145.tsx`,
+        `${UP}comp-147.tsx`,
+        `${UP}comp-159.tsx`,
+        `${UP}comp-162.tsx`,
+        `${UP}comp-163.tsx`,
+        `${UP}comp-164.tsx`,
+        'apps/origin/registry/default/ui/checkbox.tsx',
+        'apps/origin/registry/default/ui/radio-group.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Merged the checkbox card, radio card, grid card and tile examples into one component with mode, layout, columns, density, radius and indicator params.',
+      'Replaced Radix Checkbox / RadioGroup with native inputs and a hand-drawn indicator (upstream check and dot paths); the whole card is the label.',
+      'Replaced lucide / remix icons and the brand marks with inline SVG glyphs passed in by the caller; accent color with luminance-picked check ink.',
+      'Demo cycles the selection on the frame loop until the viewer clicks.',
+    ],
+    assets: [],
+  },
+})

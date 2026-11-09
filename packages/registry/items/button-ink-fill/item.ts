@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'button-ink-fill',
+  status: 'published',
+  title: { 'zh-CN': '墨水填充按钮', en: 'Ink Fill Button' },
+  summary: {
+    'zh-CN': '指针从哪里进入，一团墨水就从哪里漫开，跟着指针走，离开时再从出口处收回去，文字随之反色。适合风格大胆、偏杂志感网站的主按钮。',
+    en: 'On hover an ink circle grows from the exact point where the pointer entered, follows it while inside, and shrinks back out through the exit point while the label inverts. For primary CTAs on bold, editorial sites.',
+  },
+  kind: 'component',
+  category: 'button',
+  tags: ['button', 'hover', 'ripple', 'ink', 'fill', 'cta'],
+  runtime: ['react', 'css'],
+  entry: { file: 'button-ink-fill.tsx', export: 'ButtonInkFill' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'button-ink-fill.tsx', role: 'component' },
+    { path: 'button-ink-fill.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '按钮文案', en: 'Label' }, default: 'Subscribe to the letter', maxLength: 28 },
+    {
+      key: 'fill',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '底色', en: 'Fill' },
+      hint: { 'zh-CN': '文字按底色深浅自动取黑或白', en: 'The label picks light or dark ink from it' },
+      default: '#cbfe7e',
+    },
+    {
+      key: 'inkColor',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '墨水色', en: 'Ink color' },
+      hint: { 'zh-CN': '墨水盖住后，文字按它的深浅自动反色', en: 'The label inverts to light or dark ink over it' },
+      default: '#000000',
+    },
+    {
+      key: 'size',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '尺寸', en: 'Size' },
+      default: 'md',
+      options: [
+        { value: 'sm', label: { 'zh-CN': '小', en: 'Small' } },
+        { value: 'md', label: { 'zh-CN': '中', en: 'Medium' } },
+        { value: 'lg', label: { 'zh-CN': '大', en: 'Large' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 999, min: 0, max: 999, step: 1, unit: 'px' },
+    { key: 'duration', type: 'number', group: 'motion', label: { 'zh-CN': '漫开时长', en: 'Duration' }, default: 0.25, min: 0.15, max: 0.8, step: 0.05, unit: 's', safe: [0.2, 0.5] },
+  ],
+  presets: [
+    { id: 'lime', name: { 'zh-CN': '青柠', en: 'Lime' }, values: { fill: '#cbfe7e', inkColor: '#000000', radius: 999, duration: 0.25 } },
+    { id: 'press', name: { 'zh-CN': '油墨', en: 'Press' }, values: { fill: '#f2efe8', inkColor: '#d6361f', radius: 0, duration: 0.4 } },
+    { id: 'midnight', name: { 'zh-CN': '午夜', en: 'Midnight' }, values: { fill: '#1d2440', inkColor: '#f5c84c', radius: 14, duration: 0.3 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 2, posterTime: 1.8, loop: 4 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'animata',
+      repo: 'codse/animata',
+      sha: '36674e4e9cfdc0f237693d8b736a2bf41065ca1d',
+      paths: ['animata/button/ripple-button.tsx', 'animata/button/ripple-button.css'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Animata'],
+    },
+    modifications: [
+      'Fill color, ink color, size, corner radius, duration and label are parameters (upstream defaults kept); the label and inverted label colors are picked by WCAG contrast against the fill and the ink instead of fixed colors.',
+      'The inverted label color follows a data-inked attribute set by the ripple logic instead of :hover, so the demo autoplay can drive it with synthetic mouse events.',
+      'Dropped the Jost font class; added a focus-visible ring, aria-hidden on the ink span and a reduced-motion rule that makes the ink appear instantly.',
+    ],
+    assets: [],
+  },
+})

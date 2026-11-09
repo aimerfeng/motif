@@ -1,0 +1,71 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dialog-modal',
+  status: 'published',
+  title: { 'zh-CN': '弹簧对话框', en: 'Spring Dialog' },
+  summary: {
+    'zh-CN': '基于原生 dialog 的模态框，可选缩放、上浮、模糊、倾斜四种弹簧入场，背后是模糊遮罩。Esc 或点遮罩关闭，焦点回到触发按钮。适合确认、简短表单和公告。',
+    en: 'A native dialog modal that springs in with a choice of entrances (scale, rise, blur, tilt) over a blurred backdrop. Esc or a backdrop click closes it and focus returns to the trigger. For confirmations, short forms and announcements.',
+  },
+  kind: 'component',
+  category: 'dialog',
+  tags: ['dialog', 'modal', 'spring', 'backdrop', 'a11y', 'motion-primitives'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'dialog-modal.tsx', export: 'DialogModal' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dialog-modal.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'entrance',
+      type: 'select',
+      group: 'motion',
+      label: { 'zh-CN': '入场方式', en: 'Entrance' },
+      default: 'rise',
+      options: [
+        { value: 'scale', label: { 'zh-CN': '缩放', en: 'Scale' } },
+        { value: 'rise', label: { 'zh-CN': '上浮', en: 'Rise' } },
+        { value: 'blur', label: { 'zh-CN': '模糊', en: 'Blur' } },
+        { value: 'tilt', label: { 'zh-CN': '倾斜', en: 'Tilt' } },
+      ],
+    },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '弹簧', en: 'Spring' }, default: { visualDuration: 0.4, bounce: 0 } },
+    { key: 'backdropBlur', type: 'number', group: 'look', label: { 'zh-CN': '遮罩模糊', en: 'Backdrop blur' }, default: 4, min: 0, max: 16, step: 1, unit: 'px', safe: [2, 10] },
+    { key: 'backdropOpacity', type: 'number', group: 'look', label: { 'zh-CN': '遮罩深度', en: 'Backdrop dim' }, default: 0.5, min: 0.1, max: 0.85, step: 0.05, safe: [0.3, 0.7] },
+    { key: 'width', type: 'number', group: 'layout', label: { 'zh-CN': '宽度', en: 'Width' }, default: 448, min: 320, max: 640, step: 8, unit: 'px', safe: [380, 520] },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 8, min: 0, max: 28, step: 1, unit: 'px', safe: [6, 20] },
+    { key: 'closeButton', type: 'boolean', group: 'interaction', label: { 'zh-CN': '关闭按钮', en: 'Close button' }, default: true },
+    { key: 'dismissOnBackdrop', type: 'boolean', group: 'interaction', label: { 'zh-CN': '点遮罩关闭', en: 'Close on backdrop' }, default: true },
+  ],
+  presets: [
+    { id: 'waitlist', name: { 'zh-CN': '候场', en: 'Waitlist' }, values: { entrance: 'rise', spring: { visualDuration: 0.4, bounce: 0 }, radius: 8 } },
+    { id: 'pop', name: { 'zh-CN': '弹出', en: 'Pop' }, values: { entrance: 'scale', spring: { visualDuration: 0.3, bounce: 0.25 }, radius: 16, backdropBlur: 2 } },
+    { id: 'haze', name: { 'zh-CN': '雾隐', en: 'Haze' }, values: { entrance: 'blur', spring: { visualDuration: 0.5, bounce: 0 }, radius: 20, backdropBlur: 10, backdropOpacity: 0.35 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 1.5 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1, posterTime: 3, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'motion-primitives',
+      repo: 'ibelick/motion-primitives',
+      sha: '120f64f6ca60348e251f929e9c81f11ccbe45eda',
+      paths: ['components/core/dialog.tsx', 'app/docs/dialog/dialog-custom-variants-transtion.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 ibelick'],
+    },
+    modifications: [
+      'lucide X replaced with an inline SVG; @/lib/utils cn replaced with @motif/runtime; the react-aria usePreventScroll hook replaced with a small root overflow lock.',
+      'Added entrance presets (the upstream default scale and the upstream docs blur-rise variant, plus blur and tilt), a spring transition from params, and an exit variant mirroring the entrance.',
+      'Backdrop dim/blur, width, radius, close button and backdrop dismissal come from params; colors use Motif theme tokens. Focus is explicitly returned to the opener on close; the trigger gets aria-haspopup/expanded/controls.',
+      'Reduced motion swaps the entrance for a short fade.',
+    ],
+    assets: [],
+  },
+})

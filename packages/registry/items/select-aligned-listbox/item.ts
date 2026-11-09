@@ -1,0 +1,77 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'select-aligned-listbox',
+  status: 'published',
+  title: { 'zh-CN': '对齐式下拉选择', en: 'Aligned Select' },
+  summary: {
+    'zh-CN': '像 macOS 那样的下拉选择：弹出时当前选中项正好叠在触发按钮上，支持分组、勾选标记、长列表的上下滚动箭头和键入跳转。适合表单、设置页和工具栏。',
+    en: 'A macOS-style select whose popup opens with the chosen item lined up exactly over the trigger, with grouped options, a check indicator, scroll arrows for long lists and type-ahead. For forms, settings and toolbars.',
+  },
+  kind: 'component',
+  category: 'select',
+  tags: ['select', 'listbox', 'dropdown', 'form', 'a11y', 'type-ahead'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'select-aligned-listbox.tsx', export: 'SelectAlignedListbox' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'select-aligned-listbox.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'accent',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '高亮色', en: 'Highlight' },
+      hint: { 'zh-CN': '高亮项的底色，文字颜色按亮度自动取深浅', en: 'Background of the highlighted item; its text picks light or dark ink' },
+      default: '#ffffff',
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 0, min: 0, max: 12, step: 1, unit: 'px', safe: [0, 8] },
+    {
+      key: 'alignToItem',
+      type: 'boolean',
+      group: 'layout',
+      label: { 'zh-CN': '对齐到选中项', en: 'Align to item' },
+      hint: { 'zh-CN': '关闭后弹层出现在按钮下方', en: 'When off, the popup opens below the trigger' },
+      default: true,
+    },
+    { key: 'width', type: 'number', group: 'layout', label: { 'zh-CN': '最小宽度', en: 'Min width' }, default: 160, min: 140, max: 260, step: 4, unit: 'px', safe: [160, 220] },
+    { key: 'maxHeight', type: 'number', group: 'layout', label: { 'zh-CN': '最大高度', en: 'Max height' }, default: 288, min: 160, max: 420, step: 8, unit: 'px', safe: [224, 360] },
+    { key: 'grouped', type: 'boolean', group: 'content', label: { 'zh-CN': '分组选项', en: 'Grouped options' }, default: true },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '弹出弹簧', en: 'Popup spring' }, default: { visualDuration: 0.12, bounce: 0 } },
+  ],
+  presets: [
+    { id: 'mono', name: { 'zh-CN': '墨白', en: 'Ink & Paper' }, values: { accent: '#ffffff', radius: 0, alignToItem: true } },
+    { id: 'signal', name: { 'zh-CN': '信号蓝', en: 'Signal' }, values: { accent: '#3b82f6', radius: 6, alignToItem: true } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { accent: '#f97316', radius: 10, alignToItem: false, grouped: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 3.2, loop: 9 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'base-ui',
+      repo: 'mui/base-ui',
+      sha: '6a29b4b3b414251bf0ed23aa36e145d55e947c37',
+      paths: [
+        'docs/src/app/(docs)/react/components/select/demos/hero/css-modules/index.tsx',
+        'docs/src/app/(docs)/react/components/select/demos/hero/css-modules/index.module.css',
+        'docs/src/app/(docs)/react/components/select/demos/grouped/css-modules/index.tsx',
+        'docs/src/app/(docs)/react/components/select/demos/grouped/css-modules/index.module.css',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2019 Material-UI SAS'],
+    },
+    modifications: [
+      'Replaced @base-ui/react Select with a hand-rolled combobox + listbox: item-aligned positioning (selected item over the trigger), aria-activedescendant, arrow/Home/End/Enter/Escape keys, type-ahead and hover scroll arrows.',
+      'CSS module rewritten as Tailwind classes on Motif theme tokens; the highlighted item uses an accent color with luminance-picked ink.',
+      'Merged the hero (apples) and grouped (produce) demos behind a grouped parameter; added accent, radius, align-to-item, width, max-height and spring parameters.',
+      'Popup open animation driven by a motion/react spring, instant under prefers-reduced-motion; open/highlighted props let the demo autoplay.',
+    ],
+    assets: [],
+  },
+})

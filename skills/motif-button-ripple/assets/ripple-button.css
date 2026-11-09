@@ -1,0 +1,69 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/registry.json
+ * Modified by Motif; see the item's provenance.
+ */
+
+.mrb-ripple {
+  animation: mrb-rippling var(--mrb-duration) ease-out forwards;
+}
+
+.mrb-pulse {
+  animation: mrb-pulse var(--mrb-pulse-duration) cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.mrb-pulse-ripple {
+  animation: mrb-pulse-ripple var(--mrb-pulse-duration) cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes mrb-rippling {
+  0% {
+    opacity: var(--mrb-opacity);
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes mrb-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--mrb-pulse-color);
+  }
+  50% {
+    box-shadow: 0 0 0 var(--mrb-distance) var(--mrb-pulse-color);
+  }
+}
+
+@keyframes mrb-pulse-ripple {
+  0% {
+    box-shadow: 0 0 0 0 var(--mrb-pulse-color);
+  }
+  100% {
+    box-shadow: 0 0 0 var(--mrb-distance) color-mix(in oklab, var(--mrb-pulse-color) 0%, transparent);
+  }
+}
+
+/* 减少动态效果：不再有呼吸光环；点击只留一个短暂的淡出，不扩散。 */
+@keyframes mrb-fade {
+  0% {
+    opacity: var(--mrb-opacity);
+    transform: scale(2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrb-pulse,
+  .mrb-pulse-ripple {
+    animation: none;
+  }
+  .mrb-ripple {
+    animation: mrb-fade 200ms ease-out forwards;
+  }
+}

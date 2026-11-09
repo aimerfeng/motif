@@ -1,0 +1,68 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'gallery-dynamic-grid',
+  status: 'published',
+  title: { 'zh-CN': '伸缩网格画廊', en: 'Dynamic Grid Gallery' },
+  summary: {
+    'zh-CN': '一块 3×2 的图片网格：指针停在哪一格，那一格所在的整行整列就跟着放大，其余格子往旁边让，让一张图站到台前。适合作品集、项目总览和图片故事。',
+    en: 'A 3x2 picture grid where hovering a tile grows its whole row and column, so one still takes the stage while the rest compress around it. For portfolios, project overviews and photo stories.',
+  },
+  kind: 'section',
+  category: 'gallery',
+  tags: ['gallery', 'grid', 'hover', 'expand', 'portfolio', 'photos'],
+  runtime: ['react', 'css'],
+  entry: { file: 'gallery-dynamic-grid.tsx', export: 'DynamicGridGallery' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'gallery-dynamic-grid.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'columns', type: 'number', group: 'layout', label: { 'zh-CN': '列数', en: 'Columns' }, default: 3, min: 2, max: 4, step: 1 },
+    { key: 'rows', type: 'number', group: 'layout', label: { 'zh-CN': '行数', en: 'Rows' }, default: 2, min: 1, max: 3, step: 1 },
+    {
+      key: 'expandFactor',
+      type: 'number',
+      group: 'motion',
+      label: { 'zh-CN': '放大比例', en: 'Grow factor' },
+      hint: { 'zh-CN': '当前行列相对其他行列的大小', en: 'Active row and column size relative to the others' },
+      default: 1.95,
+      min: 1.2,
+      max: 3,
+      step: 0.05,
+      safe: [1.6, 2.4],
+    },
+    { key: 'gap', type: 'number', group: 'look', label: { 'zh-CN': '间距', en: 'Gap' }, default: 10, min: 0, max: 24, step: 1, unit: 'px' },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 0, min: 0, max: 28, step: 1, unit: 'px' },
+    { key: 'duration', type: 'number', group: 'motion', label: { 'zh-CN': '时长', en: 'Duration' }, default: 500, min: 200, max: 1200, step: 50, unit: 'ms', safe: [350, 800] },
+    { key: 'ease', type: 'easing', group: 'motion', label: { 'zh-CN': '缓动', en: 'Easing' }, default: [0.25, 1, 0.5, 1] },
+  ],
+  presets: [
+    { id: 'dunes', name: { 'zh-CN': '沙丘', en: 'Dunes' }, values: { columns: 3, rows: 2, expandFactor: 1.95, gap: 10, radius: 0 } },
+    { id: 'contact-sheet', name: { 'zh-CN': '印样', en: 'Contact Sheet' }, values: { columns: 4, rows: 3, expandFactor: 2.4, gap: 6, radius: 4, duration: 450 } },
+    { id: 'soft-panorama', name: { 'zh-CN': '长卷', en: 'Soft Panorama' }, values: { columns: 4, rows: 1, expandFactor: 2.6, gap: 14, radius: 20, duration: 800 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 1.6, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uselayouts',
+      repo: 'iurvish/uselayouts',
+      sha: '678a478e30272d8101cea97bc6147e0df9dcd652',
+      paths: ['registry/default/example/dynamic-grid-gallery.tsx', 'registry/default/demo/dynamic-grid-gallery-demo.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Urvish Mali'],
+    },
+    modifications: [
+      'Replaced the Unsplash photos with generated SVG desert artwork in the same warm amber palette.',
+      'Columns, rows, grow factor, gap, radius, duration and easing became params (upstream was fixed at 3x2).',
+      'Added an optional controlled activeIndex (used by the demo autoplay), focusable tiles with focus-visible rings and arrow-key navigation, and reduced-motion handling.',
+    ],
+    assets: [],
+  },
+})

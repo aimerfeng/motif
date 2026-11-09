@@ -1,0 +1,101 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'halftone-dots',
+  status: 'published',
+  title: { 'zh-CN': '网点印刷', en: 'Halftone Dots' },
+  summary: {
+    'zh-CN': '用一种油墨把画面重新印成网点：经典圆点、相互粘连的墨点、镂空孔洞或柔光点，排在方格或蜂窝网格上，边缘带一点颗粒。适合杂志封面、海报式首屏和 LED 屏幕风格。',
+    en: 'Reprints a picture as single-ink halftone dots: classic, gooey, punched holes or soft glows on a square or hex grid, with grain on the dot edges. Suits editorial covers, poster-style heroes and LED-screen looks.',
+  },
+  kind: 'effect',
+  category: 'image',
+  tags: ['halftone', 'dots', 'print', 'led', 'poster', 'webgl', 'shader', 'paper'],
+  runtime: ['react', 'webgl2', 'canvas2d'],
+  entry: { file: 'halftone-dots.tsx', export: 'HalftoneDotsImage' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'halftone-dots.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'artwork',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '画面', en: 'Artwork' },
+      default: 'orb',
+      options: [
+        { value: 'orb', label: { 'zh-CN': '光球', en: 'Orb' } },
+        { value: 'dunes', label: { 'zh-CN': '沙丘', en: 'Dunes' } },
+        { value: 'type', label: { 'zh-CN': '大字', en: 'Type' } },
+      ],
+    },
+    {
+      key: 'type',
+      type: 'select',
+      group: 'shape',
+      label: { 'zh-CN': '网点', en: 'Dot style' },
+      default: 'gooey',
+      options: [
+        { value: 'classic', label: { 'zh-CN': '经典', en: 'Classic' } },
+        { value: 'gooey', label: { 'zh-CN': '粘连', en: 'Gooey' } },
+        { value: 'holes', label: { 'zh-CN': '孔洞', en: 'Holes' } },
+        { value: 'soft', label: { 'zh-CN': '柔光', en: 'Soft' } },
+      ],
+    },
+    {
+      key: 'grid',
+      type: 'select',
+      group: 'shape',
+      label: { 'zh-CN': '网格', en: 'Grid' },
+      default: 'hex',
+      options: [
+        { value: 'hex', label: { 'zh-CN': '蜂窝', en: 'Hex' } },
+        { value: 'square', label: { 'zh-CN': '方格', en: 'Square' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'shape', label: { 'zh-CN': '网格大小', en: 'Grid size' }, default: 0.5, min: 0.1, max: 1, step: 0.01, safe: [0.3, 0.8] },
+    { key: 'radius', type: 'number', group: 'shape', label: { 'zh-CN': '最大网点', en: 'Max dot' }, hint: { 'zh-CN': '网点相对网格的最大尺寸', en: 'Largest dot relative to the grid cell' }, default: 1.25, min: 0.5, max: 2, step: 0.01 },
+    { key: 'contrast', type: 'number', group: 'shape', label: { 'zh-CN': '对比', en: 'Contrast' }, default: 0.4, min: 0.1, max: 1, step: 0.01, safe: [0.2, 0.8] },
+    { key: 'grainMixer', type: 'number', group: 'shape', label: { 'zh-CN': '边缘颗粒', en: 'Edge grain' }, default: 0.2, min: 0, max: 1, step: 0.01, safe: [0, 0.5] },
+    { key: 'colorFront', type: 'color', group: 'color', label: { 'zh-CN': '油墨', en: 'Ink' }, default: '#2b2b2b' },
+    { key: 'colorBack', type: 'color', group: 'color', label: { 'zh-CN': '纸色', en: 'Paper' }, default: '#f2f1e8' },
+    { key: 'originalColors', type: 'boolean', group: 'color', label: { 'zh-CN': '保留原色', en: 'Original colors' }, hint: { 'zh-CN': '网点取画面本身的颜色，忽略油墨色', en: 'Dots take the picture colours instead of the ink' }, default: false },
+  ],
+  presets: [
+    { id: 'newsprint', name: { 'zh-CN': '新闻纸', en: 'Newsprint' }, values: {} },
+    { id: 'led', name: { 'zh-CN': '霓虹屏', en: 'LED Screen' }, values: { colorBack: '#000000', colorFront: '#29ff7b', size: 0.5, radius: 1.5, contrast: 0.3, grainMixer: 0, grid: 'square', type: 'soft' } },
+    { id: 'mosaic', name: { 'zh-CN': '马赛克', en: 'Mosaic' }, values: { artwork: 'dunes', colorBack: '#000000', colorFront: '#b2aeae', size: 0.6, radius: 2, contrast: 0.1, originalColors: true, grainMixer: 0, grid: 'hex', type: 'classic' } },
+  ],
+  dependencies: ['@motif/runtime', '@paper-design/shaders-react'],
+  fonts: ['Archivo Black'],
+  perf: { webgl: true, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    rules: [
+      'Pick pictures with big shapes and smooth tonal ramps; fine detail dissolves into dots.',
+      'For a real photo, pass it as the image prop of the underlying Paper HalftoneDots component.',
+    ],
+  },
+  capture: { posterTime: 3, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'paper-shaders',
+      repo: 'paper-design/shaders',
+      sha: '43cd68db79fa0b1759f72ffc941b3238e2a3954c',
+      paths: ['packages/shaders-react/src/shaders/halftone-dots.tsx', 'docs/src/shader-defs/halftone-dots-def.ts'],
+      spdx: 'Apache-2.0',
+      copyright: ['Paper Shaders (https://shaders.paper.design)'],
+    },
+    modifications: [
+      'Wraps the upstream HalftoneDots component; the input picture (a shaded orb, dunes or a big word) is drawn on a canvas at runtime, so the item needs no image assets.',
+      'The picture slowly pushes in and out under the dots (the upstream shader is static); the image is passed as an element so the per-frame change does not decode it again.',
+      'Parameter ranges and defaults follow the Paper docs and default preset; grain overlay, grain size and inverted are fixed at the upstream defaults. LED Screen and Mosaic follow the upstream presets.',
+      'Stays still when the user prefers reduced motion.',
+    ],
+    assets: [],
+  },
+})

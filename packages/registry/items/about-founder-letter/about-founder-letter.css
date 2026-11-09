@@ -1,0 +1,141 @@
+/* 创始人来信的版式。窄屏单栏；容器 ≥ 960px 时换成「正文栏 + 页边栏」的网格，引文挪进页边。 */
+.afl-root {
+  container: afl / inline-size;
+}
+
+.afl-article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: var(--afl-measure);
+  margin-inline: auto;
+}
+
+.afl-title {
+  font-size: calc(var(--afl-title-scale) * clamp(1.95rem, 1.2rem + 3.4cqi, 2.85rem));
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.afl-p {
+  margin-top: 0.85em;
+  text-wrap: pretty;
+}
+
+/* 三行下沉首字母：Chromium / Safari 用 initial-letter 精确对齐行，其余浏览器退回 float。 */
+.afl-drop::first-letter {
+  -webkit-initial-letter: 3;
+  initial-letter: 3;
+  margin-right: 0.12em;
+  font-family: var(--afl-cap);
+  font-weight: var(--afl-cap-weight);
+  font-style: normal;
+  font-variant-caps: normal;
+  letter-spacing: 0;
+  color: var(--afl-ink-accent);
+}
+@supports not ((initial-letter: 3) or (-webkit-initial-letter: 3)) {
+  .afl-drop::first-letter {
+    float: left;
+    font-size: 3.7em;
+    line-height: 0.8;
+    margin: 0.07em 0.1em 0 0;
+  }
+}
+
+.afl-lead {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.04em;
+}
+
+/* 窄屏：引文留在正文里，左边一道墨水色竖线。 */
+.afl-quote {
+  margin: 1.5em 0 0.4em;
+  padding-left: 1.1em;
+  border-left: 2px solid var(--afl-ink-accent);
+}
+.afl-quote-mark {
+  display: none;
+}
+
+@container afl (min-width: 960px) {
+  .afl-article {
+    grid-template-columns: minmax(0, var(--afl-measure)) minmax(10.5rem, 14rem);
+    column-gap: clamp(2.75rem, 6cqi, 5rem);
+    max-width: calc(var(--afl-measure) + 14rem + clamp(2.75rem, 6cqi, 5rem));
+  }
+  .afl-head {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .afl-title {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .afl-r3 {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .afl-r4 {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  .afl-r5 {
+    grid-column: 1;
+    grid-row: 5;
+  }
+  .afl-r6 {
+    grid-column: 1;
+    grid-row: 6;
+  }
+  /* 引文和第二段同一行起，跨到第三段，顶端和第二段对齐。 */
+  .afl-quote {
+    grid-column: 2;
+    grid-row: 4 / span 2;
+    align-self: start;
+    margin: 0.95em 0 0;
+    padding: 0.9rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--afl-rule);
+    position: relative;
+  }
+  .afl-quote::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 2.25rem;
+    height: 2px;
+    background: var(--afl-ink-accent);
+  }
+  .afl-quote-mark {
+    display: block;
+  }
+}
+
+/* 首段紧接标题，间距比段落之间大一些。写在 .afl-p 之后，同等优先级时它生效。 */
+.afl-drop {
+  margin-top: 1.5rem;
+}
+
+/* 信头右侧：窄屏两行右对齐，宽一些时并成一行、中间加圆点。 */
+.afl-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  text-align: right;
+}
+.afl-dot {
+  display: none;
+}
+@container afl (min-width: 600px) {
+  .afl-meta {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .afl-dot {
+    display: inline;
+  }
+}

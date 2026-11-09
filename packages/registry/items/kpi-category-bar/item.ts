@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'kpi-category-bar',
+  status: 'published',
+  title: { 'zh-CN': '构成分布指标卡', en: 'Distribution KPI Bars' },
+  summary: {
+    'zh-CN': '一个总数，下面一条按类别分段的进度条，配可选的目标标记和带色块的图例：工单的已解决 / 处理中 / 已升级、查询延迟的快 / 中 / 慢、各渠道销售额。放在仪表盘顶部，一眼看清构成。',
+    en: 'A headline total over a segmented category bar, with an optional target marker and a color-keyed legend: tickets resolved / in progress / escalated, query latency fast / medium / slow, sales by channel. Shows composition at a glance in a dashboard header.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'kpi', 'category bar', 'distribution', 'legend', 'metrics'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'kpi-category-bar.tsx', export: 'KpiCategoryBar' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'kpi-category-bar.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '布局', en: 'Layout' },
+      default: 'cards',
+      options: [
+        { value: 'cards', label: { 'zh-CN': '指标卡组', en: 'Metric cards' } },
+        { value: 'summary', label: { 'zh-CN': '总数 + 渠道卡', en: 'Total + channels' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'palette', type: 'palette', label: { 'zh-CN': '分段配色', en: 'Segment colors' }, default: ['#3b82f6', '#6b7280', '#ef4444', '#f59e0b'], minItems: 2, maxItems: 5, group: 'look' },
+    { key: 'segmentGap', type: 'number', label: { 'zh-CN': '分段间距', en: 'Segment gap' }, default: 2, min: 0, max: 6, step: 1, group: 'look' },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 4, min: 0, max: 4, step: 1, group: 'look' },
+    {
+      key: 'legendStyle',
+      type: 'select',
+      label: { 'zh-CN': '图例样式', en: 'Legend style' },
+      default: 'stacked',
+      options: [
+        { value: 'stacked', label: { 'zh-CN': '数值在上', en: 'Stacked' } },
+        { value: 'inline', label: { 'zh-CN': '同行', en: 'Inline' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'showMarker', type: 'boolean', label: { 'zh-CN': '目标标记', en: 'Target marker' }, default: true, group: 'marker' },
+    { key: 'markerValue', type: 'number', label: { 'zh-CN': '目标位置 (%)', en: 'Target (%)' }, default: 80, min: 0, max: 100, step: 1, group: 'marker' },
+    { key: 'animateIn', type: 'boolean', label: { 'zh-CN': '入场展开', en: 'Animate in' }, default: true, group: 'motion' },
+  ],
+  presets: [
+    { id: 'triage', name: { 'zh-CN': '分诊台', en: 'Triage' }, values: { layout: 'cards', legendStyle: 'stacked', palette: ['#3b82f6', '#6b7280', '#ef4444', '#f59e0b'] } },
+    { id: 'tidewater', name: { 'zh-CN': '潮线', en: 'Tidewater' }, values: { layout: 'cards', legendStyle: 'inline', palette: ['#06b6d4', '#6366f1', '#a855f7', '#64748b'], segmentGap: 4, showMarker: false } },
+    { id: 'ledger', name: { 'zh-CN': '账本', en: 'Ledger' }, values: { layout: 'summary', palette: ['#3b82f6', '#f59e0b', '#06b6d4', '#6b7280'], radius: 1 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: [
+        'src/content/components/kpi-cards/kpi-card-25.tsx',
+        'src/content/components/kpi-cards/kpi-card-21.tsx',
+        'src/content/components/kpi-cards/kpi-card-23.tsx',
+        'src/components/CategoryBar.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Combined KPI cards 25 (stacked legend), 21 (inline legend) and 23 (total with channel cards) into one component with layout and legend-style selects.',
+      'Inlined a trimmed Tremor CategoryBar (no labels) with params for colors, segment gap and radius; the marker is a focusable button with a hand-rolled tooltip and moves with transform instead of transition-all.',
+      'Added an optional clip-path reveal on mount via motion/react, disabled under reduced motion.',
+      'Replaced @remixicon/react with inline SVG, cx with cn from @motif/runtime and the Tremor Card with plain markup on theme tokens.',
+      'The demo drifts the segment shares via useFrameLoop.',
+    ],
+    assets: [],
+  },
+})

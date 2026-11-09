@@ -1,0 +1,71 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'paper-texture',
+  status: 'published',
+  title: { 'zh-CN': '纸张肌理', en: 'Paper Texture' },
+  summary: {
+    'zh-CN': '一张程序生成的纸：细密的颗粒、纤维、折痕、揉皱、褶皱和水渍，被同一个方向的光照亮。适合做编辑、文具和作品集网站的触感背景。',
+    en: 'A procedural sheet of paper with fine grain, fibers, fold lines, crumples, wrinkles and water drops, lit from one direction. A tactile backdrop for editorial, stationery and portfolio sites.',
+  },
+  kind: 'effect',
+  category: 'background',
+  tags: ['paper', 'texture', 'grain', 'shader', 'webgl', 'editorial'],
+  runtime: ['react', 'webgl2'],
+  entry: { file: 'paper-texture.tsx', export: 'PaperTextureBackground' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'paper-texture.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'colorPaper', type: 'color', group: 'color', label: { 'zh-CN': '纸色', en: 'Paper' }, default: '#ffffff' },
+    {
+      key: 'colorShadow',
+      type: 'color',
+      group: 'color',
+      label: { 'zh-CN': '纹理色', en: 'Shadow' },
+      hint: { 'zh-CN': '颗粒、纤维、折痕和皱褶的颜色', en: 'Color of the grain, fiber, folds and wrinkles' },
+      default: '#cccccc',
+    },
+    { key: 'roughness', type: 'number', group: 'texture', label: { 'zh-CN': '颗粒', en: 'Roughness' }, default: 0.4, min: 0, max: 1, step: 0.01 },
+    { key: 'fiber', type: 'number', group: 'texture', label: { 'zh-CN': '纤维', en: 'Fiber' }, default: 0.4, min: 0, max: 1, step: 0.01 },
+    { key: 'folds', type: 'number', group: 'texture', label: { 'zh-CN': '折痕', en: 'Folds' }, default: 0.5, min: 0, max: 1, step: 0.01 },
+    { key: 'crumples', type: 'number', group: 'texture', label: { 'zh-CN': '揉皱', en: 'Crumples' }, default: 0, min: 0, max: 1, step: 0.01 },
+    { key: 'wrinkles', type: 'number', group: 'texture', label: { 'zh-CN': '褶皱', en: 'Wrinkles' }, default: 1, min: 0, max: 1, step: 0.01 },
+    { key: 'drops', type: 'number', group: 'texture', label: { 'zh-CN': '水渍', en: 'Drops' }, default: 0.4, min: 0, max: 1, step: 0.01 },
+    { key: 'angle', type: 'number', group: 'light', label: { 'zh-CN': '光照角度', en: 'Light angle' }, default: 300, min: 0, max: 360, step: 1, unit: 'deg' },
+    { key: 'seed', type: 'number', group: 'light', label: { 'zh-CN': '随机种子', en: 'Seed' }, default: 4, min: 0, max: 1000, step: 1 },
+  ],
+  presets: [
+    { id: 'default', name: { 'zh-CN': '默认', en: 'Default' }, values: {} },
+    { id: 'creased', name: { 'zh-CN': '揉皱', en: 'Creased' }, values: { colorShadow: '#b3b3b3', angle: 60, seed: 49, folds: 0, wrinkles: 0, crumples: 1, drops: 0 } },
+    {
+      id: 'flat',
+      name: { 'zh-CN': '平铺', en: 'Flat' },
+      values: { colorPaper: '#f4f1e4', colorShadow: '#b3b3b3', angle: 0, seed: 455, roughness: 1, fiber: 0.7, folds: 0, wrinkles: 0, crumples: 0, drops: 0.2 },
+    },
+  ],
+  dependencies: ['@paper-design/shaders-react', '@motif/runtime'],
+  perf: { webgl: true, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 2, loop: 10 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'paper-shaders',
+      repo: 'paper-design/shaders',
+      sha: '43cd68db79fa0b1759f72ffc941b3238e2a3954c',
+      paths: ['packages/shaders-react/src/shaders/paper-texture.tsx', 'docs/src/shader-defs/paper-texture-def.ts'],
+      spdx: 'Apache-2.0',
+      copyright: ['Paper Shaders (https://shaders.paper.design)'],
+    },
+    modifications: [
+      'Wrapped the Paper PaperTexture component as a full-bleed background that can hold children; the image input is not used.',
+      'Defaults follow the upstream default preset; Creased follows the upstream preset, Flat is adapted with an opaque paper color.',
+      'The demo sweeps the light angle slowly so the folds catch moving light (the upstream shader is static); it stays still when the user prefers reduced motion.',
+    ],
+    assets: [],
+  },
+})

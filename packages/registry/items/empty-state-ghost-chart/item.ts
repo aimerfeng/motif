@@ -1,0 +1,87 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'empty-state-ghost-chart',
+  status: 'published',
+  title: { 'zh-CN': '空数据图表占位', en: 'Empty Chart Placeholders' },
+  summary: {
+    'zh-CN': '数据还没到时的图表卡片：淡色占位柱、虚线折线或空的容量圆环，压着「暂无数据」提示、24 小时内加载的说明和接入数据源的按钮；带选项卡的变体保留卡片原本的表头。适合首次使用的仪表盘。',
+    en: 'Chart cards before any data arrives: faded placeholder bars, a dashed line or empty capacity rings behind a “No data to show” message, a note that data can take 24 hours and a connect-a-source action; a tabbed variant keeps the card’s real header. For first-run dashboards.',
+  },
+  kind: 'component',
+  category: 'empty-state',
+  tags: ['empty state', 'chart', 'dashboard', 'placeholder', 'no data', 'tremor'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'empty-state-ghost-chart.tsx', export: 'EmptyStateGhostChart' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'empty-state-ghost-chart.tsx', role: 'component' },
+    { path: 'empty-state-ghost-chart.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'ghostType',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '占位图形', en: 'Placeholder' },
+      default: 'bars',
+      options: [
+        { value: 'bars', label: { 'zh-CN': '柱状', en: 'Bars' } },
+        { value: 'line', label: { 'zh-CN': '虚线折线', en: 'Dashed line' } },
+        { value: 'ring', label: { 'zh-CN': '容量圆环', en: 'Capacity rings' } },
+        { value: 'tabs', label: { 'zh-CN': '选项卡卡片', en: 'Tabbed card' } },
+      ],
+    },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, default: '#3b82f6' },
+    {
+      key: 'tone',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '占位框', en: 'Frame' },
+      default: 'dashed',
+      options: [
+        { value: 'dashed', label: { 'zh-CN': '虚线框', en: 'Dashed' } },
+        { value: 'filled', label: { 'zh-CN': '浅底', en: 'Filled' } },
+      ],
+    },
+    { key: 'shimmer', type: 'boolean', group: 'motion', label: { 'zh-CN': '占位呼吸', en: 'Pulse' }, default: true },
+    { key: 'message', type: 'text', group: 'content', label: { 'zh-CN': '提示', en: 'Message' }, default: 'No data to show', maxLength: 40 },
+    { key: 'actionLabel', type: 'text', group: 'content', label: { 'zh-CN': '按钮', en: 'Action' }, hint: { 'zh-CN': '留空则不显示按钮', en: 'Leave empty to hide the action' }, default: 'Connect database', maxLength: 24 },
+  ],
+  presets: [
+    { id: 'first-run', name: { 'zh-CN': '初次见面', en: 'First run' }, values: { ghostType: 'bars', accent: '#3b82f6', tone: 'dashed' } },
+    { id: 'quiet-trend', name: { 'zh-CN': '静候', en: 'Quiet trend' }, values: { ghostType: 'line', accent: '#10b981', tone: 'filled', actionLabel: '' } },
+    { id: 'fresh-plan', name: { 'zh-CN': '新账户', en: 'Fresh plan' }, values: { ghostType: 'ring', accent: '#f59e0b', message: 'No activity measured yet.', actionLabel: 'Manage plan' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 1.2, loop: 4.8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: [
+        'src/content/components/empty-states/empty-state-01.tsx',
+        'src/content/components/empty-states/empty-state-02.tsx',
+        'src/content/components/empty-states/empty-state-03.tsx',
+        'src/content/components/empty-states/empty-state-04.tsx',
+        'src/content/components/empty-states/empty-state-06.tsx',
+        'src/content/components/empty-states/empty-state-07.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Merged the six empty-state examples into one component with a placeholder select (bars, dashed line, capacity rings, tabbed card) and a dashed/filled frame option.',
+      'Added faint ghost bars / dashed line behind the message with an optional opacity pulse (disabled under prefers-reduced-motion).',
+      'Replaced Card, Button, Tabs and ProgressCircle with plain markup, SVG and a keyboard-navigable tablist; @remixicon/react icons are inline SVG.',
+      'Gray palette swapped for theme tokens; button color from the accent param with luminance-picked ink; lorem ipsum replaced with real copy.',
+    ],
+    assets: [],
+  },
+})

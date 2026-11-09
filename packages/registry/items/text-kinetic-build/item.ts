@@ -1,0 +1,78 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'text-kinetic-build',
+  status: 'published',
+  title: { 'zh-CN': '逐词推入', en: 'Kinetic Word Build' },
+  summary: {
+    'zh-CN': '发布会式的逐词构建：每个新词带着轻微模糊从右侧滑入，把整行往左推，让逐渐变长的句子始终居中；整句定住后上浮消失，换下一句。适合首屏标语、活动开场和产品发布页。',
+    en: 'A keynote-style build: each new word slides in from the right with a short blur and nudges the line so the growing phrase stays centred; once it locks, the phrase lifts away and the next begins. For hero taglines, event intros and launch pages.',
+  },
+  kind: 'effect',
+  category: 'text',
+  tags: ['text', 'keynote', 'word build', 'headline', 'hero', 'motion'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'kinetic-center-build.tsx', export: 'KineticCenterBuild' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'kinetic-center-build.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'phrases',
+      type: 'text',
+      group: 'content',
+      label: { 'zh-CN': '句子', en: 'Phrases' },
+      hint: { 'zh-CN': '用 | 分隔，按顺序循环', en: 'Separated by |, shown in order and looped' },
+      default: 'Designed for the way you work | Built to ship on day one | Made by a team of four',
+      maxLength: 240,
+    },
+    { key: 'wordInterval', type: 'number', group: 'motion', label: { 'zh-CN': '词间隔', en: 'Word interval' }, default: 0.43, min: 0.15, max: 1.2, step: 0.01, unit: 's' },
+    { key: 'pushDuration', type: 'number', group: 'motion', label: { 'zh-CN': '推入时长', en: 'Push duration' }, default: 0.43, min: 0.15, max: 1.2, step: 0.01, unit: 's' },
+    { key: 'holdTime', type: 'number', group: 'motion', label: { 'zh-CN': '整句停留', en: 'Hold time' }, default: 2.5, min: 0.5, max: 6, step: 0.1, unit: 's' },
+    { key: 'entryOffset', type: 'number', group: 'look', label: { 'zh-CN': '入场距离', en: 'Entry offset' }, default: 88, min: 0, max: 240, step: 1, unit: 'px' },
+    { key: 'entryBlur', type: 'number', group: 'look', label: { 'zh-CN': '入场模糊', en: 'Entry blur' }, default: 3.5, min: 0, max: 12, step: 0.5, unit: 'px' },
+    { key: 'fontSize', type: 'number', group: 'look', label: { 'zh-CN': '字号', en: 'Font size' }, default: 56, min: 24, max: 96, step: 1, unit: 'px' },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '字体', en: 'Font' },
+      default: 'sans',
+      options: [
+        { value: 'sans', label: { 'zh-CN': '无衬线（Inter Tight）', en: 'Sans (Inter Tight)' } },
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+    },
+  ],
+  presets: [
+    { id: 'keynote', name: { 'zh-CN': '发布会', en: 'Keynote' }, values: { wordInterval: 0.43, pushDuration: 0.43, entryOffset: 88, entryBlur: 3.5, font: 'sans' } },
+    { id: 'brisk', name: { 'zh-CN': '轻快', en: 'Brisk' }, values: { wordInterval: 0.25, pushDuration: 0.3, entryOffset: 48, entryBlur: 2, holdTime: 1.6, font: 'grotesk' } },
+    { id: 'editorial', name: { 'zh-CN': '杂志', en: 'Editorial' }, values: { wordInterval: 0.6, pushDuration: 0.7, entryOffset: 140, entryBlur: 6, holdTime: 3, font: 'serif', fontSize: 64 } },
+  ],
+  dependencies: ['@motif/runtime', 'motion/react'],
+  fonts: ['Inter Tight Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'crossfade' },
+  capture: { zoom: 1.2, posterTime: 3.2, loop: 11.2 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'smoothui',
+      repo: 'educlopez/smoothui',
+      sha: 'b6312bce2b6f2ed95d8a6e98a592857884f5ea9e',
+      paths: ['packages/smoothui/components/kinetic-center-build/index.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Eduardo Calvo'],
+    },
+    modifications: [
+      'The setTimeout build schedule was replaced by a schedule computed from useFrameLoop time, so it pauses offscreen and the capture clock can drive it.',
+      'Phrases come from a |-separated text prop; word interval, push duration, hold time, entry offset, entry blur, font size and font are exposed as params with the upstream values as defaults.',
+      'cn now comes from motif-runtime; defaults moved into the generated defaults region; reduced motion shows the whole phrase with a crossfade.',
+    ],
+    assets: [],
+  },
+})

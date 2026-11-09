@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'footer-link-columns',
+  status: 'published',
+  title: { 'zh-CN': '多栏链接页脚', en: 'Link Column Footer' },
+  summary: {
+    'zh-CN': '经典的多栏页脚：品牌标志、订阅框、几列链接、社交图标和底部法律信息。可以在顶部加一条行动号召，或者加一个回到顶部按钮，适合给营销站点收尾。',
+    en: 'A classic multi-column footer: brand mark, newsletter field, link columns, social glyphs and a legal row. Variants add a call-to-action band on top or a back-to-top button. The dependable end of a marketing site.',
+  },
+  kind: 'section',
+  category: 'footer',
+  tags: ['footer', 'links', 'newsletter', 'columns', 'social'],
+  runtime: ['react', 'css'],
+  entry: { file: 'footer-link-columns.tsx', export: 'FooterLinkColumns' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'footer-link-columns.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'brand', type: 'text', label: { 'zh-CN': '品牌名', en: 'Brand name' }, default: 'Ledgerly', maxLength: 20, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent color' }, default: '#0d9488', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'light',
+      options: [
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'variant',
+      type: 'select',
+      label: { 'zh-CN': '变体', en: 'Variant' },
+      default: 'plain',
+      options: [
+        { value: 'plain', label: { 'zh-CN': '标准', en: 'Plain' } },
+        { value: 'cta', label: { 'zh-CN': '顶部行动号召', en: 'Call-to-action band' } },
+        { value: 'top', label: { 'zh-CN': '回到顶部按钮', en: 'Back-to-top button' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'columns', type: 'number', label: { 'zh-CN': '链接栏数', en: 'Link columns' }, default: 5, min: 2, max: 5, step: 1, group: 'layout' },
+    { key: 'showNewsletter', type: 'boolean', label: { 'zh-CN': '显示订阅框', en: 'Show newsletter' }, default: true, group: 'layout' },
+    { key: 'showSocial', type: 'boolean', label: { 'zh-CN': '显示社交图标', en: 'Show social icons' }, default: true, group: 'layout' },
+  ],
+  presets: [
+    { id: 'harbor', name: { 'zh-CN': '港湾', en: 'Harbor' }, values: {} },
+    { id: 'night-shift', name: { 'zh-CN': '夜班', en: 'Night Shift' }, values: { tone: 'dark', accent: '#a3e635', variant: 'top' } },
+    { id: 'invite', name: { 'zh-CN': '邀约', en: 'Invite' }, values: { accent: '#4f46e5', variant: 'cta', columns: 4, showNewsletter: false } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'hyperui',
+      repo: 'markmead/hyperui',
+      sha: '2b5aebbc50d2c9ac89650f51b554f53895b4803c',
+      paths: ['public/examples/marketing/footers/1.html', 'public/examples/marketing/footers/9.html', 'public/examples/marketing/footers/12.html'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Mark Mead'],
+    },
+    modifications: [
+      'Ported footer 1 (newsletter, link columns, social row, legal row) from static HTML to a React component, keeping its markup and Tailwind classes.',
+      'Added the back-to-top button from footer 9 and the call-to-action band from footer 12 as variants.',
+      'Colors come from tone and accent params with luminance-picked ink; the HyperUI logo and Facebook/Instagram/Twitter/GitHub/Dribbble icons were replaced by an invented mark and generic glyphs; copy rewritten.',
+      'Added focus-visible outlines and limited transitions to opacity and colors.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,78 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-radial-bloom',
+  status: 'published',
+  title: { 'zh-CN': '放射绽放加载器', en: 'Radial Bloom Loaders' },
+  summary: {
+    'zh-CN': '从中心向外呼吸的四种编排：四点旋转着汇合又散开、八点依次闪到圆环上、十片花瓣逐个外伸、两圈点反向旋转并交换内外轨道。适合 AI、搜索和媒体应用里的「正在处理」。',
+    en: 'Four choreographies that breathe out from a centre: four dots spinning as they meet and part, eight dots flashing out around a ring, ten petals reaching out in turn, and two counter-rotating rings trading orbits. For AI, search and media apps.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['loader', 'spinner', 'radial', 'dots', 'loading', 'css'],
+  runtime: ['react', 'css'],
+  entry: { file: 'loader-radial-bloom.tsx', export: 'LoaderRadialBloom' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-radial-bloom.tsx', role: 'component' },
+    { path: 'loader-radial-bloom.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'meetup',
+      options: [
+        { value: 'meetup', label: { 'zh-CN': '汇合', en: 'Meetup' } },
+        { value: 'pan-out', label: { 'zh-CN': '环形闪出', en: 'Pan out' } },
+        { value: 'reach', label: { 'zh-CN': '花瓣外伸', en: 'Reach' } },
+        { value: 'in-and-out', label: { 'zh-CN': '内外交换', en: 'In and out' } },
+      ],
+    },
+    { key: 'count', type: 'number', group: 'layout', label: { 'zh-CN': '点数', en: 'Count' }, hint: { 'zh-CN': '0 表示用样式自带的点数（4 / 8 / 10 / 5）', en: 'Zero uses the variant count (4 / 8 / 10 / 5)' }, default: 0, min: 0, max: 16, step: 1 },
+    { key: 'radius', type: 'number', group: 'layout', label: { 'zh-CN': '半径', en: 'Radius' }, default: 30, min: 12, max: 60, step: 1, unit: 'px' },
+    { key: 'dotSize', type: 'number', group: 'look', label: { 'zh-CN': '点大小', en: 'Dot size' }, default: 10, min: 4, max: 20, step: 1, unit: 'px' },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '颜色', en: 'Color' }, default: '#8b5cf6' },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0.4, max: 2.5, step: 0.05, unit: 'x' },
+    { key: 'spin', type: 'boolean', group: 'motion', label: { 'zh-CN': '整体旋转', en: 'Spin' }, default: true },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '读屏文案', en: 'Screen reader label' }, default: 'Loading', maxLength: 32 },
+  ],
+  presets: [
+    { id: 'meetup', name: { 'zh-CN': '汇合', en: 'Meetup' }, values: { variant: 'meetup', color: '#8b5cf6', spin: true } },
+    { id: 'halo', name: { 'zh-CN': '光环', en: 'Halo' }, values: { variant: 'pan-out', color: '#38bdf8', spin: false } },
+    { id: 'bloom', name: { 'zh-CN': '绽放', en: 'Bloom' }, values: { variant: 'reach', color: '#f472b6', spin: false } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 2, posterTime: 0.6, loop: 3 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'whirl',
+      repo: 'jh3y/whirl',
+      sha: 'a43ebd524ca890e87d651e2530c5596ab1f0a563',
+      paths: [
+        'src/whirls/meetup.scss',
+        'src/whirls/pan-out-circle.scss',
+        'src/whirls/reach.scss',
+        'src/whirls/in-and-out.scss',
+        'src/whirls/common/spin.scss',
+        'src/whirls/common/utils.scss',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2019 Jhey Tompkins (jh3y)'],
+    },
+    modifications: [
+      'Merged four whirl SCSS loaders into one React component with a variant select; SCSS loops are replaced by per-dot angles and delays computed in JS as custom properties.',
+      'Count, radius, dot size, color, speed and the outer spin are parameters; pixel sizes are expressed relative to radius and dot size, and dots are centred in a sized box.',
+      'Stagger delays are negative so the loop is already running on mount; added role="status", an sr-only label and a static reduced-motion pose.',
+    ],
+    assets: [],
+  },
+})

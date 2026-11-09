@@ -1,0 +1,88 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'badge-announcement',
+  status: 'published',
+  title: { 'zh-CN': '公告胶囊', en: 'Announcement Pill' },
+  summary: {
+    'zh-CN': '放在首屏标题上方的小胶囊：流动的渐变细边框配渐变文字，或者一道光扫过灰色文字，再加分隔线和悬停时轻推的箭头。适合发布公告、新功能入口和更新日志预告。',
+    en: 'The small pill above a hero headline: a flowing gradient hairline with gradient text, or a shine sweeping over muted text, plus a divider and an arrow that nudges on hover. For launch notes, new-feature links and changelog teasers.',
+  },
+  kind: 'component',
+  category: 'badge',
+  tags: ['badge', 'announcement', 'pill', 'gradient text', 'shimmer', 'hero'],
+  runtime: ['react', 'css'],
+  entry: { file: 'badge-announcement.tsx', export: 'BadgeAnnouncement' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'badge-announcement.tsx', role: 'component' },
+    { path: 'badge-announcement.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Style' },
+      default: 'gradient',
+      options: [
+        { value: 'gradient', label: { 'zh-CN': '渐变文字', en: 'Gradient text' } },
+        { value: 'shiny', label: { 'zh-CN': '扫光文字', en: 'Shiny text' } },
+      ],
+    },
+    { key: 'text', type: 'text', group: 'content', label: { 'zh-CN': '文案', en: 'Text' }, default: 'Introducing Lumen 2.0', maxLength: 36 },
+    { key: 'colorFrom', type: 'color', group: 'look', label: { 'zh-CN': '起始色', en: 'Color from' }, hint: { 'zh-CN': '渐变样式', en: 'Gradient style' }, default: '#ffaa40' },
+    { key: 'colorTo', type: 'color', group: 'look', label: { 'zh-CN': '中间色', en: 'Color to' }, hint: { 'zh-CN': '渐变样式', en: 'Gradient style' }, default: '#9c40ff' },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '渐变速度', en: 'Gradient speed' }, default: 1, min: 0.5, max: 2, step: 0.1, safe: [0.8, 1.5] },
+    { key: 'shimmerWidth', type: 'number', group: 'look', label: { 'zh-CN': '扫光宽度', en: 'Shimmer width' }, hint: { 'zh-CN': '扫光样式', en: 'Shiny style' }, default: 100, min: 40, max: 240, step: 1, unit: 'px' },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 999, min: 4, max: 999, step: 1, unit: 'px', safe: [8, 999] },
+    {
+      key: 'leadIcon',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '前置图标', en: 'Lead icon' },
+      default: 'party',
+      options: [
+        { value: 'party', label: { 'zh-CN': '礼花', en: 'Party' } },
+        { value: 'sparkles', label: { 'zh-CN': '闪光', en: 'Sparkles' } },
+        { value: 'none', label: { 'zh-CN': '无', en: 'None' } },
+      ],
+    },
+    { key: 'arrow', type: 'boolean', group: 'content', label: { 'zh-CN': '箭头', en: 'Arrow' }, default: true },
+  ],
+  presets: [
+    { id: 'sunset', name: { 'zh-CN': '晚霞', en: 'Sunset' }, values: { variant: 'gradient', colorFrom: '#ffaa40', colorTo: '#9c40ff', leadIcon: 'party' } },
+    { id: 'lagoon', name: { 'zh-CN': '泻湖', en: 'Lagoon' }, values: { variant: 'gradient', colorFrom: '#40e0d0', colorTo: '#3b82f6', leadIcon: 'sparkles', radius: 10 } },
+    { id: 'silver', name: { 'zh-CN': '银光', en: 'Silver' }, values: { variant: 'shiny', leadIcon: 'sparkles', shimmerWidth: 100 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 2.2, posterTime: 2.4 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: [
+        'apps/www/registry/magicui/animated-gradient-text.tsx',
+        'apps/www/registry/magicui/animated-shiny-text.tsx',
+        'apps/www/registry/example/animated-gradient-text-demo.tsx',
+        'apps/www/registry/example/animated-shiny-text-demo.tsx',
+        'apps/www/registry.json',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'Combined AnimatedGradientText, AnimatedShinyText and their demo pills into one BadgeAnnouncement component with a variant select.',
+      'Replaced the emoji, lucide ChevronRight and radix ArrowRightIcon with inline SVG; cn now comes from motif-runtime.',
+      'Keyframes from the upstream registry moved into the item stylesheet; animations stop under reduced motion; transition-all narrowed to colors.',
+      'Rendered as a link or button with a visible focus ring.',
+    ],
+    assets: [],
+  },
+})

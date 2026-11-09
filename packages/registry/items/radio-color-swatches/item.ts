@@ -1,0 +1,100 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'radio-color-swatches',
+  status: 'published',
+  title: { 'zh-CN': '色板选择', en: 'Color Swatch Picker' },
+  summary: {
+    'zh-CN': '一排圆形或方形色块，选中的那块套上一圈留白的色环，中间的对勾按底色自动取白或黑；方向键在色块之间切换。适合商品款式、标签颜色和主题强调色。',
+    en: 'Round or square swatches where the chosen one gets an offset ring and a check that switches between light and dark for contrast; arrow keys move between swatches. Made for product variants, label colours and theme accents.',
+  },
+  kind: 'component',
+  category: 'checkbox',
+  tags: ['color', 'swatch', 'radio', 'variant', 'picker', 'form', 'a11y'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'radio-color-swatches.tsx', export: 'ColorSwatches' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'radio-color-swatches.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'palette',
+      type: 'palette',
+      group: 'look',
+      label: { 'zh-CN': '色板', en: 'Palette' },
+      default: ['#3b82f6', '#6366f1', '#ec4899', '#ef4444', '#f97316', '#f59e0b', '#10b981'],
+      minItems: 2,
+      maxItems: 10,
+    },
+    {
+      key: 'shape',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '形状', en: 'Shape' },
+      default: 'circle',
+      options: [
+        { value: 'circle', label: { 'zh-CN': '圆形', en: 'Circle' } },
+        { value: 'square', label: { 'zh-CN': '圆角方块', en: 'Square' } },
+      ],
+    },
+    {
+      key: 'showCheck',
+      type: 'boolean',
+      group: 'look',
+      label: { 'zh-CN': '显示对勾', en: 'Show check' },
+      hint: { 'zh-CN': '关掉时换回上游的小圆点', en: 'Off shows the upstream dot instead' },
+      default: true,
+    },
+    { key: 'size', type: 'number', group: 'layout', label: { 'zh-CN': '尺寸', en: 'Size' }, default: 24, min: 18, max: 44, step: 1, unit: 'px', safe: [20, 36] },
+    { key: 'ringOffset', type: 'number', group: 'layout', label: { 'zh-CN': '色环留白', en: 'Ring offset' }, default: 2, min: 0, max: 5, step: 1, unit: 'px' },
+    { key: 'gap', type: 'number', group: 'layout', label: { 'zh-CN': '间距', en: 'Gap' }, default: 8, min: 4, max: 16, step: 1, unit: 'px' },
+    {
+      key: 'layout',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '排列', en: 'Layout' },
+      default: 'row',
+      options: [
+        { value: 'row', label: { 'zh-CN': '一行（自动换行）', en: 'Row (wraps)' } },
+        { value: 'grid', label: { 'zh-CN': '四列网格', en: 'Grid of four' } },
+      ],
+    },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原色', en: 'Origin' }, values: { shape: 'circle', size: 24, ringOffset: 2, gap: 8, showCheck: true, layout: 'row' } },
+    {
+      id: 'atelier',
+      name: { 'zh-CN': '布坊', en: 'Atelier' },
+      values: { palette: ['#f5efe6', '#d9c3a5', '#8a6f52', '#3f4a3c', '#1f2a44', '#111111'], shape: 'square', size: 32, ringOffset: 3, gap: 10, showCheck: true, layout: 'row' },
+    },
+    {
+      id: 'pebble',
+      name: { 'zh-CN': '卵石', en: 'Pebble' },
+      values: { palette: ['#a5b4fc', '#f9a8d4', '#fde68a', '#86efac', '#67e8f9', '#e5e7eb', '#fca5a5', '#c4b5fd'], shape: 'circle', size: 30, ringOffset: 2, gap: 10, showCheck: false, layout: 'grid' },
+    },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 2.2, posterTime: 1.2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: ['apps/origin/registry/default/components/comp-158.tsx', 'apps/origin/registry/default/ui/radio-group.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Replaced the Radix RadioGroup with native radio inputs sharing one name inside a role="radiogroup" (native arrow-key roving focus), with a focus-visible outline per swatch.',
+      'The hard-coded Tailwind colors became a palette parameter with optional labels; added controlled / uncontrolled value, shape, size, gap, layout, ring offset and a check icon whose ink is picked by luminance (the upstream dot remains with showCheck off).',
+      'Transitions limited to box-shadow, transform and opacity, disabled under reduced motion.',
+    ],
+    assets: [],
+  },
+})

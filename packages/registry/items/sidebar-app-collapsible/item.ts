@@ -1,0 +1,93 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'sidebar-app-collapsible',
+  status: 'published',
+  title: { 'zh-CN': '可收起应用侧栏', en: 'Collapsible App Sidebar' },
+  summary: {
+    'zh-CN': '标准的应用侧栏：顶部切换团队，中间是可展开的分组导航和项目列表，底部是用户菜单；一键收成带提示的图标栏，可以贴边、悬浮或内嵌。适合后台、仪表盘和 SaaS 产品。',
+    en: 'The standard app sidebar: a team switcher on top, grouped navigation with collapsible submenus, a projects list and a user menu at the bottom. It collapses to an icon rail with tooltips and can sit flush, floating or inset. Made for dashboards and SaaS products.',
+  },
+  kind: 'section',
+  category: 'sidebar',
+  tags: ['sidebar', 'app shell', 'dashboard', 'navigation', 'collapsible', 'icon rail', 'shadcn'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'sidebar-app-collapsible.tsx', export: 'AppSidebar' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'sidebar-app-collapsible.tsx', role: 'component' },
+    { path: 'sidebar-app-collapsible.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '形态', en: 'Variant' },
+      default: 'sidebar',
+      options: [
+        { value: 'sidebar', label: { 'zh-CN': '贴边', en: 'Sidebar' } },
+        { value: 'floating', label: { 'zh-CN': '悬浮', en: 'Floating' } },
+        { value: 'inset', label: { 'zh-CN': '内嵌', en: 'Inset' } },
+      ],
+    },
+    { key: 'collapsed', type: 'boolean', group: 'layout', label: { 'zh-CN': '收起为图标栏', en: 'Collapsed to icons' }, default: false },
+    { key: 'width', type: 'number', group: 'layout', label: { 'zh-CN': '展开宽度', en: 'Expanded width' }, default: 256, min: 224, max: 304, step: 4, unit: 'px', safe: [240, 288] },
+    { key: 'showProjects', type: 'boolean', group: 'content', label: { 'zh-CN': '显示项目列表', en: 'Show projects' }, default: true },
+    { key: 'brandName', type: 'text', group: 'content', label: { 'zh-CN': '团队名', en: 'Team name' }, default: 'Halcyon Inc', maxLength: 24 },
+    {
+      key: 'accent',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '团队标志色', en: 'Team mark color' },
+      hint: { 'zh-CN': '标志图形自动取白色或近黑色', en: 'The mark glyph picks white or near-black by contrast' },
+      default: '#6366f1',
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 10, min: 4, max: 16, step: 1, unit: 'px', safe: [6, 14] },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '收起弹簧', en: 'Collapse spring' }, default: { visualDuration: 0.25, bounce: 0 } },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原样', en: 'Origin' }, values: { variant: 'sidebar', accent: '#6366f1', radius: 10 } },
+    { id: 'drift', name: { 'zh-CN': '浮岛', en: 'Drift' }, values: { variant: 'floating', accent: '#14b8a6', radius: 14, spring: { visualDuration: 0.35, bounce: 0.2 } } },
+    { id: 'console', name: { 'zh-CN': '控制台', en: 'Console' }, values: { variant: 'inset', accent: '#f59e0b', radius: 6, showProjects: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    rules: [
+      'AppSidebar is the whole app shell: pass page content as children; below 768px container width the sidebar becomes a slide-in sheet opened by the header trigger.',
+      'Collapsing is controlled by `collapsed`; listen to `onCollapsedChange` (trigger, rail or Cmd/Ctrl+B) when you keep the state yourself.',
+    ],
+  },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'shadcn-ui',
+      repo: 'shadcn-ui/ui',
+      sha: '08ab84f7d1952cc1f36055aa8931213a86b01bbd',
+      paths: [
+        'apps/v4/registry/new-york-v4/blocks/sidebar-07/page.tsx',
+        'apps/v4/registry/new-york-v4/blocks/sidebar-07/components/app-sidebar.tsx',
+        'apps/v4/registry/new-york-v4/blocks/sidebar-07/components/nav-main.tsx',
+        'apps/v4/registry/new-york-v4/blocks/sidebar-07/components/nav-projects.tsx',
+        'apps/v4/registry/new-york-v4/blocks/sidebar-07/components/team-switcher.tsx',
+        'apps/v4/registry/new-york-v4/blocks/sidebar-07/components/nav-user.tsx',
+        'apps/v4/registry/new-york-v4/ui/sidebar.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 shadcn'],
+    },
+    modifications: [
+      'Merged the sidebar-07 block, its nav components and the needed ui/sidebar primitives into one file, keeping the upstream markup, data-sidebar attributes and class names.',
+      'Replaced Radix Collapsible, DropdownMenu, Tooltip and Sheet with small hand-rolled versions (aria-expanded, role="menu" with arrow-key focus, a fixed tooltip, a slide-in dialog); lucide icons are inline SVG.',
+      'Cookie persistence and the use-mobile hook became local state and a ResizeObserver on the wrapper; the collapse width animates with a motion spring instead of a 200ms CSS transition.',
+      'sidebar-* color tokens are derived from Motif theme variables in the item CSS; the team mark color, width, radius, variant and projects toggle are params; the sample data uses invented teams and a user with an initials avatar.',
+      'The demo replaces the placeholder boxes with a small dashboard and toggles the collapsed state through useFrameLoop.',
+    ],
+    assets: [],
+  },
+})

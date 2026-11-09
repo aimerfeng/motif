@@ -1,0 +1,69 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Animata
+ * Source: https://github.com/codse/animata/blob/36674e4/animata/button/ripple-button.css
+ * Modified by Motif; see the item's provenance.
+ */
+@layer components {
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    background-color: var(--bif-ink, #000000);
+    z-index: 1;
+    opacity: 0;
+    transition: transform 50ms linear;
+  }
+
+  .ripple-enter {
+    animation: ripple-enter var(--bif-duration, 250ms) ease-out forwards;
+  }
+
+  .ripple-leave {
+    animation: ripple-leave var(--bif-duration, 250ms) ease-out forwards;
+  }
+
+  .bif {
+    color: var(--bif-text);
+    transition: color calc(var(--bif-duration, 250ms) * 1.2) ease-out;
+  }
+
+  .bif[data-inked] {
+    color: var(--bif-hover-text);
+  }
+
+  @keyframes ripple-enter {
+    from {
+      transform: scale(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes ripple-leave {
+    from {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    to {
+      transform: scale(0);
+      opacity: 1;
+    }
+  }
+
+  /* 减少动态效果：墨水不再生长，直接出现或消失。 */
+  @media (prefers-reduced-motion: reduce) {
+    .ripple-enter,
+    .ripple-leave {
+      animation-duration: 1ms;
+    }
+    .bif {
+      transition: none;
+    }
+  }
+}

@@ -1,0 +1,38 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/registry/magicui/kinetic-text.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* 每个字母只有这一个值在过渡：0 是静止字重，1 是浪尖。注册成数字才能插值，不继承，免得一个字母的值传给别的元素。 */
+@property --tww-ink {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.tww-root {
+  font-weight: var(--tww-base);
+  font-synthesis: none;
+}
+
+/* 字重、描边、左右让位都由 --tww-ink 算出来，一条过渡同时带动三者，永远同步。 */
+.tww-letter {
+  font-weight: calc(var(--tww-base) + (var(--tww-peak) - var(--tww-base)) * var(--tww-ink));
+  /*
+   * 字重取到 10 的整数倍：每个不同的字重都是一份新的字体实例（重新整形、重新栅格化字形），
+   * 连续取值会让每一帧都缓存不命中；10 个单位的差别肉眼看不出。不支持 round() 的浏览器沿用上一行。
+   */
+  font-weight: round(nearest, calc(var(--tww-base) + (var(--tww-peak) - var(--tww-base)) * var(--tww-ink)), 10);
+  padding-inline: calc(var(--tww-pad) * var(--tww-ink));
+  -webkit-text-stroke: calc(var(--tww-stroke) * var(--tww-ink)) currentColor;
+  transition: --tww-ink var(--tww-duration) cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* 减少动态效果：组件不再写入 --tww-ink，这里再兜底去掉过渡。 */
+@media (prefers-reduced-motion: reduce) {
+  .tww-letter {
+    transition: none;
+  }
+}

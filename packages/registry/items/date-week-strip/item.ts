@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'date-week-strip',
+  status: 'published',
+  title: { 'zh-CN': '周视图日期条', en: 'Week Strip Date Picker' },
+  summary: {
+    'zh-CN': '一排横向的日期胶囊，显示星期和日期，左右箭头按周翻页；选中的胶囊会滑到新的一天，今天带圆点，有安排的日子带小标记。适合移动端日程、健身记录和选择配送日。',
+    en: 'A horizontal row of day pills with weekday and date, with arrows to page by week. The selected pill glides to the new day, today gets a dot and days with events get markers. For mobile agendas, fitness logs and picking a delivery day.',
+  },
+  kind: 'component',
+  category: 'date',
+  tags: ['date', 'calendar', 'week', 'picker', 'agenda', 'mobile'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'date-week-strip.tsx', export: 'DateWeekStrip' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'date-week-strip.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, default: '#6366f1' },
+    { key: 'days', type: 'number', group: 'layout', label: { 'zh-CN': '显示天数', en: 'Days shown' }, hint: { 'zh-CN': '箭头每次翻过这么多天', en: 'The arrows page by this many days' }, default: 7, min: 3, max: 7, step: 1, safe: [5, 7] },
+    {
+      key: 'weekStart',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '起始日', en: 'Start on' },
+      default: 'monday',
+      options: [
+        { value: 'monday', label: { 'zh-CN': '周一', en: 'Monday' } },
+        { value: 'sunday', label: { 'zh-CN': '周日', en: 'Sunday' } },
+        { value: 'today', label: { 'zh-CN': '今天', en: 'Today' } },
+      ],
+    },
+    {
+      key: 'pillStyle',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '选中样式', en: 'Selected pill' },
+      default: 'solid',
+      options: [
+        { value: 'solid', label: { 'zh-CN': '实心', en: 'Solid' } },
+        { value: 'soft', label: { 'zh-CN': '柔和', en: 'Soft' } },
+        { value: 'outline', label: { 'zh-CN': '描边', en: 'Outline' } },
+      ],
+    },
+    { key: 'showMarkers', type: 'boolean', group: 'look', label: { 'zh-CN': '显示日程标记', en: 'Event markers' }, default: true },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 10, min: 2, max: 20, step: 1, unit: 'px', safe: [6, 16] },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '滑动弹簧', en: 'Glide spring' }, default: { visualDuration: 0.35, bounce: 0.2 } },
+  ],
+  presets: [
+    { id: 'indigo', name: { 'zh-CN': '靛夜', en: 'Indigo Night' }, values: { accent: '#6366f1', pillStyle: 'solid', radius: 10 } },
+    { id: 'citrus', name: { 'zh-CN': '青柠', en: 'Citrus' }, values: { accent: '#a3e635', pillStyle: 'solid', radius: 18, spring: { visualDuration: 0.4, bounce: 0.35 } } },
+    { id: 'ledger', name: { 'zh-CN': '账簿', en: 'Ledger' }, values: { accent: '#f59e0b', pillStyle: 'outline', radius: 4, days: 5, weekStart: 'today' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.5, posterTime: 1.8, loop: 11.2 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kibo',
+      repo: 'shadcnblocks/kibo',
+      sha: '3d63cdb15b79d972e3dc38a10997987672f9b263',
+      paths: ['packages/mini-calendar/index.tsx', 'apps/docs/examples/mini-calendar.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 — Present shadcnblocks'],
+    },
+    modifications: [
+      'Replaced date-fns with small date helpers, @radix-ui/react-use-controllable-state with a tiny hook, lucide icons with inline SVG and the shadcn Button with native buttons.',
+      'Days show the weekday instead of the month; added a weekStart option, a gliding selected pill (motion layoutId) with solid / soft / outline styles, a today dot and event markers.',
+      'Accent color, corner radius and spring come from params; selected text picks light or dark ink by accent luminance; aria-pressed and aria-labels on day and arrow buttons.',
+      'Added a DateWeekStrip convenience component composed like the upstream example.',
+    ],
+    assets: [],
+  },
+})

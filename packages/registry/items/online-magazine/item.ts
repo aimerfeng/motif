@@ -1,0 +1,123 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'online-magazine',
+  status: 'published',
+  title: { 'zh-CN': '在线杂志', en: 'Online Magazine' },
+  summary: {
+    'zh-CN': '多作者的在线杂志：刊头和栏目导航，配生成插画的封面故事和本周最多阅读，按文化、科学、美食筛选的文章卡片，以及带搜索、相关文章、标签和订阅框侧栏的长文页。',
+    en: 'A multi-author online magazine: masthead and section nav, a cover story with a generated illustration next to a most-read list, story cards filtered by Culture, Science and Food, and a long-read view with a sidebar for search, related stories, tags and a newsletter box.',
+  },
+  kind: 'template',
+  category: 'blog',
+  tags: ['magazine', 'editorial', 'blog', 'news', 'article', 'sidebar', 'newsletter', 'dark-mode'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'online-magazine.tsx', export: 'OnlineMagazine' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'online-magazine.tsx', role: 'component' },
+    { path: 'sections.tsx', role: 'component' },
+    { path: 'parts.tsx', role: 'lib' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'masthead', type: 'text', label: { 'zh-CN': '刊名', en: 'Masthead' }, default: 'The Longhand', maxLength: 22, group: 'brand' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent color' }, hint: { 'zh-CN': '标签、按钮和强调文字；文字色会自动调到可读', en: 'Tags, buttons and emphasis; text uses an automatically readable shade' }, default: '#4a6cf7', group: 'brand' },
+    {
+      key: 'headlineFont',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Headline font' },
+      default: 'sans',
+      options: [
+        { value: 'sans', label: { 'zh-CN': 'Inter Tight（上游原样）', en: 'Inter Tight, as upstream' } },
+        { value: 'serif', label: { 'zh-CN': 'Newsreader 报刊衬线', en: 'Newsreader, newsprint serif' } },
+        { value: 'display', label: { 'zh-CN': 'Playfair Display 杂志标题', en: 'Playfair Display, magazine display' } },
+      ],
+      group: 'brand',
+    },
+    {
+      key: 'coverStyle',
+      type: 'select',
+      label: { 'zh-CN': '封面插画', en: 'Cover illustrations' },
+      default: 'mixed',
+      options: [
+        { value: 'mixed', label: { 'zh-CN': '轮换', en: 'Mixed' } },
+        { value: 'waves', label: { 'zh-CN': '海浪与落日', en: 'Waves and sun' } },
+        { value: 'orbits', label: { 'zh-CN': '轨道', en: 'Orbits' } },
+        { value: 'blocks', label: { 'zh-CN': '几何色块', en: 'Geometric blocks' } },
+      ],
+      group: 'look',
+    },
+    { key: 'dark', type: 'boolean', label: { 'zh-CN': '深色模式', en: 'Dark mode' }, default: true, group: 'look' },
+    {
+      key: 'density',
+      type: 'select',
+      label: { 'zh-CN': '疏密', en: 'Density' },
+      default: 'comfortable',
+      options: [
+        { value: 'comfortable', label: { 'zh-CN': '舒展', en: 'Comfortable' } },
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'columns', type: 'number', label: { 'zh-CN': '宽屏每行卡片数', en: 'Cards per row on wide screens' }, default: 3, min: 2, max: 3, step: 1, group: 'layout' },
+    { key: 'showSidebar', type: 'boolean', label: { 'zh-CN': '文章侧栏', en: 'Article sidebar' }, default: true, group: 'layout' },
+  ],
+  presets: [
+    { id: 'night-edition', name: { 'zh-CN': '夜间版', en: 'Night edition' }, values: { accent: '#4a6cf7', headlineFont: 'sans', coverStyle: 'mixed', dark: true, density: 'comfortable' } },
+    {
+      id: 'broadsheet',
+      name: { 'zh-CN': '大报', en: 'Broadsheet' },
+      values: { masthead: 'The Broadsheet', accent: '#b42318', headlineFont: 'serif', coverStyle: 'blocks', dark: false, density: 'compact', columns: 3 },
+    },
+    {
+      id: 'sunday-supplement',
+      name: { 'zh-CN': '周日副刊', en: 'Sunday supplement' },
+      values: { masthead: 'Sunday Almanac', accent: '#0f766e', headlineFont: 'display', coverStyle: 'waves', dark: false, density: 'comfortable', columns: 2 },
+    },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Inter Tight Variable', 'Newsreader Variable', 'Playfair Display Variable'],
+  guidance: {
+    use: [
+      'A home page plus article view for a multi-author publication: masthead, section nav, cover story with a most-read list, section-filtered story cards with pagination, and a long read with a sidebar.',
+      'Replace COVER_STORY, POSTS, MOST_READ and the article copy with your CMS data; covers are generated SVG illustrations, so swap them for real photography with the same aspect ratios.',
+    ],
+    rules: [
+      'One accent color for tags, buttons, the active tab and emphasis. Accent text always goes through --accent-text, which is adjusted for contrast; use --primary only for fills.',
+      'Cards keep the upstream rhythm: cover on top with a pill tag, title, a one-sentence dek above a hairline, then byline (initials avatar, role) and date.',
+      'Sidebar boxes share one shape: card background, soft shadow in light mode, a bordered title row (px-8 py-4) and padded content.',
+      'No photos, author portraits or real brand logos: generated covers, gradient initials and an invented masthead mark only. Share buttons are generic (link, email, save), not social network logos.',
+      'Copy reads like real journalism: specific places, numbers and named sources. No lorem ipsum.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'startup-nextjs',
+      repo: 'NextJSTemplates/startup-nextjs',
+      sha: 'e730b6a99c77b96c835f11347231faa4f4e9f767',
+      paths: [
+        'src/app/blog/page.tsx',
+        'src/app/blog-sidebar/page.tsx',
+        'src/components/Blog/SingleBlog.tsx',
+        'src/components/Blog/RelatedPost.tsx',
+        'src/components/Blog/TagButton.tsx',
+        'src/components/Contact/NewsLatterBox.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 Next.js Templates'],
+    },
+    modifications: [
+      'Ported the blog grid, SingleBlog card, pagination, blog-sidebar article page, RelatedPost, TagButton and NewsLatterBox to React 19 + Tailwind v4 without Next.js (no next/image, next/link or next-themes); container queries replace viewport breakpoints.',
+      'Added a magazine masthead with section nav, a cover story with a most-read list, section filter tabs and a footer around the upstream blog and article layouts.',
+      'All photos and author images were replaced with generated SVG covers and gradient initials; social share icons were replaced with generic link, email and save icons; copy is new.',
+      'Theme (accent with contrast-checked text and button ink, headline font, dark mode, density, columns, sidebar) is driven by props through CSS variables; the newsletter and search are working forms with labels and focus styles.',
+    ],
+    assets: [],
+  },
+})

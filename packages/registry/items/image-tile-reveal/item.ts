@@ -1,0 +1,73 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'image-tile-reveal',
+  status: 'published',
+  title: { 'zh-CN': '拼块显影', en: 'Tile Reveal Image' },
+  summary: {
+    'zh-CN': '图片被切成一格格拼块，按随机的先后顺序逐个淡入；拼齐之前是黑白的，拼完再慢慢晕开颜色。适合作品集封面、画廊入场和案例页头图。',
+    en: 'An image assembles from a grid of tiles that fade in at random delays, starting in grayscale and blooming into full color once the grid is complete. For portfolio covers, gallery entrances and case-study headers.',
+  },
+  kind: 'effect',
+  category: 'image',
+  tags: ['image', 'reveal', 'tiles', 'grid', 'grayscale', 'entrance', 'pixel'],
+  runtime: ['react', 'css', 'canvas2d'],
+  entry: { file: 'image-tile-reveal.tsx', export: 'PixelImage' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'image-tile-reveal.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'rows', type: 'number', group: 'layout', label: { 'zh-CN': '行数', en: 'Rows' }, default: 4, min: 1, max: 16, step: 1, safe: [3, 8] },
+    { key: 'cols', type: 'number', group: 'layout', label: { 'zh-CN': '列数', en: 'Columns' }, default: 6, min: 1, max: 16, step: 1, safe: [3, 8] },
+    { key: 'tileDuration', type: 'number', group: 'motion', label: { 'zh-CN': '拼块淡入时长', en: 'Tile fade' }, default: 1000, min: 200, max: 2500, step: 50, unit: 'ms', safe: [600, 1400] },
+    { key: 'maxDelay', type: 'number', group: 'motion', label: { 'zh-CN': '最大延迟', en: 'Max delay' }, hint: { 'zh-CN': '每块的出场时间在 0 到这个值之间随机', en: 'Each tile starts at a random time up to this' }, default: 1200, min: 0, max: 3000, step: 50, unit: 'ms', safe: [600, 1800] },
+    { key: 'grayscale', type: 'boolean', group: 'look', label: { 'zh-CN': '先黑白后上色', en: 'Grayscale first' }, default: true },
+    { key: 'colorDelay', type: 'number', group: 'motion', label: { 'zh-CN': '上色延迟', en: 'Color delay' }, default: 1300, min: 0, max: 4000, step: 50, unit: 'ms', safe: [900, 2000] },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 40, min: 0, max: 64, step: 1, unit: 'px', safe: [16, 48] },
+    { key: 'replayInterval', type: 'number', group: 'motion', label: { 'zh-CN': '重播间隔', en: 'Replay every' }, hint: { 'zh-CN': '0 表示只播一次', en: '0 plays it once' }, default: 5, min: 0, max: 15, step: 0.5, unit: 's' },
+    {
+      key: 'artwork',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '演示图', en: 'Artwork' },
+      hint: { 'zh-CN': '只影响演示', en: 'Demo only' },
+      default: 'dunes',
+      options: [
+        { value: 'dunes', label: { 'zh-CN': '沙丘', en: 'Dunes' } },
+        { value: 'tide', label: { 'zh-CN': '潮汐', en: 'Tide' } },
+        { value: 'bloom', label: { 'zh-CN': '花影', en: 'Bloom' } },
+      ],
+    },
+  ],
+  presets: [
+    { id: 'contact-sheet', name: { 'zh-CN': '印样', en: 'Contact Sheet' }, values: { rows: 4, cols: 6, tileDuration: 1000, maxDelay: 1200, colorDelay: 1300, grayscale: true, radius: 40 } },
+    { id: 'mosaic', name: { 'zh-CN': '马赛克', en: 'Mosaic' }, values: { rows: 10, cols: 10, tileDuration: 600, maxDelay: 1800, colorDelay: 2100, grayscale: true, radius: 16, artwork: 'bloom' } },
+    { id: 'blinds', name: { 'zh-CN': '百叶', en: 'Blinds' }, values: { rows: 1, cols: 8, tileDuration: 1200, maxDelay: 900, colorDelay: 1000, grayscale: false, radius: 24, artwork: 'tide' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 3.4, loop: 5 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'magicui',
+      repo: 'magicuidesign/magicui',
+      sha: 'd7207e5692d14c00dceafa8488d6d01f197fa0e4',
+      paths: ['apps/www/registry/magicui/pixel-image.tsx', 'apps/www/registry/example/pixel-image-demo.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Magic UI'],
+    },
+    modifications: [
+      'cn now comes from motif-runtime; the named grid presets and customGrid became rows / cols props (1–16), with defaults in the generated defaults region.',
+      "The CSS transitions with per-tile transition-delay and the setTimeout colour reveal were replaced by a useFrameLoop clock that writes each tile's opacity and the grayscale filter, with the same ease-out and cubic-bezier(0.4, 0, 0.2, 1) curves; tile delays use a seeded random instead of Math.random so the order is stable.",
+      'Added replayInterval (the reveal fades out and replays on a cycle; 0 plays once), a radius prop for the corner rounding, and alt text exposed once on the root as role="img" with the tiles aria-hidden.',
+      'Added reduced-motion handling: the image is shown fully assembled and in colour.',
+      'The demo artwork is painted on a canvas at runtime with useDrawnImage instead of a photo, so the item ships no image files.',
+    ],
+    assets: [],
+  },
+})

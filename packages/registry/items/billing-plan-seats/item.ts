@@ -1,0 +1,95 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'billing-plan-seats',
+  status: 'published',
+  title: { 'zh-CN': '套餐、席位与账单', en: 'Plan, Seats & Invoices' },
+  summary: {
+    'zh-CN': '设置页的计费标签：套餐与计费周期、席位用量条、本期账单明细与合计、已绑定的卡片，以及可展开金额输入和预算环的消费上限开关。',
+    en: 'A settings billing tab with plan and billing period rows, a seats-used bar, the current cycle as an itemized table with total, the card on file and a spend-cap switch that reveals an amount field and a budget ring.',
+  },
+  kind: 'section',
+  category: 'settings',
+  tags: ['billing', 'settings', 'seats', 'invoice', 'spend cap', 'plan'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'billing-plan-seats.tsx', export: 'BillingPlanSeats' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'billing-plan-seats.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#3b82f6', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '外观', en: 'Surface' },
+      default: 'plain',
+      options: [
+        { value: 'plain', label: { 'zh-CN': '平铺', en: 'Plain' } },
+        { value: 'card', label: { 'zh-CN': '卡片', en: 'Card' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'split',
+      options: [
+        { value: 'split', label: { 'zh-CN': '标题在左', en: 'Labels left' } },
+        { value: 'stacked', label: { 'zh-CN': '上下堆叠', en: 'Stacked' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'currency',
+      type: 'select',
+      label: { 'zh-CN': '货币', en: 'Currency' },
+      default: 'USD',
+      options: [
+        { value: 'USD', label: { 'zh-CN': '美元 $', en: 'US dollar $' } },
+        { value: 'EUR', label: { 'zh-CN': '欧元 €', en: 'Euro €' } },
+        { value: 'GBP', label: { 'zh-CN': '英镑 £', en: 'Pound £' } },
+      ],
+      group: 'content',
+    },
+    { key: 'seatsUsed', type: 'number', label: { 'zh-CN': '已用席位', en: 'Seats used' }, default: 5, min: 1, max: 50, step: 1, group: 'content' },
+    { key: 'seatsTotal', type: 'number', label: { 'zh-CN': '席位总数', en: 'Seats total' }, default: 25, min: 5, max: 50, step: 1, group: 'content' },
+    { key: 'showSpendCap', type: 'boolean', label: { 'zh-CN': '开启消费上限', en: 'Spend cap on' }, default: true, group: 'content' },
+  ],
+  presets: [
+    { id: 'ledger', name: { 'zh-CN': '账簿', en: 'Ledger' }, values: { accent: '#3b82f6', layout: 'split', tone: 'plain' } },
+    { id: 'mint', name: { 'zh-CN': '薄荷', en: 'Mint Office' }, values: { accent: '#34d399', layout: 'stacked', tone: 'card', currency: 'EUR', seatsUsed: 18, seatsTotal: 20 } },
+    { id: 'amber', name: { 'zh-CN': '琥珀', en: 'Amber Desk' }, values: { accent: '#f59e0b', layout: 'split', tone: 'card', currency: 'GBP', seatsUsed: 9, showSpendCap: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: [
+        'src/content/components/billing-usage/billing-usage-03.tsx',
+        'src/content/components/billing-usage/billing-usage-04.tsx',
+        'src/content/components/billing-usage/billing-usage-06.tsx',
+        'src/content/components/billing-usage/billing-usage-07.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Combined the plan/seats (03), billing-cycle table and payment method (04) and spend control (06/07) blocks into one component, keeping their markup and copy.',
+      'Replaced the Tremor Tabs, ProgressBar, ProgressCircle, Switch, Table, Input and Button with small hand-written equivalents; Remix icons became inline SVG.',
+      'Gray palette mapped to theme tokens with an accent color; added params for currency, seats, layout and surface; the card brand is an invented mark.',
+      'The spend-cap panel opens with a motion height animation instead of transition-all; reduced motion skips it.',
+    ],
+    assets: [],
+  },
+})

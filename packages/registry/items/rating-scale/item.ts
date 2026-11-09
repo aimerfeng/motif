@@ -1,0 +1,75 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'rating-scale',
+  status: 'published',
+  title: { 'zh-CN': '满意度评分刻度', en: 'Feedback Scale' },
+  summary: {
+    'zh-CN': '星星以外的反馈刻度：两端带说明的 0–10 推荐度连排按钮、从红到绿的五个表情，或者表情和文字随数值变化的滑块。适合 NPS 调查、任务后评分和客服反馈。',
+    en: 'Feedback scales other than stars: a joined 0–10 NPS row with end labels, five faces that tint from red to green, or a slider whose face and label change with the value. Made for NPS surveys, post-task ratings and support feedback.',
+  },
+  kind: 'component',
+  category: 'input',
+  tags: ['nps', 'rating', 'feedback', 'survey', 'faces', 'slider', 'radio', 'form'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'rating-scale.tsx', export: 'RatingScale' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'rating-scale.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'type',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '类型', en: 'Type' },
+      default: 'nps',
+      options: [
+        { value: 'nps', label: { 'zh-CN': '数字刻度（NPS）', en: 'Number scale (NPS)' } },
+        { value: 'faces', label: { 'zh-CN': '表情', en: 'Faces' } },
+        { value: 'slider', label: { 'zh-CN': '表情滑块', en: 'Face slider' } },
+      ],
+    },
+    { key: 'max', type: 'number', group: 'content', label: { 'zh-CN': '最大分值', en: 'Max score' }, hint: { 'zh-CN': '只对数字刻度生效，从 0 开始', en: 'Number scale only; starts at 0' }, default: 10, min: 5, max: 10, step: 1, safe: [5, 10] },
+    { key: 'lowLabel', type: 'text', group: 'content', label: { 'zh-CN': '低分说明', en: 'Low label' }, default: 'Not likely', maxLength: 20 },
+    { key: 'highLabel', type: 'text', group: 'content', label: { 'zh-CN': '高分说明', en: 'High label' }, default: 'Very Likely', maxLength: 20 },
+    { key: 'colorScale', type: 'boolean', group: 'look', label: { 'zh-CN': '红到绿着色', en: 'Red-to-green tint' }, hint: { 'zh-CN': '选中项按分值着色，上面的字自动取白色或近黑色', en: 'The picked option is tinted by its score; text on it uses white or near-black, whichever contrasts more' }, default: true },
+    { key: 'showValueLabel', type: 'boolean', group: 'content', label: { 'zh-CN': '显示当前评价', en: 'Show value label' }, hint: { 'zh-CN': '表情和滑块类型下显示文字评价', en: 'Faces and slider show the word for the value' }, default: true },
+    { key: 'size', type: 'number', group: 'layout', label: { 'zh-CN': '尺寸', en: 'Size' }, default: 36, min: 30, max: 48, step: 1, unit: 'px', safe: [32, 44] },
+    { key: 'radius', type: 'number', group: 'layout', label: { 'zh-CN': '圆角', en: 'Radius' }, hint: { 'zh-CN': '数字刻度两端的圆角', en: 'Outer corners of the number scale' }, default: 6, min: 0, max: 18, step: 1, unit: 'px', safe: [4, 12] },
+  ],
+  presets: [
+    { id: 'pulse', name: { 'zh-CN': '脉搏', en: 'Pulse' }, values: { type: 'nps', max: 10, colorScale: true, size: 36, radius: 6 } },
+    { id: 'mood', name: { 'zh-CN': '心情', en: 'Mood' }, values: { type: 'faces', colorScale: true, showValueLabel: true, size: 40 } },
+    { id: 'dial', name: { 'zh-CN': '旋钮', en: 'Dial' }, values: { type: 'slider', colorScale: false, showValueLabel: true, size: 36 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.8, posterTime: 5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: [
+        'apps/origin/registry/default/components/comp-167.tsx',
+        'apps/origin/registry/default/components/comp-168.tsx',
+        'apps/origin/registry/default/components/comp-256.tsx',
+        'apps/origin/registry/default/components/comp-257.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Merged the four examples into one component with a type select (number scale, faces, face slider) and controlled / uncontrolled value.',
+      'Replaced the Radix RadioGroup with visually hidden native radios and the Radix Slider with a hand-rolled role="slider" (pointer drag, arrow / Home / End keys).',
+      'Replaced the emoji glyphs with inline SVG faces so they look the same on every OS.',
+      'Added an optional red-to-green tint for the picked option (ink picked by luminance), a configurable max, end labels, size and radius.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,20 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/styles/globals.css
+ * Modified by Motif; see the item's provenance.
+ */
+/* Scoped to ThemeToggleReveal so other root view transitions stay unaffected. */
+html[data-motif-theme-vt='active']::view-transition-old(root),
+html[data-motif-theme-vt='active']::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-motif-theme-vt='active']::view-transition-group(root) {
+  animation-duration: var(--motif-theme-toggle-vt-duration);
+}
+
+html[data-motif-theme-vt='active']::view-transition-new(root) {
+  clip-path: var(--motif-theme-vt-clip-from);
+}

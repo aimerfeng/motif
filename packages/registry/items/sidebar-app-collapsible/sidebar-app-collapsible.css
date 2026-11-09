@@ -1,0 +1,26 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2023 shadcn
+ * Source: https://github.com/shadcn-ui/ui/blob/08ab84f/apps/v4/registry/new-york-v4/ui/sidebar.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+/* 上游的 sidebar-* 颜色在 shadcn 的 globals.css 里；Motif 的主题没有这组变量，这里从共用变量派生，类名保持上游写法。 */
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+[data-slot='sidebar-wrapper'] {
+  --sidebar: color-mix(in oklch, var(--muted) 60%, var(--background));
+  --sidebar-foreground: var(--foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}

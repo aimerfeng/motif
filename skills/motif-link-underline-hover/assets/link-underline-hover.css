@@ -1,0 +1,151 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Animata
+ * Source: https://github.com/codse/animata/blob/36674e4/animata/text/metis-text.css
+ * Modified by Motif; see the item's provenance.
+ */
+.mlu {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+  transition: transform var(--mlu-duration) var(--mlu-ease);
+}
+
+.mlu:focus-visible {
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--mlu-color) 55%, transparent);
+}
+
+.mlu:is(:hover, :focus-visible, [data-active='true']) {
+  transform: translateY(calc(var(--mlu-lift) * -1));
+}
+
+.mlu-label {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.mlu-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: var(--mlu-thickness);
+  pointer-events: none;
+}
+
+/* Metis: scaleX reveal with flipped transform-origin on enter/exit (Codrops LineHoverStyles). */
+.mlu[data-variant='metis'] .mlu-line {
+  top: calc(100% + var(--mlu-offset));
+  background: var(--mlu-color);
+  transform-origin: 100% 50%;
+  transform: scale3d(0, 1, 1);
+  transition: transform var(--mlu-duration) var(--mlu-ease);
+}
+.mlu[data-variant='metis']:is(:hover, :focus-visible, [data-active='true']) .mlu-line {
+  transform-origin: 0% 50%;
+  transform: scale3d(1, 1, 1);
+}
+
+/* Center: soft baseline plus a stroke that sweeps outward from the middle. */
+.mlu[data-variant='center'] {
+  padding: 0 0.25rem 0.375rem;
+}
+.mlu[data-variant='center'] .mlu-base {
+  bottom: 0;
+  height: 1px;
+  background: currentcolor;
+  opacity: 0.25;
+}
+.mlu[data-variant='center'] .mlu-line {
+  bottom: calc(-1px - var(--mlu-offset));
+  border-radius: 9999px;
+  background: var(--mlu-color);
+  transform: scaleX(0);
+  transition: transform var(--mlu-duration) var(--mlu-ease);
+}
+.mlu[data-variant='center']:is(:hover, :focus-visible, [data-active='true']) .mlu-line {
+  transform: scaleX(1);
+}
+
+/* Double: a soft bottom stroke stays; the top stroke lifts from below to above the glyphs. */
+.mlu[data-variant='double'] {
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  transition:
+    transform var(--mlu-duration) var(--mlu-ease),
+    letter-spacing var(--mlu-duration) var(--mlu-ease);
+}
+.mlu[data-variant='double']:is(:hover, :focus-visible, [data-active='true']) {
+  letter-spacing: -0.01em;
+}
+.mlu[data-variant='double'] .mlu-base {
+  bottom: calc(-3px - var(--mlu-offset));
+  height: var(--mlu-thickness);
+  background: linear-gradient(to right, transparent, color-mix(in oklab, var(--mlu-color) 70%, transparent), transparent);
+  transition: opacity var(--mlu-duration) var(--mlu-ease);
+}
+.mlu[data-variant='double']:is(:hover, :focus-visible, [data-active='true']) .mlu-base {
+  opacity: 0.5;
+}
+.mlu[data-variant='double'] .mlu-line {
+  top: calc(100% - 3px + var(--mlu-offset));
+  background: linear-gradient(to right, transparent, var(--mlu-color), transparent);
+  opacity: 0;
+  transition:
+    top var(--mlu-duration) var(--mlu-ease),
+    opacity var(--mlu-duration) var(--mlu-ease);
+}
+.mlu[data-variant='double']:is(:hover, :focus-visible, [data-active='true']) .mlu-line {
+  opacity: 1;
+  top: -1px;
+}
+
+/* Bar: enters from the left, leaves through the right. */
+.mlu[data-variant='bar'] .mlu-track {
+  position: relative;
+  display: block;
+  margin-top: calc(0.25rem + var(--mlu-offset));
+  height: var(--mlu-thickness);
+  width: 100%;
+  overflow: hidden;
+}
+.mlu[data-variant='bar'] .mlu-line {
+  top: 0;
+  height: 100%;
+  background: var(--mlu-color);
+}
+.mlu[data-variant='bar'] .mlu-in {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 0s, opacity 0s;
+}
+.mlu[data-variant='bar']:is(:hover, :focus-visible, [data-active='true']) .mlu-in {
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform var(--mlu-duration) var(--mlu-ease), opacity 0s;
+}
+.mlu[data-variant='bar'] .mlu-out {
+  transform: translateX(100%);
+  transition: transform var(--mlu-duration) var(--mlu-ease);
+}
+.mlu[data-variant='bar']:is(:hover, :focus-visible, [data-active='true']) .mlu-out {
+  transform: translateX(0);
+  opacity: 0;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlu,
+  .mlu .mlu-line,
+  .mlu .mlu-base {
+    transition: none !important;
+  }
+  .mlu:is(:hover, :focus-visible, [data-active='true']) {
+    transform: none;
+  }
+}

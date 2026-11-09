@@ -1,0 +1,72 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'pricing-plan-picker',
+  status: 'published',
+  title: { 'zh-CN': '套餐选择卡', en: 'Plan Picker' },
+  summary: {
+    'zh-CN': '一张窄的套餐选择卡：月付 / 年付切换，单选式的套餐行在切换周期时价格逐位滚动，带「热门」标记和席位加减器。适合结账步骤和紧凑的定价页。',
+    en: 'A narrow plan picker: a monthly/yearly toggle, radio-style plan rows whose prices roll digit by digit when the cycle changes, a popular badge and a seat stepper. For checkout steps and compact pricing pages.',
+  },
+  kind: 'section',
+  category: 'pricing',
+  tags: ['pricing', 'plan picker', 'checkout', 'billing toggle', 'rolling numbers', 'radio'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'pricing-plan-picker.tsx', export: 'PricingPlanPicker' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'pricing-plan-picker.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Select a Plan', maxLength: 28, group: 'content' },
+    { key: 'plans', type: 'number', label: { 'zh-CN': '套餐数', en: 'Plans' }, default: 3, min: 2, max: 3, step: 1, group: 'content' },
+    { key: 'popularIndex', type: 'number', label: { 'zh-CN': '热门套餐', en: 'Popular plan' }, hint: { 'zh-CN': '第几个套餐显示「热门」，0 为不显示', en: 'Which plan shows the Popular badge; 0 hides it' }, default: 2, min: 0, max: 3, step: 1, group: 'content' },
+    { key: 'showSeats', type: 'boolean', label: { 'zh-CN': '席位加减器', en: 'Seat stepper' }, default: true, group: 'content' },
+    { key: 'yearlyDiscount', type: 'number', label: { 'zh-CN': '年付折扣', en: 'Yearly discount' }, default: 20, min: 10, max: 40, step: 5, unit: '%', group: 'pricing' },
+    {
+      key: 'currency',
+      type: 'select',
+      label: { 'zh-CN': '货币', en: 'Currency' },
+      default: 'USD',
+      options: [
+        { value: 'USD', label: { 'zh-CN': '美元 $', en: 'US dollar $' } },
+        { value: 'EUR', label: { 'zh-CN': '欧元 €', en: 'Euro €' } },
+        { value: 'GBP', label: { 'zh-CN': '英镑 £', en: 'Pound £' } },
+      ],
+      group: 'pricing',
+    },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c6cff', group: 'look' },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 16, min: 4, max: 28, step: 1, unit: 'px', safe: [10, 24], group: 'look' },
+  ],
+  presets: [
+    { id: 'violet', name: { 'zh-CN': '暮紫', en: 'Dusk' }, values: { accent: '#7c6cff', radius: 16, popularIndex: 2 } },
+    { id: 'lime', name: { 'zh-CN': '青柠', en: 'Lime' }, values: { accent: '#a3e635', radius: 24, yearlyDiscount: 25, popularIndex: 3 } },
+    { id: 'ledger', name: { 'zh-CN': '账本', en: 'Ledger' }, values: { accent: '#f59e0b', radius: 6, currency: 'EUR', popularIndex: 0, showSeats: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, zoom: 1.2, posterTime: 3, loop: 10 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uselayouts',
+      repo: 'iurvish/uselayouts',
+      sha: '678a478e30272d8101cea97bc6147e0df9dcd652',
+      paths: ['registry/default/example/pricing-card.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Urvish Mali'],
+    },
+    modifications: [
+      'Replaced @number-flow/react with a small hand-written rolling-digit component built on motion.',
+      'Replaced Hugeicons with inline SVG icons.',
+      'Exposed heading, plan count, popular badge, seat stepper, yearly discount, currency, accent and radius as params; added an optional Popular badge and computed yearly prices from the discount.',
+      'Added optional controlled props, radiogroup keyboard support, aria labels, focus-visible rings and reduced-motion handling; replaced transition-all with explicit properties.',
+      'Demo wraps the card in a centred checkout section with a frame-loop autoplay.',
+    ],
+    assets: [],
+  },
+})

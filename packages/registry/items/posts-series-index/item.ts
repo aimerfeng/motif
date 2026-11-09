@@ -1,0 +1,106 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'posts-series-index',
+  status: 'published',
+  title: { 'zh-CN': '系列教程目录', en: 'Tutorial Series Index' },
+  summary: {
+    'zh-CN': '多篇连载教程或课程的目录页：每篇带编号、阅读时长和难度，可以逐篇勾选「已读」，顶部有整套系列的分段进度条和「继续读第 4 篇」按钮，一键跳到下一篇未读；还有一段「开始之前」的前置要求。适合工程博客、文档指南和免费课程。',
+    en: 'An index for a multi-part tutorial or course. Each part shows its number, reading time and level and has its own read tick. A segmented progress bar spans the series, a "Continue with Part 4" button jumps to the next unread part, and a short prerequisites note sits alongside. For engineering blogs, docs guides and free courses.',
+  },
+  kind: 'section',
+  category: 'posts',
+  tags: ['series', 'tutorial', 'course', 'reading progress', 'table of contents', 'docs', 'blog'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'posts-series-index.tsx', export: 'PostsSeriesIndex' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'posts-series-index.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'accent',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '主色', en: 'Accent' },
+      hint: { 'zh-CN': '进度条、「继续」按钮、已读勾选和下一篇的标记', en: 'The progress bar, the Continue button, read ticks and the up-next marker' },
+      default: '#f4b860',
+    },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Newsreader）', en: 'Serif (Newsreader)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 14, min: 0, max: 20, step: 1, unit: 'px', safe: [6, 16] },
+    {
+      key: 'layout',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'rail',
+      options: [
+        { value: 'rail', label: { 'zh-CN': '时间轴', en: 'Rail' } },
+        { value: 'cards', label: { 'zh-CN': '卡片', en: 'Cards' } },
+        { value: 'table', label: { 'zh-CN': '目录表', en: 'Table' } },
+      ],
+    },
+    {
+      key: 'numbering',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '编号', en: 'Numbering' },
+      default: 'padded',
+      options: [
+        { value: 'padded', label: { 'zh-CN': '两位数（01、02）', en: 'Padded (01, 02)' } },
+        { value: 'decimal', label: { 'zh-CN': '数字（1、2）', en: 'Decimal (1, 2)' } },
+        { value: 'roman', label: { 'zh-CN': '罗马数字（I、II）', en: 'Roman (I, II)' } },
+      ],
+    },
+    { key: 'showProgress', type: 'boolean', group: 'content', label: { 'zh-CN': '显示进度条', en: 'Show progress' }, default: true },
+    {
+      key: 'showPrereqs',
+      type: 'boolean',
+      group: 'content',
+      label: { 'zh-CN': '显示前置要求', en: 'Show prerequisites' },
+      hint: { 'zh-CN': '「开始之前」那段说明', en: 'The "Before you start" note' },
+      default: true,
+    },
+    { key: 'heading', type: 'text', group: 'content', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Local-first, from scratch', maxLength: 48 },
+  ],
+  presets: [
+    { id: 'lamplight', name: { 'zh-CN': '灯下', en: 'Lamplight' }, values: { accent: '#f4b860', font: 'serif', radius: 14, layout: 'rail', numbering: 'padded' } },
+    { id: 'phosphor', name: { 'zh-CN': '磷光', en: 'Phosphor' }, values: { accent: '#a3e635', font: 'grotesk', radius: 6, layout: 'table', numbering: 'padded' } },
+    { id: 'syllabus', name: { 'zh-CN': '讲义', en: 'Syllabus' }, values: { accent: '#8b9bff', font: 'sans', radius: 18, layout: 'cards', numbering: 'decimal' } },
+    { id: 'woodblock', name: { 'zh-CN': '木刻', en: 'Woodblock' }, values: { accent: '#ff6a55', font: 'serif', radius: 0, layout: 'rail', numbering: 'roman', showPrereqs: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Newsreader Variable', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: [
+      'Use as the landing page of a multi-part tutorial, course or docs guide. Pass your own parts, meta and prereqs props (they default to the sample SERIES, SERIES_META and PREREQS): each part needs a stable id, an href, a reading time in minutes and a level; meta holds the description, author, role and updated date; an empty prereqs array hides the "Before you start" note.',
+      'Pass storageKey to remember read ticks in localStorage, or control completed / onCompletedChange to sync progress with an account. onContinue and onOpenPart hook the Continue button and the part links into your router.',
+    ],
+    rules: [
+      'Keep parts in reading order: Continue always points at the first unread part, not the one after the last tick.',
+      'Titles under about 50 characters, summaries one sentence. Reading times are honest estimates rounded to the minute.',
+      'Use 3 to 12 parts. Past that, split the series into volumes rather than shrinking the rows.',
+    ],
+  },
+  capture: { scroll: true, posterTime: 1.4, loop: 8 },
+  provenance: {
+    kind: 'original',
+    modifications: [],
+    assets: [],
+  },
+})

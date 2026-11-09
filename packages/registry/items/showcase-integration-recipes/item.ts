@@ -1,0 +1,81 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'showcase-integration-recipes',
+  status: 'published',
+  title: { 'zh-CN': '集成配方', en: 'Integration Recipes' },
+  summary: {
+    'zh-CN': '把现成的自动化写成一句话的配方卡：两个虚构应用之间连一条通道，悬停时数据包沿通道送过去；按用途或应用筛选，点「使用配方」就地展开步骤。适合集成平台、工作流工具和应用市场。',
+    en: 'Ready-made automations written as one-line recipe cards: two invented app marks joined by a connector that sends a small packet across on hover, chips that filter by use case or app, and steps that unfold inline from "Use recipe". For integration platforms, workflow tools and app marketplaces.',
+  },
+  kind: 'section',
+  category: 'showcase',
+  tags: ['integrations', 'automation', 'workflow', 'recipes', 'templates', 'marketplace', 'filter'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'showcase-integration-recipes.tsx', export: 'ShowcaseIntegrationRecipes' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'showcase-integration-recipes.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#8b7bff', group: 'look' },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'serif',
+      options: [
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线（Geist）', en: 'Sans (Geist)' } },
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'connectorStyle',
+      type: 'select',
+      label: { 'zh-CN': '通道样式', en: 'Connector' },
+      default: 'beam',
+      options: [
+        { value: 'beam', label: { 'zh-CN': '光束', en: 'Beam' } },
+        { value: 'dashed', label: { 'zh-CN': '虚线', en: 'Dashed' } },
+        { value: 'pipe', label: { 'zh-CN': '管道', en: 'Pipe' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 16, min: 4, max: 24, step: 1, unit: 'px', safe: [10, 20], group: 'look' },
+    { key: 'columns', type: 'number', label: { 'zh-CN': '列数', en: 'Columns' }, hint: { 'zh-CN': '宽屏下的列数，窄屏自动减少', en: 'On wide screens; narrower screens use fewer' }, default: 3, min: 2, max: 3, step: 1, group: 'layout' },
+    { key: 'showFilters', type: 'boolean', label: { 'zh-CN': '显示筛选', en: 'Show filters' }, default: true, group: 'layout' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Start from a recipe, not a blank canvas', maxLength: 64, group: 'content' },
+    {
+      key: 'subheading',
+      type: 'text',
+      label: { 'zh-CN': '副标题', en: 'Subheading' },
+      default: '140 tested workflows between the apps you already run. Pick one, map two fields, and it fires on the next event.',
+      maxLength: 140,
+      group: 'content',
+    },
+  ],
+  presets: [
+    { id: 'switchboard', name: { 'zh-CN': '总机', en: 'Switchboard' }, values: { accent: '#8b7bff', font: 'serif', connectorStyle: 'beam', radius: 16, columns: 3 } },
+    { id: 'conduit', name: { 'zh-CN': '暗渠', en: 'Conduit' }, values: { accent: '#2dd4bf', font: 'grotesk', connectorStyle: 'pipe', radius: 22, columns: 3 } },
+    { id: 'telegraph', name: { 'zh-CN': '电报', en: 'Telegraph' }, values: { accent: '#fbbf24', font: 'sans', connectorStyle: 'dashed', radius: 6, columns: 2 } },
+    { id: 'signal-flare', name: { 'zh-CN': '信号弹', en: 'Signal Flare' }, values: { accent: '#fb7185', font: 'serif', connectorStyle: 'beam', radius: 12, columns: 2, showFilters: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Instrument Serif', 'Space Grotesk Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: ['Use on an integrations or templates page to sell concrete app-to-app workflows. Replace the APPS and RECIPES arrays with your own catalog; every recipe names exactly two apps.'],
+    rules: [
+      'Write each recipe as one sentence: "When <event> in <App>, <action> in <App>." Keep it under 14 words; the packet label is a real-looking payload of 9 characters or fewer.',
+      'App marks are invented geometric glyphs on a hue tile; never use real company logos or trademarks.',
+      'Filters are single-select toggle buttons with aria-pressed; "Use recipe" is a disclosure button with aria-expanded and aria-controls.',
+    ],
+  },
+  capture: { scroll: true, posterTime: 1.1, loop: 9 },
+  provenance: { kind: 'original', modifications: [], assets: [] },
+})

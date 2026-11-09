@@ -1,0 +1,162 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2014 Luke Haas
+ * Source: https://github.com/lukehaas/css-loaders/blob/c7fdf5a/css/load3.css
+ * Modified by Motif; see the item's provenance.
+ */
+@property --mcs-a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@property --mcs-b {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.mcs-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mcs-size);
+  height: var(--mcs-size);
+  flex-shrink: 0;
+  color: var(--mcs-color);
+}
+
+.mcs-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 var(--mcs-glow) var(--mcs-color));
+}
+
+/* 上游用页面底色的圆盖住中心；这里用 mask 挖出圆环，任何底色上都成立 */
+.mcs-ring-mask {
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--mcs-thick) - 0.5px), #000 calc(100% - var(--mcs-thick)));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--mcs-thick) - 0.5px), #000 calc(100% - var(--mcs-thick)));
+}
+
+/* ---- disc：load3，渐变圆盘旋转出彗尾 ---- */
+.mcs-disc {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(to right, currentColor 10%, transparent var(--mcs-tail));
+  animation: mcs-rotate var(--mcs-dur) infinite linear;
+  transform: translateZ(0);
+}
+.mcs-disc::before {
+  width: 50%;
+  height: 50%;
+  background: currentColor;
+  border-radius: 100% 0 0 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+}
+
+/* ---- echo：load6，五个阴影组成逐渐缩小的回声尾 ---- */
+.mcs-echo {
+  font-size: calc(var(--mcs-size) / 1.9);
+  overflow: hidden;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  transform: translateZ(0);
+  animation:
+    mcs-echo var(--mcs-dur) infinite ease,
+    mcs-rotate var(--mcs-dur) infinite ease;
+}
+@keyframes mcs-echo {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+
+/* ---- wipe：load2，两个半圆依次扫过圆环；遮盖半圆改成两层 conic mask ---- */
+.mcs-wipe {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: currentColor;
+  -webkit-mask:
+    radial-gradient(farthest-side, transparent calc(100% - var(--mcs-thick) - 0.5px), #000 calc(100% - var(--mcs-thick))),
+    conic-gradient(from var(--mcs-a), #000 0 180deg, transparent 180deg 360deg),
+    conic-gradient(from var(--mcs-b), transparent 0 180deg, #000 180deg 360deg);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(farthest-side, transparent calc(100% - var(--mcs-thick) - 0.5px), #000 calc(100% - var(--mcs-thick))),
+    conic-gradient(from var(--mcs-a), #000 0 180deg, transparent 180deg 360deg),
+    conic-gradient(from var(--mcs-b), transparent 0 180deg, #000 180deg 360deg);
+  mask-composite: intersect;
+  animation:
+    mcs-wipe-a var(--mcs-dur) infinite ease calc(var(--mcs-dur) * 0.75),
+    mcs-wipe-b var(--mcs-dur) infinite ease;
+}
+@keyframes mcs-wipe-a {
+  0% {
+    --mcs-a: 0deg;
+  }
+  100% {
+    --mcs-a: 360deg;
+  }
+}
+@keyframes mcs-wipe-b {
+  0% {
+    --mcs-b: 0deg;
+  }
+  100% {
+    --mcs-b: 360deg;
+  }
+}
+
+@keyframes mcs-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mcs-visual,
+  .mcs-visual * {
+    animation: none !important;
+  }
+  .mcs-disc {
+    transform: rotate(200deg);
+  }
+  .mcs-echo {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+    transform: rotate(120deg);
+  }
+  .mcs-wipe {
+    --mcs-a: 180deg;
+    --mcs-b: 0deg;
+  }
+}

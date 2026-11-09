@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'slider-range-marks',
+  status: 'published',
+  title: { 'zh-CN': '带刻度范围滑块', en: 'Range Slider with Marks' },
+  summary: {
+    'zh-CN': 'Base UI 滑块示例的移植：单值或双滑块区间，带刻度与标签、步进吸附、跟随滑块的数值气泡，也能竖着放。拖动时滑块放大。适合筛选价格区间、音量和参数调节。',
+    en: 'A port of the Base UI slider demos: single value or two-thumb range with tick marks and labels, step snapping, a value bubble that follows the thumb, and a vertical orientation. Thumbs swell while dragged. For price filters, volume and settings.',
+  },
+  kind: 'component',
+  category: 'slider',
+  tags: ['slider', 'range', 'marks', 'filter', 'form', 'a11y'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'slider-range-marks.tsx', export: 'SliderRangeMarks' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'slider-range-marks.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'mode',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '模式', en: 'Mode' },
+      default: 'range',
+      options: [
+        { value: 'range', label: { 'zh-CN': '区间（双滑块）', en: 'Range (two thumbs)' } },
+        { value: 'single', label: { 'zh-CN': '单值', en: 'Single value' } },
+      ],
+    },
+    {
+      key: 'orientation',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '方向', en: 'Orientation' },
+      default: 'horizontal',
+      options: [
+        { value: 'horizontal', label: { 'zh-CN': '横向', en: 'Horizontal' } },
+        { value: 'vertical', label: { 'zh-CN': '竖向', en: 'Vertical' } },
+      ],
+    },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '填充色', en: 'Fill color' }, default: '#fafafa' },
+    { key: 'step', type: 'number', group: 'interaction', label: { 'zh-CN': '步长', en: 'Step' }, default: 1, min: 1, max: 25, step: 1, safe: [1, 10] },
+    { key: 'showMarks', type: 'boolean', group: 'look', label: { 'zh-CN': '显示刻度', en: 'Show marks' }, default: true },
+    { key: 'showBubble', type: 'boolean', group: 'look', label: { 'zh-CN': '数值气泡', en: 'Value bubble' }, default: true },
+    { key: 'thumbSize', type: 'number', group: 'look', label: { 'zh-CN': '滑块尺寸', en: 'Thumb size' }, default: 16, min: 12, max: 24, step: 1, unit: 'px', safe: [14, 20] },
+    { key: 'trackHeight', type: 'number', group: 'look', label: { 'zh-CN': '轨道粗细', en: 'Track thickness' }, default: 4, min: 2, max: 8, step: 1, unit: 'px', safe: [3, 6] },
+  ],
+  presets: [
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { mode: 'range', orientation: 'horizontal', accent: '#fafafa', step: 1, thumbSize: 16, trackHeight: 4 } },
+    { id: 'lagoon', name: { 'zh-CN': '泻湖', en: 'Lagoon' }, values: { mode: 'range', orientation: 'horizontal', accent: '#2dd4bf', step: 5, thumbSize: 18, trackHeight: 6 } },
+    { id: 'mixer', name: { 'zh-CN': '调音台', en: 'Mixer' }, values: { mode: 'single', orientation: 'vertical', accent: '#f59e0b', step: 1, thumbSize: 16, trackHeight: 4 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.6, posterTime: 1.6, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'base-ui',
+      repo: 'mui/base-ui',
+      sha: '6a29b4b3b414251bf0ed23aa36e145d55e947c37',
+      paths: [
+        'docs/src/app/(docs)/react/components/slider/demos/range-slider/css-modules/index.tsx',
+        'docs/src/app/(docs)/react/components/slider/demos/range-slider/css-modules/index.module.css',
+        'docs/src/app/(docs)/react/components/slider/demos/marks/css-modules/index.tsx',
+        'docs/src/app/(docs)/react/components/slider/demos/marks/css-modules/index.module.css',
+        'docs/src/app/(docs)/react/components/slider/demos/steps/css-modules/index.tsx',
+        'docs/src/app/(docs)/react/components/slider/demos/vertical/css-modules/index.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2019 Material-UI SAS'],
+    },
+    modifications: [
+      'Merged the range, marks, steps and vertical demos into one component; @base-ui/react/slider is replaced by hand-written pointer and keyboard handling with role="slider" and aria-value* attributes.',
+      'CSS modules converted to Tailwind classes with theme tokens; the fill color is a parameter.',
+      'Added a value bubble that follows the thumb and a swell animation (motion/react) while a thumb is active; reduced motion removes both animations.',
+      'An activeThumb prop lets a parent force the active state (used by the demo autoplay).',
+    ],
+    assets: [],
+  },
+})

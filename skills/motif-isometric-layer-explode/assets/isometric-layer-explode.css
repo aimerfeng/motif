@@ -1,0 +1,134 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2024 Guilherme Rodz
+ * Source: https://github.com/guilhermerodz/input-otp/blob/cf81845/apps/website/src/app/(docs)/anatomy.css
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* ————— The "See it" stage —————
+   An accent input, a plate-coloured container, and a set of "peel" classes
+   that undo the styles written inline to make the real <input> disappear.
+   Everything is scoped to .otp-stage; every reveal needs !important because
+   the hiding styles are inline. --amber / --cyan are set from params. */
+
+@theme {
+  --animate-caret-blink: otp-caret-blink 1.2s ease-out infinite;
+}
+
+@keyframes otp-caret-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50% {
+    opacity: 0;
+  }
+}
+
+.otp-stage {
+  --amber: #f39c4a;
+  --cyan: #3dd2f5;
+  --peel-spacing: 2em;
+  --peel-indent: 0px;
+}
+
+.otp-stage .bg-dot-grid {
+  background-image: radial-gradient(color-mix(in oklab, var(--color-foreground) 14%, transparent) 1px, transparent 1px);
+  background-size: 18px 18px;
+  background-position: center;
+}
+
+.otp-stage [data-input-otp]::selection {
+  background: transparent !important;
+  color: transparent !important;
+}
+
+.otp-stage [data-input-otp] {
+  transition:
+    color 420ms ease,
+    background-color 420ms ease,
+    caret-color 420ms ease,
+    outline-color 420ms ease,
+    letter-spacing 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    text-indent 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    font-size 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ——— The peels. Each one undoes exactly one hiding technique. ——— */
+
+.otp-peel-color [data-input-otp] {
+  color: var(--amber) !important;
+}
+.otp-peel-caret [data-input-otp] {
+  caret-color: var(--amber) !important;
+}
+.otp-peel-bg [data-input-otp] {
+  background-color: color-mix(in oklab, var(--amber) 9%, transparent) !important;
+  outline: 1px dashed color-mix(in oklab, var(--amber) 60%, transparent) !important;
+  outline-offset: 0 !important;
+}
+.otp-stage.otp-stage .otp-peel-selection [data-input-otp]::selection {
+  background: color-mix(in oklab, var(--amber) 40%, transparent) !important;
+  color: color-mix(in oklab, var(--amber) 20%, white) !important;
+}
+.otp-peel-tracking [data-input-otp] {
+  font-size: 1.375rem !important;
+  letter-spacing: var(--peel-spacing) !important;
+  text-indent: var(--peel-indent);
+}
+
+/* The container's own footprint. */
+.otp-stage-floor {
+  outline: 1px dashed color-mix(in oklab, var(--cyan) 50%, transparent);
+  outline-offset: 4px;
+  border-radius: 6px;
+  transition: opacity 420ms ease;
+}
+
+/* ——— Isometric board ———
+   Orthographic on purpose: no perspective, like a technical drawing. --tilt
+   goes 0 (flat) → 1 (isometric); --explode is the layer separation in px. */
+.otp-iso-board {
+  --board-scale: 1;
+  transform-style: preserve-3d;
+  transform: scale(var(--board-scale))
+    translateY(calc(var(--explode, 0) * 0.29px))
+    rotateX(calc(var(--tilt, 0) * 54deg)) rotateZ(calc(var(--tilt, 0) * -42deg));
+  transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (max-width: 40rem) {
+  .otp-iso-board {
+    --board-scale: 0.8;
+  }
+}
+.otp-iso-board [data-input-otp-container] {
+  transform-style: preserve-3d;
+}
+.otp-iso-board .otp-iso-input {
+  transform: translateZ(calc(var(--explode, 0) * 1px));
+  transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.otp-iso-slots {
+  transform: translateZ(calc(var(--explode, 0) * 0.42px));
+  transition:
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 320ms ease;
+}
+.otp-iso-plane-outline {
+  transform: translateZ(calc(var(--explode, 0) * 1px));
+  transition:
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 320ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .otp-stage [data-input-otp],
+  .otp-iso-board,
+  .otp-iso-board .otp-iso-input,
+  .otp-iso-slots,
+  .otp-iso-plane-outline {
+    transition-duration: 1ms;
+  }
+}

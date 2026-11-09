@@ -1,0 +1,103 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'banner-workspace-welcome',
+  status: 'published',
+  title: { 'zh-CN': '工作区欢迎横幅', en: 'Workspace Welcome Banner' },
+  summary: {
+    'zh-CN': '新工作区顶部的一张可关闭的欢迎卡片：标题、说明，加上「开始」按钮和教程链接，或者三个带说明和链接的起步步骤，也可以是「创建第一个看板」的分步引导。放在空仪表盘的最上方。',
+    en: 'A dismissible welcome card for a fresh workspace: a heading and blurb with a Get started button and tutorials link, three starter steps with links, or a step-by-step create-your-first-dashboard guide. Sits at the top of an empty dashboard.',
+  },
+  kind: 'section',
+  category: 'banner',
+  tags: ['banner', 'welcome', 'onboarding', 'dashboard', 'empty-state', 'getting-started'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'banner-workspace-welcome.tsx', export: 'WorkspaceWelcomeBanner' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'banner-workspace-welcome.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'steps',
+      options: [
+        { value: 'intro', label: { 'zh-CN': '欢迎 + 按钮', en: 'Intro' } },
+        { value: 'steps', label: { 'zh-CN': '三个起步链接', en: 'Starter steps' } },
+        { value: 'highlight', label: { 'zh-CN': '主色标记', en: 'Highlighted steps' } },
+        { value: 'dashboard', label: { 'zh-CN': '创建看板', en: 'First dashboard' } },
+      ],
+    },
+    { key: 'title', type: 'text', group: 'content', label: { 'zh-CN': '标题', en: 'Title' }, default: 'Welcome to your workspace', maxLength: 48 },
+    {
+      key: 'description',
+      type: 'text',
+      group: 'content',
+      label: { 'zh-CN': '说明', en: 'Description' },
+      default: 'Follow the steps below or browse our developer documentation to start using the platform.',
+      maxLength: 220,
+    },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '主色', en: 'Accent' }, hint: { 'zh-CN': '按钮、链接和标记', en: 'Buttons, links and markers' }, default: '#3b82f6' },
+    {
+      key: 'tone',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '配色', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+    },
+    { key: 'decor', type: 'boolean', group: 'look', label: { 'zh-CN': '浅灰底', en: 'Tinted surface' }, default: false },
+    { key: 'dismissible', type: 'boolean', group: 'interaction', label: { 'zh-CN': '可关闭', en: 'Dismissible' }, default: true },
+  ],
+  presets: [
+    { id: 'blueprint', name: { 'zh-CN': '蓝图', en: 'Blueprint' }, values: { variant: 'steps', tone: 'dark', accent: '#3b82f6', decor: false } },
+    {
+      id: 'first-light',
+      name: { 'zh-CN': '晨光', en: 'First Light' },
+      values: {
+        variant: 'dashboard',
+        tone: 'light',
+        accent: '#4f46e5',
+        title: 'Create your first dashboard',
+        description: 'Set up your first dashboard. Connect to a data source, create metrics and visualize them in the report builder.',
+      },
+    },
+    { id: 'moss', name: { 'zh-CN': '青苔', en: 'Moss' }, values: { variant: 'highlight', tone: 'dark', accent: '#10b981', decor: true } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: [
+        'src/content/components/banners/banner-01.tsx',
+        'src/content/components/banners/banner-03.tsx',
+        'src/content/components/banners/banner-04.tsx',
+        'src/content/components/banners/banner-05.tsx',
+        'src/components/Button.tsx',
+        'src/components/Card.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Merged banners 01, 03, 04 and 05 into one component with a variant select plus title, description, accent, tone, tinted-surface and dismissible parameters.',
+      'Replaced the Tremor Card/Button with plain markup carrying the same classes and @remixicon/react icons with inline SVG; gray/blue palette moved into CSS variables with link ink falling back to the foreground when the accent is too close to the card.',
+      'Dismiss is animated with motion and can be controlled; the demo reopens the card on the motif-runtime frame clock instead of setTimeout.',
+    ],
+    assets: [],
+  },
+})

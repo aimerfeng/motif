@@ -1,0 +1,101 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'text-split-flap',
+  status: 'published',
+  title: { 'zh-CN': '翻牌字', en: 'Split-Flap Roll' },
+  summary: {
+    'zh-CN': '每个字符先竖着滚过一小串字形，再落到目标字符上，逐字错开，像机场翻牌和里程表。可以在挂载、进入视口或悬停时播放，适合航班风标题、价格、比分和实时数据。',
+    en: 'Each character rolls vertically through a short ramp of glyphs before landing on its target, staggered across the string, like a departure board or an odometer. Plays on mount, on view or on hover; suits flight-board headings, prices, scores and live stats.',
+  },
+  kind: 'effect',
+  category: 'text',
+  tags: ['text', 'split-flap', 'odometer', 'roll', 'counter', 'stagger', 'motion'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'text-split-flap.tsx', export: 'TextSplitFlap' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'text-split-flap.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'text', type: 'text', group: 'content', label: { 'zh-CN': '文字', en: 'Text' }, default: '042,918', maxLength: 24 },
+    {
+      key: 'glyphs',
+      type: 'text',
+      group: 'content',
+      label: { 'zh-CN': '滚动字形', en: 'Ramp glyphs' },
+      hint: { 'zh-CN': '留空则用文字本身的字符', en: 'Leave empty to use the characters of the text' },
+      default: '',
+      maxLength: 64,
+    },
+    { key: 'rampLength', type: 'number', group: 'motion', label: { 'zh-CN': '过渡字数', en: 'Ramp length' }, default: 4, min: 1, max: 12, step: 1, safe: [2, 8] },
+    { key: 'duration', type: 'number', group: 'motion', label: { 'zh-CN': '单字时长', en: 'Duration' }, default: 500, min: 150, max: 2000, step: 10, unit: 'ms', safe: [300, 1000] },
+    { key: 'stagger', type: 'number', group: 'motion', label: { 'zh-CN': '逐字间隔', en: 'Stagger' }, default: 40, min: 0, max: 200, step: 5, unit: 'ms', safe: [10, 100] },
+    {
+      key: 'direction',
+      type: 'select',
+      group: 'motion',
+      label: { 'zh-CN': '方向', en: 'Direction' },
+      default: 'up',
+      options: [
+        { value: 'up', label: { 'zh-CN': '向上', en: 'Up' } },
+        { value: 'down', label: { 'zh-CN': '向下', en: 'Down' } },
+      ],
+    },
+    {
+      key: 'trigger',
+      type: 'select',
+      group: 'motion',
+      label: { 'zh-CN': '触发', en: 'Trigger' },
+      hint: { 'zh-CN': '首次挂载总会播放一次；悬停只在有鼠标的设备上重播', en: 'Always plays once on mount; hover replays only on devices with a fine pointer' },
+      default: 'mount',
+      options: [
+        { value: 'mount', label: { 'zh-CN': '挂载时', en: 'On mount' } },
+        { value: 'inView', label: { 'zh-CN': '进入视口', en: 'In view' } },
+        { value: 'hover', label: { 'zh-CN': '悬停', en: 'Hover' } },
+      ],
+    },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '字体', en: 'Font' },
+      default: 'mono',
+      options: [
+        { value: 'mono', label: { 'zh-CN': '等宽', en: 'Mono' } },
+        { value: 'sans', label: { 'zh-CN': '无衬线', en: 'Sans' } },
+        { value: 'display', label: { 'zh-CN': '粗展示体', en: 'Display' } },
+      ],
+    },
+  ],
+  presets: [
+    { id: 'odometer', name: { 'zh-CN': '里程表', en: 'Odometer' }, values: { rampLength: 4, duration: 500, stagger: 40, direction: 'up', font: 'mono' } },
+    { id: 'board', name: { 'zh-CN': '航班牌', en: 'Departure board' }, values: { rampLength: 8, duration: 900, stagger: 60, direction: 'down', font: 'mono' } },
+    { id: 'snap', name: { 'zh-CN': '快翻', en: 'Snap' }, values: { rampLength: 3, duration: 300, stagger: 20, direction: 'up', font: 'display' } },
+  ],
+  dependencies: ['@motif/runtime', 'motion/react'],
+  fonts: ['JetBrains Mono Variable', 'Inter Tight Variable', 'Archivo Black'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.25, posterTime: 2.5, loop: 7.2 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'smoothui',
+      repo: 'educlopez/smoothui',
+      sha: 'b6312bce2b6f2ed95d8a6e98a592857884f5ea9e',
+      paths: ['packages/smoothui/components/rolling-text/index.tsx', 'apps/docs/examples/rolling-text.tsx'
+],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Eduardo Calvo'],
+    },
+    modifications: [
+      'Default export became the named TextSplitFlap export; defaults moved into the generated defaults region.',
+      'Added a font parameter (mono, sans, display) plus className merging via cn from @motif/runtime and a style prop.',
+      'The demo turns the upstream counter example into a stats card with a small departure list, replayed from the frame loop time.',
+    ],
+    assets: [],
+  },
+})

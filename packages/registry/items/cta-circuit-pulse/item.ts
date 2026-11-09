@@ -1,0 +1,80 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'cta-circuit-pulse',
+  status: 'published',
+  title: { 'zh-CN': '电路光脉 CTA', en: 'Circuit Pulse CTA' },
+  summary: {
+    'zh-CN': '高高的收尾区块，铺着径向淡出的细网格，两侧各有一条电路走线，光点沿线跑过；标题模糊淡入，胶囊按钮悬停时文字向上翻滚。适合开发者工具和数据分析产品。',
+    en: 'A tall closing section on a faint radially masked grid, with circuit traces down both sides where a glowing dot runs along each path, a blur-in gradient headline and a pill button whose label rolls up on hover. For developer tools and analytics products.',
+  },
+  kind: 'section',
+  category: 'cta',
+  tags: ['cta', 'call to action', 'circuit', 'grid', 'pulse', 'developer'],
+  runtime: ['react', 'motion', 'svg', 'css'],
+  entry: { file: 'cta-circuit-pulse.tsx', export: 'CtaCircuitPulse' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'cta-circuit-pulse.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'headline', type: 'text', label: { 'zh-CN': '标题', en: 'Headline' }, default: 'Lightweight Analytics Built For Simplicity', maxLength: 60, group: 'content' },
+    { key: 'buttonLabel', type: 'text', label: { 'zh-CN': '按钮文字', en: 'Button label' }, default: 'Get Started', maxLength: 22, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '光点颜色', en: 'Pulse color' }, default: '#3b82f6', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    { key: 'gridSize', type: 'number', label: { 'zh-CN': '网格间距', en: 'Grid size' }, default: 48, min: 24, max: 96, step: 4, unit: 'px', safe: [32, 72], group: 'look' },
+    {
+      key: 'traceShape',
+      type: 'select',
+      label: { 'zh-CN': '走线形状', en: 'Trace shape' },
+      default: 'elbow',
+      options: [
+        { value: 'elbow', label: { 'zh-CN': '单折', en: 'Elbow' } },
+        { value: 'zigzag', label: { 'zh-CN': '双折', en: 'Zigzag' } },
+        { value: 'straight', label: { 'zh-CN': '直线', en: 'Straight' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'pulseSpeed', type: 'number', label: { 'zh-CN': '光脉周期', en: 'Pulse period' }, default: 3, min: 1.5, max: 8, step: 0.5, unit: 's', safe: [2, 5], group: 'motion' },
+  ],
+  presets: [
+    { id: 'night-shift', name: { 'zh-CN': '夜班', en: 'Night Shift' }, values: {} },
+    { id: 'phosphor', name: { 'zh-CN': '磷光', en: 'Phosphor' }, values: { accent: '#22c55e', traceShape: 'zigzag', gridSize: 40 } },
+    { id: 'blueprint', name: { 'zh-CN': '蓝图', en: 'Blueprint' }, values: { tone: 'light', accent: '#f97316', gridSize: 56 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: [],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 1.2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'eldoraui',
+      repo: 'karthikmudunuri/eldoraui',
+      sha: '6bb8fd211ecbdfa983f5780bead27d9f3890f20a',
+      paths: ['apps/www/registry/blocks/cta-01/components/cta.tsx', 'apps/www/registry/blocks/cta-01/page.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Mudunuri Bhaskara Karthikeya Varma'],
+    },
+    modifications: [
+      'next/link replaced by a plain anchor; next-themes replaced by a tone param.',
+      'Headline, button label, pulse color, grid size, trace shape (added zigzag and straight variants) and pulse period exposed as params.',
+      'The CSS offset-distance keyframes are driven by useFrameLoop (same 60% travel / 40% hold timing); whileInView replaced by on-mount animation; reduced motion freezes everything.',
+      'SVG ids made unique per instance with useId; the label roll also triggers on focus-visible, with a focus ring; transition-all narrowed to the colors that change.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,66 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'hero-sticker-headline',
+  status: 'published',
+  title: { 'zh-CN': '贴纸标题', en: 'Sticker Headline' },
+  summary: {
+    'zh-CN': '标题里的高亮短语一被悬停，四周就弹出几张小贴纸，各自带着回弹和旋转飞到位置，移开再收回去。适合旅行、美食和生活方式类落地页。',
+    en: 'Hover a highlighted phrase in the headline and little stickers pop out around it, each flying to its own spot with an overshoot spin, then tuck back. For travel, food and lifestyle landing pages.',
+  },
+  kind: 'section',
+  category: 'hero',
+  tags: ['hero', 'headline', 'stickers', 'hover', 'travel', 'playful'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'hero-sticker-headline.tsx', export: 'HeroStickerHeadline' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'hero-sticker-headline.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'phraseOne', type: 'text', label: { 'zh-CN': '第一个短语', en: 'First phrase' }, default: 'Uncharted Adventures', maxLength: 24, group: 'content' },
+    { key: 'phraseTwo', type: 'text', label: { 'zh-CN': '第二个短语', en: 'Second phrase' }, default: 'Feel Alive', maxLength: 16, group: 'content' },
+    { key: 'ctaLabel', type: 'text', label: { 'zh-CN': '按钮文案', en: 'Button label' }, default: 'Begin your journey', maxLength: 24, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '第一个高亮色', en: 'First highlight' }, default: '#38bdf8', group: 'look' },
+    { key: 'accentTwo', type: 'color', label: { 'zh-CN': '第二个高亮色', en: 'Second highlight' }, default: '#f97316', group: 'look' },
+    { key: 'stickerCount', type: 'number', label: { 'zh-CN': '每个短语的贴纸数', en: 'Stickers per phrase' }, default: 4, min: 2, max: 4, step: 1, group: 'look' },
+    { key: 'spread', type: 'number', label: { 'zh-CN': '飞出距离', en: 'Spread' }, default: 1, min: 0.5, max: 1.6, step: 0.05, safe: [0.8, 1.3], group: 'motion' },
+    { key: 'spin', type: 'number', label: { 'zh-CN': '旋转幅度', en: 'Spin' }, default: 1, min: 0, max: 1.8, step: 0.05, safe: [0.6, 1.4], group: 'motion' },
+    { key: 'overshoot', type: 'number', label: { 'zh-CN': '回弹', en: 'Overshoot' }, hint: { 'zh-CN': '缓动曲线的第二个控制点，越大弹得越过头', en: 'Second control point of the easing curve; higher overshoots more' }, default: 1.8, min: 1, max: 2.6, step: 0.1, safe: [1.4, 2.2], group: 'motion' },
+    { key: 'autoplay', type: 'boolean', label: { 'zh-CN': '自动演示', en: 'Autoplay' }, hint: { 'zh-CN': '仅演示：轮流弹出两组贴纸，指针进入后停止', en: 'Demo only: pops each phrase in turn until the pointer enters' }, default: true, group: 'interaction' },
+  ],
+  presets: [
+    { id: 'wanderlust', name: { 'zh-CN': '远行', en: 'Wanderlust' }, values: { accent: '#38bdf8', accentTwo: '#f97316' } },
+    { id: 'confetti', name: { 'zh-CN': '彩纸', en: 'Confetti' }, values: { accent: '#ec4899', accentTwo: '#8b5cf6', spread: 1.35, spin: 1.5, overshoot: 2.4 } },
+    { id: 'calm', name: { 'zh-CN': '慢游', en: 'Slow Travel' }, values: { accent: '#10b981', accentTwo: '#0ea5e9', stickerCount: 2, spread: 0.85, spin: 0.5, overshoot: 1.3 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: [],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  guidance: {
+    rules: ['Keep each highlighted phrase short (one to three words) so the stickers sit around it, and swap the SVG stickers for ones that match your topic.'],
+  },
+  capture: { scroll: true, posterTime: 1.6, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'animata',
+      repo: 'codse/animata',
+      sha: '36674e4e9cfdc0f237693d8b736a2bf41065ca1d',
+      paths: ['animata/hero/hero-section-text-hover.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Animata'],
+    },
+    modifications: [
+      'Emoji replaced with hand-drawn inline SVG stickers; the lucide Map icon is an inline SVG.',
+      'Sticker positions converted from per-breakpoint Tailwind classes to em offsets so they scale with the headline; right-side stickers anchor to the phrase end.',
+      'Hover is tracked in React state (pointer and keyboard focus) with an active prop for the demo autoplay; phrases are focusable.',
+      'Exposed phrases, button label, highlight colors, sticker count, spread, spin and easing overshoot as parameters; highlight text is mixed toward the foreground for contrast.',
+      'Theme tokens for background, border and lead text; reduced motion keeps only the opacity fade.',
+    ],
+    assets: [],
+  },
+})

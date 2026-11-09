@@ -1,0 +1,617 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2014 Dave Liepmann
+ * Source: https://github.com/edwardtufte/tufte-css/blob/b5d7b7b/tufte.css
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* Tufte CSS styles, scoped to .tufte instead of html/body.
+   颜色和字体来自组件写在根元素上的变量：--paper、--ink、--ink-soft、--hl、--hl-text、--serif。 */
+.tufte {
+  container-type: inline-size;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 上游的 body：宽 87.5% + 左内边距 12.5%，必须是 content-box，否则 preflight 的 border-box 会把正文挤窄。 */
+.tufte .tufte-body {
+  box-sizing: content-box;
+  width: 87.5%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 12.5%;
+  max-width: 1400px;
+  counter-reset: sidenote-counter;
+}
+
+.tufte h1 {
+  font-weight: 400;
+  margin-top: 4rem;
+  margin-bottom: 1.5rem;
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.tufte h2 {
+  font-style: italic;
+  font-weight: 400;
+  margin-top: 2.1rem;
+  margin-bottom: 1.4rem;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.tufte h3 {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.7rem;
+  margin-top: 2rem;
+  margin-bottom: 1.4rem;
+  line-height: 1;
+}
+
+.tufte hr {
+  display: block;
+  height: 1px;
+  width: 55%;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 1em 0;
+  padding: 0;
+}
+
+.tufte p.subtitle {
+  font-style: italic;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  display: block;
+  line-height: 1;
+}
+
+.tufte .numeral {
+  font-variant-numeric: oldstyle-nums;
+}
+
+.tufte article {
+  padding: 5rem 0rem;
+}
+
+.tufte section {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* 页边注比正文长时会压到下一节的标题上：让 section 包住自己的浮动（横向不裁剪，注释仍在页边）。 */
+.tufte article > section {
+  display: flow-root;
+}
+
+.tufte p,
+.tufte dl,
+.tufte ol,
+.tufte ul {
+  font-size: 1.4rem;
+  line-height: 2rem;
+}
+
+.tufte p {
+  margin-top: 1.4rem;
+  margin-bottom: 1.4rem;
+  padding-right: 0;
+  vertical-align: baseline;
+}
+
+.tufte sup {
+  line-height: 0;
+}
+
+/* Chapter Epigraphs */
+.tufte div.epigraph {
+  margin: 5em 0;
+}
+
+.tufte div.epigraph > blockquote {
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+.tufte div.epigraph > blockquote,
+.tufte div.epigraph > blockquote > p {
+  font-style: italic;
+}
+
+.tufte div.epigraph > blockquote > footer {
+  font-style: normal;
+}
+
+.tufte div.epigraph > blockquote > footer > cite {
+  font-style: italic;
+}
+/* end chapter epigraphs styles */
+
+.tufte blockquote {
+  margin: 1em 40px;
+  font-size: 1.4rem;
+}
+
+/* preflight 把 blockquote、pre 的外边距清零了，写回上游依赖的浏览器默认值。 */
+.tufte pre {
+  margin: 1em 0;
+}
+
+.tufte blockquote p {
+  width: 55%;
+  margin-right: 40px;
+}
+
+.tufte blockquote footer {
+  width: 55%;
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.tufte section > p,
+.tufte section > footer,
+.tufte section > table {
+  width: 55%;
+}
+
+.tufte figure {
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  max-width: 55%;
+  margin: 0 0 3em 0;
+}
+
+.tufte figcaption {
+  float: right;
+  clear: right;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  vertical-align: baseline;
+  position: relative;
+  max-width: 40%;
+}
+
+.tufte figure.fullwidth figcaption {
+  margin-right: 24%;
+}
+
+/* preflight 会去掉链接下划线，这里显式写回上游依赖的浏览器默认样式。 */
+.tufte a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-underline-offset: 0.1em;
+  text-decoration-thickness: 0.05em;
+}
+
+.tufte a:focus-visible {
+  outline: 2px solid var(--hl);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* Sidenotes, margin notes, figures, captions */
+.tufte .sidenote,
+.tufte .marginnote {
+  float: right;
+  clear: right;
+  margin-right: -60%;
+  width: 50%;
+  margin-top: 0.3rem;
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+  vertical-align: baseline;
+  position: relative;
+}
+
+.tufte .sidenote-number {
+  counter-increment: sidenote-counter;
+}
+
+.tufte .sidenote-number:after,
+.tufte .sidenote:before {
+  font-variant-numeric: oldstyle-nums;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.tufte .sidenote-number:after {
+  content: counter(sidenote-counter);
+  font-size: 1rem;
+  top: -0.5rem;
+  left: 0.1rem;
+}
+
+.tufte .sidenote:before {
+  content: counter(sidenote-counter) ' ';
+  font-size: 1rem;
+  top: -0.5rem;
+}
+
+.tufte blockquote .sidenote,
+.tufte blockquote .marginnote {
+  margin-right: -82%;
+  min-width: 59%;
+  text-align: left;
+}
+
+.tufte div.fullwidth,
+.tufte table.fullwidth {
+  width: 100%;
+}
+
+.tufte div.table-wrapper {
+  overflow-x: auto;
+  font-family: var(--sans);
+}
+
+.tufte .sans {
+  font-family: var(--sans);
+  letter-spacing: 0.03em;
+}
+
+.tufte code,
+.tufte pre > code {
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 1rem;
+  line-height: 1.42;
+  -webkit-text-size-adjust: 100%;
+}
+
+.tufte .sans > code {
+  font-size: 1.2rem;
+}
+
+.tufte .marginnote > code,
+.tufte .sidenote > code {
+  font-size: 1rem;
+}
+
+.tufte pre > code {
+  font-size: 0.9rem;
+  width: 52.5%;
+  margin-left: 2.5%;
+  overflow-x: auto;
+  display: block;
+}
+
+.tufte .fullwidth {
+  max-width: 90%;
+  clear: both;
+}
+
+.tufte span.newthought {
+  font-variant: small-caps;
+  font-size: 1.2em;
+}
+
+.tufte input.margin-toggle {
+  display: none;
+}
+
+.tufte label.sidenote-number {
+  display: inline-block;
+  max-height: 2rem;
+}
+
+.tufte label.margin-toggle:not(.sidenote-number) {
+  display: none;
+}
+
+@container (max-width: 760px) {
+  .tufte .tufte-body {
+    width: 84%;
+    padding-left: 8%;
+    padding-right: 8%;
+  }
+
+  .tufte hr,
+  .tufte section > p,
+  .tufte section > footer,
+  .tufte section > table {
+    width: 100%;
+  }
+
+  .tufte pre > code {
+    width: 97%;
+  }
+
+  .tufte section > dl,
+  .tufte section > ol,
+  .tufte section > ul {
+    width: 90%;
+  }
+
+  .tufte figure {
+    max-width: 90%;
+  }
+
+  .tufte figcaption,
+  .tufte figure.fullwidth figcaption {
+    margin-right: 0%;
+    max-width: none;
+  }
+
+  .tufte blockquote {
+    margin-left: 1.5em;
+    margin-right: 0em;
+  }
+
+  .tufte blockquote p,
+  .tufte blockquote footer {
+    width: 100%;
+  }
+
+  .tufte label.margin-toggle:not(.sidenote-number) {
+    display: inline;
+  }
+
+  .tufte .sidenote,
+  .tufte .marginnote {
+    display: none;
+  }
+
+  .tufte .margin-toggle:checked + .sidenote,
+  .tufte .margin-toggle:checked + .marginnote {
+    display: block;
+    float: left;
+    left: 1rem;
+    clear: both;
+    width: 95%;
+    margin: 1rem 2.5%;
+    vertical-align: baseline;
+    position: relative;
+  }
+
+  .tufte label {
+    cursor: pointer;
+  }
+
+  .tufte div.table-wrapper,
+  .tufte table {
+    width: 85%;
+  }
+
+  /* 窄屏上页边注要靠复选框展开：让它能被 Tab 选中（视觉上隐藏），焦点环画在对应的标签上。 */
+  .tufte input.margin-toggle {
+    display: inline;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tufte label.margin-toggle:has(+ input.margin-toggle:focus-visible) {
+    outline: 2px solid var(--hl);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------- 以下是本条目新增：导航、图表、定价表 ---------- */
+
+.tufte .di-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  max-width: 90%;
+  padding-top: 1.75rem;
+  font-size: 0.95rem;
+}
+
+.tufte .di-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-variant: small-caps;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  text-decoration-line: none;
+}
+
+.tufte .di-brand svg {
+  display: inline-block;
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.tufte .di-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+
+.tufte .di-article {
+  padding-top: 0.5rem;
+}
+
+/* 行内迷你折线：字高大小，跟着文字基线走。 */
+.tufte .di-spark {
+  display: inline-block;
+  width: 3.4em;
+  height: 0.85em;
+  margin: 0 0.15em 0 0.25em;
+  vertical-align: -0.02em;
+  overflow: visible;
+}
+
+.tufte .di-spark-live {
+  width: 4.6em;
+}
+
+.tufte .di-hl {
+  color: var(--hl-text);
+}
+
+.tufte .di-figure-wide {
+  margin-top: 0.5rem;
+}
+
+.tufte figure.di-figure-wide figcaption.di-caption {
+  float: none;
+  display: block;
+  max-width: 55%;
+  margin: 1.1rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.tufte .di-pricing {
+  width: 55%;
+}
+
+.tufte .di-multiples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1.4rem 1.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tufte .di-multiples li {
+  min-width: 0;
+  margin: 0;
+}
+
+.tufte .di-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+.tufte .di-panel-head span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tufte .di-panel-head span:last-child {
+  font-variant-numeric: tabular-nums;
+}
+
+.tufte .di-panel svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.3rem;
+  overflow: visible;
+}
+
+.tufte .di-slope {
+  width: 100%;
+}
+
+.tufte .di-slope svg {
+  display: block;
+  overflow: visible;
+}
+
+.tufte .di-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.tufte .di-table caption {
+  caption-side: bottom;
+  padding-top: 0.6rem;
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.tufte .di-table thead tr {
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+.tufte .di-table tbody tr:last-child {
+  border-bottom: 2px solid var(--ink);
+}
+
+.tufte[data-gridlines='on'] .di-table tbody tr + tr {
+  border-top: 1px solid var(--rule);
+}
+
+.tufte .di-table th,
+.tufte .di-table td {
+  padding: 0.45rem 0.6rem;
+  text-align: right;
+  vertical-align: baseline;
+}
+
+.tufte .di-table th:first-child,
+.tufte .di-table td:first-child {
+  padding-left: 0;
+  text-align: left;
+}
+
+.tufte .di-table th:last-child,
+.tufte .di-table td:last-child {
+  padding-right: 0;
+}
+
+.tufte .di-table th {
+  font-weight: 400;
+  font-style: italic;
+}
+
+.tufte .di-footer {
+  padding: 2rem 0 3rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--rule);
+  width: 55%;
+}
+
+@container (max-width: 760px) {
+  .tufte .di-table {
+    font-size: 0.88rem;
+  }
+
+  .tufte .di-table th,
+  .tufte .di-table td {
+    padding: 0.4rem 0.35rem;
+  }
+
+  .tufte .di-footer {
+    width: 100%;
+  }
+
+  .tufte figure.di-figure-wide figcaption.di-caption {
+    max-width: none;
+  }
+
+  .tufte div.table-wrapper.di-pricing {
+    width: 100%;
+  }
+
+  .tufte .di-nav {
+    max-width: none;
+  }
+
+  .tufte .di-multiples {
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    gap: 1.1rem 1.2rem;
+  }
+}

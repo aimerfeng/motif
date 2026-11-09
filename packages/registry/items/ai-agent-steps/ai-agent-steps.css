@@ -1,0 +1,44 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2025 Julien Thibeaut
+ * Source: https://github.com/ibelick/prompt-kit/blob/5a94966/app/globals.css
+ * Modified by Motif; see the item's provenance.
+ */
+.aas-shimmer {
+  background-image: linear-gradient(to right, var(--muted-foreground) 40%, var(--foreground) 60%, var(--muted-foreground) 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: aas-shimmer 4s infinite linear;
+}
+
+@keyframes aas-shimmer {
+  0% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: -200% 50%;
+  }
+}
+
+/* 时间线连线：实线 / 虚线 / 不画 */
+.aas-line {
+  background-color: var(--aas-line);
+}
+
+[data-connector='dashed'] .aas-line {
+  background-color: transparent;
+  border-left: 1px dashed var(--aas-line);
+}
+
+[data-connector='none'] .aas-line {
+  background-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aas-shimmer {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}

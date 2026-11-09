@@ -1,0 +1,117 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dashboard-uptime-monitor',
+  status: 'published',
+  title: { 'zh-CN': '可用性监控详情', en: 'Uptime Monitor Detail' },
+  summary: {
+    'zh-CN': '单个监控项的详情页：带脉冲的在线 / 降级状态点和检查间隔，测试告警、暂停、配置等操作，三张概况卡和可选地区、按日 / 周 / 月切换的响应时间面积图；切到「事件」视图换成事件图表和四格指标。适合运维与状态监控产品。',
+    en: "One monitor's page: a pulsing Up / Degraded dot with its check interval, test-alert, pause and configure actions, summary cards and a response-time area chart with a region select and a day / week / month toggle; the incidents view swaps in an incident chart and a four-up stat grid. For uptime and ops products.",
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'uptime', 'monitoring', 'area chart', 'incidents', 'status'],
+  runtime: ['react', 'svg'],
+  entry: { file: 'dashboard-uptime-monitor.tsx', export: 'DashboardUptimeMonitor' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dashboard-uptime-monitor.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'siteName', type: 'text', label: { 'zh-CN': '站点名', en: 'Site name' }, default: 'halyard.dev', maxLength: 32, group: 'content' },
+    {
+      key: 'status',
+      type: 'select',
+      label: { 'zh-CN': '状态', en: 'Status' },
+      default: 'up',
+      options: [
+        { value: 'up', label: { 'zh-CN': '在线', en: 'Up' } },
+        { value: 'degraded', label: { 'zh-CN': '降级', en: 'Degraded' } },
+      ],
+      group: 'content',
+    },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, hint: { 'zh-CN': '第一条序列和焦点环', en: 'First series and focus ring' }, default: '#8b5cf6', group: 'look' },
+    {
+      key: 'fill',
+      type: 'select',
+      label: { 'zh-CN': '面积填充', en: 'Area fill' },
+      default: 'solid',
+      options: [
+        { value: 'solid', label: { 'zh-CN': '实色', en: 'Solid' } },
+        { value: 'gradient', label: { 'zh-CN': '渐变', en: 'Gradient' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'view',
+      type: 'select',
+      label: { 'zh-CN': '视图', en: 'View' },
+      default: 'response',
+      options: [
+        { value: 'response', label: { 'zh-CN': '响应时间', en: 'Response times' } },
+        { value: 'incidents', label: { 'zh-CN': '事件', en: 'Incidents' } },
+      ],
+      group: 'content',
+    },
+    {
+      key: 'region',
+      type: 'select',
+      label: { 'zh-CN': '地区', en: 'Region' },
+      default: 'europe',
+      options: [
+        { value: 'north-america', label: { 'zh-CN': '北美', en: 'North America' } },
+        { value: 'europe', label: { 'zh-CN': '欧洲', en: 'Europe' } },
+        { value: 'asia', label: { 'zh-CN': '亚洲', en: 'Asia' } },
+        { value: 'australia', label: { 'zh-CN': '澳洲', en: 'Australia' } },
+      ],
+      group: 'content',
+    },
+    {
+      key: 'range',
+      type: 'select',
+      label: { 'zh-CN': '时间范围', en: 'Range' },
+      default: 'day',
+      options: [
+        { value: 'day', label: { 'zh-CN': '日', en: 'Day' } },
+        { value: 'week', label: { 'zh-CN': '周', en: 'Week' } },
+        { value: 'month', label: { 'zh-CN': '月', en: 'Month' } },
+      ],
+      group: 'content',
+    },
+    { key: 'showActions', type: 'boolean', label: { 'zh-CN': '显示操作栏', en: 'Show actions' }, default: true, group: 'layout' },
+  ],
+  presets: [
+    { id: 'night-shift', name: { 'zh-CN': '夜班', en: 'Night Shift' }, values: { accent: '#8b5cf6', status: 'up', view: 'response' } },
+    { id: 'storm-watch', name: { 'zh-CN': '风暴预警', en: 'Storm Watch' }, values: { accent: '#f43f5e', status: 'degraded', view: 'incidents', fill: 'gradient', region: 'asia' } },
+    { id: 'long-haul', name: { 'zh-CN': '长航', en: 'Long Haul' }, values: { accent: '#f59e0b', range: 'month', fill: 'gradient', region: 'australia' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: [
+        'src/content/components/chart-compositions/chart-composition-11.tsx',
+        'src/content/components/chart-compositions/chart-composition-12.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Merged the monitor page (composition 11) and the incident overview (composition 12) into one component; the Incidents action switches between them.',
+      'Replaced the Tremor AreaChart (recharts) with a hand-drawn SVG area chart with legend, crosshair and tooltip; Card, Divider, Button, SelectNative and Tooltip became plain markup.',
+      'Replaced @radix-ui/react-toggle-group with a radiogroup segmented control (arrow-key navigation) and @remixicon/react with inline SVG paths; cx became cn from @motif/runtime.',
+      'Week / month and region series are derived from the upstream day data; integration names are invented; gray palette mapped to theme tokens.',
+      'Added site name, status, accent, fill, view, region, range and actions params; the demo sweeps the chart crosshair via useFrameLoop.',
+    ],
+    assets: [],
+  },
+})

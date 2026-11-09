@@ -1,0 +1,76 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'progressive-blur',
+  status: 'published',
+  title: { 'zh-CN': '渐进模糊', en: 'Progressive Blur' },
+  summary: {
+    'zh-CN': '几层 backdrop-filter 叠在一起，越靠边缘越糊，内容慢慢化进边框里，而不是被一道硬渐隐切掉。适合滚动列表、图片卡片和吸顶导航，也能在悬停时浮起来托住图片说明。',
+    en: 'Stacked backdrop-filter layers blur harder toward an edge, so content melts into the frame instead of hitting a hard fade. For scroll lists, image cards and sticky headers, or rising on hover to seat a caption.',
+  },
+  kind: 'effect',
+  category: 'image',
+  tags: ['blur', 'backdrop-filter', 'mask', 'image', 'caption'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'progressive-blur.tsx', export: 'ProgressiveBlur' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'progressive-blur.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'direction',
+      type: 'select',
+      label: { 'zh-CN': '模糊方向', en: 'Direction' },
+      default: 'bottom',
+      options: [
+        { value: 'bottom', label: { 'zh-CN': '底部', en: 'Bottom' } },
+        { value: 'top', label: { 'zh-CN': '顶部', en: 'Top' } },
+        { value: 'left', label: { 'zh-CN': '左侧', en: 'Left' } },
+        { value: 'right', label: { 'zh-CN': '右侧', en: 'Right' } },
+      ],
+    },
+    {
+      key: 'blurIntensity',
+      type: 'number',
+      label: { 'zh-CN': '模糊强度', en: 'Blur intensity' },
+      hint: { 'zh-CN': '每一层增加的模糊半径', en: 'Blur radius added per layer' },
+      default: 0.5,
+      min: 0.1,
+      max: 2,
+      step: 0.05,
+      unit: 'px',
+      safe: [0.25, 1],
+    },
+    { key: 'blurLayers', type: 'number', label: { 'zh-CN': '层数', en: 'Layers' }, default: 8, min: 2, max: 12, step: 1 },
+    { key: 'extent', type: 'number', label: { 'zh-CN': '覆盖范围', en: 'Extent' }, default: 75, min: 20, max: 100, step: 1, unit: '%' },
+  ],
+  presets: [
+    { id: 'veil', name: { 'zh-CN': '薄纱', en: 'Veil' }, values: { blurIntensity: 0.25, blurLayers: 8, extent: 50 } },
+    { id: 'fog', name: { 'zh-CN': '浓雾', en: 'Fog' }, values: { blurIntensity: 1, blurLayers: 10, extent: 90 } },
+    { id: 'skyline', name: { 'zh-CN': '天际线', en: 'Skyline' }, values: { direction: 'top', blurIntensity: 0.5, extent: 60 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.4, posterTime: 1.4 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'motion-primitives',
+      repo: 'ibelick/motion-primitives',
+      sha: '120f64f6ca60348e251f929e9c81f11ccbe45eda',
+      paths: ['components/core/progressive-blur.tsx', 'app/docs/progressive-blur/progressive-blur-hover.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 ibelick'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; added an extent param that anchors the blur region to the chosen edge.',
+      'cn now comes from motif-runtime.',
+      'The hover demo uses a drawn SVG artwork instead of a remote photo and autoplays the hover with useFrameLoop.',
+    ],
+    assets: [],
+  },
+})

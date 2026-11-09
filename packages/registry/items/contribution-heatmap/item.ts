@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'contribution-heatmap',
+  status: 'published',
+  title: { 'zh-CN': '贡献热力图', en: 'Contribution Heatmap' },
+  summary: {
+    'zh-CN': '一整年的每日活跃度按周和星期排成方格，颜色分档，带月份标签、图例和总数，悬停或用方向键查看某一天；方格入场时像涟漪一样依次弹出。适合开发者主页、习惯打卡和用量页面。',
+    en: 'A year of daily activity as a grid of squares by week and weekday, colored in levels, with month labels, a legend and a total; hover or use the arrow keys to read a day, and cells ripple in on mount. For developer profiles, habit trackers and usage pages.',
+  },
+  kind: 'component',
+  category: 'chart',
+  tags: ['heatmap', 'calendar', 'contributions', 'activity', 'svg chart'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'contribution-heatmap.tsx', export: 'ContributionHeatmap' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'contribution-heatmap.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'palette',
+      type: 'palette',
+      label: { 'zh-CN': '配色', en: 'Palette' },
+      hint: { 'zh-CN': '最低档到最高档的颜色，中间各档自动混合；空白日用主题的弱色', en: 'Lowest to highest level; the levels in between are mixed. Empty days use the muted theme color' },
+      default: ['#0e4429', '#39d353'],
+      minItems: 2,
+      maxItems: 2,
+      group: 'look',
+    },
+    { key: 'levels', type: 'number', label: { 'zh-CN': '档数', en: 'Levels' }, default: 4, min: 2, max: 6, step: 1, group: 'look' },
+    { key: 'blockSize', type: 'number', label: { 'zh-CN': '方格大小', en: 'Block size' }, default: 12, min: 8, max: 16, step: 1, unit: 'px', group: 'layout' },
+    { key: 'blockGap', type: 'number', label: { 'zh-CN': '方格间距', en: 'Block gap' }, default: 4, min: 1, max: 6, step: 1, unit: 'px', group: 'layout' },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 2, min: 0, max: 8, step: 1, unit: 'px', group: 'look' },
+    {
+      key: 'weekStart',
+      type: 'select',
+      label: { 'zh-CN': '每周起始', en: 'Week starts on' },
+      default: 'sunday',
+      options: [
+        { value: 'sunday', label: { 'zh-CN': '周日', en: 'Sunday' } },
+        { value: 'monday', label: { 'zh-CN': '周一', en: 'Monday' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'showLegend', type: 'boolean', label: { 'zh-CN': '显示图例', en: 'Show legend' }, default: true, group: 'look' },
+    { key: 'seed', type: 'number', label: { 'zh-CN': '示例数据种子', en: 'Sample data seed' }, hint: { 'zh-CN': '没有传 data 时用它生成一年的示例数据', en: 'Generates a sample year when no data is passed' }, default: 7, min: 1, max: 999, step: 1, group: 'content' },
+  ],
+  presets: [
+    { id: 'meadow', name: { 'zh-CN': '草地', en: 'Meadow' }, values: { palette: ['#0e4429', '#39d353'], levels: 4, radius: 2 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { palette: ['#451a03', '#fb923c'], levels: 5, radius: 3, weekStart: 'monday' } },
+    { id: 'tide', name: { 'zh-CN': '潮汐', en: 'Tide' }, values: { palette: ['#172554', '#60a5fa'], levels: 4, radius: 6, blockGap: 3 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  guidance: {
+    rules: ['Each Activity needs a level within 0..levels; compute it from your own thresholds. The calendar scrolls horizontally inside its container on narrow screens.'],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.1, posterTime: 5.4, loop: 10 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kibo',
+      repo: 'shadcnblocks/kibo',
+      sha: '3d63cdb15b79d972e3dc38a10997987672f9b263',
+      paths: ['packages/contribution-graph/index.tsx', 'apps/docs/examples/contribution-graph.tsx', 'apps/docs/examples/contribution-graph-tooltip.tsx', 'apps/docs/examples/contribution-graph-custom-theme.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 — Present shadcnblocks'],
+    },
+    modifications: [
+      'Kept the ContributionGraph compound components (calendar, block, footer, total count, legend) and their layout logic; date-fns replaced by small UTC date helpers, cn from @motif/runtime.',
+      'Level fills come from a two-color palette mixed per level (default colors from the custom-theme example) instead of fixed muted-foreground classes; empty days keep the muted token.',
+      'Blocks are motion rects that ripple in on mount; reduced motion skips it.',
+      'Added an assembled ContributionHeatmap with seeded sample data (the examples\' formula), a hand-written tooltip replacing the shadcn Tooltip, arrow-key day reading and an activeDate prop used by the demo autoplay.',
+    ],
+    assets: [],
+  },
+})

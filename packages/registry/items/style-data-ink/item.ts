@@ -1,0 +1,95 @@
+import { defineItem } from '@motif/schema'
+
+const option = (value: string, zh: string, en: string) => ({ value, label: { 'zh-CN': zh, en } })
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'style-data-ink',
+  status: 'published',
+  title: { 'zh-CN': '数据墨水', en: 'Data Ink' },
+  summary: {
+    'zh-CN': '把 Tufte 的「数据墨水」规则做成一套界面风格：Tufte CSS 的版心和页边注，段落里嵌迷你走势线，同一刻度的小多图，只画数据范围的坐标轴，直接标注代替图例，斜率图和带条形的表格，几乎没有边框和装饰。适合报告、分析页和研究型仪表盘。',
+    en: "Tufte's data-ink rules as an interface style: the Tufte CSS measure and sidenotes, sparklines inside sentences, small multiples on one scale, range-frame axes, direct labels instead of legends, slopegraphs and tables with in-cell bars, and almost no chrome. For reports, analytics pages and research dashboards.",
+  },
+  kind: 'style',
+  category: 'technical',
+  tags: ['tufte', 'data ink', 'sparkline', 'small multiples', 'slopegraph', 'range frame', 'sidenotes', 'report', 'analytics'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'style-data-ink.tsx', export: 'DataInk' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'style-data-ink.tsx', role: 'component' },
+    { path: 'style-data-ink.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'inkColor', type: 'color', group: 'look', label: { 'zh-CN': '墨色', en: 'Ink' }, hint: { 'zh-CN': '文字和数据线；对比不够时自动加深或提亮', en: 'Text and data lines; darkened or lightened when contrast is too low' }, default: '#111111' },
+    { key: 'highlight', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Highlight' }, hint: { 'zh-CN': '只标出需要注意的那一条线、一个点', en: 'Marks only the one line or point that matters' }, default: '#b8322a' },
+    {
+      key: 'paperTone',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '纸色', en: 'Paper' },
+      default: 'ivory',
+      options: [option('ivory', '象牙白', 'Ivory'), option('white', '纯白', 'White'), option('stone', '石灰', 'Stone'), option('night', '夜间', 'Night')],
+    },
+    { key: 'strokeWidth', type: 'number', group: 'look', label: { 'zh-CN': '线宽', en: 'Stroke width' }, default: 1.25, min: 0.75, max: 2.5, step: 0.25, unit: 'px', safe: [1, 2] },
+    {
+      key: 'serifFont',
+      type: 'select',
+      group: 'type',
+      label: { 'zh-CN': '衬线字体', en: 'Serif' },
+      hint: { 'zh-CN': '数字统一用 IBM Plex Mono 等宽', en: 'Figures always use IBM Plex Mono' },
+      default: 'newsreader',
+      options: [option('newsreader', 'Newsreader', 'Newsreader'), option('fraunces', 'Fraunces', 'Fraunces'), option('playfair', 'Playfair Display', 'Playfair Display')],
+    },
+    { key: 'gridlines', type: 'boolean', group: 'layout', label: { 'zh-CN': '网格线', en: 'Gridlines' }, hint: { 'zh-CN': '在刻度处画极淡的细线', en: 'Faint hairlines at the ticks' }, default: false },
+    { key: 'density', type: 'number', group: 'layout', label: { 'zh-CN': '疏密', en: 'Density' }, hint: { 'zh-CN': '整体字号的倍数（原版 15px）', en: 'Scales the 15px base size' }, default: 1, min: 0.9, max: 1.1, step: 0.05, unit: 'x', safe: [0.9, 1.1] },
+    { key: 'dataSeed', type: 'seed', group: 'data', label: { 'zh-CN': '示例数据', en: 'Sample data' }, hint: { 'zh-CN': '换一组演示用的数据', en: 'Regenerates the demo figures' }, default: 7 },
+  ],
+  presets: [
+    { id: 'handout', name: { 'zh-CN': '讲义', en: 'Handout' }, values: { inkColor: '#111111', highlight: '#b8322a', paperTone: 'ivory', strokeWidth: 1.25, serifFont: 'newsreader', gridlines: false, density: 1 } },
+    { id: 'ledger', name: { 'zh-CN': '账簿', en: 'Ledger' }, values: { inkColor: '#1d2733', highlight: '#1f5fa8', paperTone: 'white', strokeWidth: 1, serifFont: 'fraunces', gridlines: true, density: 0.95 } },
+    { id: 'lamplight', name: { 'zh-CN': '灯下', en: 'Lamplight' }, values: { inkColor: '#dddddd', highlight: '#e8826a', paperTone: 'night', strokeWidth: 1.5, serifFont: 'newsreader', gridlines: false, density: 1 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Newsreader Variable', 'Fraunces Variable', 'Playfair Display Variable', 'IBM Plex Sans Variable', 'IBM Plex Mono'],
+  guidance: {
+    use: [
+      'Use for reports, analytics and research pages, data journalism, internal dashboards that are read rather than operated, and documentation that explains numbers.',
+      'Avoid for marketing pages, consumer apps and anything that needs loud interface chrome.',
+    ],
+    rules: [
+      'Keep the Tufte CSS page: the article sits at 87.5% width with 12.5% left padding (max 1400px); paragraphs, tables and normal figures are 55% wide; sidenotes and margin notes take the right margin (50% of the paragraph width, pulled out by -60%). Below 760px notes collapse behind a numbered or ⊕ toggle.',
+      'Palette: paper (ivory #fffff8 by default), one ink for text and data, ink mixed with paper for muted text (at least 4.5:1), rules (22%) and gridlines (10%), and exactly one highlight colour used only for the one series, point or row the text talks about. Never colour-code categories; label them.',
+      'Maximise the data-ink ratio: no boxes around charts, no backgrounds, no legends, no 3D, no shadows. Axes are range frames that span only the data and are labelled at the minimum, median and maximum. Gridlines are off by default and, when on, are 10% hairlines.',
+      'Label directly: series names and last values sit at the end of each line, slopegraph labels at both ends, outliers labelled next to the point. Captions live in the margin, set in the serif at 1.1rem.',
+      'Put small charts where the words are: a sparkline (about 4em by 1em, last point in the highlight) follows the number it explains inside the sentence. Compare with small multiples on one shared scale rather than one crowded chart.',
+      'Type: one serif (Newsreader, Fraunces or Playfair Display) at 1.4rem/2rem for text, h1 at 3.2rem regular, h2 and h3 italic, sections opened with small-caps "new thought" words. Every figure is set in IBM Plex Mono with tabular numerals so columns align.',
+      'Tables are booktabs: a rule above and below and a hairline under the header, no vertical lines, numbers right-aligned, an in-cell bar instead of a separate bar chart.',
+      'Chrome is minimal: buttons are text with a hairline border, selectors are words underlined when active. Motion is limited to 150ms colour fades and is removed under reduced motion.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tufte-css',
+      repo: 'edwardtufte/tufte-css',
+      sha: 'b5d7b7bbe5ce9c4c50fcfad4f19ee3646cfd7ae1',
+      paths: ['tufte.css', 'index.html'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2014 Dave Liepmann'],
+    },
+    modifications: [
+      'tufte.css is ported rule by rule and scoped under .di: the body rules move to .di-page, rem sizes are expressed against a 15px base multiplied by the density parameter, and the rules sit in a components cascade layer.',
+      'The ET Book @font-face rules are removed; Newsreader, Fraunces or Playfair Display replace ET Book, IBM Plex Sans replaces Gill Sans, IBM Plex Mono replaces the code and table fonts, and old-style figures use font-variant-numeric.',
+      'Colours become variables (paper, ink, muted, rule, highlight) computed from the parameters with a contrast floor; the prefers-color-scheme dark mode becomes the Night paper option. The iframe wrapper rules are dropped.',
+      'The sidenote and margin-note markup from index.html is wrapped in React components; the hidden checkbox stays keyboard-focusable on narrow screens.',
+      'Sparklines, small multiples, range-frame scatter, slopegraph, booktabs table with in-cell bars, button and segmented control are original Motif additions drawn with inline SVG and CSS.',
+    ],
+    assets: [],
+  },
+})

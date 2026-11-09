@@ -1,0 +1,428 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2022 Griffin Johnston
+ * Source: https://github.com/GriffinJohnston/ldrs/blob/f759f65/src/elements/newtonsCradle.scss
+ * Modified by Motif; see the item's provenance.
+ *
+ * Six ldrs loaders (newtonsCradle, metronome, leapfrog, bouncyArc, treadmill, momentum),
+ * flattened from SCSS and the Web Component :host into plain classes.
+ */
+.mkt-root {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--uib-size);
+}
+
+/* ---- newtonsCradle ---- */
+.mkt-root.mkt-newtons-cradle {
+  height: calc(var(--uib-size) * 0.3);
+}
+.mkt-newtons-cradle .mkt-container {
+  position: relative;
+  top: 28%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 51%;
+  height: calc(var(--uib-size) * 0.51);
+}
+.mkt-newtons-cradle .mkt-dot {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 100%;
+  width: 25%;
+  transform-origin: center top;
+}
+.mkt-newtons-cradle .mkt-dot::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 25%;
+  border-radius: 50%;
+  background-color: var(--uib-color);
+  transition: background-color 0.3s ease;
+}
+.mkt-newtons-cradle .mkt-dot:first-child {
+  animation: mkt-cradle-swing var(--uib-speed) linear infinite;
+}
+.mkt-newtons-cradle .mkt-dot:last-child {
+  animation: mkt-cradle-swing2 var(--uib-speed) linear infinite;
+}
+@keyframes mkt-cradle-swing {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: ease-out;
+  }
+  25% {
+    transform: rotate(calc(70deg * var(--mkt-amp)));
+    animation-timing-function: ease-in;
+  }
+  50% {
+    transform: rotate(0deg);
+    animation-timing-function: linear;
+  }
+}
+@keyframes mkt-cradle-swing2 {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: linear;
+  }
+  50% {
+    transform: rotate(0deg);
+    animation-timing-function: ease-out;
+  }
+  75% {
+    transform: rotate(calc(-70deg * var(--mkt-amp)));
+    animation-timing-function: ease-in;
+  }
+}
+
+/* ---- metronome ---- */
+.mkt-root.mkt-metronome {
+  height: calc(var(--uib-size) * 0.63);
+}
+.mkt-metronome .mkt-container {
+  position: relative;
+  top: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: var(--uib-size);
+  width: var(--uib-size);
+}
+.mkt-metronome .mkt-dot {
+  position: absolute;
+  top: 13.5%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+  animation: mkt-metronome-swing var(--uib-speed) linear infinite;
+  /* upstream nth-child(1..4): delay -0.36/-0.27/-0.18/-0.09, opacity 1/.8/.6/.4, scale 1/.9/.8/.7 */
+  animation-delay: calc(var(--uib-speed) * (-0.36 + 0.09 * var(--i)));
+  opacity: calc(1 - 0.2 * var(--i));
+}
+.mkt-metronome .mkt-dot::before {
+  content: '';
+  height: 25%;
+  width: 25%;
+  border-radius: 50%;
+  background-color: var(--uib-color);
+  transition: background-color 0.3s ease;
+  transform: scale(calc(1 - 0.1 * var(--i)));
+}
+@keyframes mkt-metronome-swing {
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  65% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* ---- leapfrog ---- */
+.mkt-root.mkt-leapfrog {
+  height: calc(var(--uib-size) * 0.62);
+}
+.mkt-leapfrog .mkt-container {
+  position: relative;
+  top: 15%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: var(--uib-size);
+  height: var(--uib-size);
+}
+.mkt-leapfrog .mkt-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+}
+.mkt-leapfrog .mkt-dot::before {
+  content: '';
+  display: block;
+  height: calc(var(--uib-size) * 0.22);
+  width: calc(var(--uib-size) * 0.22);
+  border-radius: 50%;
+  background-color: var(--uib-color);
+  transition: background-color 0.3s ease;
+}
+.mkt-leapfrog .mkt-dot:nth-child(1) {
+  animation: mkt-leapfrog var(--uib-speed) ease infinite;
+}
+.mkt-leapfrog .mkt-dot:nth-child(2) {
+  transform: translateX(calc(var(--uib-size) * 0.4));
+  animation: mkt-leapfrog var(--uib-speed) ease calc(var(--uib-speed) / -1.5) infinite;
+}
+.mkt-leapfrog .mkt-dot:nth-child(3) {
+  transform: translateX(calc(var(--uib-size) * 0.8)) rotate(0deg);
+  animation: mkt-leapfrog var(--uib-speed) ease calc(var(--uib-speed) / -3) infinite;
+}
+@keyframes mkt-leapfrog {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  33.333% {
+    transform: translateX(0) rotate(180deg);
+  }
+  66.666% {
+    transform: translateX(calc(var(--uib-size) * -0.38)) rotate(180deg);
+  }
+  99.999% {
+    transform: translateX(calc(var(--uib-size) * -0.78)) rotate(180deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+/* ---- bouncyArc ---- */
+.mkt-root.mkt-bouncy-arc {
+  height: calc(var(--uib-size) * 0.51);
+}
+.mkt-bouncy-arc .mkt-container {
+  --uib-cube-size: calc(var(--uib-size) / 5.5);
+  --uib-arc-1: calc(-80deg * var(--mkt-amp));
+  --uib-arc-2: calc(80deg * var(--mkt-amp));
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.mkt-bouncy-arc .mkt-cube {
+  width: var(--uib-cube-size);
+  height: calc(var(--uib-size) * 0.5);
+  transform-origin: center bottom;
+  transform: rotate(var(--uib-arc-1));
+  animation: mkt-arc-metronome var(--uib-speed) linear infinite;
+}
+.mkt-bouncy-arc .mkt-cube::after {
+  content: '';
+  display: block;
+  width: var(--uib-cube-size);
+  height: var(--uib-cube-size);
+  background-color: var(--uib-color);
+  border-radius: 25%;
+  animation: mkt-arc-morph var(--uib-speed) linear infinite;
+  transition: background-color 0.3s ease;
+}
+@keyframes mkt-arc-metronome {
+  0% {
+    transform: rotate(var(--uib-arc-1));
+  }
+  10% {
+    transform: rotate(var(--uib-arc-1));
+    animation-timing-function: ease-out;
+  }
+  50% {
+    transform: rotate(var(--uib-arc-2));
+  }
+  60% {
+    transform: rotate(var(--uib-arc-2));
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: rotate(var(--uib-arc-1));
+  }
+}
+/* --mkt-sq scales the squash / stretch distance (1 = upstream 0.75 / 1.25 / 1.5). */
+@keyframes mkt-arc-morph {
+  0%,
+  5% {
+    transform: scaleX(calc(1 - 0.25 * var(--mkt-sq))) scaleY(calc(1 + 0.25 * var(--mkt-sq)));
+    transform-origin: center left;
+  }
+  12.5% {
+    transform: scaleX(calc(1 + 0.5 * var(--mkt-sq)));
+    transform-origin: center left;
+  }
+  27.5% {
+    transform: scaleX(1);
+    transform-origin: center left;
+  }
+  27.5001%,
+  42.5% {
+    transform: scaleX(1);
+    transform-origin: center right;
+  }
+  47.5% {
+    transform: scaleX(calc(1 - 0.25 * var(--mkt-sq))) scaleY(calc(1 + 0.25 * var(--mkt-sq)));
+    transform-origin: center right;
+    animation-timing-function: ease-in;
+  }
+  65% {
+    transform: scaleX(calc(1 + 0.5 * var(--mkt-sq)));
+    transform-origin: center right;
+  }
+  77.5% {
+    transform: scaleX(1);
+    transform-origin: center right;
+  }
+  77.5001%,
+  95% {
+    transform: scaleX(1);
+    transform-origin: center left;
+  }
+  100% {
+    transform: scaleX(calc(1 - 0.25 * var(--mkt-sq))) scaleY(calc(1 + 0.25 * var(--mkt-sq)));
+    transform-origin: center left;
+  }
+}
+
+/* ---- treadmill ---- */
+.mkt-root.mkt-treadmill {
+  height: calc(var(--uib-size) * 0.59);
+}
+.mkt-treadmill .mkt-container {
+  --uib-cube-size: calc(var(--uib-size) * 0.2);
+  --uib-arc-1: -90deg;
+  --uib-arc-2: 90deg;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: calc(100% - var(--uib-cube-size) / 2);
+  padding-bottom: calc(var(--uib-cube-size) / 2);
+}
+.mkt-treadmill .mkt-cube {
+  --cube-container-height: calc(var(--uib-size) * 0.8);
+  display: flex;
+  align-items: center;
+  width: var(--uib-cube-size);
+  height: var(--cube-container-height);
+  transform-origin: center bottom;
+  transform: rotate(var(--uib-arc-1));
+  animation: mkt-tread-metronome var(--uib-speed) linear infinite;
+}
+.mkt-treadmill .mkt-cube::after {
+  content: '';
+  display: block;
+  width: var(--uib-cube-size);
+  height: var(--uib-cube-size);
+  background-color: var(--uib-color);
+  border-radius: 25%;
+  animation: mkt-tread-morph var(--uib-speed) linear infinite;
+  transform-origin: center left;
+  transition: background-color 0.3s ease;
+}
+@keyframes mkt-tread-metronome {
+  0% {
+    transform: rotate(var(--uib-arc-1));
+  }
+  50% {
+    transform: rotate(var(--uib-arc-2));
+  }
+  50.001% {
+    transform: translateX(var(--cube-container-height)) rotate(var(--uib-arc-1));
+  }
+  100% {
+    transform: rotate(var(--uib-arc-1));
+  }
+}
+@keyframes mkt-tread-morph {
+  15% {
+    transform: scaleX(calc(1 + 0.2 * var(--mkt-sq))) scaleY(calc(1 - 0.2 * var(--mkt-sq)));
+  }
+  30%,
+  50% {
+    transform: scaleX(1);
+  }
+  55% {
+    transform: scaleX(calc(1 - 0.2 * var(--mkt-sq))) scaleY(calc(1 + 0.2 * var(--mkt-sq)));
+  }
+  65%,
+  80% {
+    transform: scaleX(1);
+  }
+  90%,
+  95% {
+    transform: scaleX(calc(1 - 0.35 * var(--mkt-sq))) scaleY(calc(1 + 0.3 * var(--mkt-sq)));
+  }
+}
+
+/* ---- momentum ---- */
+.mkt-root.mkt-momentum {
+  height: var(--uib-size);
+}
+.mkt-momentum .mkt-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--uib-size);
+  width: var(--uib-size);
+  animation: mkt-momentum-rotate var(--uib-speed) linear infinite;
+}
+.mkt-momentum .mkt-container::before,
+.mkt-momentum .mkt-container::after {
+  content: '';
+  height: 25%;
+  width: 25%;
+  border-radius: 50%;
+  background-color: var(--uib-color);
+  transition: background-color 0.3s ease;
+}
+.mkt-momentum .mkt-container::before {
+  animation: mkt-momentum-wobble2 calc(var(--uib-speed) * 1.25) ease-in-out infinite;
+  margin-right: 10%;
+}
+.mkt-momentum .mkt-container::after {
+  animation: mkt-momentum-wobble calc(var(--uib-speed) * 1.25) ease-in-out infinite;
+}
+@keyframes mkt-momentum-wobble {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(calc(var(--uib-size) * 0.2)) scale(1.1);
+  }
+}
+@keyframes mkt-momentum-wobble2 {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(calc(var(--uib-size) * -0.2)) scale(1.1);
+  }
+}
+@keyframes mkt-momentum-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion: drop the animations and show each toy at rest. */
+@media (prefers-reduced-motion: reduce) {
+  .mkt-root *,
+  .mkt-root *::before,
+  .mkt-root *::after {
+    animation: none !important;
+  }
+}

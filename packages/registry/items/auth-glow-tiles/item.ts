@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'auth-glow-tiles',
+  status: 'published',
+  title: { 'zh-CN': '光格背景登录页', en: 'Glowing Tile Sign-In' },
+  summary: {
+    'zh-CN': '邮箱密码登录表单配一片圆角小方格：每隔几秒随机一批方格慢慢亮起主色光晕，上一批同时暗下去，背景像在呼吸。带 SSO 按钮和条款说明，可选左右分栏或卡片浮在方格上。',
+    en: 'An email and password sign-in form beside a field of rounded tiles. Every few seconds a random handful slowly picks up an accent glow while the last set fades, so the background breathes. Includes SSO buttons and a terms line, in a split layout or as a card floating over the tiles.',
+  },
+  kind: 'section',
+  category: 'auth',
+  tags: ['auth', 'sign-in', 'login', 'form', 'tiles', 'grid', 'glow'],
+  runtime: ['react', 'css'],
+  entry: { file: 'auth-glow-tiles.tsx', export: 'AuthGlowTiles' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'auth-glow-tiles.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'brandName', type: 'text', label: { 'zh-CN': '品牌名', en: 'Brand name' }, default: 'Larchmont', maxLength: 24, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#3b82f6', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'cardStyle',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      hint: { 'zh-CN': '分栏在窄屏只显示表单', en: 'Split shows only the form on narrow screens' },
+      default: 'split',
+      options: [
+        { value: 'split', label: { 'zh-CN': '左右分栏', en: 'Split' } },
+        { value: 'floating', label: { 'zh-CN': '卡片浮在方格上', en: 'Floating card' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'tileSize', type: 'number', label: { 'zh-CN': '方格大小', en: 'Tile size' }, default: 36, min: 20, max: 56, step: 2, unit: 'px', safe: [28, 44], group: 'tiles' },
+    { key: 'tileGap', type: 'number', label: { 'zh-CN': '方格间距', en: 'Tile gap' }, default: 8, min: 4, max: 16, step: 1, unit: 'px', group: 'tiles' },
+    { key: 'litCount', type: 'number', label: { 'zh-CN': '每批亮起', en: 'Lit per cycle' }, hint: { 'zh-CN': '每批在这个数的一半到一倍半之间随机', en: 'Each set is random between half and one and a half times this' }, default: 40, min: 10, max: 120, step: 5, safe: [20, 70], group: 'tiles' },
+    { key: 'cycleSeconds', type: 'number', label: { 'zh-CN': '换批间隔', en: 'Cycle' }, default: 3, min: 1.5, max: 8, step: 0.5, unit: 's', safe: [2.5, 5], group: 'motion' },
+    { key: 'glowStrength', type: 'number', label: { 'zh-CN': '光晕强度', en: 'Glow strength' }, default: 1, min: 0.4, max: 2, step: 0.1, safe: [0.8, 1.5], group: 'look' },
+  ],
+  presets: [
+    { id: 'blueprint', name: { 'zh-CN': '蓝图', en: 'Blueprint' }, values: { accent: '#3b82f6', tone: 'dark', cardStyle: 'split' } },
+    { id: 'firefly', name: { 'zh-CN': '萤火', en: 'Firefly' }, values: { accent: '#facc15', tone: 'dark', cardStyle: 'floating', tileSize: 28, tileGap: 6, litCount: 70, glowStrength: 1.5 } },
+    { id: 'porcelain', name: { 'zh-CN': '瓷白', en: 'Porcelain' }, values: { accent: '#8b5cf6', tone: 'light', cardStyle: 'floating', tileSize: 44, tileGap: 10, litCount: 30, cycleSeconds: 4 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 2.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: ['src/content/components/logins/login-08.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'The setInterval reshuffle became a cycle index from the runtime frame loop with a seeded random pick, so the glow is deterministic and pauses off-screen.',
+      'The fixed 40 x 40 grid is sized to its panel with a ResizeObserver; the box-shadow transition became an opacity fade of a glow layer per tile.',
+      'Tremor Button, Input, Label and Divider were inlined as plain markup; the GitHub and Google icons became generic SSO glyphs and the copy uses an invented brand.',
+      'Added accent, tone, layout (split or floating card), tile size, gap, lit count, cycle and glow strength parameters; link and button ink adapt to the accent for contrast. Reduced motion holds one static set.',
+    ],
+    assets: [],
+  },
+})

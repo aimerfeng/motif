@@ -1,0 +1,93 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dashboard-cloud-monitoring',
+  status: 'published',
+  title: { 'zh-CN': '云资源监控总览', en: 'Cloud Monitoring Overview' },
+  summary: {
+    'zh-CN': '六项核心指标（总成本、活跃工作区、活跃用户、可用率、响应时间、MTTR）各带一条迷你图，悬停出现「编辑告警」和「查看详情」；下方是按时间段的汇总表。适合云控制台与运维看板。',
+    en: 'Six headline metrics (overall cost, active workspaces, active users, uptime, response time, MTTR), each with a spark chart and edit-alarm / view-details actions on hover, above a per-period summary table. For cloud consoles and ops dashboards.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'monitoring', 'cloud', 'sparkline', 'metrics', 'table'],
+  runtime: ['react', 'svg'],
+  entry: { file: 'dashboard-cloud-monitoring.tsx', export: 'DashboardCloudMonitoring' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dashboard-cloud-monitoring.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#3b82f6', group: 'look' },
+    { key: 'alertColor', type: 'color', label: { 'zh-CN': '告警色', en: 'Alert color' }, default: '#ef4444', group: 'look' },
+    {
+      key: 'sparkType',
+      type: 'select',
+      label: { 'zh-CN': '迷你图类型', en: 'Spark chart' },
+      default: 'area',
+      options: [
+        { value: 'area', label: { 'zh-CN': '面积', en: 'Area' } },
+        { value: 'line', label: { 'zh-CN': '折线', en: 'Line' } },
+        { value: 'bar', label: { 'zh-CN': '柱状', en: 'Bars' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'timePeriod',
+      type: 'select',
+      label: { 'zh-CN': '时间段', en: 'Time period' },
+      default: 'today',
+      options: [
+        { value: 'today', label: { 'zh-CN': '今天', en: 'Today' } },
+        { value: '7d', label: { 'zh-CN': '近 7 天', en: 'Last 7 days' } },
+        { value: '30d', label: { 'zh-CN': '近 30 天', en: 'Last 30 days' } },
+        { value: '365d', label: { 'zh-CN': '近 365 天', en: 'Last 365 days' } },
+        { value: 'all', label: { 'zh-CN': '全部', en: 'All time' } },
+      ],
+      group: 'content',
+    },
+    {
+      key: 'columns',
+      type: 'select',
+      label: { 'zh-CN': '宽屏列数', en: 'Columns (wide)' },
+      default: '3',
+      options: [
+        { value: '2', label: { 'zh-CN': '两列', en: 'Two' } },
+        { value: '3', label: { 'zh-CN': '三列', en: 'Three' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Cloud monitoring', maxLength: 32, group: 'content' },
+    { key: 'showTable', type: 'boolean', label: { 'zh-CN': '显示汇总表', en: 'Show table' }, default: true, group: 'content' },
+  ],
+  presets: [
+    { id: 'console', name: { 'zh-CN': '控制台', en: 'Console' }, values: { accent: '#3b82f6', alertColor: '#ef4444', sparkType: 'area' } },
+    { id: 'oncall', name: { 'zh-CN': '值班夜', en: 'On Call' }, values: { accent: '#a78bfa', alertColor: '#f59e0b', sparkType: 'line', timePeriod: '7d' } },
+    { id: 'month-end', name: { 'zh-CN': '月结', en: 'Month End' }, values: { accent: '#14b8a6', alertColor: '#f43f5e', sparkType: 'bar', timePeriod: '30d', columns: '2' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: ['src/content/components/chart-compositions/chart-composition-15.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Kept the upstream data, stat grid, hover overlay and table markup; cx became cn from @motif/runtime.',
+      'Replaced the Tremor SparkAreaChart (recharts) with a small SVG area/line/bar chart, and Card, Divider, Button and Table with plain markup.',
+      'Gray palette mapped to theme tokens; change deltas render as pills with luminance-picked ink; actions are buttons with focus-visible rings.',
+      'Added accent, alert color, spark type, time period, columns, heading and table params; the demo cycles the hover overlay via useFrameLoop.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,103 @@
+/* 蓝图的颜色和字体都来自组件写在根元素上的变量（见 theme.ts），这里只把它们注册成 Tailwind 工具类。 */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-hair: var(--hair);
+  --color-faint: var(--faint);
+  --font-bp-display: var(--bp-display);
+  --font-bp-body: var(--bp-body);
+  --font-bp-mono: var(--bp-mono);
+}
+
+/* 图纸网格：细格 + 每五格一条粗格。 */
+.bp-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size:
+    var(--grid-major-size) var(--grid-major-size),
+    var(--grid-major-size) var(--grid-major-size),
+    var(--grid) var(--grid),
+    var(--grid) var(--grid);
+  background-position: -1px -1px;
+}
+
+.bp-display {
+  font-family: var(--bp-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+}
+
+/* 统一的键盘焦点：虚线框，像图纸上的修订圈。 */
+.bp-focus:focus-visible {
+  outline: 1.5px dashed var(--ink);
+  outline-offset: 3px;
+}
+
+/* 估价器的滑块：一根细线 + 菱形游标。 */
+.bp-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+.bp-range:focus-visible {
+  outline: 1.5px dashed var(--ink);
+  outline-offset: 4px;
+}
+.bp-range::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--rule);
+}
+.bp-range::-moz-range-track {
+  height: 1px;
+  background: var(--rule);
+}
+.bp-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: -6px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  transform: rotate(45deg);
+  transition: background-color 150ms ease-out;
+}
+.bp-range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  transform: rotate(45deg);
+  transition: background-color 150ms ease-out;
+}
+.bp-range:hover::-webkit-slider-thumb,
+.bp-range:active::-webkit-slider-thumb {
+  background: var(--ink);
+}
+.bp-range:hover::-moz-range-thumb,
+.bp-range:active::-moz-range-thumb {
+  background: var(--ink);
+}
+
+/* 刻度尺：每 10% 一条长刻度，每 2% 一条短刻度。 */
+.bp-ruler {
+  height: 7px;
+  background-image:
+    repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 10%),
+    repeating-linear-gradient(to right, var(--hair) 0 1px, transparent 1px 2%);
+  background-size:
+    calc(100% + 1px) 7px,
+    calc(100% + 1px) 4px;
+  background-repeat: no-repeat;
+}

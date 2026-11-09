@@ -1,0 +1,108 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'text-perspective-plane',
+  status: 'published',
+  title: { 'zh-CN': '透视字面', en: 'Perspective Type' },
+  summary: {
+    'zh-CN': '标题的每行或每个词落在一块倾斜的 3D 平面上，沿 Z 轴前后错开，随指针或滚动转动，像从下方仰看的招牌。适合杂志式首屏、活动海报和作品集封面。',
+    en: 'Lines or words sit on a tilted 3D plane and separate in depth, turning with the pointer or scroll so a headline reads like signage seen from below. For editorial heroes, event posters and portfolio covers.',
+  },
+  kind: 'effect',
+  category: 'text',
+  tags: ['text', '3d', 'perspective', 'headline', 'tilt', 'motion'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'perspective-text-3d.tsx', export: 'PerspectiveText3D' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'perspective-text-3d.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'text',
+      type: 'text',
+      group: 'content',
+      label: { 'zh-CN': '文字', en: 'Text' },
+      hint: { 'zh-CN': '按行拆分时用换行分隔', en: 'Use line breaks when splitting by lines' },
+      default: 'Signals from the far side',
+      maxLength: 80,
+    },
+    {
+      key: 'split',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '拆分方式', en: 'Split by' },
+      default: 'words',
+      options: [
+        { value: 'words', label: { 'zh-CN': '按词', en: 'Words' } },
+        { value: 'lines', label: { 'zh-CN': '按行', en: 'Lines' } },
+      ],
+    },
+    {
+      key: 'driver',
+      type: 'select',
+      group: 'interaction',
+      label: { 'zh-CN': '驱动', en: 'Driver' },
+      default: 'pointer',
+      options: [
+        { value: 'pointer', label: { 'zh-CN': '指针', en: 'Pointer' } },
+        { value: 'scroll', label: { 'zh-CN': '滚动', en: 'Scroll' } },
+        { value: 'static', label: { 'zh-CN': '固定倾斜', en: 'Static tilt' } },
+      ],
+    },
+    { key: 'rotateX', type: 'number', group: 'motion', label: { 'zh-CN': 'X 轴最大转角', en: 'Max rotate X' }, default: 8, min: 0, max: 30, step: 1, unit: 'deg', safe: [4, 16] },
+    { key: 'rotateY', type: 'number', group: 'motion', label: { 'zh-CN': 'Y 轴最大转角', en: 'Max rotate Y' }, default: 10, min: 0, max: 30, step: 1, unit: 'deg', safe: [4, 18] },
+    { key: 'depth', type: 'number', group: 'look', label: { 'zh-CN': '纵深间距', en: 'Depth' }, default: 40, min: 0, max: 120, step: 1, unit: 'px', safe: [20, 70] },
+    { key: 'perspective', type: 'number', group: 'look', label: { 'zh-CN': '透视距离', en: 'Perspective' }, default: 800, min: 300, max: 2000, step: 10, unit: 'px' },
+    { key: 'fontSize', type: 'number', group: 'look', label: { 'zh-CN': '字号', en: 'Font size' }, default: 64, min: 28, max: 112, step: 1, unit: 'px' },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '文字颜色', en: 'Text color' }, default: '#f4f1ea' },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '字体', en: 'Font' },
+      default: 'grotesk',
+      options: [
+        { value: 'grotesk', label: { 'zh-CN': '几何（Space Grotesk）', en: 'Grotesk (Space Grotesk)' } },
+        { value: 'serif', label: { 'zh-CN': '衬线（Instrument Serif）', en: 'Serif (Instrument Serif)' } },
+        { value: 'black', label: { 'zh-CN': '粗黑（Archivo Black）', en: 'Heavy (Archivo Black)' } },
+      ],
+    },
+  ],
+  presets: [
+    { id: 'signage', name: { 'zh-CN': '仰望招牌', en: 'Signage' }, values: { rotateX: 14, rotateY: 8, depth: 56, perspective: 700, font: 'black', color: '#ffd23f' } },
+    { id: 'whisper', name: { 'zh-CN': '低语', en: 'Whisper' }, values: { rotateX: 5, rotateY: 7, depth: 24, perspective: 1200, font: 'serif', fontSize: 76, color: '#e9e4ff' } },
+    { id: 'broadsheet', name: { 'zh-CN': '纸面', en: 'Broadsheet' }, values: { color: '#1c1b19', font: 'grotesk', depth: 40 } },
+  ],
+  dependencies: ['@motif/runtime', 'motion/react'],
+  fonts: ['Space Grotesk Variable', 'Instrument Serif', 'Archivo Black'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.2, posterTime: 2.2, loop: 8 },
+  guidance: {
+    rules: [
+      'With driver "scroll", pass the scrollable ancestor as `container` when the page does not scroll the window.',
+      'Every segment is aria-hidden and the readable copy is a visually hidden span, so keep the text a single plain string.',
+    ],
+  },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'smoothui',
+      repo: 'educlopez/smoothui',
+      sha: 'b6312bce2b6f2ed95d8a6e98a592857884f5ea9e',
+      paths: ['packages/smoothui/components/perspective-text-3d/index.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2024 Eduardo Calvo'],
+    },
+    modifications: [
+      'Defaults moved into the generated defaults region; the default driver is "pointer" instead of "static".',
+      'Added color, font and font-size props; the font size is clamped to the viewport width so the headline wraps on narrow screens.',
+      'Added an optional `pointer` prop (normalized position) so the demo can autoplay a virtual pointer from useFrameLoop time.',
+      'cn now comes from motif-runtime; the reduced-motion fallback keeps the color and font.',
+    ],
+    assets: [],
+  },
+})

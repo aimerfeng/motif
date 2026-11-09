@@ -1,0 +1,90 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'gallery-filter-lightbox',
+  status: 'published',
+  title: { 'zh-CN': '可筛选画廊', en: 'Filterable Gallery' },
+  summary: {
+    'zh-CN': '作品集画廊：顶部一排分类按钮，切换时网格重新排布；点开任意一格，大图从原位放大成灯箱，可用左右按钮、方向键和 Esc 操作。',
+    en: 'A portfolio gallery with category pills, a grid of generated artworks that reflows when filtering, and a lightbox that grows out of the clicked tile with previous / next buttons, arrow keys and Escape.',
+  },
+  kind: 'section',
+  category: 'gallery',
+  tags: ['gallery', 'portfolio', 'filter', 'lightbox', 'grid'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'gallery-filter-lightbox.tsx', export: 'GalleryGridBlock' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'gallery-filter-lightbox.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#a78bfa', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '作品色调', en: 'Artwork tone' },
+      default: 'dusk',
+      options: [
+        { value: 'dusk', label: { 'zh-CN': '暮色', en: 'Dusk' } },
+        { value: 'ocean', label: { 'zh-CN': '海蓝', en: 'Ocean' } },
+        { value: 'mono', label: { 'zh-CN': '黑白', en: 'Mono' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'artStyle',
+      type: 'select',
+      label: { 'zh-CN': '作品图案', en: 'Artwork style' },
+      default: 'geometric',
+      options: [
+        { value: 'geometric', label: { 'zh-CN': '几何', en: 'Geometric' } },
+        { value: 'waves', label: { 'zh-CN': '波纹', en: 'Waves' } },
+        { value: 'orbits', label: { 'zh-CN': '轨道', en: 'Orbits' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'filterStyle',
+      type: 'select',
+      label: { 'zh-CN': '筛选样式', en: 'Filter style' },
+      default: 'pills',
+      options: [
+        { value: 'pills', label: { 'zh-CN': '胶囊按钮', en: 'Pills' } },
+        { value: 'underline', label: { 'zh-CN': '下划线', en: 'Underline' } },
+      ],
+      group: 'look',
+    },
+    { key: 'columns', type: 'number', label: { 'zh-CN': '列数（宽屏）', en: 'Columns (wide)' }, default: 3, min: 2, max: 4, step: 1, group: 'layout' },
+    { key: 'gap', type: 'number', label: { 'zh-CN': '间距', en: 'Gap' }, default: 16, min: 4, max: 32, step: 2, unit: 'px', group: 'layout' },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 12, min: 0, max: 28, step: 1, unit: 'px', group: 'layout' },
+  ],
+  presets: [
+    { id: 'dusk', name: { 'zh-CN': '暮光', en: 'Afterglow' }, values: { accent: '#a78bfa', tone: 'dusk', artStyle: 'geometric', filterStyle: 'pills' } },
+    { id: 'tide', name: { 'zh-CN': '潮汐', en: 'Tideline' }, values: { accent: '#38bdf8', tone: 'ocean', artStyle: 'waves', filterStyle: 'underline', radius: 20, gap: 20 } },
+    { id: 'darkroom', name: { 'zh-CN': '暗房', en: 'Darkroom' }, values: { accent: '#f5f5f4', tone: 'mono', artStyle: 'orbits', columns: 4, gap: 8, radius: 2 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/gallery-grid-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'Replaced the Unsplash photos with generated SVG artworks (three styles, three tones) and added three more gallery entries.',
+      'framer-motion to motion/react; lucide icons to inline SVG; shadcn Badge, Button and Card replaced with small Tailwind elements.',
+      'The lightbox art now grows out of the clicked tile with a shared layoutId; added arrow-key / Escape handling, focus management and an optional underline filter style.',
+      'Accent, columns, gap, radius, tone and styles became params; optional controlled filter / selection props drive the demo autoplay; reduced motion disables the entrance and layout animations.',
+    ],
+    assets: [],
+  },
+})

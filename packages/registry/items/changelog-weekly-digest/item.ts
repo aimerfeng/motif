@@ -1,0 +1,95 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'changelog-weekly-digest',
+  status: 'published',
+  title: { 'zh-CN': '按周汇总的更新日志', en: 'Weekly Changelog Digest' },
+  summary: {
+    'zh-CN': '按周分组的高密度更新日志：周标题吸顶，每条改动一行，带类型图标、一句话说明、模块标签和作者缩写；零碎修复折叠成「另有 9 项小修复」，顶部按类型筛选。适合发版频繁、卡片式时间线已经装不下的产品。',
+    en: 'A dense changelog grouped by week under sticky week headers. Every change is one row with a type glyph, a one-line summary, an area tag and the author’s initials; minor fixes fold into an expandable bundle and a filter row narrows by type. For fast-shipping products that have outgrown card timelines.',
+  },
+  kind: 'section',
+  category: 'changelog',
+  tags: ['changelog', 'release notes', 'weekly', 'digest', 'filter', 'sticky header', 'product updates'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'changelog-weekly-digest.tsx', export: 'ChangelogWeeklyDigest' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'changelog-weekly-digest.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'accent',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '主色', en: 'Accent' },
+      hint: { 'zh-CN': '「新功能」图标、本周标记和选中的筛选项', en: 'New-feature glyphs, the this-week marker and the active filter' },
+      default: '#b4f05a',
+    },
+    {
+      key: 'filterStyle',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '筛选样式', en: 'Filter style' },
+      default: 'segmented',
+      options: [
+        { value: 'segmented', label: { 'zh-CN': '分段控件', en: 'Segmented' } },
+        { value: 'pills', label: { 'zh-CN': '胶囊', en: 'Pills' } },
+        { value: 'underline', label: { 'zh-CN': '下划线标签', en: 'Underline tabs' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 10, min: 0, max: 16, step: 1, unit: 'px', safe: [6, 14] },
+    {
+      key: 'density',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '密度', en: 'Density' },
+      default: 'cozy',
+      options: [
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+        { value: 'cozy', label: { 'zh-CN': '适中', en: 'Cozy' } },
+        { value: 'roomy', label: { 'zh-CN': '宽松', en: 'Roomy' } },
+      ],
+    },
+    { key: 'weeks', type: 'number', group: 'content', label: { 'zh-CN': '显示周数', en: 'Weeks shown' }, default: 4, min: 2, max: 4, step: 1 },
+    { key: 'showAuthors', type: 'boolean', group: 'content', label: { 'zh-CN': '显示作者', en: 'Show authors' }, default: true },
+    {
+      key: 'collapseMinor',
+      type: 'boolean',
+      group: 'content',
+      label: { 'zh-CN': '折叠小修复', en: 'Fold minor fixes' },
+      hint: { 'zh-CN': '关闭后小修复逐条列出', en: 'When off, every minor fix gets its own row' },
+      default: true,
+    },
+    { key: 'heading', type: 'text', group: 'content', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Shipped, week by week', maxLength: 40 },
+  ],
+  presets: [
+    { id: 'night-shift', name: { 'zh-CN': '夜班', en: 'Night Shift' }, values: { accent: '#b4f05a', filterStyle: 'segmented', radius: 10, density: 'cozy' } },
+    { id: 'ledger', name: { 'zh-CN': '账簿', en: 'Ledger' }, values: { accent: '#f5b84a', filterStyle: 'underline', radius: 4, density: 'compact' } },
+    { id: 'postmark', name: { 'zh-CN': '邮戳', en: 'Postmark' }, values: { accent: '#8b9bff', filterStyle: 'segmented', radius: 16, density: 'roomy', weeks: 3, heading: 'Release notes, every Friday' } },
+    { id: 'vermilion', name: { 'zh-CN': '朱砂', en: 'Vermilion' }, values: { accent: '#ff6a55', filterStyle: 'pills', radius: 0, density: 'compact', showAuthors: false, collapseMinor: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: [
+      'Use for a high-volume changelog page where releases ship several times a week. Replace the WEEKS array with real entries: one row per change (type, summary, area, day, author) and a separate minor list per week.',
+      'The filter and the fold state can be controlled with filter / onFilterChange and expanded / onExpandedChange, for example to sync the filter with the URL.',
+    ],
+    rules: [
+      'Keep each summary to one line (under about 70 characters) and written as the user-visible outcome, not the ticket title.',
+      'Only three change types: new, improved, fixed. Typos, copy tweaks and one-pixel fixes go in the minor list, never as headline rows.',
+      'Week headers must stay sticky inside the page scroll container; do not wrap the list in an element with overflow hidden.',
+    ],
+  },
+  capture: { scroll: true, posterTime: 1.4, loop: 8, zoom: 1.1 },
+  provenance: {
+    kind: 'original',
+    modifications: [],
+    assets: [],
+  },
+})

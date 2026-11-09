@@ -1,0 +1,91 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dithered-image',
+  status: 'published',
+  title: { 'zh-CN': '抖动像素画', en: 'Dithered Image' },
+  summary: {
+    'zh-CN': '把一幅画变成有序（Bayer 2×2、4×4、8×8）或随机抖动的像素点，用双色、三色或原图的多色调色板，像 1-bit 老 Mac 屏幕或孔版印刷。适合复古产品页、独立杂志和开发者工具的首屏。',
+    en: 'Turns an illustration into ordered (2×2, 4×4, 8×8 Bayer) or random dithering with two-tone, three-tone or original multi-colour palettes, like a 1-bit Mac screen or a risograph. Made for retro product pages, zines and developer-tool heroes.',
+  },
+  kind: 'effect',
+  category: 'image',
+  tags: ['dithering', 'bayer', '1-bit', 'pixel', 'retro', 'risograph', 'webgl', 'shader', 'paper'],
+  runtime: ['react', 'webgl2', 'canvas2d'],
+  entry: { file: 'dithered-image.tsx', export: 'DitheredImage' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dithered-image.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'artwork',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '画面', en: 'Artwork' },
+      default: 'landscape',
+      options: [
+        { value: 'landscape', label: { 'zh-CN': '山景', en: 'Landscape' } },
+        { value: 'still', label: { 'zh-CN': '静物', en: 'Still life' } },
+        { value: 'spectrum', label: { 'zh-CN': '色团', en: 'Spectrum' } },
+      ],
+    },
+    {
+      key: 'type',
+      type: 'select',
+      group: 'shape',
+      label: { 'zh-CN': '抖动方式', en: 'Dithering' },
+      default: '8x8',
+      options: [
+        { value: 'random', label: { 'zh-CN': '随机', en: 'Random' } },
+        { value: '2x2', label: { 'zh-CN': 'Bayer 2×2', en: 'Bayer 2×2' } },
+        { value: '4x4', label: { 'zh-CN': 'Bayer 4×4', en: 'Bayer 4×4' } },
+        { value: '8x8', label: { 'zh-CN': 'Bayer 8×8', en: 'Bayer 8×8' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'shape', label: { 'zh-CN': '像素大小', en: 'Pixel size' }, hint: { 'zh-CN': '按屏幕像素计', en: 'In screen pixels' }, default: 2, min: 0.5, max: 20, step: 0.5, safe: [1, 6], unit: 'px' },
+    { key: 'colorSteps', type: 'number', group: 'shape', label: { 'zh-CN': '色阶', en: 'Color steps' }, default: 2, min: 1, max: 7, step: 1 },
+    { key: 'colorBack', type: 'color', group: 'color', label: { 'zh-CN': '底色', en: 'Background' }, default: '#000c38' },
+    { key: 'colorFront', type: 'color', group: 'color', label: { 'zh-CN': '前景色', en: 'Foreground' }, default: '#94ffaf' },
+    { key: 'colorHighlight', type: 'color', group: 'color', label: { 'zh-CN': '高光色', en: 'Highlight' }, hint: { 'zh-CN': '与前景色相同即为经典双色抖动', en: 'Same as the foreground for classic two-tone dithering' }, default: '#eaff94' },
+    { key: 'originalColors', type: 'boolean', group: 'color', label: { 'zh-CN': '保留原色', en: 'Original colors' }, hint: { 'zh-CN': '用原图的颜色，忽略上面三种颜色', en: 'Uses the image colours instead of the three above' }, default: false },
+    { key: 'inverted', type: 'boolean', group: 'color', label: { 'zh-CN': '反转明暗', en: 'Inverted' }, default: false },
+    { key: 'drift', type: 'number', group: 'motion', label: { 'zh-CN': '平移幅度', en: 'Drift' }, hint: { 'zh-CN': '画面在抖动网格下平移的幅度，0 为静止', en: 'How far the picture pans under the grid; 0 keeps it still' }, default: 0.08, min: 0, max: 0.2, step: 0.01 },
+  ],
+  presets: [
+    { id: 'phosphor', name: { 'zh-CN': '荧光屏', en: 'Phosphor' }, values: {} },
+    { id: 'noise', name: { 'zh-CN': '噪点', en: 'Noise' }, values: { artwork: 'still', colorFront: '#a2997c', colorBack: '#000000', colorHighlight: '#ededed', type: 'random', size: 1, colorSteps: 1 } },
+    { id: 'natural', name: { 'zh-CN': '原色', en: 'Natural' }, values: { artwork: 'spectrum', colorFront: '#ffffff', colorBack: '#000000', colorHighlight: '#ffffff', type: '8x8', size: 2, colorSteps: 5, originalColors: true } },
+  ],
+  dependencies: ['@motif/runtime', '@paper-design/shaders-react'],
+  perf: { webgl: true, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    rules: ['For a real photo, pass it as the image prop of the underlying Paper ImageDithering component; pictures with big shapes and smooth tonal ramps dither best.'],
+  },
+  capture: { posterTime: 3, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'paper-shaders',
+      repo: 'paper-design/shaders',
+      sha: '43cd68db79fa0b1759f72ffc941b3238e2a3954c',
+      paths: [
+        'packages/shaders-react/src/shaders/image-dithering.tsx',
+        'packages/shaders/src/shaders/image-dithering.ts',
+        'docs/src/shader-defs/image-dithering-def.ts',
+      ],
+      spdx: 'Apache-2.0',
+      copyright: ['Paper Shaders (https://shaders.paper.design)'],
+    },
+    modifications: [
+      'Wrapped the Paper ImageDithering component as a full-bleed block that can hold children.',
+      'The input picture (a landscape, a still life or colour blooms) is drawn on a canvas at runtime, so the item needs no image assets.',
+      'The picture slowly pans under the dithering grid (the upstream shader is static); stays still when the user prefers reduced motion.',
+      'Defaults and the Noise and Natural presets follow the upstream presets; parameter ranges follow the Paper docs.',
+    ],
+    assets: [],
+  },
+})

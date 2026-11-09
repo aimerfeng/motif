@@ -1,0 +1,103 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'timeline-milestones',
+  status: 'published',
+  title: { 'zh-CN': '里程碑时间线', en: 'Milestone Timeline' },
+  summary: {
+    'zh-CN': '一串带日期、标题和简短说明的里程碑，竖排或横排；当前步骤之前的节点打上对勾、轨道被填满，之后的保持浅色。适合项目计划、订单追踪和路线图。',
+    en: 'Milestones with dates, titles and short descriptions, laid out vertically or horizontally; everything up to the current step is complete with a filled rail and check indicators while later steps stay muted. Made for project plans, order tracking and roadmaps.',
+  },
+  kind: 'component',
+  category: 'data',
+  tags: ['timeline', 'milestones', 'roadmap', 'progress', 'steps', 'tracking'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'timeline-milestones.tsx', export: 'MilestoneTimeline' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'timeline-milestones.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'orientation',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '方向', en: 'Orientation' },
+      default: 'vertical',
+      options: [
+        { value: 'vertical', label: { 'zh-CN': '竖排', en: 'Vertical' } },
+        { value: 'horizontal', label: { 'zh-CN': '横排', en: 'Horizontal' } },
+      ],
+    },
+    { key: 'currentStep', type: 'number', group: 'content', label: { 'zh-CN': '当前步骤', en: 'Current step' }, hint: { 'zh-CN': '演示里会从 0 逐步走到这一步', en: 'The demo steps up to this value' }, default: 3, min: 0, max: 4, step: 1 },
+    {
+      key: 'indicator',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '指示器', en: 'Indicator' },
+      default: 'check',
+      options: [
+        { value: 'check', label: { 'zh-CN': '实心对勾', en: 'Filled check' } },
+        { value: 'dot', label: { 'zh-CN': '圆环', en: 'Ring' } },
+      ],
+    },
+    {
+      key: 'datePosition',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '日期位置', en: 'Date position' },
+      hint: { 'zh-CN': '「左侧」只在竖排、宽度够时生效', en: '"Side" applies to the vertical layout on wider screens' },
+      default: 'above',
+      options: [
+        { value: 'above', label: { 'zh-CN': '标题上方', en: 'Above title' } },
+        { value: 'below', label: { 'zh-CN': '说明下方', en: 'Below description' } },
+        { value: 'side', label: { 'zh-CN': '左侧一栏', en: 'Side column' } },
+      ],
+    },
+    { key: 'showDescriptions', type: 'boolean', group: 'content', label: { 'zh-CN': '显示说明', en: 'Show descriptions' }, default: true },
+    {
+      key: 'accent',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '强调色', en: 'Accent' },
+      hint: { 'zh-CN': '对勾自动取白色或近黑色里对比度高的那个', en: 'The check uses white or near-black, whichever contrasts more' },
+      default: '#e4e4e7',
+    },
+  ],
+  presets: [
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { orientation: 'vertical', indicator: 'check', datePosition: 'above', showDescriptions: true, accent: '#e4e4e7' } },
+    { id: 'ledger', name: { 'zh-CN': '账簿', en: 'Ledger' }, values: { orientation: 'vertical', indicator: 'dot', datePosition: 'side', showDescriptions: true, accent: '#34d399' } },
+    { id: 'skyline', name: { 'zh-CN': '天际线', en: 'Skyline' }, values: { orientation: 'horizontal', indicator: 'check', datePosition: 'above', showDescriptions: false, accent: '#60a5fa' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.15, posterTime: 4.0, loop: 6 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: [
+        'apps/origin/registry/default/ui/timeline.tsx',
+        'apps/origin/registry/default/components/comp-531.tsx',
+        'apps/origin/registry/default/components/comp-532.tsx',
+        'apps/origin/registry/default/components/comp-533.tsx',
+        'apps/origin/registry/default/components/comp-534.tsx',
+        'apps/origin/registry/default/components/comp-540.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Ported the Timeline primitives without the Radix Slot (asChild dropped); added role="list" / "listitem" and aria-current="step".',
+      'Combined comp-531 (side dates), comp-532 (dates above), comp-533 (dates below), comp-534 (filled check indicator) and comp-540 (horizontal) into one MilestoneTimeline with orientation, indicator, datePosition and showDescriptions params.',
+      'The theme primary color became an accent param; the check ink picks white or near-black by contrast; the lucide check is inline SVG.',
+      'Added color transitions (disabled under reduced motion) and word wrapping for narrow horizontal layouts; the demo steps through milestones via useFrameLoop.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,70 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-comet-sweep',
+  status: 'published',
+  title: { 'zh-CN': '彗尾扫光加载器', en: 'Comet Sweep Loaders' },
+  summary: {
+    'zh-CN': '带柔和尾迹的三种转圈：渐变圆盘拖出彗尾、亮点甩出一串渐小的回声再收回、两个半圆轮流擦亮圆环。适合播放器、上传和深色仪表盘。',
+    en: 'Three spinners with soft tails: a gradient disc that trails a comet, a head that flings a tail of shrinking echoes and snaps back, and a ring wiped on and off by two half-moons. Suits media players, uploads and dark dashboards.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['loader', 'spinner', 'comet', 'tail', 'glow', 'loading'],
+  runtime: ['react', 'css'],
+  entry: { file: 'loader-comet-sweep.tsx', export: 'LoaderCometSweep' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-comet-sweep.tsx', role: 'component' },
+    { path: 'loader-comet-sweep.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'disc',
+      options: [
+        { value: 'disc', label: { 'zh-CN': '彗尾圆盘', en: 'Comet disc' } },
+        { value: 'echo', label: { 'zh-CN': '回声尾', en: 'Echo tail' } },
+        { value: 'wipe', label: { 'zh-CN': '半圆扫环', en: 'Half-moon wipe' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'look', label: { 'zh-CN': '尺寸', en: 'Size' }, default: 56, min: 20, max: 110, step: 1, unit: 'px', safe: [28, 88] },
+    { key: 'thickness', type: 'number', group: 'look', label: { 'zh-CN': '环宽', en: 'Ring width' }, hint: { 'zh-CN': '作用于圆盘和扫环', en: 'Applies to the disc and wipe variants' }, default: 6, min: 2, max: 12, step: 0.5, unit: 'px', safe: [3, 9] },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '颜色', en: 'Color' }, default: '#0dc5c1' },
+    { key: 'tailLength', type: 'number', group: 'look', label: { 'zh-CN': '尾迹长度', en: 'Tail length' }, hint: { 'zh-CN': '圆盘渐变消失的位置', en: 'Where the disc gradient fades out' }, default: 0.42, min: 0.2, max: 0.9, step: 0.01, safe: [0.3, 0.7] },
+    { key: 'glow', type: 'number', group: 'look', label: { 'zh-CN': '辉光', en: 'Glow' }, default: 0.3, min: 0, max: 1, step: 0.05 },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '速度', en: 'Speed' }, default: 1, min: 0.4, max: 2.5, step: 0.05, unit: 'x', safe: [0.7, 1.6] },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '读屏文案', en: 'Screen reader label' }, default: 'Loading', maxLength: 32 },
+  ],
+  presets: [
+    { id: 'lagoon', name: { 'zh-CN': '潟湖', en: 'Lagoon' }, values: { variant: 'disc', color: '#0dc5c1', glow: 0.3 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { variant: 'echo', color: '#fb923c', glow: 0.5 } },
+    { id: 'moonrise', name: { 'zh-CN': '月升', en: 'Moonrise' }, values: { variant: 'wipe', color: '#e4e4e7', glow: 0.15 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 2, posterTime: 0.6, loop: 2 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'css-loaders',
+      repo: 'lukehaas/css-loaders',
+      sha: 'c7fdf5ac73c71fec3142414adf8d592c7d2c6bf4',
+      paths: ['css/load3.css', 'css/load6.css', 'css/load2.css'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2014 Luke Haas'],
+    },
+    modifications: [
+      'Combined load3, load6 and load2 into one React component with a variant select; color, size, ring width, tail stop and speed come from params via CSS custom properties.',
+      'Replaced the cover discs painted in the page color with CSS masks (a radial ring mask for load3; two conic half masks driven by animated @property angles for load2) so the loaders work on any surface.',
+      'Replaced the text-indent label hack with role="status" and an sr-only label; added an optional drop-shadow glow and a static reduced-motion pose. Dropped vendor-prefixed rules.',
+    ],
+    assets: [],
+  },
+})

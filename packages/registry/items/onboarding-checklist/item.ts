@@ -1,0 +1,70 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'onboarding-checklist',
+  status: 'published',
+  title: { 'zh-CN': '新手引导清单', en: 'Onboarding Checklist' },
+  summary: {
+    'zh-CN': '一张开店设置卡片：顶部是总进度，步骤分为已完成、进行中和待办；当前步骤展开说明和操作，完成后打勾并自动展开下一步。适合电商和 SaaS 后台的首次使用引导。',
+    en: 'A setup card with an overall progress meter and steps that are done, in progress or pending; the active step expands with its explanation and action, and finishing it ticks it off and opens the next. For first-run dashboards in commerce and SaaS.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['dashboard', 'onboarding', 'checklist', 'accordion', 'progress', 'setup'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'onboarding-checklist.tsx', export: 'OnboardingChecklist' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'onboarding-checklist.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'title', type: 'text', label: { 'zh-CN': '标题', en: 'Title' }, default: 'Set up your store', maxLength: 32, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#eab308', group: 'look' },
+    {
+      key: 'progressStyle',
+      type: 'select',
+      label: { 'zh-CN': '进度样式', en: 'Progress style' },
+      default: 'bar',
+      options: [
+        { value: 'bar', label: { 'zh-CN': '进度条', en: 'Bar' } },
+        { value: 'ring', label: { 'zh-CN': '圆环', en: 'Ring' } },
+        { value: 'segments', label: { 'zh-CN': '分段', en: 'Segments' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 10, min: 0, max: 20, step: 1, unit: 'px', group: 'look' },
+    { key: 'showBadges', type: 'boolean', label: { 'zh-CN': '显示状态徽章', en: 'Show badges' }, default: true, group: 'content' },
+    { key: 'spring', type: 'spring', label: { 'zh-CN': '展开弹簧', en: 'Expand spring' }, default: { visualDuration: 0.35, bounce: 0.1 }, group: 'motion' },
+    { key: 'autoAdvance', type: 'boolean', label: { 'zh-CN': '完成后展开下一步', en: 'Open next on finish' }, default: true, group: 'interaction' },
+  ],
+  presets: [
+    { id: 'storefront', name: { 'zh-CN': '店面', en: 'Storefront' }, values: { accent: '#eab308', progressStyle: 'bar' } },
+    { id: 'harbor', name: { 'zh-CN': '海港', en: 'Harbor' }, values: { accent: '#38bdf8', progressStyle: 'ring', radius: 16, title: 'Get your workspace ready' } },
+    { id: 'ledger', name: { 'zh-CN': '账本', en: 'Ledger' }, values: { accent: '#22c55e', progressStyle: 'segments', radius: 4, showBadges: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.2, posterTime: 2, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'reui',
+      repo: 'keenthemes/reui',
+      sha: '6e433ddaba3a4be38182c8c8883b6cc335183c42',
+      paths: ['registry-reui/bases/base/components/accordion/c-accordion-11.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Keenthemes Inc'],
+    },
+    modifications: [
+      'Replaced the base-ui Accordion, Badge, Button, ButtonGroup, Input and Spinner with small hand-written equivalents (single-open accordion with aria-expanded/aria-controls, motion height animation).',
+      'Replaced IconPlaceholder icons with inline SVG; the QR code is a decorative invented SVG pattern.',
+      'Made step status stateful: finishing a step ticks it off and optionally opens the next; added a header with a bar/ring/segment progress meter and a fourth step.',
+      'Exposed accent, radius, badges, spring, auto-advance and title as params; the demo replays the steps from the frame loop.',
+    ],
+    assets: [],
+  },
+})

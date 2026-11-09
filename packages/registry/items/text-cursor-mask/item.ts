@@ -1,0 +1,68 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'text-cursor-mask',
+  status: 'published',
+  title: { 'zh-CN': '遮罩透字', en: 'Mask Reveal Text' },
+  summary: {
+    'zh-CN': '一个圆形遮罩跟着指针走，透出藏在下面的另一句话；移到文字上时放大成大镜头，像手电筒照出暗处的字。适合宣言区块、工作室介绍和前后对比文案。',
+    en: 'A circular mask follows the pointer and reveals a second line underneath; over the words it swells into a large lens, like a flashlight finding hidden text. For manifestos, studio intros and before/after copy.',
+  },
+  kind: 'effect',
+  category: 'cursor',
+  tags: ['mask', 'reveal', 'text', 'pointer', 'hover', 'lens'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'text-cursor-mask.tsx', export: 'TextCursorMask' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'text-cursor-mask.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'frontText', type: 'text', group: 'content', label: { 'zh-CN': '表层文字', en: 'Front text' }, default: 'We make websites.', maxLength: 60 },
+    { key: 'hiddenText', type: 'text', group: 'content', label: { 'zh-CN': '隐藏文字', en: 'Hidden text' }, default: 'We make them feel alive.', maxLength: 60 },
+    { key: 'idleSize', type: 'number', group: 'look', label: { 'zh-CN': '空闲遮罩大小', en: 'Idle size' }, default: 50, min: 20, max: 160, step: 1, unit: 'px' },
+    { key: 'hoverSize', type: 'number', group: 'look', label: { 'zh-CN': '悬停遮罩大小', en: 'Hover size' }, default: 500, min: 200, max: 800, step: 1, unit: 'px' },
+    { key: 'maskColor', type: 'color', group: 'look', label: { 'zh-CN': '遮罩底色', en: 'Mask color' }, default: '#000000' },
+    {
+      key: 'hiddenColor',
+      type: 'color',
+      group: 'look',
+      label: { 'zh-CN': '隐藏文字颜色', en: 'Hidden text color' },
+      hint: { 'zh-CN': '对比度不够时自动换成深色或浅色', en: 'Falls back to dark or light ink when contrast is too low' },
+      default: '#ffffff',
+    },
+    { key: 'softness', type: 'number', group: 'look', label: { 'zh-CN': '边缘柔化', en: 'Softness' }, default: 0, min: 0, max: 60, step: 1, unit: '%' },
+    { key: 'duration', type: 'number', group: 'motion', label: { 'zh-CN': '跟随时长', en: 'Follow duration' }, default: 0.5, min: 0.1, max: 1.5, step: 0.05, unit: 's' },
+    { key: 'easing', type: 'easing', group: 'motion', label: { 'zh-CN': '缓动', en: 'Easing' }, default: [0.34, 1.56, 0.64, 1] },
+  ],
+  presets: [
+    { id: 'inkwell', name: { 'zh-CN': '墨池', en: 'Inkwell' }, values: { maskColor: '#000000', hiddenColor: '#ffffff' } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { maskColor: '#ff5a1f', hiddenColor: '#140703', softness: 20, hoverSize: 440 } },
+    { id: 'paper', name: { 'zh-CN': '素笺', en: 'Paper' }, values: { maskColor: '#f4efe6', hiddenColor: '#1c1917', softness: 35, idleSize: 80 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 2.2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'animata',
+      repo: 'codse/animata',
+      sha: '36674e4e9cfdc0f237693d8b736a2bf41065ca1d',
+      paths: ['animata/text/mask-text.tsx', 'hooks/use-mouse-position.ts'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) Animata'],
+    },
+    modifications: [
+      'The url(/circle.svg) mask is a radial-gradient mask with a softness control; mask color, hidden text color, sizes, duration and easing are props.',
+      'useMousePosition is inlined; hover is a hit test in pointermove instead of mouseenter on the paragraph, so synthetic pointer events work.',
+      'Hidden text ink falls back to dark or light by luminance when contrast against the mask is low; the hidden line is exposed to screen readers.',
+      'Fills its parent instead of h-screen and wraps text for narrow widths; transitions are instant under reduced motion.',
+      'cn now comes from motif-runtime; defaults moved into the generated defaults region; the demo adds a pointer autoplay.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,187 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2022 Griffin Johnston
+ * Source: https://github.com/GriffinJohnston/ldrs/blob/f759f65/src/elements/jelly.scss
+ * Modified by Motif; see the item's provenance.
+ */
+.mlgb-root {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--uib-size);
+  height: var(--uib-size);
+}
+
+.mlgb-mirage.mlgb-root {
+  height: calc(var(--uib-size) * 0.23);
+}
+
+.mlgb-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: var(--uib-size);
+  height: var(--uib-size);
+}
+
+.mlgb-jelly .mlgb-container {
+  height: calc(var(--uib-size) / 2);
+  animation: mlgb-rotate calc(var(--uib-speed) * 2) linear infinite;
+  will-change: transform;
+}
+
+.mlgb-mirage .mlgb-container {
+  height: calc(var(--uib-size) * 0.23);
+}
+
+.mlgb-svg {
+  overflow: visible;
+}
+
+.mlgb-dot,
+.mlgb-traveler {
+  display: block;
+  fill: var(--uib-color);
+  transition: fill 0.3s ease;
+  transform-origin: center;
+  transform-box: fill-box;
+  will-change: transform;
+}
+
+/* jelly */
+.mlgb-jelly .mlgb-dot:first-child {
+  animation: mlgb-shift-left var(--uib-speed) ease infinite;
+}
+.mlgb-jelly .mlgb-dot:nth-child(2) {
+  animation: mlgb-shift-right var(--uib-speed) ease infinite;
+}
+
+@keyframes mlgb-rotate {
+  0%,
+  49.999%,
+  100% {
+    transform: none;
+  }
+  50%,
+  99.999% {
+    transform: rotate(90deg);
+  }
+}
+@keyframes mlgb-shift-left {
+  0%,
+  100% {
+    transform: scale(1) translateX(0%);
+  }
+  50% {
+    transform: scale(0.65) translateX(-75%);
+  }
+}
+@keyframes mlgb-shift-right {
+  0%,
+  100% {
+    transform: scale(1) translateX(0%);
+  }
+  50% {
+    transform: scale(0.65) translateX(75%);
+  }
+}
+
+/* jelly triangle */
+.mlgb-jellyTriangle .mlgb-dot:nth-child(1) {
+  animation: mlgb-grow var(--uib-speed) ease infinite;
+}
+.mlgb-jellyTriangle .mlgb-dot:nth-child(2) {
+  animation: mlgb-grow var(--uib-speed) ease calc(var(--uib-speed) * -0.666) infinite;
+}
+.mlgb-jellyTriangle .mlgb-dot:nth-child(3) {
+  animation: mlgb-grow var(--uib-speed) ease calc(var(--uib-speed) * -0.333) infinite;
+}
+.mlgb-jellyTriangle .mlgb-traveler {
+  animation: mlgb-triangulate var(--uib-speed) ease infinite;
+}
+
+@keyframes mlgb-triangulate {
+  0%,
+  100% {
+    transform: none;
+  }
+  33.333% {
+    transform: translate(100%, 200%);
+  }
+  66.666% {
+    transform: translate(-100%, 200%);
+  }
+}
+@keyframes mlgb-grow {
+  0%,
+  85%,
+  100% {
+    transform: scale(1.5);
+  }
+  50%,
+  60% {
+    transform: scale(0);
+  }
+}
+
+/* mirage */
+.mlgb-mirage .mlgb-dot {
+  animation: mlgb-stream var(--uib-speed) linear infinite both;
+}
+.mlgb-mirage .mlgb-dot:nth-child(2) {
+  animation-delay: calc(var(--uib-speed) * -0.2);
+}
+.mlgb-mirage .mlgb-dot:nth-child(3) {
+  animation-delay: calc(var(--uib-speed) * -0.4);
+}
+.mlgb-mirage .mlgb-dot:nth-child(4) {
+  animation-delay: calc(var(--uib-speed) * -0.6);
+}
+.mlgb-mirage .mlgb-dot:nth-child(5) {
+  animation-delay: calc(var(--uib-speed) * -0.8);
+}
+
+@keyframes mlgb-stream {
+  0%,
+  100% {
+    transform: translateX(0) scale(0);
+  }
+  50% {
+    transform: translateX(calc(var(--uib-size) * 0.5)) scale(1);
+  }
+  99.999% {
+    transform: translateX(calc(var(--uib-size))) scale(0);
+  }
+}
+
+/* Reduced motion: no animation, each variant holds one representative pose. */
+@media (prefers-reduced-motion: reduce) {
+  .mlgb-container,
+  .mlgb-dot,
+  .mlgb-traveler {
+    animation: none !important;
+  }
+  .mlgb-jelly .mlgb-dot:first-child {
+    transform: scale(0.8) translateX(-45%);
+  }
+  .mlgb-jelly .mlgb-dot:nth-child(2) {
+    transform: scale(0.8) translateX(45%);
+  }
+  .mlgb-mirage .mlgb-dot:nth-child(1) {
+    transform: scale(0);
+  }
+  .mlgb-mirage .mlgb-dot:nth-child(2) {
+    transform: translateX(calc(var(--uib-size) * 0.8)) scale(0.4);
+  }
+  .mlgb-mirage .mlgb-dot:nth-child(3) {
+    transform: translateX(calc(var(--uib-size) * 0.6)) scale(0.8);
+  }
+  .mlgb-mirage .mlgb-dot:nth-child(4) {
+    transform: translateX(calc(var(--uib-size) * 0.4)) scale(0.8);
+  }
+  .mlgb-mirage .mlgb-dot:nth-child(5) {
+    transform: translateX(calc(var(--uib-size) * 0.2)) scale(0.4);
+  }
+}

@@ -1,0 +1,82 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'carousel-autoplay-progress',
+  status: 'published',
+  title: { 'zh-CN': '进度轮播', en: 'Story Carousel' },
+  summary: {
+    'zh-CN': '自动播放的幻灯片，当前页下方的进度条走满就切到下一页，说明文字在画面落定后浮上来；可选左右箭头和指示条，悬停时暂停。适合加载页小贴士、产品导览和功能亮点。',
+    en: 'An autoplaying slide carousel: a progress line fills under the current slide, captions rise in once it lands, with optional arrows and indicators and a pause on hover. For loading-screen tips, product tours and feature highlights.',
+  },
+  kind: 'component',
+  category: 'carousel',
+  tags: ['carousel', 'slideshow', 'autoplay', 'progress', 'tips', 'onboarding'],
+  runtime: ['react', 'motion'],
+  entry: { file: 'carousel-autoplay-progress.tsx', export: 'LoadingCarousel' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'carousel-autoplay-progress.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'autoplayInterval', type: 'number', group: 'motion', label: { 'zh-CN': '每页时长', en: 'Interval' }, default: 4500, min: 2500, max: 9000, step: 100, unit: 'ms', safe: [3500, 6000] },
+    {
+      key: 'aspectRatio',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '画面比例', en: 'Aspect ratio' },
+      default: 'video',
+      options: [
+        { value: 'video', label: { 'zh-CN': '16:9', en: '16:9' } },
+        { value: 'wide', label: { 'zh-CN': '2:1', en: '2:1' } },
+        { value: 'square', label: { 'zh-CN': '方形', en: 'Square' } },
+      ],
+    },
+    {
+      key: 'textPosition',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '画面文字位置', en: 'Caption position' },
+      hint: { 'zh-CN': '开启「文字压在画面上」时生效', en: 'Applies when captions sit on the slide' },
+      default: 'bottom',
+      options: [
+        { value: 'bottom', label: { 'zh-CN': '底部', en: 'Bottom' } },
+        { value: 'top', label: { 'zh-CN': '顶部', en: 'Top' } },
+      ],
+    },
+    { key: 'backgroundTips', type: 'boolean', group: 'look', label: { 'zh-CN': '文字压在画面上', en: 'Captions on slide' }, default: false },
+    { key: 'backgroundGradient', type: 'boolean', group: 'look', label: { 'zh-CN': '底部暗角', en: 'Gradient overlay' }, default: false },
+    { key: 'showProgress', type: 'boolean', group: 'look', label: { 'zh-CN': '进度条', en: 'Progress fill' }, default: true },
+    { key: 'showIndicators', type: 'boolean', group: 'interaction', label: { 'zh-CN': '指示条', en: 'Indicators' }, default: true },
+    { key: 'showNavigation', type: 'boolean', group: 'interaction', label: { 'zh-CN': '左右箭头', en: 'Arrows' }, default: false },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 12, min: 0, max: 28, step: 1, unit: 'px', safe: [8, 20] },
+  ],
+  presets: [
+    { id: 'loading', name: { 'zh-CN': '候场', en: 'Waiting Room' }, values: { backgroundTips: false, backgroundGradient: false, showNavigation: false, aspectRatio: 'video' } },
+    { id: 'cinema', name: { 'zh-CN': '银幕', en: 'Marquee' }, values: { backgroundTips: true, backgroundGradient: true, showNavigation: true, aspectRatio: 'wide', textPosition: 'bottom' } },
+    { id: 'postcard', name: { 'zh-CN': '明信片', en: 'Postcard' }, values: { backgroundTips: true, backgroundGradient: true, showNavigation: false, aspectRatio: 'square', radius: 20 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.1, posterTime: 2.5, loop: 9 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'cult-ui',
+      repo: 'nolly-studio/cult-ui',
+      sha: 'ee98a5dd2e319b63cc2e707dd968d6af04209b7e',
+      paths: ['apps/www/registry/default/ui/loading-carousel.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 Jordan-Gilliam'],
+    },
+    modifications: [
+      'Replaced embla-carousel and its autoplay plugin with hand-written slide state; autoplay and the progress fill run on useFrameLoop frame time, and pause on hover or focus.',
+      'Arrows are plain buttons with inline SVG chevrons instead of lucide-react; Left / Right keys change slides.',
+      'next/image replaced by a media slot (any node) plus a CSS background; default tips use generated gradients and contain no links.',
+      'Removed shuffleTips; added a corner radius parameter; cn comes from @motif/runtime; props come from the @motif:defaults region.',
+    ],
+    assets: [],
+  },
+})

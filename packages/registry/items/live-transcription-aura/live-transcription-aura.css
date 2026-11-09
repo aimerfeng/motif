@@ -1,0 +1,105 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2025 Eleven Labs Inc.
+ * Source: https://github.com/elevenlabs/ui/blob/23c31bd/apps/www/registry/elevenlabs-ui/blocks/realtime-transcriber-01/page.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* 上游的 shimmer / pulseGlow 关键帧（drift 没被用到，去掉），加前缀避免和别的条目撞名。 */
+@keyframes lta-shimmer {
+  0% {
+    transform: translateX(-20%) scale(1);
+  }
+  50% {
+    transform: translateX(20%) scale(1.1);
+  }
+  100% {
+    transform: translateX(-20%) scale(1);
+  }
+}
+
+@keyframes lta-pulse-glow {
+  0% {
+    opacity: 0.5;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0.8;
+    transform: translateY(-5%) scale(1.02);
+  }
+}
+
+.lta-glow-rise {
+  animation: lta-pulse-glow 5s ease-in-out infinite alternate;
+}
+
+.lta-glow-rise-reverse {
+  animation: lta-pulse-glow 5s ease-in-out infinite alternate-reverse;
+}
+
+.lta-shimmer-band {
+  animation: lta-shimmer 8s linear infinite;
+}
+
+/* 逐字浮现：只写起始帧，结束帧取元素自己的值，这样确认前后的颜色不会被动画覆盖。 */
+@keyframes lta-char-in {
+  from {
+    opacity: 0;
+    filter: blur(var(--lta-blur, 3.5px));
+  }
+}
+
+.lta-char {
+  animation: lta-char-in 0.5s ease-out backwards;
+  animation-delay: var(--lta-delay, 0s);
+  transition: color 0.3s ease-out;
+}
+
+/* ShimmeringText 的 CSS 版：2 秒扫一遍，停 0.5 秒（上游的 repeatDelay）。 */
+@keyframes lta-text-shimmer {
+  0% {
+    background-position: 100% center;
+  }
+  80%,
+  100% {
+    background-position: 0% center;
+  }
+}
+
+.lta-shimmer-text {
+  display: inline-block;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-repeat: no-repeat, padding-box;
+  background-size: 250% 100%, auto;
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - var(--lta-spread)), var(--foreground), transparent calc(50% + var(--lta-spread))),
+    linear-gradient(var(--muted-foreground), var(--muted-foreground));
+  animation: lta-text-shimmer 2.5s linear infinite;
+}
+
+.lta-scroll {
+  scrollbar-width: none;
+  /* 顶部淡出：旧的行从上沿退出时不会被硬切。 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%);
+}
+
+.lta-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lta-glow-rise,
+  .lta-glow-rise-reverse,
+  .lta-shimmer-band,
+  .lta-char,
+  .lta-shimmer-text {
+    animation: none;
+  }
+
+  .lta-shimmer-text {
+    background-position: 50% center;
+  }
+}

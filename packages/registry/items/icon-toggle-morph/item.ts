@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'icon-toggle-morph',
+  status: 'published',
+  title: { 'zh-CN': '形变图标开关', en: 'Morphing Icon Toggles' },
+  summary: {
+    'zh-CN': '图标按钮在两种状态之间旋转、缩放着换形：太阳变月亮、菜单变关闭、喇叭变静音、空心爱心变实心并让计数加一。适合主题切换、菜单、播放器和点赞。',
+    en: 'Icon buttons that rotate and scale between two glyphs: sun to moon, menu to close, speaker to muted, outline heart to filled with a count tick. For theme switches, menus, media controls and reactions.',
+  },
+  kind: 'component',
+  category: 'toggle',
+  tags: ['toggle', 'icon-button', 'theme-switch', 'menu', 'like', 'aria-pressed'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'icon-toggle-morph.tsx', export: 'IconToggleMorph' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'icon-toggle-morph.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'icon',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '图标', en: 'Icon' },
+      default: 'theme',
+      options: [
+        { value: 'theme', label: { 'zh-CN': '太阳 / 月亮', en: 'Sun / moon' } },
+        { value: 'menu', label: { 'zh-CN': '菜单 / 关闭', en: 'Menu / close' } },
+        { value: 'sound', label: { 'zh-CN': '声音 / 静音', en: 'Sound / muted' } },
+        { value: 'like', label: { 'zh-CN': '点赞', en: 'Like' } },
+      ],
+    },
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '按钮样式', en: 'Button style' },
+      default: 'outline',
+      options: [
+        { value: 'outline', label: { 'zh-CN': '描边', en: 'Outline' } },
+        { value: 'ghost', label: { 'zh-CN': '透明', en: 'Ghost' } },
+        { value: 'solid', label: { 'zh-CN': '按下时实心', en: 'Solid when pressed' } },
+      ],
+    },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, default: '#f43f5e' },
+    { key: 'size', type: 'number', group: 'layout', label: { 'zh-CN': '按钮尺寸', en: 'Button size' }, default: 36, min: 28, max: 56, step: 1, unit: 'px', safe: [32, 48] },
+    { key: 'strokeWidth', type: 'number', group: 'look', label: { 'zh-CN': '线宽', en: 'Stroke width' }, default: 2, min: 1.25, max: 2.75, step: 0.25, safe: [1.5, 2.5] },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '弹簧', en: 'Spring' }, default: { visualDuration: 0.3, bounce: 0.25 } },
+    { key: 'showCount', type: 'boolean', group: 'content', label: { 'zh-CN': '显示计数', en: 'Show count' }, hint: { 'zh-CN': '仅对点赞图标生效', en: 'Only for the like icon' }, default: true },
+  ],
+  presets: [
+    { id: 'rosewood', name: { 'zh-CN': '玫瑰木', en: 'Rosewood' }, values: { variant: 'outline', accent: '#f43f5e', size: 36, strokeWidth: 2 } },
+    { id: 'lagoon', name: { 'zh-CN': '泻湖', en: 'Lagoon' }, values: { variant: 'solid', accent: '#22d3ee', size: 40, strokeWidth: 1.75, spring: { visualDuration: 0.4, bounce: 0.4 } } },
+    { id: 'graphite', name: { 'zh-CN': '石墨', en: 'Graphite' }, values: { variant: 'ghost', accent: '#e4e4e7', size: 34, strokeWidth: 2.25, spring: { visualDuration: 0.22, bounce: 0.1 } } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 2, posterTime: 3.2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'reui',
+      repo: 'keenthemes/reui',
+      sha: '6e433ddaba3a4be38182c8c8883b6cc335183c42',
+      paths: [
+        'registry-reui/bases/base/components/button/c-button-61.tsx',
+        'registry-reui/bases/base/components/button/c-button-43.tsx',
+        'registry-reui/bases/base/components/toggle/c-toggle-14.tsx',
+        'registry-reui/bases/base/components/toggle/c-toggle-11.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Keenthemes Inc'],
+    },
+    modifications: [
+      'Merged four upstream patterns (theme, menu, mute and like toggles) into one component with an icon select.',
+      'Replaced the base-ui Button / Toggle with a plain button using aria-pressed, and the icon-font placeholders with inline SVG glyphs.',
+      'The scale / rotate / opacity swap from the upstream classes is driven by a motion spring; reduced motion makes it an instant swap.',
+      'Added accent, size, stroke width, button style and count parameters.',
+    ],
+    assets: [],
+  },
+})

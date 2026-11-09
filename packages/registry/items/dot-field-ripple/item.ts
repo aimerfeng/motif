@@ -1,0 +1,63 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'dot-field-ripple',
+  status: 'published',
+  title: { 'zh-CN': '点阵涟漪', en: 'Dot Field Ripple' },
+  summary: {
+    'zh-CN': '一片点阵铺在缓缓变换的径向渐变上，指针附近的圆点被一圈圈推开并微微发亮，移开后又落回原位，还可以叠一层细颗粒。适合深色首屏、登录页和 AI 产品的背景。',
+    en: 'A canvas field of dots over slowly shifting radial gradients; near the pointer the dots are pushed outward in rings and glow, settling back as it moves on, with optional film grain. For dark heroes, sign-in screens and AI product backdrops.',
+  },
+  kind: 'effect',
+  category: 'background',
+  tags: ['dots', 'grid', 'ripple', 'wave', 'pointer', 'gradient', 'canvas', 'interactive'],
+  runtime: ['react', 'motion', 'canvas2d', 'css'],
+  entry: { file: 'dot-field-ripple.tsx', export: 'DotFieldRipple' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'dot-field-ripple.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'dotSize', type: 'number', label: { 'zh-CN': '圆点大小', en: 'Dot size' }, default: 4, min: 1.5, max: 8, step: 0.5, unit: 'px', safe: [2, 6], group: 'dots' },
+    { key: 'spacing', type: 'number', label: { 'zh-CN': '间距', en: 'Spacing' }, default: 20, min: 12, max: 40, step: 1, unit: 'px', safe: [14, 32], group: 'dots' },
+    { key: 'dotOpacity', type: 'number', label: { 'zh-CN': '圆点不透明度', en: 'Dot opacity' }, default: 0.3, min: 0.1, max: 0.8, step: 0.05, safe: [0.2, 0.6], group: 'dots' },
+    { key: 'dotColor', type: 'color', label: { 'zh-CN': '圆点颜色', en: 'Dot color' }, default: '#6464ff', group: 'dots' },
+    { key: 'waveRadius', type: 'number', label: { 'zh-CN': '波纹半径', en: 'Wave radius' }, default: 200, min: 80, max: 400, step: 10, unit: 'px', safe: [120, 320], group: 'wave' },
+    { key: 'intensity', type: 'number', label: { 'zh-CN': '波纹强度', en: 'Wave intensity' }, default: 30, min: 0, max: 60, step: 1, unit: 'px', safe: [10, 45], group: 'wave' },
+    { key: 'glowColor', type: 'color', label: { 'zh-CN': '光晕颜色', en: 'Glow color' }, default: '#6464ff', group: 'wave' },
+    { key: 'gradientColors', type: 'palette', label: { 'zh-CN': '渐变配色', en: 'Gradient colors' }, default: ['#ffd6a5', '#ffadad', '#ffc6ff', '#a0c4ff', '#bdb2ff', '#9bf6ff'], minItems: 3, maxItems: 6, group: 'background' },
+    { key: 'gradientOpacity', type: 'number', label: { 'zh-CN': '渐变强度', en: 'Gradient strength' }, default: 0.22, min: 0, max: 0.6, step: 0.01, safe: [0.1, 0.4], group: 'background' },
+    { key: 'gradientSpeed', type: 'number', label: { 'zh-CN': '渐变速度', en: 'Gradient speed' }, default: 1, min: 0.2, max: 4, step: 0.1, unit: 'x', safe: [0.5, 2.5], group: 'background' },
+    { key: 'noise', type: 'number', label: { 'zh-CN': '颗粒', en: 'Grain' }, hint: { 'zh-CN': '0 为关闭', en: '0 turns it off' }, default: 0.03, min: 0, max: 0.15, step: 0.01, safe: [0, 0.08], group: 'background' },
+  ],
+  presets: [
+    { id: 'periwinkle', name: { 'zh-CN': '长春花', en: 'Periwinkle' }, values: { dotColor: '#6464ff', glowColor: '#6464ff', gradientOpacity: 0.22 } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { dotColor: '#fb923c', glowColor: '#fbbf24', dotOpacity: 0.35, gradientColors: ['#7c2d12', '#b45309', '#9f1239', '#78350f'], gradientOpacity: 0.35, spacing: 24, intensity: 36 } },
+    { id: 'tide', name: { 'zh-CN': '潮汐', en: 'Tide' }, values: { dotColor: '#5eead4', glowColor: '#67e8f9', dotSize: 3, spacing: 16, waveRadius: 260, gradientColors: ['#0f766e', '#1e3a8a', '#155e75'], gradientOpacity: 0.3, noise: 0.06 } },
+  ],
+  dependencies: ['@motif/runtime', 'motion/react'],
+  perf: { webgl: false, maxDpr: 1.5 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 3, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'cult-ui',
+      repo: 'nolly-studio/cult-ui',
+      sha: 'ee98a5dd2e319b63cc2e707dd968d6af04209b7e',
+      paths: ['apps/www/registry/default/ui/canvas-fractal-grid.tsx', 'apps/www/registry/default/ui/bg-animated-fractal-dot-grid.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 Jordan-Gilliam'],
+    },
+    modifications: [
+      'Kept the upstream dot canvas, wave displacement and per-dot glow math, the two-layer mouse glow, the fractal-noise overlay and the three default radial gradients.',
+      'The motion-driven gradient animation is replaced by three cross-fading gradient layers driven by the motif-runtime frame loop; the gradient colors come from a palette parameter and the layer sits at a reduced strength over a dark background (the upstream canvas used a light gray multiply background).',
+      'The FPS-based performance tiers and window-size hooks are removed: the canvas follows its container through useCanvasSize (DPR capped at 1.5), and the responsive dot scaling uses the container width.',
+      'Colors are hex parameters converted to rgba instead of replacing "1)" in rgba strings; the noise filter id is unique per instance; a static edge vignette uses the theme background; children render above the field.',
+      'With prefers-reduced-motion the field renders one static frame and skips the fade-in.',
+    ],
+    assets: [],
+  },
+})

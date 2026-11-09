@@ -1,0 +1,100 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'comparison-before-after',
+  status: 'published',
+  title: { 'zh-CN': '使用前后的流程对比', en: 'Before & After Workflow' },
+  summary: {
+    'zh-CN': '「老办法 vs 新办法」区块：一边是在五个工具之间来回倒腾的手工步骤，每步标着耗时和卡点，工具间的往返画成一团乱线；另一边是同一件事的三步。用开关（或宽屏上可拖的分隔条）切换焦点，另一边褪成灰色（文字依然清楚），底部的「每次节省」随之亮起，对比条上省下的那一段铺开。适合推销工作方式改变的落地页。',
+    en: 'The old-way-versus-new-way block: one side lists the manual steps across five tools with their time cost and friction, the hops between tools drawn as a tangle; the other does the same job in three steps. A switch, or a draggable divider on wide screens, moves focus between them, the other side fades to grey while staying readable, and the time saved lights up at the bottom as the saved stretch of the bar fills in. For landing pages that sell a change of workflow.',
+  },
+  kind: 'section',
+  category: 'comparison',
+  tags: ['before-after', 'comparison', 'workflow', 'process', 'time saved', 'old vs new', 'switch', 'divider', 'landing'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'comparison-before-after.tsx', export: 'ComparisonBeforeAfter' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'comparison-before-after.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Close the books in fourteen minutes, not six hours', maxLength: 72, group: 'content' },
+    {
+      key: 'product',
+      type: 'text',
+      label: { 'zh-CN': '产品名', en: 'Product name' },
+      hint: { 'zh-CN': '出现在「With …」开关、面板标题和对比条上', en: 'Used in the “With …” switch, panel label and bars' },
+      default: 'Coppice',
+      maxLength: 14,
+      group: 'content',
+    },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, hint: { 'zh-CN': '新做法一侧的颜色；文字深浅自动适配', en: 'Colors the new-way side; ink adapts automatically' }, default: '#6ee7b7', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'stepStyle',
+      type: 'select',
+      label: { 'zh-CN': '步骤样式', en: 'Step style' },
+      default: 'timeline',
+      options: [
+        { value: 'timeline', label: { 'zh-CN': '时间线', en: 'Timeline' } },
+        { value: 'cards', label: { 'zh-CN': '卡片（旧做法摆得歪）', en: 'Cards (old way askew)' } },
+        { value: 'receipt', label: { 'zh-CN': '账单', en: 'Receipt' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 18, min: 0, max: 28, step: 1, unit: 'px', safe: [4, 26], group: 'look' },
+    {
+      key: 'mode',
+      type: 'select',
+      label: { 'zh-CN': '切换方式', en: 'Focus control' },
+      hint: { 'zh-CN': '分隔条只在 1024px 以上出现，更窄时仍用开关', en: 'The divider appears from 1024px; narrower screens keep the switch' },
+      default: 'switch',
+      options: [
+        { value: 'switch', label: { 'zh-CN': '开关', en: 'Switch' } },
+        { value: 'divider', label: { 'zh-CN': '可拖分隔条', en: 'Draggable divider' } },
+      ],
+      group: 'interaction',
+    },
+    { key: 'showTimeSaved', type: 'boolean', label: { 'zh-CN': '显示节省时间', en: 'Show time saved' }, default: true, group: 'content' },
+  ],
+  presets: [
+    { id: 'after-hours', name: { 'zh-CN': '下班后', en: 'After Hours' }, values: {} },
+    { id: 'carbon-copy', name: { 'zh-CN': '复写纸', en: 'Carbon Copy' }, values: { tone: 'light', accent: '#2f5bea', stepStyle: 'receipt', radius: 4, mode: 'divider' } },
+    { id: 'quarter-end', name: { 'zh-CN': '季末', en: 'Quarter End' }, values: { accent: '#a99bff', stepStyle: 'cards', radius: 26, mode: 'divider' } },
+    { id: 'clean-desk', name: { 'zh-CN': '清桌', en: 'Clean Desk' }, values: { tone: 'light', accent: '#0f8b72', stepStyle: 'cards', radius: 22 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable'],
+  guidance: {
+    use: [
+      'Use on a landing page that sells a change of workflow: the old manual process on one side, the same job done with your product on the other, and the hands-on time it gives back. Replace BEFORE, AFTER, HANDLED, HOPS and the eyebrow / subcopy with your own flow.',
+    ],
+    rules: [
+      'Both sides describe the same job measured the same way (hands-on minutes per run). The totals, the saved figure and the yearly hours are computed from the steps, so keep the minutes honest and they will add up.',
+      'Old-way steps name the tool and one concrete friction ("Duplicate amounts break the lookup"); keep four to seven of them. New-way steps are three short verb phrases with a plain note. No adjectives like "seamless".',
+      'Tools are generic categories and the product mark is invented. Never show real company logos for the "before" tools.',
+      'The switch is a radio group (arrow keys). In divider mode the divider is a slider on screens 1024px and wider (drag, click, arrow keys, Home / End, Enter toggles) and the switch takes over below that. Drive it with focus + onFocusChange, or leave it uncontrolled with defaultFocus. Both keep visual and ARIA state in sync: a controlled parent that ignores a change snaps the divider back.',
+      'Switch mode only animates opacity, colors and transforms. Divider mode is the one deliberate exception: it is a resizable split, so it rewrites grid-template-columns while dragging and during the 0.6 s settle spring and the text reflows with the column. Keep the panels light (no images, no heavy effects) if you use it.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1, posterTime: 3.4, loop: 8 },
+  provenance: {
+    kind: 'original',
+    modifications: [],
+    assets: [],
+  },
+})

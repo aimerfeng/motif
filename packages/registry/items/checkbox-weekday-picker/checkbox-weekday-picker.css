@@ -1,0 +1,53 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2025 coss.com
+ * Originally Copyright (c) 2025 Origin UI
+ * Source: https://github.com/origin-space/originui/blob/fe6ffa8/apps/origin/registry/default/components/comp-149.tsx
+ * Modified by Motif; see the item's provenance.
+ */
+
+/* 选中时从日子边缘扩散一圈强调色，只放一次；只动 transform 和 opacity。 */
+.mwd-ripple {
+  border: 2px solid var(--wd-accent);
+  opacity: 0;
+  animation: mwd-ripple 560ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes mwd-ripple {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+}
+
+/* 小结换字时轻轻浮上来，读起来像是「重新算了一遍」。 */
+.mwd-summary {
+  display: inline-block;
+  animation: mwd-summary-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes mwd-summary-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mwd-ripple {
+    display: none;
+  }
+  .mwd-summary {
+    animation: none;
+  }
+}

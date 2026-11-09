@@ -1,0 +1,90 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'workflow-node-canvas',
+  status: 'published',
+  title: { 'zh-CN': '工作流编排画布', en: 'Workflow Builder Canvas' },
+  summary: {
+    'zh-CN': '点阵画布上的触发、动作、条件节点由曲线相连，拖动节点时连线跟着走，点「添加节点」会接在最后一个后面。适合自动化与集成类产品页。',
+    en: 'Trigger, action and condition nodes on a dotted canvas joined by curves; dragging a node drags its connections along, and new nodes link to the last one. For automation and integration product pages.',
+  },
+  kind: 'section',
+  category: 'showcase',
+  tags: ['workflow', 'nodes', 'automation', 'canvas', 'drag', 'integrations'],
+  runtime: ['react', 'motion', 'svg'],
+  entry: { file: 'workflow-node-canvas.tsx', export: 'WorkflowNodeCanvas' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'workflow-node-canvas.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#34d399', group: 'look' },
+    {
+      key: 'nodePalette',
+      type: 'select',
+      label: { 'zh-CN': '节点配色', en: 'Node colors' },
+      default: 'spectrum',
+      options: [
+        { value: 'spectrum', label: { 'zh-CN': '按节点区分', en: 'Per node' } },
+        { value: 'accent', label: { 'zh-CN': '统一主色', en: 'Accent only' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'curveStyle',
+      type: 'select',
+      label: { 'zh-CN': '连线形状', en: 'Connection shape' },
+      default: 'bezier',
+      options: [
+        { value: 'bezier', label: { 'zh-CN': '贝塞尔曲线', en: 'Bezier' } },
+        { value: 'step', label: { 'zh-CN': '直角折线', en: 'Step' } },
+        { value: 'straight', label: { 'zh-CN': '直线', en: 'Straight' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'gridStyle',
+      type: 'select',
+      label: { 'zh-CN': '画布底纹', en: 'Canvas grid' },
+      default: 'dots',
+      options: [
+        { value: 'dots', label: { 'zh-CN': '点阵', en: 'Dots' } },
+        { value: 'lines', label: { 'zh-CN': '网格线', en: 'Lines' } },
+        { value: 'none', label: { 'zh-CN': '无', en: 'None' } },
+      ],
+      group: 'look',
+    },
+    { key: 'flowDash', type: 'boolean', label: { 'zh-CN': '虚线流动', en: 'Flowing dashes' }, default: true, group: 'motion' },
+    { key: 'snapToGrid', type: 'boolean', label: { 'zh-CN': '吸附网格', en: 'Snap to grid' }, default: false, group: 'interaction' },
+  ],
+  presets: [
+    { id: 'verdant', name: { 'zh-CN': '青苔', en: 'Verdant' }, values: { accent: '#34d399', nodePalette: 'spectrum', curveStyle: 'bezier', gridStyle: 'dots' } },
+    { id: 'blueprint', name: { 'zh-CN': '蓝图', en: 'Blueprint' }, values: { accent: '#60a5fa', nodePalette: 'accent', curveStyle: 'step', gridStyle: 'lines', snapToGrid: true } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { accent: '#fb923c', nodePalette: 'accent', curveStyle: 'straight', gridStyle: 'none', flowDash: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: [],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/n8n-workflow-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'framer-motion imports switched to motion/react; lucide icons replaced with inline SVG; shadcn Badge/Button/Card replaced with plain elements; brand name dropped from the export.',
+      'Added params: accent color, per-node or accent-only node colors, bezier/step/straight connections, dot/line/no canvas grid, animated dash flow via the runtime frame loop, and snap-to-grid.',
+      'New node ids use a counter instead of Date.now(); transition-all narrowed to shadow; reduced motion disables entrance/hover scaling and dash flow.',
+      'Added an optional `nudge` prop so the demo can sway a node with a frame-loop autoplay until the user interacts.',
+    ],
+    assets: [],
+  },
+})

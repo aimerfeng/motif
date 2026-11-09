@@ -1,0 +1,86 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'input-search-field',
+  status: 'published',
+  title: { 'zh-CN': '带快捷键的搜索框', en: 'Search Field with Shortcut' },
+  summary: {
+    'zh-CN': '右侧有 ⌘K 提示，在页面任何地方按下就能聚焦；输入时放大镜变成加载转圈，有内容后出现清除按钮，末尾可选麦克风或提交按钮。适合应用顶栏、文档侧栏和列表筛选。',
+    en: 'A search box with a ⌘K hint that focuses it from anywhere, a magnifier that turns into a spinner while results load, a clear button once there is text, and an optional mic or submit button at the end. Made for app headers, docs sidebars and list filters.',
+  },
+  kind: 'component',
+  category: 'input',
+  tags: ['search', 'input', 'shortcut', 'kbd', 'loader', 'clear-button', 'a11y'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'input-search-field.tsx', export: 'InputSearchField' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'input-search-field.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'shortcutKey', type: 'text', group: 'interaction', label: { 'zh-CN': '快捷键', en: 'Shortcut key' }, hint: { 'zh-CN': '与 ⌘ / Ctrl 组合', en: 'Combined with ⌘ / Ctrl' }, default: 'K', maxLength: 1 },
+    { key: 'showShortcut', type: 'boolean', group: 'interaction', label: { 'zh-CN': '快捷键提示', en: 'Shortcut hint' }, default: true },
+    { key: 'showClear', type: 'boolean', group: 'interaction', label: { 'zh-CN': '清除按钮', en: 'Clear button' }, default: true },
+    { key: 'loadingDelay', type: 'number', group: 'interaction', label: { 'zh-CN': '加载时长', en: 'Loading time' }, hint: { 'zh-CN': '输入后转圈多久，0 为关闭', en: 'How long the spinner shows after typing; 0 turns it off' }, default: 500, min: 0, max: 2000, step: 50, unit: 'ms' },
+    {
+      key: 'endAction',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '末尾按钮', en: 'End button' },
+      default: 'mic',
+      options: [
+        { value: 'none', label: { 'zh-CN': '无', en: 'None' } },
+        { value: 'submit', label: { 'zh-CN': '提交', en: 'Submit' } },
+        { value: 'mic', label: { 'zh-CN': '麦克风', en: 'Microphone' } },
+      ],
+    },
+    {
+      key: 'size',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '尺寸', en: 'Size' },
+      default: 'md',
+      options: [
+        { value: 'sm', label: { 'zh-CN': '小', en: 'Small' } },
+        { value: 'md', label: { 'zh-CN': '中', en: 'Medium' } },
+        { value: 'lg', label: { 'zh-CN': '大', en: 'Large' } },
+      ],
+    },
+    { key: 'width', type: 'number', group: 'layout', label: { 'zh-CN': '宽度', en: 'Width' }, default: 280, min: 200, max: 560, step: 10, unit: 'px', safe: [240, 420] },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 6, min: 0, max: 20, step: 1, unit: 'px', safe: [4, 12] },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原样', en: 'Origin' }, values: { endAction: 'mic', size: 'md', radius: 6, width: 280 } },
+    { id: 'pill', name: { 'zh-CN': '胶囊', en: 'Pill' }, values: { endAction: 'submit', size: 'lg', radius: 20, width: 320 } },
+    { id: 'sidebar', name: { 'zh-CN': '侧栏', en: 'Sidebar' }, values: { endAction: 'none', size: 'sm', radius: 4, width: 240 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.8, posterTime: 2.6, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: [
+        'apps/origin/registry/default/ui/input.tsx',
+        'apps/origin/registry/default/components/comp-24.tsx',
+        'apps/origin/registry/default/components/comp-25.tsx',
+        'apps/origin/registry/default/components/comp-26.tsx',
+        'apps/origin/registry/default/components/comp-27.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Combined the clear-button (comp-24), kbd hint (comp-25), icon + submit (comp-26) and loader + mic (comp-27) examples into one InputSearchField with the ui/input classes inlined.',
+      'Replaced lucide icons with inline SVG; added a global Cmd/Ctrl + key listener that focuses the field, and a controlled loading prop next to the upstream timer.',
+      'Exposed size, width, radius, end button, shortcut and loading time as params; the spinner stops under reduced motion.',
+    ],
+    assets: [],
+  },
+})

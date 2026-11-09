@@ -1,0 +1,112 @@
+import { defineItem } from '@motif/schema'
+
+const countryOptions = [
+  ['US', '美国', 'United States'],
+  ['GB', '英国', 'United Kingdom'],
+  ['DE', '德国', 'Germany'],
+  ['FR', '法国', 'France'],
+  ['CN', '中国', 'China'],
+  ['JP', '日本', 'Japan'],
+  ['IN', '印度', 'India'],
+  ['BR', '巴西', 'Brazil'],
+  ['AU', '澳大利亚', 'Australia'],
+] as const
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'input-phone-country',
+  status: 'published',
+  title: { 'zh-CN': '带区号的电话输入', en: 'Phone Number Input' },
+  summary: {
+    'zh-CN': '国家选择器和区号紧贴在号码框左侧；输入时按所选国家的格式自动分组，占位符直接示范该国号码的写法。适合注册、结账和两步验证设置。',
+    en: 'A country picker with dial code sits flush against the number field; digits are grouped as you type using the selected country’s pattern and the placeholder shows the expected format. Made for sign-up, checkout and two-factor setup.',
+  },
+  kind: 'component',
+  category: 'input',
+  tags: ['input', 'phone', 'tel', 'country', 'form', 'a11y'],
+  runtime: ['react', 'css'],
+  entry: { file: 'input-phone-country.tsx', export: 'InputPhoneCountry' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'input-phone-country.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'defaultCountry',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '默认国家', en: 'Default country' },
+      default: 'US',
+      options: countryOptions.map(([value, zh, en]) => ({ value, label: { 'zh-CN': zh, en } })),
+    },
+    {
+      key: 'countries',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '国家列表', en: 'Countries' },
+      default: 'all',
+      options: [
+        { value: 'all', label: { 'zh-CN': '全部', en: 'All' } },
+        { value: 'americas', label: { 'zh-CN': '美洲', en: 'Americas' } },
+        { value: 'europe', label: { 'zh-CN': '欧洲', en: 'Europe' } },
+        { value: 'asia', label: { 'zh-CN': '亚洲', en: 'Asia' } },
+      ],
+    },
+    {
+      key: 'pickerStyle',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '选择器样式', en: 'Picker style' },
+      default: 'chip',
+      options: [
+        { value: 'chip', label: { 'zh-CN': '国家代码徽章', en: 'Code chip' } },
+        { value: 'dial', label: { 'zh-CN': '徽章 + 区号', en: 'Chip + dial code' } },
+        { value: 'code', label: { 'zh-CN': '纯文字代码', en: 'Plain code' } },
+      ],
+    },
+    { key: 'showDialCode', type: 'boolean', group: 'content', label: { 'zh-CN': '框内显示区号', en: 'Dial code in field' }, default: true },
+    { key: 'grouping', type: 'boolean', group: 'content', label: { 'zh-CN': '按格式分组', en: 'Group digits' }, default: true },
+    {
+      key: 'size',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '尺寸', en: 'Size' },
+      default: 'md',
+      options: [
+        { value: 'sm', label: { 'zh-CN': '小', en: 'Small' } },
+        { value: 'md', label: { 'zh-CN': '中', en: 'Medium' } },
+        { value: 'lg', label: { 'zh-CN': '大', en: 'Large' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 6, min: 0, max: 16, step: 1, unit: 'px' },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, hint: { 'zh-CN': '国家徽章和焦点光圈', en: 'Country chip and focus ring' }, default: '#a1a1aa' },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原味', en: 'Origin' }, values: { pickerStyle: 'chip', showDialCode: true, size: 'md', radius: 6, accent: '#a1a1aa' } },
+    { id: 'checkout', name: { 'zh-CN': '收银台', en: 'Checkout' }, values: { pickerStyle: 'dial', showDialCode: false, size: 'lg', radius: 10, accent: '#34d399' } },
+    { id: 'terminal', name: { 'zh-CN': '终端', en: 'Terminal' }, values: { pickerStyle: 'code', showDialCode: true, size: 'sm', radius: 0, accent: '#fbbf24' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.8, posterTime: 5, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: ['apps/origin/registry/default/components/comp-46.tsx', 'apps/origin/registry/default/ui/input.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Replaced react-phone-number-input and its libphonenumber metadata with a hand-written table of 23 countries (dial code and grouping pattern) and a small formatter that keeps the caret in place.',
+      'Replaced the flag SVG set with a two-letter country code chip; lucide icons replaced with inline SVG; ui/input and ui/label replaced with plain elements using the upstream classes.',
+      'Dial code moved from the input text into a fixed prefix; placeholder shows a sample number in the selected country’s format.',
+      'Added params: default country, country list, picker style, dial code prefix, digit grouping, size, corner radius and accent.',
+    ],
+    assets: [],
+  },
+})

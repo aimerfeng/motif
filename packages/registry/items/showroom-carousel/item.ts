@@ -1,0 +1,83 @@
+import { defineItem } from '@motif/schema'
+
+const option = (value: string, zh: string, en: string) => ({ value, label: { 'zh-CN': zh, en } })
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'showroom-carousel',
+  status: 'published',
+  title: { 'zh-CN': '镜面展台轮播', en: 'Showroom Carousel' },
+  summary: {
+    'zh-CN': '产品摆在反光地板上，切换时画面带着透视交换或像两扇门一样打开，地板上始终映着倒影；下方是说明文字和前后按钮。适合新品发布、汽车或数码展示和高端电商。',
+    en: 'A product carousel staged on a glossy floor: slides swap in perspective or open like doors, reflected on the floor below, with captions and prev/next controls. For product launches, car or device showcases and premium e-commerce.',
+  },
+  kind: 'component',
+  category: 'carousel',
+  tags: ['carousel', 'showcase', 'product', 'reflection', 'webgl', 'gl-transitions'],
+  runtime: ['react', 'webgl', 'canvas2d'],
+  entry: { file: 'showroom-carousel.tsx', export: 'ShowroomCarousel' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'showroom-carousel.tsx', role: 'component' },
+    { path: 'shaders.ts', role: 'shader' },
+    { path: 'artwork.ts', role: 'lib' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      label: { 'zh-CN': '转场', en: 'Transition' },
+      default: 'swap',
+      options: [option('swap', '透视交换', 'Swap'), option('doorway', '开门', 'Doorway')],
+      group: 'motion',
+    },
+    { key: 'reflection', type: 'number', label: { 'zh-CN': '倒影强度', en: 'Reflection' }, default: 0.4, min: 0, max: 0.8, step: 0.01, safe: [0.25, 0.6], group: 'look' },
+    { key: 'perspective', type: 'number', label: { 'zh-CN': '透视', en: 'Perspective' }, default: 0.2, min: 0, max: 0.6, step: 0.01, safe: [0.1, 0.45], group: 'look' },
+    { key: 'depth', type: 'number', label: { 'zh-CN': '纵深', en: 'Depth' }, default: 3, min: 1.5, max: 5, step: 0.1, safe: [2, 4], group: 'look' },
+    { key: 'floorColor', type: 'color', label: { 'zh-CN': '地板颜色', en: 'Floor color' }, default: '#000000', group: 'look' },
+    { key: 'duration', type: 'number', label: { 'zh-CN': '转场时长', en: 'Duration' }, default: 1.2, min: 0.5, max: 2.5, step: 0.05, unit: 's', safe: [0.8, 1.8], group: 'motion' },
+    {
+      key: 'autoplayInterval',
+      type: 'number',
+      label: { 'zh-CN': '每张停留', en: 'Autoplay interval' },
+      hint: { 'zh-CN': '悬停或聚焦时暂停', en: 'Pauses on hover or focus' },
+      default: 3.5,
+      min: 1.5,
+      max: 8,
+      step: 0.1,
+      unit: 's',
+      group: 'motion',
+    },
+    { key: 'easing', type: 'easing', label: { 'zh-CN': '缓动', en: 'Easing' }, default: [0.65, 0, 0.35, 1], group: 'motion' },
+  ],
+  presets: [
+    { id: 'gallery', name: { 'zh-CN': '黑镜展厅', en: 'Black Mirror' }, values: { variant: 'swap', floorColor: '#000000', reflection: 0.4, perspective: 0.2, depth: 3 } },
+    { id: 'grand-opening', name: { 'zh-CN': '开幕', en: 'Grand Opening' }, values: { variant: 'doorway', floorColor: '#0b0d12', reflection: 0.45, perspective: 0.4, depth: 3, duration: 1.4 } },
+    { id: 'porcelain', name: { 'zh-CN': '白瓷台', en: 'Porcelain' }, values: { variant: 'swap', floorColor: '#ece9e4', reflection: 0.3, perspective: 0.3, depth: 3.5 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: true, maxDpr: 1.5 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 4.1, loop: 9.4 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'gl-transitions',
+      repo: 'gl-transitions/gl-transitions',
+      sha: '902218a1b63773ac0d0d9f491951da3392365bfe',
+      paths: ['transitions/swap.glsl', 'transitions/doorway.glsl'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2017-present gl-transitions contributors'],
+      origin: 'swap.glsl and doorway.glsl are by gre (MIT); their Author and License headers are kept in shaders.ts.',
+    },
+    modifications: [
+      'Embedded swap and doorway as GLSL strings with their upstream uniform defaults; the constant black background is now a floorColor uniform and reflections are mixed onto it instead of added to black.',
+      'doorway also reflects the outgoing slide, so the floor is never empty while it opens.',
+      'The transition runs in a stage frame: the slide is scaled into the upper part of the canvas so its reflection on the floor is visible at rest.',
+      'Wrapped in a carousel on motif-runtime: frame-time autoplay that pauses on hover or focus, captions, prev/next buttons, dots, arrow keys, reduced-motion cuts without transitions, context-loss handling.',
+      'Default product slides are drawn with Canvas 2D in code (invented products), so the item ships no image files.',
+    ],
+    assets: [],
+  },
+})

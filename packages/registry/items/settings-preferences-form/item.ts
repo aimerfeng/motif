@@ -1,0 +1,95 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'settings-preferences-form',
+  status: 'published',
+  title: { 'zh-CN': '偏好设置表单', en: 'Preferences Form with Save Bar' },
+  summary: {
+    'zh-CN': '分组的设置卡片：个人资料、通知渠道开关、「事件 × 渠道」通知矩阵、下拉选择和编辑器偏好；改动任何一项，底部就弹出「有未保存的更改」条，可以重置或保存，校验错误直接显示在字段下面。适合账号、通知和编辑器偏好页。',
+    en: 'Grouped settings cards with profile fields, channel switches, an event-by-channel notification matrix, selects and editor toggles. Any edit slides up a sticky unsaved-changes bar with reset and save, and validation errors show inline. For account, notification and editor preference pages.',
+  },
+  kind: 'section',
+  category: 'settings',
+  tags: ['settings', 'preferences', 'form', 'notifications', 'switch', 'save bar', 'validation'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'settings-preferences-form.tsx', export: 'SettingsPreferencesForm' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'settings-preferences-form.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#6366f1' },
+    {
+      key: 'layout',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      default: 'stacked',
+      options: [
+        { value: 'stacked', label: { 'zh-CN': '单列', en: 'Stacked' } },
+        { value: 'split', label: { 'zh-CN': '左标题右卡片', en: 'Split' } },
+      ],
+    },
+    {
+      key: 'density',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '密度', en: 'Density' },
+      default: 'comfortable',
+      options: [
+        { value: 'comfortable', label: { 'zh-CN': '舒适', en: 'Comfortable' } },
+        { value: 'compact', label: { 'zh-CN': '紧凑', en: 'Compact' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 12, min: 0, max: 20, step: 1, unit: 'px', safe: [6, 16] },
+    {
+      key: 'saveBarPosition',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '保存条位置', en: 'Save bar position' },
+      default: 'bottom',
+      options: [
+        { value: 'bottom', label: { 'zh-CN': '底部', en: 'Bottom' } },
+        { value: 'top', label: { 'zh-CN': '顶部', en: 'Top' } },
+      ],
+    },
+    { key: 'spring', type: 'spring', group: 'motion', label: { 'zh-CN': '弹簧', en: 'Spring' }, default: { visualDuration: 0.35, bounce: 0.2 } },
+    { key: 'showDescriptions', type: 'boolean', group: 'layout', label: { 'zh-CN': '显示说明文字', en: 'Show descriptions' }, default: true },
+  ],
+  presets: [
+    { id: 'indigo', name: { 'zh-CN': '靛蓝', en: 'Indigo' }, values: { accent: '#6366f1', layout: 'stacked', density: 'comfortable', radius: 12 } },
+    { id: 'ledger', name: { 'zh-CN': '账本', en: 'Ledger' }, values: { accent: '#fafafa', layout: 'split', density: 'compact', radius: 6, saveBarPosition: 'top' } },
+    { id: 'meadow', name: { 'zh-CN': '草甸', en: 'Meadow' }, values: { accent: '#34d399', radius: 16, showDescriptions: false, spring: { visualDuration: 0.45, bounce: 0.35 } } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'reui',
+      repo: 'keenthemes/reui',
+      sha: '6e433ddaba3a4be38182c8c8883b6cc335183c42',
+      paths: [
+        'registry-reui/bases/base/components/field/c-field-10.tsx',
+        'registry-reui/bases/base/components/field/c-field-7.tsx',
+        'registry-reui/bases/base/components/switch/c-switch-13.tsx',
+        'registry/bases/base/ui/switch.tsx',
+        'registry/bases/base/ui/checkbox.tsx',
+        'registry/styles/style-vega.css',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Keenthemes Inc'],
+    },
+    modifications: [
+      'Combined the three field/switch patterns (profile fields with inline error, notification channels, editor preferences) into one grouped settings form.',
+      'Replaced base-ui Switch, Checkbox, Field and Select with hand-rolled elements (role=switch/checkbox, native select) carrying the upstream vega style classes; check and chevron icons are inline SVG; transition-all narrowed to the changing properties.',
+      'Turned the "Notify me about" checkboxes into an event-by-channel matrix, added live validation and a sticky unsaved-changes bar with reset and save animated with motion.',
+      'Accent (with luminance-picked ink), layout, density, radius, save bar position, spring and descriptions come from params; controlled state for the scripted demo.',
+    ],
+    assets: [],
+  },
+})

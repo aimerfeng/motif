@@ -1,0 +1,77 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'loader-echo-lines',
+  status: 'published',
+  title: { 'zh-CN': '残影线条加载器', en: 'Echo Line Loaders' },
+  summary: {
+    'zh-CN': '几根细线错开转动，每根都拖着渐淡的残影：风车一圈圈扫过，摆扫来回摆动，方框里一笔沿四边伸缩。适合技术感、编辑感的界面里要一个干净的单线加载器。',
+    en: 'Thin bars turning with staggered delays so each leaves a fading echo: a pinwheel that sweeps round, a miyagi sweep that swings back and forth, and a hatch stroke that stretches along the edges of a square. For technical and editorial interfaces that want a crisp monoline loader.',
+  },
+  kind: 'component',
+  category: 'loader',
+  tags: ['loader', 'spinner', 'lines', 'echo', 'monoline', 'loading', 'accessible'],
+  runtime: ['react', 'css'],
+  entry: { file: 'loader-echo-lines.tsx', export: 'LoaderEchoLines' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'loader-echo-lines.tsx', role: 'component' },
+    { path: 'loader-echo-lines.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'variant',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '样式', en: 'Variant' },
+      default: 'pinwheel',
+      options: [
+        { value: 'pinwheel', label: { 'zh-CN': '风车', en: 'Pinwheel' } },
+        { value: 'miyagi', label: { 'zh-CN': '摆扫', en: 'Miyagi' } },
+        { value: 'hatch', label: { 'zh-CN': '方框', en: 'Hatch' } },
+      ],
+    },
+    { key: 'size', type: 'number', group: 'look', label: { 'zh-CN': '尺寸', en: 'Size' }, default: 35, min: 16, max: 80, step: 1, unit: 'px', safe: [24, 56] },
+    { key: 'color', type: 'color', group: 'look', label: { 'zh-CN': '颜色', en: 'Color' }, default: '#f4f4f5' },
+    { key: 'stroke', type: 'number', group: 'look', label: { 'zh-CN': '线宽', en: 'Stroke' }, default: 3.5, min: 1, max: 8, step: 0.5, unit: 'px', safe: [2, 5] },
+    { key: 'echoes', type: 'number', group: 'look', label: { 'zh-CN': '残影数', en: 'Echoes' }, hint: { 'zh-CN': '方框样式不使用', en: 'Not used by Hatch' }, default: 5, min: 1, max: 8, step: 1, safe: [3, 6] },
+    { key: 'falloff', type: 'number', group: 'look', label: { 'zh-CN': '残影衰减', en: 'Echo falloff' }, hint: { 'zh-CN': '每根残影比前一根暗多少', en: 'How much dimmer each echo is than the one before' }, default: 0.2, min: 0.08, max: 0.4, step: 0.01, safe: [0.12, 0.3] },
+    { key: 'speed', type: 'number', group: 'motion', label: { 'zh-CN': '周期', en: 'Duration' }, default: 0.9, min: 0.4, max: 3, step: 0.05, unit: 's', safe: [0.6, 1.8] },
+    { key: 'label', type: 'text', group: 'content', label: { 'zh-CN': '读屏文案', en: 'Screen reader label' }, default: 'Loading', maxLength: 32 },
+  ],
+  presets: [
+    { id: 'chalk', name: { 'zh-CN': '粉笔', en: 'Chalk' }, values: { variant: 'pinwheel', color: '#f4f4f5', stroke: 3.5, size: 35 } },
+    { id: 'pendulum', name: { 'zh-CN': '钟摆', en: 'Pendulum' }, values: { variant: 'miyagi', color: '#38bdf8', stroke: 3, size: 40, echoes: 6, falloff: 0.15, speed: 1 } },
+    { id: 'blueprint', name: { 'zh-CN': '蓝图', en: 'Blueprint' }, values: { variant: 'hatch', color: '#a3e635', stroke: 4, size: 32, speed: 3 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 2, posterTime: 0.3, loop: 2 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'ldrs',
+      repo: 'GriffinJohnston/ldrs',
+      sha: 'f759f65beb8ab4f4a1f010438072180693ca01ec',
+      paths: [
+        'src/elements/pinwheel.scss',
+        'src/elements/pinwheel.ts',
+        'src/elements/miyagi.scss',
+        'src/elements/miyagi.ts',
+        'src/elements/hatch.scss',
+        'src/elements/hatch.ts',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2022 Griffin Johnston'],
+    },
+    modifications: [
+      'Replaced the three Web Components with one React component; the upstream SCSS is merged into one stylesheet with prefixed class names and a variant switch.',
+      'The fixed six-line markup is generated from the echoes parameter; echo delays and opacities follow the upstream steps (-0.375 to -0.075 of the cycle, 0.8 down to 0.1) and are computed from echoes and falloff.',
+      'Added role="status" with an sr-only label and a reduced-motion state that freezes the echoes into a static fan (hatch: a single bar).',
+    ],
+    assets: [],
+  },
+})

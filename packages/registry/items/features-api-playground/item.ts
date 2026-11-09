@@ -1,0 +1,108 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'features-api-playground',
+  status: 'published',
+  title: { 'zh-CN': 'API 试玩区', en: 'API Playground' },
+  summary: {
+    'zh-CN': '开发者产品的功能区块：左边选接口、填两三个参数，中间同步写出 cURL、JavaScript 和 Python 三种调用，按下 Run 后右边的模拟 JSON 响应带着语法色和耗时标签刷新。适合 API 产品、SDK 发布和开发者首页。',
+    en: 'A developer feature block with a live request builder: pick an endpoint and fill two or three parameters, the call is written out as cURL, JavaScript and Python tabs, and pressing Run refreshes a mocked JSON response with syntax colours and a latency badge. For API products, SDK launches and developer homepages.',
+  },
+  kind: 'section',
+  category: 'features',
+  tags: ['api', 'developer', 'playground', 'code', 'sdk', 'request', 'json', 'docs'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'features-api-playground.tsx', export: 'FeaturesApiPlayground' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'features-api-playground.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, hint: { 'zh-CN': '按钮、选中态和 JSON 键名；文字色按对比度自动调整', en: 'Run button, selection and JSON keys; text tints adjust for contrast' }, default: '#7c9cff', group: 'look' },
+    {
+      key: 'theme',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Theme' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'typeface',
+      type: 'select',
+      label: { 'zh-CN': '字体搭配', en: 'Typefaces' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist + Geist Mono', en: 'Geist + Geist Mono' } },
+        { value: 'jetbrains', label: { 'zh-CN': 'Inter Tight + JetBrains Mono', en: 'Inter Tight + JetBrains Mono' } },
+        { value: 'plex', label: { 'zh-CN': 'IBM Plex Sans + Plex Mono', en: 'IBM Plex Sans + Plex Mono' } },
+        { value: 'editorial', label: { 'zh-CN': 'Instrument Serif 标题 + Geist Mono', en: 'Instrument Serif headline + Geist Mono' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 14, min: 4, max: 20, step: 1, unit: 'px', safe: [8, 16], group: 'look' },
+    {
+      key: 'layout',
+      type: 'select',
+      label: { 'zh-CN': '版式', en: 'Layout' },
+      hint: { 'zh-CN': '窄屏下三种版式都会把面板竖着叠起来', en: 'On narrow screens every layout stacks the panes' },
+      default: 'columns',
+      options: [
+        { value: 'columns', label: { 'zh-CN': '三栏', en: 'Three columns' } },
+        { value: 'stacked', label: { 'zh-CN': '上下', en: 'Builder on top' } },
+        { value: 'split', label: { 'zh-CN': '左文右窗', en: 'Copy beside window' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'defaultLanguage',
+      type: 'select',
+      label: { 'zh-CN': '默认语言', en: 'Default language' },
+      default: 'curl',
+      options: [
+        { value: 'curl', label: { 'zh-CN': 'cURL', en: 'cURL' } },
+        { value: 'javascript', label: { 'zh-CN': 'JavaScript', en: 'JavaScript' } },
+        { value: 'python', label: { 'zh-CN': 'Python', en: 'Python' } },
+      ],
+      group: 'interaction',
+    },
+    { key: 'showLatency', type: 'boolean', label: { 'zh-CN': '显示耗时', en: 'Show latency' }, hint: { 'zh-CN': '响应旁的毫秒标签，按快慢变色', en: 'The millisecond badge beside the status, coloured by speed' }, default: true, group: 'interaction' },
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Rates, labels and tracking behind one API', maxLength: 64, group: 'content' },
+    {
+      key: 'subheading',
+      type: 'text',
+      label: { 'zh-CN': '副标题', en: 'Subheading' },
+      default: 'Change a parameter and press Run. Every call is written out for cURL, JavaScript and Python, and runs against a test key that never buys postage.',
+      maxLength: 170,
+      group: 'content',
+    },
+  ],
+  presets: [
+    { id: 'night-desk', name: { 'zh-CN': '夜班台', en: 'Night Desk' }, values: { accent: '#7c9cff', theme: 'dark', typeface: 'geist', radius: 14, layout: 'columns', defaultLanguage: 'curl' } },
+    { id: 'blueprint', name: { 'zh-CN': '蓝图', en: 'Blueprint' }, values: { accent: '#2f5bea', theme: 'light', typeface: 'plex', radius: 6, layout: 'stacked', defaultLanguage: 'python' } },
+    { id: 'phosphor', name: { 'zh-CN': '磷光', en: 'Phosphor' }, values: { accent: '#b4f461', theme: 'dark', typeface: 'jetbrains', radius: 4, layout: 'split', defaultLanguage: 'javascript' } },
+    { id: 'terracotta', name: { 'zh-CN': '陶土', en: 'Terracotta' }, values: { accent: '#c4471a', theme: 'light', typeface: 'editorial', radius: 18, layout: 'columns', defaultLanguage: 'javascript' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Inter Tight Variable', 'JetBrains Mono Variable', 'IBM Plex Sans Variable', 'IBM Plex Mono', 'Instrument Serif'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: [
+      'Use on an API product page, an SDK launch or a developer homepage to let visitors try a call without signing up. Replace ENDPOINTS, DEFAULT_VALUES, respond() and the three code writers with your own API; the responses are mocked locally and never hit the network.',
+    ],
+    rules: [
+      'Keep it to three endpoints with two or three parameters each, so the builder stays one glance wide. Every parameter label is the real wire name in mono, with its type beside it.',
+      'Mocked responses must be deterministic for the same input, including the latency, and invalid input should return a realistic 4xx error object rather than nothing.',
+      'Show the same request in every language tab; the code is generated from the current parameters, never hand-written per state.',
+      'Tabs follow the tablist pattern (arrow keys, Home, End), endpoints and enum values are native radio inputs, the switch has role="switch", and the response status is announced through a polite live region.',
+    ],
+  },
+  capture: { posterTime: 3.8, loop: 12 },
+  provenance: { kind: 'original', modifications: [], assets: [] },
+})

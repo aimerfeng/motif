@@ -1,0 +1,65 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'navbar-collab-presence',
+  status: 'published',
+  title: { 'zh-CN': '协作文档顶栏', en: 'Collaboration Header' },
+  summary: {
+    'zh-CN': '文档顶栏：左边是返回箭头和标题，右边是历史、评论、邀请三个图标按钮，以及一排带绿色在线圆点的协作者头像和 +3 溢出计数。适合编辑器、白板和设计文件。',
+    en: 'A document header with a back arrow and title, history, comments and invite icon buttons, and a row of live collaborator avatars with green presence dots and a +3 overflow. Made for editors, whiteboards and design files.',
+  },
+  kind: 'section',
+  category: 'navbar',
+  tags: ['navbar', 'header', 'avatar', 'presence', 'collaboration', 'editor'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'navbar-collab-presence.tsx', export: 'NavbarCollabPresence' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'navbar-collab-presence.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'docTitle', type: 'text', group: 'content', label: { 'zh-CN': '文档标题', en: 'Document title' }, default: 'Basic UI', maxLength: 40 },
+    {
+      key: 'collaborators',
+      type: 'text',
+      group: 'content',
+      label: { 'zh-CN': '协作者', en: 'Collaborators' },
+      hint: { 'zh-CN': '用英文逗号分隔，超出可见数量的计入 +N', en: 'Comma-separated; names beyond the visible count go into +N' },
+      default: 'Kelly King, Martha Johnson, Linda Green, Omar Diaz, Priya Nair, Tom Becker',
+      maxLength: 160,
+    },
+    { key: 'maxVisible', type: 'number', group: 'layout', label: { 'zh-CN': '可见头像数', en: 'Visible avatars' }, default: 3, min: 1, max: 5, step: 1 },
+    { key: 'presenceColor', type: 'color', group: 'look', label: { 'zh-CN': '在线圆点色', en: 'Presence dot' }, default: '#10b981' },
+    { key: 'showActions', type: 'boolean', group: 'content', label: { 'zh-CN': '操作按钮', en: 'Action buttons' }, default: true },
+    { key: 'height', type: 'number', group: 'layout', label: { 'zh-CN': '高度', en: 'Height' }, default: 64, min: 48, max: 80, step: 1, unit: 'px', safe: [56, 72] },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '头像主色', en: 'Avatar accent' }, default: '#6366f1' },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原样', en: 'Origin' }, values: {} },
+    { id: 'studio', name: { 'zh-CN': '画室', en: 'Studio' }, values: { accent: '#f59e0b', presenceColor: '#22d3ee', docTitle: 'Brand board', maxVisible: 4 } },
+    { id: 'quiet', name: { 'zh-CN': '安静', en: 'Quiet' }, values: { accent: '#64748b', showActions: false, height: 52, docTitle: 'Q3 planning notes' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.3, posterTime: 1.2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: ['apps/origin/registry/default/components/comp-595.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Replaced Radix Avatar photos with accent-tinted gradient initials and ui/button with plain buttons/links; lucide icons became inline SVG.',
+      'Collaborators, visible count, presence color, action buttons, height and title are params; the +N count comes from the list, online dots get a motion pulse ring and the count animates when it changes.',
+      'Added controlled online/extra props so the demo autoplays people joining and leaving on the frame clock; history and comments hide on narrow screens.',
+    ],
+    assets: [],
+  },
+})

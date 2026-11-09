@@ -1,0 +1,216 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2022 Griffin Johnston
+ * Source: https://github.com/GriffinJohnston/ldrs/blob/f759f65/src/elements/quantum.scss
+ * Modified by Motif; see the item's provenance.
+ */
+.mdp-root {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--mdp-size);
+  width: var(--mdp-size);
+}
+.mdp-root[data-variant='grid'] {
+  height: calc(var(--mdp-size) * 0.8);
+}
+
+.mdp-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--mdp-size);
+  width: var(--mdp-size);
+}
+
+/* A particle: the near color, with a far-color layer that fades in as it recedes. */
+.mdp-dot {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--mdp-color);
+}
+.mdp-tint {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--mdp-far);
+  opacity: 0;
+}
+
+/* ---- Orbit: one sine-eased pass round a circle seen edge-on.
+ * x follows cos, depth (scale, opacity, tint) follows sin.
+ * 0% right / mid depth, 25% centre / far, 50% left / mid, 75% centre / near. ---- */
+.mdp-orbit {
+  animation:
+    mdp-x var(--mdp-dur) linear infinite,
+    mdp-z var(--mdp-dur) linear infinite;
+  animation-delay: calc(var(--mdp-dur) * var(--mdp-d, 0));
+}
+.mdp-orbit > .mdp-tint {
+  animation: mdp-tint var(--mdp-dur) linear infinite;
+  animation-delay: calc(var(--mdp-dur) * var(--mdp-d, 0));
+}
+
+@keyframes mdp-x {
+  0% {
+    translate: var(--mdp-amp) 0;
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  25% {
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+  }
+  50% {
+    translate: calc(var(--mdp-amp) * -1) 0;
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  75% {
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+  }
+  100% {
+    translate: var(--mdp-amp) 0;
+  }
+}
+@keyframes mdp-z {
+  0%,
+  50% {
+    scale: var(--mdp-mid-scale);
+    opacity: var(--mdp-mid-op);
+    animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+  }
+  25% {
+    scale: var(--mdp-far-scale);
+    opacity: var(--mdp-far-op);
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  75% {
+    scale: 1;
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  100% {
+    scale: var(--mdp-mid-scale);
+    opacity: var(--mdp-mid-op);
+  }
+}
+@keyframes mdp-tint {
+  0%,
+  50% {
+    opacity: 0.5;
+    animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+  }
+  25% {
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  75% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+/* ---- helix (ldrs helix.scss): six slices, a pair of dots in each ---- */
+.mdp-helix {
+  flex-direction: column;
+}
+.mdp-slice {
+  position: relative;
+  height: calc(var(--mdp-size) / 6);
+  width: 100%;
+}
+.mdp-helix .mdp-dot {
+  position: absolute;
+  top: calc(50% - var(--mdp-dot) / 2);
+  left: calc(50% - var(--mdp-dot) / 2);
+  height: var(--mdp-dot);
+  width: var(--mdp-dot);
+}
+
+/* ---- quantum (ldrs quantum.scss): 13 particles at scattered angles in a turning sphere ---- */
+.mdp-quantum {
+  animation: mdp-rotate calc(var(--mdp-dur) * 4) linear infinite;
+}
+@keyframes mdp-rotate {
+  to {
+    rotate: 360deg;
+  }
+}
+.mdp-particle,
+.mdp-electron {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+.mdp-particle .mdp-dot,
+.mdp-electron .mdp-dot {
+  height: var(--mdp-dot);
+  width: var(--mdp-dot);
+}
+
+/* ---- grid (ldrs grid.scss): isometric 4x4 dots rippling like a wave ---- */
+.mdp-grid {
+  justify-content: flex-start;
+  height: calc(var(--mdp-size) * 0.64);
+  width: calc(var(--mdp-size) * 0.64);
+}
+.mdp-grid-cell {
+  position: absolute;
+  bottom: calc(var(--mdp-bottom) + var(--mdp-cell) / 2);
+  right: calc(var(--mdp-right) + var(--mdp-cell) / 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--mdp-cell);
+  width: var(--mdp-cell);
+  opacity: var(--mdp-scale);
+  animation: mdp-jump var(--mdp-dur) ease-in-out infinite;
+  animation-delay: calc(var(--mdp-dur) * var(--mdp-d, 0));
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.mdp-grid-cell .mdp-dot {
+  height: var(--mdp-dot);
+  width: var(--mdp-dot);
+  scale: var(--mdp-scale);
+}
+@keyframes mdp-jump {
+  0%,
+  100% {
+    translate: 0 120%;
+  }
+  50% {
+    translate: 0 -120%;
+  }
+}
+
+/* Reduced motion: no animation; each particle sits at the pose its phase gives it (computed in JS). */
+@media (prefers-reduced-motion: reduce) {
+  .mdp-root,
+  .mdp-root * {
+    animation: none !important;
+  }
+  .mdp-orbit {
+    translate: var(--mdp-sx) 0;
+    scale: var(--mdp-ss);
+    opacity: var(--mdp-so);
+  }
+  .mdp-orbit > .mdp-tint {
+    opacity: var(--mdp-st);
+  }
+  .mdp-grid-cell {
+    translate: 0 var(--mdp-sy);
+  }
+}

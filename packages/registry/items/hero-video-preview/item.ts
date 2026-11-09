@@ -1,0 +1,87 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'hero-video-preview',
+  status: 'published',
+  title: { 'zh-CN': '视频预览主视觉', en: 'Video Preview Hero' },
+  summary: {
+    'zh-CN': '左右分栏的首屏：左边是徽标、大标题、邮箱注册、权益清单和头像背书，右边是带脉动播放键的视频卡片，两枚小浮标轻轻上下浮动，背后有缓慢漂移的模糊光斑。',
+    en: 'A split hero with badge, headline, email signup, benefit checklist and an avatar proof line on one side, and a video card with a pulsing play button and two bobbing chips on the other, over slowly drifting blurred blobs.',
+  },
+  kind: 'section',
+  category: 'hero',
+  tags: ['hero', 'video', 'split', 'signup', 'cta', 'motion'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'hero-video-preview.tsx', export: 'HeroVideoPreview' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'hero-video-preview.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'headline',
+      type: 'text',
+      label: { 'zh-CN': '主标题', en: 'Headline' },
+      hint: { 'zh-CN': '最后一个词使用强调色渐变', en: 'The last word gets the accent gradient' },
+      default: 'Transform Your Business Today',
+      maxLength: 56,
+      group: 'content',
+    },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#7c5cff', group: 'look' },
+    { key: 'secondary', type: 'color', label: { 'zh-CN': '辅色', en: 'Secondary' }, default: '#a855f7', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '深浅', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'mediaSide',
+      type: 'select',
+      label: { 'zh-CN': '视频位置', en: 'Video side' },
+      default: 'right',
+      options: [
+        { value: 'right', label: { 'zh-CN': '右侧', en: 'Right' } },
+        { value: 'left', label: { 'zh-CN': '左侧', en: 'Left' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'showChips', type: 'boolean', label: { 'zh-CN': '浮动小标', en: 'Floating chips' }, default: true, group: 'layout' },
+    { key: 'floatAmplitude', type: 'number', label: { 'zh-CN': '浮动幅度', en: 'Float amplitude' }, default: 10, min: 0, max: 20, step: 1, unit: 'px', safe: [4, 16], group: 'motion' },
+  ],
+  presets: [
+    { id: 'violet-reel', name: { 'zh-CN': '紫幕', en: 'Violet Reel' }, values: {} },
+    { id: 'daylight', name: { 'zh-CN': '晴窗', en: 'Daylight' }, values: { tone: 'light', accent: '#2563eb', secondary: '#06b6d4' } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { accent: '#f97316', secondary: '#f43f5e', mediaSide: 'left', floatAmplitude: 14 } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'uitripled',
+      repo: 'moumen-soliman/uitripled',
+      sha: '05d18376db775072ed61d0cab8ea184f8f527429',
+      paths: ['packages/components/react-shadcn/src/components/sections/cta-hero-block.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2026 uitripled'],
+    },
+    modifications: [
+      'framer-motion imports switched to motion/react; lucide icons replaced with inline SVG; shadcn Badge, Button, Card and Input replaced with plain elements carrying the same classes.',
+      'Theme colors now come from accent, secondary and tone params, with text ink picked by contrast; headline text, video side, chip visibility and float amplitude are params.',
+      'DiceBear avatars replaced with gradient initials; brand copy rewritten for an invented product.',
+      'Added a labelled email input, form element, play button semantics and focus-visible rings; looping and entrance animations are skipped under reduced motion.',
+    ],
+    assets: [],
+  },
+})

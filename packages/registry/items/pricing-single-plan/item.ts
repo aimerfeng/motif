@@ -1,0 +1,85 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'pricing-single-plan',
+  status: 'published',
+  title: { 'zh-CN': '单一套餐与销售入口', en: 'Single Plan with Sales Paths' },
+  summary: {
+    'zh-CN': '左边是标题和两条安静的销售入口（联系销售、预约演示），右边是带年付 / 月付单选卡片和功能清单的价格卡。适合只有一个付费档的产品。',
+    en: 'A headline with two quiet links to talk to sales or book a demo on the left, and a price card with annual/monthly radio cards and a feature list on the right. For products with a single paid tier.',
+  },
+  kind: 'section',
+  category: 'pricing',
+  tags: ['pricing', 'single plan', 'billing', 'radio cards', 'saas', 'tremor'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'pricing-single-plan.tsx', export: 'PricingSinglePlan' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'pricing-single-plan.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'planName', type: 'text', label: { 'zh-CN': '套餐名', en: 'Plan name' }, default: 'Professional Plan Subscription', maxLength: 40, group: 'content' },
+    { key: 'price', type: 'number', label: { 'zh-CN': '年付月价', en: 'Annual price / mo' }, default: 29, min: 5, max: 199, step: 1, group: 'pricing' },
+    { key: 'monthlyPrice', type: 'number', label: { 'zh-CN': '月付月价', en: 'Monthly price / mo' }, default: 39, min: 5, max: 249, step: 1, group: 'pricing' },
+    {
+      key: 'billing',
+      type: 'select',
+      label: { 'zh-CN': '默认计费周期', en: 'Default billing' },
+      default: 'annually',
+      options: [
+        { value: 'annually', label: { 'zh-CN': '年付', en: 'Billed annually' } },
+        { value: 'monthly', label: { 'zh-CN': '月付', en: 'Billed monthly' } },
+      ],
+      group: 'pricing',
+    },
+    { key: 'features', type: 'number', label: { 'zh-CN': '功能条数', en: 'Feature rows' }, default: 5, min: 3, max: 5, step: 1, group: 'content' },
+    { key: 'showSalesLinks', type: 'boolean', label: { 'zh-CN': '显示销售入口', en: 'Show sales links' }, default: true, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent color' }, default: '#3b82f6', group: 'look' },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Radius' }, default: 8, min: 0, max: 20, step: 1, unit: 'px', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+  ],
+  presets: [
+    { id: 'tremor-blue', name: { 'zh-CN': '原版', en: 'Tremor Blue' }, values: {} },
+    { id: 'paper', name: { 'zh-CN': '纸面', en: 'Paper' }, values: { tone: 'light', accent: '#4f46e5', radius: 12 } },
+    { id: 'mint', name: { 'zh-CN': '薄荷', en: 'Mint' }, values: { accent: '#34d399', price: 49, monthlyPrice: 59, radius: 4, showSalesLinks: false } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tremor-blocks',
+      repo: 'tremorlabs/tremor-blocks',
+      sha: 'b319e8d3d3678a4f60f4802f7e85bc1abc52d598',
+      paths: [
+        'src/content/components/pricing-sections/pricing-section-01.tsx',
+        'src/content/components/pricing-sections/pricing-section-03.tsx',
+        'src/components/RadioCardGroup.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Tremor Labs, Inc.'],
+    },
+    modifications: [
+      'Ported pricing-section-03 (layout, markup and classes kept) with the sales links shared with pricing-section-01, made optional.',
+      'Radix RadioCardGroup replaced by a hand-rolled radiogroup with arrow-key navigation; Badge, Button, Divider and Label replaced by plain elements; remixicon replaced by an inline SVG.',
+      'Gray/blue Tailwind colors replaced by tone and accent params; the savings badge is computed from the two prices; the price animates on change (static under reduced motion).',
+      'Demo switches the billing choice on a frame-loop timer until the viewer interacts.',
+    ],
+    assets: [],
+  },
+})

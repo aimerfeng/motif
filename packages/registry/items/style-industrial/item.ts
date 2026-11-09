@@ -1,0 +1,95 @@
+import { defineItem } from '@motif/schema'
+
+const option = (value: string, zh: string, en: string) => ({ value, label: { 'zh-CN': zh, en } })
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'style-industrial',
+  status: 'published',
+  title: { 'zh-CN': '工业重型', en: 'Industrial' },
+  summary: {
+    'zh-CN': '车间里的界面：石墨钢灰的金属面板，四角铆钉，黄黑斜纹警示带，大写的喷字标签，带冲孔的吊牌徽标和无模糊的 2px 硬阴影。适合工程建设、物流货运、工具和制造业。',
+    en: 'A workshop interface: graphite steel panels with corner rivets, yellow-and-black hazard stripes, stencil-style uppercase labels, punched tag badges and blur-free 2px hard shadows. For construction, logistics, tools and manufacturing.',
+  },
+  kind: 'style',
+  category: 'bold',
+  tags: ['industrial', 'hazard stripes', 'steel', 'construction', 'logistics', 'utilitarian', 'tokens'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'style-industrial.tsx', export: 'StyleIndustrial' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'light' },
+  files: [
+    { path: 'style-industrial.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'hazardColor', type: 'color', group: 'look', label: { 'zh-CN': '警示色', en: 'Hazard colour' }, hint: { 'zh-CN': '斜纹、主按钮和吊牌的颜色；上面的文字按亮度自动选黑或白', en: 'Stripes, primary button and tags; text on it switches between ink and white by luminance' }, default: '#f7b500' },
+    {
+      key: 'steelTone',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '钢材色调', en: 'Steel tone' },
+      default: 'light',
+      options: [option('light', '拉丝钢（浅）', 'Brushed steel (light)'), option('dark', '枪灰（深）', 'Gunmetal (dark)')],
+    },
+    { key: 'stripeAngle', type: 'number', group: 'stripes', label: { 'zh-CN': '斜纹角度', en: 'Stripe angle' }, default: 45, min: 30, max: 60, step: 1, unit: 'deg', safe: [35, 55] },
+    { key: 'stripeWidth', type: 'number', group: 'stripes', label: { 'zh-CN': '斜纹宽度', en: 'Stripe width' }, hint: { 'zh-CN': '警示带上每条色带的宽度；小部件按比例缩小', en: 'Width of each band on hazard strips; small controls use a scaled-down version' }, default: 14, min: 8, max: 24, step: 1, unit: 'px', safe: [10, 20] },
+    { key: 'rivets', type: 'boolean', group: 'look', label: { 'zh-CN': '面板铆钉', en: 'Panel rivets' }, default: true },
+    { key: 'radius', type: 'number', group: 'shape', label: { 'zh-CN': '圆角', en: 'Radius' }, hint: { 'zh-CN': '面板用这个值，按钮和输入框用它的 60%', en: 'Panels use this; buttons and inputs use 60% of it' }, default: 6, min: 0, max: 12, step: 1, unit: 'px', safe: [0, 8] },
+    {
+      key: 'displayFont',
+      type: 'select',
+      group: 'type',
+      label: { 'zh-CN': '标题字体', en: 'Display font' },
+      default: 'archivo',
+      options: [option('archivo', 'Archivo Black', 'Archivo Black'), option('grotesk', 'Space Grotesk', 'Space Grotesk'), option('plex', 'IBM Plex Mono', 'IBM Plex Mono')],
+    },
+    { key: 'shadowOffset', type: 'number', group: 'shape', label: { 'zh-CN': '硬阴影偏移', en: 'Hard shadow offset' }, hint: { 'zh-CN': '零模糊投影的偏移量，按下按钮时归零', en: 'Offset of the zero-blur drop; pressing a button collapses it' }, default: 2, min: 0, max: 6, step: 1, unit: 'px', safe: [1, 4] },
+  ],
+  presets: [
+    { id: 'site-yellow', name: { 'zh-CN': '工地黄', en: 'Site yellow' }, values: { hazardColor: '#f7b500', steelTone: 'light', stripeAngle: 45, stripeWidth: 14, rivets: true, radius: 6, displayFont: 'archivo', shadowOffset: 2 } },
+    { id: 'night-shift', name: { 'zh-CN': '夜班', en: 'Night shift' }, values: { hazardColor: '#ffcc1a', steelTone: 'dark', stripeAngle: 40, stripeWidth: 12, rivets: true, radius: 4, displayFont: 'grotesk', shadowOffset: 3 } },
+    { id: 'safety-orange', name: { 'zh-CN': '安全橙', en: 'Safety orange' }, values: { hazardColor: '#ff6b1a', steelTone: 'light', stripeAngle: 55, stripeWidth: 18, rivets: false, radius: 2, displayFont: 'plex', shadowOffset: 4 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Archivo Black', 'Space Grotesk Variable', 'IBM Plex Sans Variable', 'IBM Plex Mono'],
+  guidance: {
+    use: [
+      'Use for construction, heavy haulage and logistics, manufacturing, tools and hardware, fleet and field-operations dashboards, maker spaces and anything that should feel like equipment rather than software.',
+      'Avoid for wellness, luxury, fashion or calm editorial products; the hazard colour and hard shadows are deliberately loud.',
+    ],
+    rules: [
+      'Base tokens come from the tweakcn Graphite preset: light background #f0f0f0, card #f5f5f5, foreground #333333, primary #606060, secondary #e0e0e0, muted text #666666, border #d0d0d0, destructive #cc3333, chart teal #476666; dark background #1a1a1a, card #202020, foreground #d9d9d9, primary #a0a0a0. Keep the steel neutrals; only the hazard colour may change.',
+      'Colour ratio: about 85% graphite steel, 8% hazard colour, 5% ink (#1a1a1a), 2% semantic (teal for OK, #cc3333 for alarms). Use exactly one hazard colour per product.',
+      'The hazard colour is a fill, never a text colour on steel. Text on the hazard colour is ink or white, chosen by luminance. Hazard stripes are the hazard colour alternating with that same ink at one shared angle and width token.',
+      'Stripes mark edges and states only: page or section bands, the left edge of alerts, the fill of an active meter, the track of an enabled switch. Never put stripes behind text and never use them as a page background.',
+      'Panels are steel plates: a 1px mid-steel edge (#909090 light, #585858 dark), a faint top sheen and brushed grain, and a hard offset shadow with zero blur in hsl(0 0% 20%) (black in dark mode). Rivets sit at the four corners of panels only, not on buttons, inputs or tags.',
+      'Every raised control has the same hard shadow, offset on both axes by one token (2px by default). Pressing a button translates it by the offset and collapses the shadow to zero; there are no soft or blurred shadows anywhere.',
+      'Type: Archivo Black (or a heavy grotesk) in uppercase for display and button labels; IBM Plex Sans for body copy; IBM Plex Mono at 700 weight, uppercase, 0.12em to 0.16em tracking for labels, codes, units and values. Numbers are always mono with tabular figures.',
+      'Tags are luggage-style badges: chamfered left corners, a punched hole with an eyelet ring, mono uppercase text and the hard drop shadow.',
+      'Shape: one small radius token (0 to 8px) for panels; controls use 60% of it. No pills, no circles except rivets, eyelets and status lamps.',
+      'Motion is mechanical: 90 to 150ms ease-out press and toggle, and a slow conveyor movement on active striped meters. Nothing bounces. Under prefers-reduced-motion the conveyor stops and transitions are removed.',
+      'Forbidden: blurred shadows, glows, glass, pastel colours, gradients other than the steel sheen, more than one hazard colour, real safety-sign pictograms or real equipment brands and logos.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'tweakcn',
+      repo: 'jnsahaj/tweakcn',
+      sha: 'a3b47b37cba97dd637de517aab52c45ec0f83456',
+      paths: ['utils/theme-presets.ts'],
+      spdx: 'Apache-2.0',
+      copyright: ['tweakcn (https://github.com/jnsahaj/tweakcn)'],
+    },
+    modifications: [
+      'Only the neutral "graphite" preset was used: its light and dark colours (background, card, primary, secondary, muted, accent, destructive, border, input, chart teal and greys), the 0.35rem radius (as 6px) and the hard zero-blur shadow in hsl(0 0% 20%) were kept as the starting tokens.',
+      'The shadow is now opaque and offset on both axes by a parameter; the dark muted text was raised from #808080 to #8f8f8f so small labels stay readable on dark cards.',
+      'Montserrat, Inter and Fira Code were replaced with Archivo Black, IBM Plex Sans and IBM Plex Mono from the Motif self-hosted font list.',
+      'The hazard colour and stripes, rivets, punched tags, buttons, inputs, switch, meter, alerts, parameters and the style sheet demo are original Motif work, converted from shadcn CSS variables into a scoped component with an @layer components style block.',
+    ],
+    assets: [],
+  },
+})

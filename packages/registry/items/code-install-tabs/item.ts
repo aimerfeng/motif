@@ -1,0 +1,81 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'code-install-tabs',
+  status: 'published',
+  title: { 'zh-CN': '安装命令切换', en: 'Install Command Tabs' },
+  summary: {
+    'zh-CN': '深色代码块上方一排 pnpm / npm / yarn / bun 标签，切换后改写同一条安装命令，下划线标出当前的包管理器，右上角一键复制，选择会记住并同步到页面上的其他代码块。适合文档、README 和组件页。',
+    en: 'A dark code block with pnpm / npm / yarn / bun tabs that rewrite the same install command, an underline that marks the active manager, a copy button, and the choice remembered for the next block on the page. Made for docs, READMEs and component pages.',
+  },
+  kind: 'component',
+  category: 'data',
+  tags: ['cli', 'install', 'package-manager', 'tabs', 'copy', 'docs', 'code'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'code-install-tabs.tsx', export: 'CliCommands' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'code-install-tabs.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'command', type: 'text', group: 'content', label: { 'zh-CN': '命令', en: 'Command' }, hint: { 'zh-CN': '包管理器前缀之后的部分', en: 'Everything after the package-manager runner' }, default: 'shadcn@latest add comp-149', maxLength: 64 },
+    {
+      key: 'defaultManager',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '默认包管理器', en: 'Default manager' },
+      default: 'pnpm',
+      options: [
+        { value: 'pnpm', label: { 'zh-CN': 'pnpm', en: 'pnpm' } },
+        { value: 'npm', label: { 'zh-CN': 'npm', en: 'npm' } },
+        { value: 'yarn', label: { 'zh-CN': 'yarn', en: 'yarn' } },
+        { value: 'bun', label: { 'zh-CN': 'bun', en: 'bun' } },
+      ],
+    },
+    { key: 'rememberChoice', type: 'boolean', group: 'interaction', label: { 'zh-CN': '记住选择', en: 'Remember choice' }, hint: { 'zh-CN': '页面上所有代码块同步，并存进 localStorage', en: 'Syncs every block on the page and persists to localStorage' }, default: true },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '下划线颜色', en: 'Underline color' }, default: '#fafafa' },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 6, min: 0, max: 16, step: 1, unit: 'px', safe: [4, 12] },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '等宽字体', en: 'Mono font' },
+      default: 'geist',
+      options: [
+        { value: 'geist', label: { 'zh-CN': 'Geist Mono', en: 'Geist Mono' } },
+        { value: 'jetbrains', label: { 'zh-CN': 'JetBrains Mono', en: 'JetBrains Mono' } },
+        { value: 'plex', label: { 'zh-CN': 'IBM Plex Mono', en: 'IBM Plex Mono' } },
+      ],
+    },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原版', en: 'Origin' }, values: { accent: '#fafafa', radius: 6, font: 'geist' } },
+    { id: 'lagoon', name: { 'zh-CN': '泻湖', en: 'Lagoon' }, values: { accent: '#38bdf8', radius: 12, font: 'jetbrains' } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { accent: '#fb923c', radius: 2, font: 'plex', defaultManager: 'bun' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Mono Variable', 'JetBrains Mono Variable', 'IBM Plex Mono'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.6, posterTime: 1, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: ['apps/origin/components/cli-commands.tsx', 'apps/origin/components/copy-button.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Replaced Radix Tabs with a hand-rolled tablist (roles, aria-selected, arrow / Home / End keys) and the Radix tooltip/button with a native button.',
+      'Replaced useConfig (jotai) with a small shared store that syncs blocks on the page and optionally persists to localStorage.',
+      'The command is a prop instead of a registry URL; added accent, radius, font and default-manager params; inlined the copy button and its useCopy hook.',
+      'transition-all replaced with opacity/transform transitions; a copied prop lets the demo force the copied state.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,96 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'input-character-limit',
+  status: 'published',
+  title: { 'zh-CN': '字数限制计数', en: 'Character Limit Counter' },
+  summary: {
+    'zh-CN': '输入框或自动长高的文本框，在框内或下方实时显示字数；接近上限时改为「还剩 n 字」，计数和焦点环先变琥珀再变红，也可以换成一个小进度环。适合个人简介、短动态和短信类输入。',
+    en: 'An input or auto-growing textarea that counts characters inline or below, switches to “n left” near the limit and tints the counter and focus ring amber then red, with an optional small progress ring. Made for bios, short posts and SMS fields.',
+  },
+  kind: 'component',
+  category: 'input',
+  tags: ['input', 'textarea', 'character-count', 'limit', 'form', 'a11y'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'input-character-limit.tsx', export: 'InputCharacterLimit' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'input-character-limit.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'field',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '字段类型', en: 'Field' },
+      default: 'textarea',
+      options: [
+        { value: 'input', label: { 'zh-CN': '单行输入', en: 'Input' } },
+        { value: 'textarea', label: { 'zh-CN': '多行文本', en: 'Textarea' } },
+      ],
+    },
+    { key: 'maxLength', type: 'number', group: 'content', label: { 'zh-CN': '字数上限', en: 'Max length' }, default: 50, min: 8, max: 280, step: 1 },
+    {
+      key: 'counter',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '计数样式', en: 'Counter' },
+      default: 'auto',
+      options: [
+        { value: 'auto', label: { 'zh-CN': '分数，临近改为剩余', en: 'Fraction, then “n left”' } },
+        { value: 'fraction', label: { 'zh-CN': '分数', en: 'Fraction' } },
+        { value: 'remaining', label: { 'zh-CN': '剩余字数', en: 'Characters left' } },
+        { value: 'ring', label: { 'zh-CN': '进度环', en: 'Progress ring' } },
+      ],
+    },
+    {
+      key: 'counterPosition',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '计数位置', en: 'Counter position' },
+      default: 'below',
+      options: [
+        { value: 'inline', label: { 'zh-CN': '框内', en: 'Inline' } },
+        { value: 'below', label: { 'zh-CN': '下方', en: 'Below' } },
+      ],
+    },
+    { key: 'warnAt', type: 'number', group: 'content', label: { 'zh-CN': '提醒阈值', en: 'Warn at' }, hint: { 'zh-CN': '达到上限的这个比例时变为琥珀色', en: 'Fraction of the limit where the counter turns amber' }, default: 0.8, min: 0.5, max: 0.95, step: 0.05 },
+    { key: 'autogrow', type: 'boolean', group: 'layout', label: { 'zh-CN': '自动长高', en: 'Autogrow' }, hint: { 'zh-CN': '仅多行文本', en: 'Textarea only' }, default: true },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 6, min: 0, max: 16, step: 1, unit: 'px' },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原味', en: 'Origin' }, values: { field: 'textarea', counter: 'auto', counterPosition: 'below', maxLength: 50, radius: 6 } },
+    { id: 'handle', name: { 'zh-CN': '短名', en: 'Handle' }, values: { field: 'input', counter: 'fraction', counterPosition: 'inline', maxLength: 24, radius: 8 } },
+    { id: 'pulse', name: { 'zh-CN': '脉搏', en: 'Pulse' }, values: { field: 'textarea', counter: 'ring', counterPosition: 'inline', maxLength: 50, warnAt: 0.7, radius: 12 } },
+  ],
+  dependencies: ['@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'not-animated' },
+  capture: { zoom: 1.8, posterTime: 6, loop: 10 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: [
+        'apps/origin/registry/default/components/comp-34.tsx',
+        'apps/origin/registry/default/components/comp-35.tsx',
+        'apps/origin/registry/default/components/comp-74.tsx',
+        'apps/origin/registry/default/components/comp-77.tsx',
+        'apps/origin/registry/default/hooks/use-character-limit.ts',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Merged the four upstream examples into one component; ui/input, ui/textarea and ui/label replaced with plain elements using the upstream classes.',
+      'Inlined the useCharacterLimit hook and made the value optionally controlled.',
+      'Added params: field type, limit, counter style (fraction, characters left, auto switch, progress ring), counter position, warn threshold (amber, then red at the limit), autogrow and corner radius.',
+      'Autogrow keeps CSS field-sizing with a small JS fallback.',
+    ],
+    assets: [],
+  },
+})

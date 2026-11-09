@@ -783,8 +783,8 @@
     },
     {
       "id": "coss-origin",
-      "repo": "cosscom/coss",
-      "sha": "8423f18a8b4830e875def4a7400730f29cae1147",
+      "repo": "origin-space/originui",
+      "sha": "fe6ffa81f434a4afe1c01564c13bb237564c42e2",
       "spdx": "MIT",
       "copyright": [
         "Copyright (c) 2025 coss.com",
@@ -796,7 +796,7 @@
       "pathPrefixes": [
         "apps/origin/"
       ],
-      "notes": "The repository is AGPL-3.0 except apps/origin/, which carries its own MIT license. Only code under apps/origin/ may be integrated."
+      "notes": "Origin UI components under apps/origin/ (MIT, own LICENSE.md). Only code under apps/origin/ is integrated. Repinned 2026-11-08 from cosscom/coss (whose earlier sha is no longer fetchable and which no longer contains apps/origin) to origin-space/originui; no item used the old pin."
     }
   ]
 }

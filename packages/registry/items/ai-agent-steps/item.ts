@@ -1,0 +1,96 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'ai-agent-steps',
+  status: 'published',
+  title: { 'zh-CN': '智能体执行步骤', en: 'Agent Run Steps' },
+  summary: {
+    'zh-CN': '随着智能体干活逐步长出来的竖向时间线：每一步先转圈、完成后换成对勾，展开能看到子步骤；工具调用是一张带状态徽章（Processing、Ready、Completed、Error）的卡片，输入输出按 JSON 上色。适合智能助手、编程智能体和自动化工具。',
+    en: 'A vertical timeline that grows as an agent works: each step spins, then turns into a check, and expands to show its sub-steps. Tool calls render as cards with a status badge (Processing, Ready, Completed, Error) and colored JSON input and output. For agentic copilots, coding agents and automation builders.',
+  },
+  kind: 'component',
+  category: 'chat',
+  tags: ['ai', 'agent', 'steps', 'tool-call', 'timeline', 'chat', 'collapsible', 'chain-of-thought'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'ai-agent-steps.tsx', export: 'AgentRunSteps' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'ai-agent-steps.tsx', role: 'component' },
+    { path: 'ai-agent-steps.css', role: 'style' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, hint: { 'zh-CN': '进行中的转圈、完成的对勾和连线', en: 'Spinner, check marks and the connector' }, default: '#a78bfa' },
+    {
+      key: 'iconStyle',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '步骤图标', en: 'Step icons' },
+      default: 'status',
+      options: [
+        { value: 'status', label: { 'zh-CN': '转圈 → 对勾', en: 'Spinner → check' } },
+        { value: 'topic', label: { 'zh-CN': '按步骤类型', en: 'By step type' } },
+        { value: 'dot', label: { 'zh-CN': '圆点', en: 'Dots' } },
+      ],
+    },
+    {
+      key: 'connector',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '连线', en: 'Connector' },
+      default: 'line',
+      options: [
+        { value: 'line', label: { 'zh-CN': '实线', en: 'Line' } },
+        { value: 'dashed', label: { 'zh-CN': '虚线', en: 'Dashed' } },
+        { value: 'none', label: { 'zh-CN': '无', en: 'None' } },
+      ],
+    },
+    { key: 'radius', type: 'number', group: 'look', label: { 'zh-CN': '工具卡片圆角', en: 'Tool card radius' }, default: 10, min: 0, max: 18, step: 1, unit: 'px', safe: [4, 14] },
+    { key: 'showToolPayload', type: 'boolean', group: 'content', label: { 'zh-CN': '展开工具输入输出', en: 'Show tool payloads' }, default: true },
+    { key: 'collapseDone', type: 'boolean', group: 'interaction', label: { 'zh-CN': '完成后折叠', en: 'Collapse finished steps' }, default: true },
+    { key: 'stepInterval', type: 'number', group: 'motion', label: { 'zh-CN': '演示步骤间隔', en: 'Demo step interval' }, hint: { 'zh-CN': '只影响演示：每一步大约用时', en: 'Demo only: roughly how long each step runs' }, default: 1.6, min: 0.8, max: 3, step: 0.1, unit: 's', safe: [1.2, 2.4] },
+  ],
+  presets: [
+    { id: 'lavender', name: { 'zh-CN': '薰衣草', en: 'Lavender' }, values: { accent: '#a78bfa', iconStyle: 'status', connector: 'line', radius: 10 } },
+    { id: 'signal', name: { 'zh-CN': '信号灯', en: 'Signal' }, values: { accent: '#38bdf8', iconStyle: 'topic', connector: 'dashed', radius: 6 } },
+    { id: 'moss', name: { 'zh-CN': '苔痕', en: 'Moss' }, values: { accent: '#4ade80', iconStyle: 'dot', connector: 'line', radius: 14, showToolPayload: false } },
+  ],
+  dependencies: ['@motif/runtime'],
+  guidance: {
+    rules: [
+      'Pass the run as steps: each has an id, a title, a status (pending, running, done, error), optional items (sub-steps) and tools (ToolPart with state input-streaming, input-available, output-available or output-error). Re-render with new steps as the agent reports progress.',
+      'With collapseDone the running step stays open and finished steps fold; a user toggle sticks until that step changes status.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.3, posterTime: 7, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'prompt-kit',
+      repo: 'ibelick/prompt-kit',
+      sha: '5a9496635cc0e1bf7679fe2a9e35d9b36b99c08a',
+      paths: [
+        'components/prompt-kit/chain-of-thought.tsx',
+        'components/prompt-kit/tool.tsx',
+        'components/prompt-kit/loader.tsx',
+        'app/globals.css',
+        'app/docs/chain-of-thought/chain-of-thought-advanced.tsx',
+        'app/docs/steps/steps-with-loader.tsx',
+        'app/docs/tool/tool-states.tsx',
+      ],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 Julien Thibeaut'],
+    },
+    modifications: [
+      'Kept ChainOfThought (Step / Trigger / Content / Item), Tool and TextShimmerLoader in one file and composed them into an AgentRunSteps timeline driven by a steps array with per-step status.',
+      'The Radix Collapsible became a small hand-rolled disclosure (aria-expanded, aria-controls, inert, grid-template-rows transition); the shadcn Button became a plain button; lucide icons became inline SVG.',
+      'Added status icons (spinner, check, error), a topic-icon and dot variant, an accent color, a solid / dashed / no connector, a tool card radius, auto-open of the running step and collapse of finished ones.',
+      'The shiki code blocks of the example became plain monospace; tool output JSON gets a tiny key / string / number highlighter. Shimmer keyframes live in the item CSS file and stop under reduced motion, as do the spinners.',
+      'The demo plays a scripted run from useFrameLoop time instead of real agent events.',
+    ],
+    assets: [],
+  },
+})

@@ -1,0 +1,72 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'chromatic-lens',
+  status: 'published',
+  title: { 'zh-CN': '色散镜头', en: 'Chromatic Lens' },
+  summary: {
+    'zh-CN': '把画面拆成一层层光谱色的残影（色差），并像鱼眼或枕形镜头那样弯曲它，可以加漩涡和噪点散射；一张现画的海报在镜头后缓慢平移。适合音乐、时装和活动主视觉。',
+    en: 'Splits a picture into spectral ghost layers (chromatic aberration) and bends it like a fisheye or pincushion lens, with optional swirl and noise scatter; a poster drawn at runtime pans slowly behind the lens. Suited to music, fashion and campaign hero visuals.',
+  },
+  kind: 'effect',
+  category: 'image',
+  tags: ['chromatic aberration', 'lens', 'fisheye', 'dispersion', 'image filter', 'webgl', 'shader', 'paper'],
+  runtime: ['react', 'webgl2', 'canvas2d'],
+  entry: { file: 'chromatic-lens.tsx', export: 'ChromaticLens' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'chromatic-lens.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'artwork',
+      type: 'select',
+      group: 'content',
+      label: { 'zh-CN': '画面', en: 'Artwork' },
+      default: 'poster',
+      options: [
+        { value: 'poster', label: { 'zh-CN': '几何海报', en: 'Poster' } },
+        { value: 'sunrise', label: { 'zh-CN': '日出', en: 'Sunrise' } },
+      ],
+    },
+    { key: 'spread', type: 'number', group: 'shape', label: { 'zh-CN': '色散距离', en: 'Spread' }, default: 0.6, min: 0, max: 1, step: 0.01 },
+    { key: 'angle', type: 'number', group: 'shape', label: { 'zh-CN': '方向', en: 'Angle' }, default: 0, min: 0, max: 360, step: 1, unit: 'deg' },
+    { key: 'perspective', type: 'number', group: 'shape', label: { 'zh-CN': '放射', en: 'Perspective' }, hint: { 'zh-CN': '0 沿直线散开，1 从中心向外放射', en: '0 spreads along a line, 1 radiates from the centre' }, default: 0.1, min: 0, max: 1, step: 0.01 },
+    { key: 'count', type: 'number', group: 'shape', label: { 'zh-CN': '层数', en: 'Layers' }, default: 35, min: 2, max: 50, step: 1 },
+    { key: 'dispersion', type: 'number', group: 'shape', label: { 'zh-CN': '光谱色', en: 'Dispersion' }, default: 1, min: 0, max: 1, step: 0.01 },
+    { key: 'swirl', type: 'number', group: 'shape', label: { 'zh-CN': '漩涡', en: 'Swirl' }, default: 0.35, min: -1, max: 1, step: 0.01 },
+    { key: 'lensBulge', type: 'number', group: 'shape', label: { 'zh-CN': '鼓起', en: 'Bulge' }, hint: { 'zh-CN': '正值像鱼眼，负值像枕形', en: 'Positive is fisheye, negative is pincushion' }, default: 0, min: -1, max: 1, step: 0.01 },
+    { key: 'lensCircle', type: 'number', group: 'shape', label: { 'zh-CN': '圆形镜头', en: 'Circle' }, default: 0, min: 0, max: 1, step: 0.01 },
+    { key: 'noise', type: 'number', group: 'shape', label: { 'zh-CN': '噪点散射', en: 'Noise' }, default: 0, min: 0, max: 1, step: 0.01 },
+    { key: 'pan', type: 'number', group: 'motion', label: { 'zh-CN': '平移幅度', en: 'Pan' }, hint: { 'zh-CN': '海报在镜头后平移的幅度，0 为静止', en: 'How far the poster pans behind the lens; 0 keeps it still' }, default: 0.12, min: 0, max: 0.3, step: 0.01 },
+  ],
+  presets: [
+    { id: 'default', name: { 'zh-CN': '默认', en: 'Default' }, values: {} },
+    { id: 'fisheye', name: { 'zh-CN': '鱼眼', en: 'Fisheye' }, values: { spread: 0.7, perspective: 0.75, count: 15, swirl: 1, lensBulge: 0.95, lensCircle: 1 } },
+    { id: 'smoke', name: { 'zh-CN': '烟雾', en: 'Smoke' }, values: { artwork: 'sunrise', spread: 0.65, perspective: 0.4, count: 50, dispersion: 0, swirl: 0, noise: 1 } },
+  ],
+  dependencies: ['@motif/runtime', '@paper-design/shaders-react'],
+  fonts: [],
+  perf: { webgl: true, maxDpr: 1.5 },
+  a11y: { reducedMotion: 'static' },
+  capture: { posterTime: 3, loop: 12 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'paper-shaders',
+      repo: 'paper-design/shaders',
+      sha: '43cd68db79fa0b1759f72ffc941b3238e2a3954c',
+      paths: ['packages/shaders-react/src/shaders/lens-distortion.tsx', 'docs/src/shader-defs/lens-distortion-def.ts'],
+      spdx: 'Apache-2.0',
+      copyright: ['Paper Shaders (https://shaders.paper.design)'],
+    },
+    modifications: [
+      'The input image (a geometric poster or a sunrise) is drawn on a canvas at runtime, so the item needs no image assets.',
+      'The image pans slowly behind the lens through the upstream imageX uniform; it stays still when the user prefers reduced motion.',
+      'Exposes a subset of the upstream params with the upstream defaults; Fisheye and Smoke follow the upstream presets.',
+    ],
+    assets: [],
+  },
+})

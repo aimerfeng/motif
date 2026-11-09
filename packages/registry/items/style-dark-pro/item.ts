@@ -1,0 +1,100 @@
+import { defineItem } from '@motif/schema'
+
+const option = (value: string, zh: string, en: string) => ({ value, label: { 'zh-CN': zh, en } })
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'style-dark-pro',
+  status: 'published',
+  title: { 'zh-CN': '专业暗色', en: 'Dark Pro' },
+  summary: {
+    'zh-CN': '暗色优先的专业产品界面：用 Radix 十二级暗色灰阶叠出页面、面板、凸起、浮层四层，每层顶边一条 1px 白色高光，关键面板背后一团强调色光晕，13px 紧凑控件、键帽和命令面板。适合 SaaS、开发者工具和专业软件。',
+    en: 'Dark-first product UI: page, panel, raised and overlay surfaces layered from the Radix twelve-step dark scales, a 1px inner top highlight on every layer, a soft accent glow behind key panels, dense 13px controls, kbd chips and a command bar. For SaaS apps, developer tools and pro software.',
+  },
+  kind: 'style',
+  category: 'minimal',
+  tags: ['dark', 'dark mode', 'saas', 'developer tools', 'command palette', 'dense', 'radix colors'],
+  runtime: ['react', 'css', 'svg'],
+  entry: { file: 'style-dark-pro.tsx', export: 'StyleDarkPro' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'style-dark-pro.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, hint: { 'zh-CN': '主按钮、光晕和选中状态', en: 'Primary actions, the glow and selected states' }, default: '#3e63dd' },
+    {
+      key: 'grayFamily',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '灰阶色调', en: 'Gray family' },
+      hint: { 'zh-CN': 'Radix 的六套暗色灰阶，各带一点色相', en: 'The six Radix dark grays, each with a slight tint' },
+      default: 'slate',
+      options: [option('slate', 'Slate（偏蓝）', 'Slate (blue)'), option('gray', 'Gray（纯灰）', 'Gray (neutral)'), option('mauve', 'Mauve（偏紫）', 'Mauve (violet)'), option('sage', 'Sage（偏青）', 'Sage (teal)'), option('olive', 'Olive（偏绿）', 'Olive (green)'), option('sand', 'Sand（偏暖）', 'Sand (warm)')],
+    },
+    { key: 'elevationContrast', type: 'number', group: 'surface', label: { 'zh-CN': '层次对比', en: 'Elevation contrast' }, hint: { 'zh-CN': '页面、面板、凸起、浮层四层之间拉开多少', en: 'How far apart the page, panel, raised and overlay layers sit' }, default: 0.5, min: 0, max: 1, step: 0.05, safe: [0.3, 0.8] },
+    { key: 'highlight', type: 'number', group: 'surface', label: { 'zh-CN': '顶边高光', en: 'Top highlight' }, hint: { 'zh-CN': 'whiteA 的级数（1 级 5%），0 关闭', en: 'whiteA step for the 1px inner top edge (step 1 is 5%); 0 turns it off' }, default: 2, min: 0, max: 3, step: 1, safe: [1, 2] },
+    { key: 'glow', type: 'number', group: 'surface', label: { 'zh-CN': '光晕', en: 'Accent glow' }, hint: { 'zh-CN': '关键面板背后的强调色径向光', en: 'Radial accent light behind key panels' }, default: 0.6, min: 0, max: 1, step: 0.05, safe: [0.35, 0.8] },
+    { key: 'radius', type: 'number', group: 'shape', label: { 'zh-CN': '圆角', en: 'Radius' }, hint: { 'zh-CN': '控件圆角，面板是它的 1.5 倍', en: 'Control radius; panels use 1.5 times this' }, default: 8, min: 2, max: 12, step: 1, unit: 'px', safe: [6, 10] },
+    {
+      key: 'density',
+      type: 'select',
+      group: 'layout',
+      label: { 'zh-CN': '密度', en: 'Density' },
+      default: 'regular',
+      options: [option('compact', '紧凑（28px 控件）', 'Compact (28px controls)'), option('regular', '标准（32px 控件）', 'Regular (32px controls)'), option('comfortable', '宽松（36px，14px 字）', 'Comfortable (36px, 14px text)')],
+    },
+    {
+      key: 'font',
+      type: 'select',
+      group: 'type',
+      label: { 'zh-CN': '字体', en: 'Font' },
+      default: 'geist',
+      options: [option('geist', 'Geist + Geist Mono', 'Geist + Geist Mono'), option('inter', 'Inter Tight + JetBrains Mono', 'Inter Tight + JetBrains Mono'), option('plex', 'IBM Plex Sans + Mono', 'IBM Plex Sans + Mono'), option('manrope', 'Manrope + JetBrains Mono', 'Manrope + JetBrains Mono')],
+    },
+  ],
+  presets: [
+    { id: 'nocturne', name: { 'zh-CN': '夜航', en: 'Nocturne' }, values: { accent: '#3e63dd', grayFamily: 'slate', elevationContrast: 0.5, highlight: 2, glow: 0.6, radius: 8, density: 'regular', font: 'geist' } },
+    { id: 'ember', name: { 'zh-CN': '余烬', en: 'Ember' }, values: { accent: '#f76b15', grayFamily: 'sand', elevationContrast: 0.6, highlight: 1, glow: 0.5, radius: 6, density: 'compact', font: 'inter' } },
+    { id: 'lagoon', name: { 'zh-CN': '潟湖', en: 'Lagoon' }, values: { accent: '#12a594', grayFamily: 'sage', elevationContrast: 0.4, highlight: 2, glow: 0.7, radius: 10, density: 'regular', font: 'plex' } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Inter Tight Variable', 'JetBrains Mono Variable', 'IBM Plex Sans Variable', 'IBM Plex Mono', 'Manrope Variable'],
+  guidance: {
+    use: [
+      'Use for SaaS apps, developer tools, issue trackers, dashboards, editors and other professional software that people keep open all day, and for their marketing pages when they should look like the product.',
+      'Avoid for content-first editorial sites or playful consumer brands; the style is quiet, dense and tool-like.',
+    ],
+    rules: [
+      'Palette is one Radix dark gray family (slate by default; gray, mauve, sage, olive or sand) plus one accent. Pair the gray tint with the accent hue as Radix recommends (slate with blue or indigo, sand with orange, sage with teal). Solid steps fill surfaces; the matching alpha scale (A2 to A7) draws every border, divider, hover and selected fill, so the same token works on any layer.',
+      'Depth is four surfaces, never more: page (step 1), panel (between 2 and 3), raised controls (3 to 5) and overlays such as menus and the command bar (4 to 6). Each surface is lighter than the one below it; do not use drop shadows to fake elevation on the page or panel layers. Only raised controls get a hairline blackA shadow and only overlays get the large blackA shadow.',
+      'Every surface above the page carries a 1px inner top highlight from the whiteA scale (inset 0 1px 0, whiteA 1 or 2). It reads as light catching the top edge; keep it at or below whiteA 3 and never add a bottom highlight.',
+      'One soft radial accent glow per screen, behind the most important panel (the command bar, a hero card, a pricing tier). It sits behind the panel, fades to transparent, and is paired with a short accent gradient on the panel top edge. Never glow text, buttons or more than one panel.',
+      'Text is gray 12 for primary content and gray 11 for secondary; gray 10 only for placeholders and icons. Accent text is the accent lifted towards white until it passes 4.5:1 on the lightest surface. Solid accent buttons pick white or near-black ink by contrast. Status uses Radix green, amber and red: step 11 text on a 12 to 16 percent tint with a matching inset border, never solid status blocks.',
+      'Dense by default: 13px UI text, 32px controls (28 compact, 36 comfortable), 36px list rows, 6 to 12px gaps. Headings are 600 weight with -0.025em tracking; numbers, IDs, branches and shortcuts use the mono family. Labels are 11px mono uppercase.',
+      'Keyboard first: every frequent action shows its shortcut in a kbd chip (alpha-3 fill, alpha-5 border, mono 11px). A command bar opened with Cmd K lists actions by group with icons and shortcuts; arrow keys move the selection and Enter runs it. Focus rings are a 2px accent-text outline offset by 2px.',
+      'Motion is quick and functional: 120 to 200ms on colour, background and transform only, a slightly springy ease on the segmented thumb and switch. No scroll animations, no parallax. Respect prefers-reduced-motion by removing transitions.',
+      'Forbidden: pure black (#000) pages, white or light panels, more than one accent hue, gradients on surfaces, glassmorphism blur, coloured text on coloured fills, borders brighter than alpha 7, and large rounded pills for anything except switches and avatars.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'radix-colors',
+      repo: 'radix-ui/colors',
+      sha: 'dbdb85470547c7d34b9001f48fddb08ded335979',
+      paths: ['src/dark.ts', 'src/whiteA.ts', 'src/blackA.ts'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2021-2022 Modulz', 'Copyright (c) 2022-Present WorkOS'],
+    },
+    modifications: [
+      'The six dark gray scales (gray, mauve, slate, sage, olive, sand) with their alpha scales, the whiteA and blackA scales, and the green, amber and red dark steps 9 and 11 are copied unchanged as hex/rgba arrays; P3 variants are omitted.',
+      'The default indigo accent and the preset orange and teal accents are Radix dark step 9 values.',
+      'Surface layering by interpolating between gray steps, the accent text and ink contrast helpers, the CSS tokens, the primitives (panel, button, kbd, input, badge, switch, segmented tabs, command bar) and the style sheet demo are original Motif work; no upstream component code is included.',
+    ],
+    assets: [],
+  },
+})

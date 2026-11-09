@@ -1,0 +1,34 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) Magic UI
+ * Source: https://github.com/magicuidesign/magicui/blob/d7207e5/apps/www/registry.json
+ * Modified by Motif; see the item's provenance.
+ */
+@theme inline {
+  --animate-gradient: gradient var(--ba-duration, 8s) linear infinite;
+  --animate-shiny-text: shiny-text var(--ba-duration, 8s) infinite;
+
+  @keyframes gradient {
+    to {
+      background-position: var(--bg-size, 300%) 0;
+    }
+  }
+
+  @keyframes shiny-text {
+    0%,
+    90%,
+    100% {
+      background-position: calc(-100% - var(--shiny-width)) 0;
+    }
+    30%,
+    60% {
+      background-position: calc(100% + var(--shiny-width)) 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ba-anim {
+    animation: none !important;
+  }
+}

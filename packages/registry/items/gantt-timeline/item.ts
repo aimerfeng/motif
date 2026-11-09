@@ -1,0 +1,88 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'gantt-timeline',
+  status: 'published',
+  title: { 'zh-CN': '甘特时间线', en: 'Gantt Timeline' },
+  summary: {
+    'zh-CN': '项目甘特图：左侧按分组列出任务和工期，右侧是按日、月或季度划分的时间轴，带今天标线和里程碑；任务条可以整体拖动，也能从两端拖动改工期。适合项目排期和版本路线图。',
+    en: 'A project Gantt chart: grouped tasks with durations on the left, a day, month or quarter grid on the right with a today line and milestone markers. Bars drag to move and resize from either edge. For project planning and release roadmaps.',
+  },
+  kind: 'section',
+  category: 'dashboard',
+  tags: ['gantt', 'timeline', 'roadmap', 'schedule', 'project', 'drag'],
+  runtime: ['react', 'css'],
+  entry: { file: 'gantt-timeline.tsx', export: 'GanttChart' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'gantt-timeline.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'range',
+      type: 'select',
+      label: { 'zh-CN': '时间刻度', en: 'Range' },
+      default: 'monthly',
+      options: [
+        { value: 'daily', label: { 'zh-CN': '按日', en: 'Daily' } },
+        { value: 'monthly', label: { 'zh-CN': '按月', en: 'Monthly' } },
+        { value: 'quarterly', label: { 'zh-CN': '按季度', en: 'Quarterly' } },
+      ],
+      group: 'layout',
+    },
+    { key: 'zoom', type: 'number', label: { 'zh-CN': '缩放', en: 'Zoom' }, hint: { 'zh-CN': '时间列宽的百分比', en: 'Column width as a percentage' }, default: 100, min: 50, max: 200, step: 10, unit: '%', safe: [70, 150], group: 'layout' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '今天标线', en: 'Today color' }, hint: { 'zh-CN': '也用于焦点框', en: 'Also used for focus rings' }, default: '#7c8cff', group: 'look' },
+    {
+      key: 'statusColors',
+      type: 'palette',
+      label: { 'zh-CN': '状态颜色', en: 'Status colors' },
+      hint: { 'zh-CN': '依次对应计划中、进行中、已完成', en: 'Planned, in progress and done, in order' },
+      default: ['#6b7280', '#f59e0b', '#10b981'],
+      minItems: 3,
+      maxItems: 3,
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '任务条圆角', en: 'Bar radius' }, default: 8, min: 0, max: 14, step: 1, unit: 'px', safe: [4, 10], group: 'look' },
+    { key: 'rowHeight', type: 'number', label: { 'zh-CN': '行高', en: 'Row height' }, default: 36, min: 32, max: 52, step: 2, unit: 'px', safe: [34, 44], group: 'layout' },
+    { key: 'sidebarWidth', type: 'number', label: { 'zh-CN': '侧栏宽度', en: 'Sidebar width' }, hint: { 'zh-CN': '窄屏时自动收窄', en: 'Shrinks on narrow screens' }, default: 300, min: 200, max: 360, step: 10, unit: 'px', group: 'layout' },
+    { key: 'showToday', type: 'boolean', label: { 'zh-CN': '显示今天', en: 'Today marker' }, default: true, group: 'content' },
+    { key: 'showMarkers', type: 'boolean', label: { 'zh-CN': '显示里程碑', en: 'Milestones' }, default: true, group: 'content' },
+  ],
+  presets: [
+    { id: 'roadmap', name: { 'zh-CN': '航线', en: 'Flight Plan' }, values: { range: 'monthly', zoom: 100, accent: '#7c8cff', radius: 8 } },
+    { id: 'sprint', name: { 'zh-CN': '冲刺', en: 'Sprint Board' }, values: { range: 'daily', zoom: 100, accent: '#fb923c', radius: 6, rowHeight: 40, statusColors: ['#94a3b8', '#fb923c', '#22c55e'] } },
+    { id: 'horizon', name: { 'zh-CN': '远景', en: 'Horizon' }, values: { range: 'quarterly', zoom: 120, accent: '#34d399', radius: 12, sidebarWidth: 260, statusColors: ['#64748b', '#38bdf8', '#34d399'] } },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    rules: [
+      'Dates are plain Date objects; the timeline spans last year to next year and grows when scrolled to either end. Keep onMove and onAddItem stable (useCallback) so the grid does not re-render on every parent render.',
+    ],
+  },
+  capture: { zoom: 1.1, posterTime: 3.1, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'kibo',
+      repo: 'shadcnblocks/kibo',
+      sha: '3d63cdb15b79d972e3dc38a10997987672f9b263',
+      paths: ['packages/gantt/index.tsx', 'apps/docs/examples/gantt.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2023 — Present shadcnblocks'],
+    },
+    modifications: [
+      'Replaced @dnd-kit with pointer-event drags (10px activation, horizontal only), date-fns with small date helpers, jotai atoms with React context, lodash.throttle with requestAnimationFrame and @uidotdev/usehooks with local pointer tracking and a ResizeObserver.',
+      'Replaced the shadcn Card with a div and the Radix context menu on markers with a small hand-written menu; lucide icons are inline SVG.',
+      'Sidebar width, row height, accent and bar radius come from params; the today marker uses the accent with light or dark ink by contrast; the sidebar narrows on small containers and hides durations when tight.',
+      'The view opens centred on today instead of the middle of the timeline; bars follow date props after external changes; arrow keys move bars and resize from the edge handles.',
+      'Fixed the daily today/marker position, stale timeline data when extending the range, and start/end crossing during resize.',
+      'Added a GanttChart convenience component composed like the upstream example (grouped sidebar and rows, markers, today line, add-item and create-marker triggers).',
+    ],
+    assets: [],
+  },
+})

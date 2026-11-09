@@ -1,0 +1,123 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'faq-sticky-answer',
+  status: 'published',
+  title: { 'zh-CN': '左问右答常见问题', en: 'Split FAQ with Sticky Answer' },
+  summary: {
+    'zh-CN': '左边是分组编号的长问题列表，右边一块钉住的答案面板：列表往下滚时面板留在视野里，点击或用方向键切换时答案短暂交叉淡化，可以带一张小示意图、一段代码或一组链接。容器窄于 860px 时折回手风琴。适合答案很长的产品常见问题。',
+    en: 'A long, grouped and numbered list of questions on the left and an answer panel on the right that stays pinned while the list scrolls, cross-fading as you click or arrow through; an answer can carry a small diagram, a code block or a link list. Below 860px of container width it folds back into an accordion. Made for dense product FAQs with long answers.',
+  },
+  kind: 'section',
+  category: 'faq',
+  tags: ['faq', 'sticky', 'split', 'tabs', 'accordion', 'container queries', 'help center', 'docs'],
+  runtime: ['react', 'css'],
+  entry: { file: 'faq-sticky-answer.tsx', export: 'FaqStickyAnswer' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'faq-sticky-answer.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Answers for teams that ship behind flags', maxLength: 64, group: 'content' },
+    { key: 'accent', type: 'color', label: { 'zh-CN': '主色', en: 'Accent' }, default: '#5eead4', group: 'look' },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'font',
+      type: 'select',
+      label: { 'zh-CN': '标题字体', en: 'Heading font' },
+      default: 'sans',
+      options: [
+        { value: 'sans', label: { 'zh-CN': '紧凑无衬线（Inter Tight）', en: 'Tight sans (Inter Tight)' } },
+        { value: 'serif', label: { 'zh-CN': '书报衬线（Newsreader）', en: 'Newsprint serif (Newsreader)' } },
+        { value: 'grotesk', label: { 'zh-CN': '怪诞体（Bricolage）', en: 'Grotesque (Bricolage)' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'listStyle',
+      type: 'select',
+      label: { 'zh-CN': '问题列表', en: 'Question list' },
+      default: 'numbered',
+      options: [
+        { value: 'numbered', label: { 'zh-CN': '编号分隔线', en: 'Numbered rows' } },
+        { value: 'rail', label: { 'zh-CN': '左侧轨道', en: 'Rail' } },
+        { value: 'cards', label: { 'zh-CN': '卡片', en: 'Cards' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'panelStyle',
+      type: 'select',
+      label: { 'zh-CN': '答案面板', en: 'Answer panel' },
+      default: 'card',
+      options: [
+        { value: 'card', label: { 'zh-CN': '浮起卡片', en: 'Raised card' } },
+        { value: 'outline', label: { 'zh-CN': '描边', en: 'Outline' } },
+        { value: 'tinted', label: { 'zh-CN': '主色淡底', en: 'Accent tint' } },
+      ],
+      group: 'layout',
+    },
+    {
+      key: 'transition',
+      type: 'select',
+      label: { 'zh-CN': '切换方式', en: 'Answer transition' },
+      hint: { 'zh-CN': '上浮和平移会按前进或后退换方向', en: 'Rise and slide follow the direction you move in' },
+      default: 'rise',
+      options: [
+        { value: 'rise', label: { 'zh-CN': '淡入上浮', en: 'Fade and rise' } },
+        { value: 'fade', label: { 'zh-CN': '纯淡入淡出', en: 'Cross-fade' } },
+        { value: 'slide', label: { 'zh-CN': '横向平移', en: 'Slide' } },
+        { value: 'blur', label: { 'zh-CN': '模糊对焦', en: 'Blur focus' } },
+      ],
+      group: 'motion',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '圆角', en: 'Corner radius' }, default: 16, min: 0, max: 28, step: 1, unit: 'px', safe: [4, 22], group: 'look' },
+  ],
+  presets: [
+    { id: 'greenhouse', name: { 'zh-CN': '温室', en: 'Greenhouse' }, values: {} },
+    {
+      id: 'broadsheet',
+      name: { 'zh-CN': '晨报', en: 'Broadsheet' },
+      values: { tone: 'light', accent: '#c2410c', font: 'serif', listStyle: 'rail', panelStyle: 'outline', transition: 'fade', radius: 4 },
+    },
+    {
+      id: 'night-shift',
+      name: { 'zh-CN': '夜班', en: 'Night Shift' },
+      values: { accent: '#a78bfa', font: 'grotesk', listStyle: 'cards', panelStyle: 'tinted', transition: 'blur', radius: 22 },
+    },
+    {
+      id: 'blueprint',
+      name: { 'zh-CN': '蓝图', en: 'Blueprint' },
+      values: { tone: 'light', accent: '#2563eb', font: 'sans', listStyle: 'numbered', panelStyle: 'tinted', transition: 'slide', radius: 10 },
+    },
+  ],
+  dependencies: ['@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Inter Tight Variable', 'Newsreader Variable', 'Bricolage Grotesque Variable'],
+  guidance: {
+    use: ['A help-center or pricing-page FAQ with ten or more questions whose answers run to several sentences or need a diagram, code or links. For five or six one-line answers, a plain accordion is lighter.'],
+    rules: [
+      'Write questions the way customers ask them and open each answer with the answer itself (Yes, No, the number), then one or two short paragraphs and at most one extra block.',
+      'The split vs accordion layout is pure CSS container queries (@container on the section, @min-[860px]:), so the first server-rendered paint is already right; JS only measures the width to switch the ARIA pattern: a vertical tablist (Up/Down/Home/End move and select, one tabpanel per answer) when wide, buttons with aria-expanded and labelled regions when narrow. Keep both if you restyle.',
+      'Group questions under two to four short labels (Architecture, Billing, Security); numbering runs across groups and the group name becomes the tag above the answer. The sticky panel only earns its place when the list is clearly taller than the panel, so aim for ten to fourteen questions.',
+      'All answers share one grid cell so the panel keeps the height of the longest one and never jumps; keep answers roughly the same length.',
+      'The panel is position: sticky (top 24px); no ancestor between it and the scroll container may set overflow: hidden.',
+      'Accent text and fills are pushed toward the foreground until they pass contrast, so any accent stays readable on both tones.',
+    ],
+  },
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { scroll: true, posterTime: 0.5, loop: 8 },
+  provenance: { kind: 'original', modifications: [], assets: [] },
+})

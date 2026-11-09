@@ -1,0 +1,681 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2014 Dave Liepmann
+ * Source: https://github.com/edwardtufte/tufte-css/blob/b5d7b7b/tufte.css
+ * Modified by Motif; see the item's provenance.
+ */
+
+/*
+ * Tufte CSS，逐条移植并收进 .di 作用域。
+ * 上游的 html { font-size: 15px } 变成 --r（15px × 疏密），所有 rem 都换成 var(--r) 的倍数，
+ * 这样条目放进任何页面都不会受宿主根字号影响。颜色全部来自组件算好的变量。
+ */
+@layer components {
+  .di {
+    --r: calc(15px * var(--di-density, 1));
+    position: relative;
+    min-height: 100%;
+    font-size: var(--r);
+    font-family: var(--di-serif);
+    background-color: var(--di-paper);
+    color: var(--di-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .di ::selection {
+    background: var(--di-hl-soft);
+  }
+
+  /* 上游的 body */
+  .di-page {
+    box-sizing: content-box;
+    width: 87.5%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 12.5%;
+    max-width: 1400px;
+    counter-reset: sidenote-counter;
+  }
+
+  .di h1 {
+    font-weight: 400;
+    margin-top: calc(var(--r) * 4);
+    margin-bottom: calc(var(--r) * 1.5);
+    font-size: calc(var(--r) * 3.2);
+    line-height: 1;
+  }
+
+  .di h2 {
+    font-style: italic;
+    font-weight: 400;
+    margin-top: calc(var(--r) * 2.1);
+    margin-bottom: calc(var(--r) * 1.4);
+    font-size: calc(var(--r) * 2.2);
+    line-height: 1;
+  }
+
+  .di h3 {
+    font-style: italic;
+    font-weight: 400;
+    font-size: calc(var(--r) * 1.7);
+    margin-top: calc(var(--r) * 2);
+    margin-bottom: calc(var(--r) * 1.4);
+    line-height: 1;
+  }
+
+  .di hr {
+    display: block;
+    height: 1px;
+    width: 55%;
+    border: 0;
+    border-top: 1px solid var(--di-rule);
+    margin: 1em 0;
+    padding: 0;
+  }
+
+  .di p.subtitle {
+    font-style: italic;
+    margin-top: calc(var(--r) * 1);
+    margin-bottom: calc(var(--r) * 1);
+    font-size: calc(var(--r) * 1.8);
+    display: block;
+    line-height: 1;
+  }
+
+  .di .numeral {
+    font-variant-numeric: oldstyle-nums;
+  }
+
+  .di .danger {
+    color: var(--di-hl);
+  }
+
+  .di article {
+    padding: calc(var(--r) * 5) 0;
+  }
+
+  .di section {
+    padding-top: calc(var(--r) * 1);
+    padding-bottom: calc(var(--r) * 1);
+  }
+
+  .di p,
+  .di dl,
+  .di ol,
+  .di ul {
+    font-size: calc(var(--r) * 1.4);
+    line-height: calc(var(--r) * 2);
+  }
+
+  .di p {
+    margin-top: calc(var(--r) * 1.4);
+    margin-bottom: calc(var(--r) * 1.4);
+    padding-right: 0;
+    vertical-align: baseline;
+  }
+
+  .di sup {
+    line-height: 0;
+  }
+
+  /* Chapter Epigraphs */
+  .di div.epigraph {
+    margin: 5em 0;
+  }
+  .di div.epigraph > blockquote {
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+  .di div.epigraph > blockquote,
+  .di div.epigraph > blockquote > p {
+    font-style: italic;
+  }
+  .di div.epigraph > blockquote > footer {
+    font-style: normal;
+  }
+  .di div.epigraph > blockquote > footer > cite {
+    font-style: italic;
+  }
+
+  .di blockquote {
+    font-size: calc(var(--r) * 1.4);
+  }
+  .di blockquote p {
+    width: 55%;
+    margin-right: 40px;
+  }
+  .di blockquote footer {
+    width: 55%;
+    font-size: calc(var(--r) * 1.1);
+    text-align: right;
+  }
+
+  .di section > p,
+  .di section > footer,
+  .di section > table {
+    width: 55%;
+  }
+
+  /* 50 + 5 == 55, to be the same width as paragraph */
+  .di section > dl,
+  .di section > ol,
+  .di section > ul {
+    width: 50%;
+    padding-inline-start: 5%;
+  }
+
+  .di dt:not(:first-child),
+  .di li:not(:first-child) {
+    margin-top: calc(var(--r) * 0.25);
+  }
+
+  .di figure {
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    margin: 0 0 3em 0;
+  }
+
+  .di figcaption {
+    float: right;
+    clear: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: calc(var(--r) * 1.1);
+    line-height: 1.6;
+    vertical-align: baseline;
+    position: relative;
+    max-width: 40%;
+  }
+
+  .di figure.fullwidth figcaption {
+    margin-right: 24%;
+  }
+
+  .di a:link,
+  .di a:visited {
+    color: inherit;
+    text-underline-offset: 0.1em;
+    text-decoration-thickness: 0.05em;
+  }
+
+  /* Sidenotes, margin notes, figures, captions */
+  .di img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .di .sidenote,
+  .di .marginnote {
+    float: right;
+    clear: right;
+    margin-right: -60%;
+    width: 50%;
+    margin-top: calc(var(--r) * 0.3);
+    margin-bottom: 0;
+    font-size: calc(var(--r) * 1.1);
+    line-height: 1.3;
+    vertical-align: baseline;
+    position: relative;
+  }
+
+  .di .sidenote-number {
+    counter-increment: sidenote-counter;
+  }
+
+  .di .sidenote-number::after,
+  .di .sidenote::before {
+    font-variant-numeric: oldstyle-nums;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  .di .sidenote-number::after {
+    content: counter(sidenote-counter);
+    font-size: calc(var(--r) * 1);
+    top: calc(var(--r) * -0.5);
+    left: calc(var(--r) * 0.1);
+  }
+
+  .di .sidenote::before {
+    content: counter(sidenote-counter) ' ';
+    font-size: calc(var(--r) * 1);
+    top: calc(var(--r) * -0.5);
+  }
+
+  .di blockquote .sidenote,
+  .di blockquote .marginnote {
+    margin-right: -82%;
+    min-width: 59%;
+    text-align: left;
+  }
+
+  .di div.fullwidth,
+  .di table.fullwidth {
+    width: 100%;
+  }
+
+  .di div.table-wrapper {
+    overflow-x: auto;
+    font-family: var(--di-serif);
+  }
+
+  .di .sans {
+    font-family: var(--di-sans);
+    letter-spacing: 0.03em;
+  }
+
+  .di code,
+  .di pre > code {
+    font-family: var(--di-mono);
+    font-size: calc(var(--r) * 1);
+    line-height: 1.42;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .di .sans > code {
+    font-size: calc(var(--r) * 1.2);
+  }
+
+  .di h1 > code,
+  .di h2 > code,
+  .di h3 > code {
+    font-size: 0.8em;
+  }
+
+  .di .marginnote > code,
+  .di .sidenote > code {
+    font-size: calc(var(--r) * 1);
+  }
+
+  .di pre > code {
+    font-size: calc(var(--r) * 0.9);
+    width: 52.5%;
+    margin-left: 2.5%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .di pre.fullwidth > code {
+    width: 90%;
+  }
+
+  .di .fullwidth {
+    max-width: 90%;
+    clear: both;
+  }
+
+  .di span.newthought {
+    font-variant: small-caps;
+    font-size: 1.2em;
+  }
+
+  .di input.margin-toggle {
+    display: none;
+  }
+
+  .di label.sidenote-number {
+    display: inline-block;
+    max-height: calc(var(--r) * 2);
+  }
+
+  .di label.margin-toggle:not(.sidenote-number) {
+    display: none;
+  }
+
+  @media (max-width: 760px) {
+    .di-page {
+      width: 84%;
+      padding-left: 8%;
+      padding-right: 8%;
+    }
+
+    .di hr,
+    .di section > p,
+    .di section > footer,
+    .di section > table {
+      width: 100%;
+    }
+
+    .di pre > code {
+      width: 97%;
+    }
+
+    .di section > dl,
+    .di section > ol,
+    .di section > ul {
+      width: 90%;
+    }
+
+    .di figure {
+      max-width: 90%;
+    }
+
+    .di figcaption,
+    .di figure.fullwidth figcaption {
+      margin-right: 0%;
+      max-width: none;
+    }
+
+    .di blockquote {
+      margin-left: 1.5em;
+      margin-right: 0em;
+    }
+
+    .di blockquote p,
+    .di blockquote footer {
+      width: 100%;
+    }
+
+    .di label.margin-toggle:not(.sidenote-number) {
+      display: inline;
+    }
+
+    .di .sidenote,
+    .di .marginnote {
+      display: none;
+    }
+
+    /* Motif：窄屏时开关必须能用键盘操作，所以不再 display:none，而是视觉隐藏 */
+    .di input.margin-toggle {
+      display: inline;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .di label.margin-toggle:has(+ input.margin-toggle:focus-visible) {
+      outline: 2px solid var(--di-hl);
+      outline-offset: 2px;
+    }
+
+    .di .margin-toggle:checked + .sidenote,
+    .di .margin-toggle:checked + .marginnote {
+      display: block;
+      float: left;
+      left: calc(var(--r) * 1);
+      clear: both;
+      width: 95%;
+      margin: calc(var(--r) * 1) 2.5%;
+      vertical-align: baseline;
+      position: relative;
+    }
+
+    .di label {
+      cursor: pointer;
+    }
+
+    .di div.table-wrapper,
+    .di table {
+      width: 85%;
+    }
+
+    .di img {
+      width: 100%;
+    }
+  }
+
+  /* ---- Motif：数据墨水的部件（上游没有，原创） ---- */
+
+  .di-muted {
+    color: var(--di-muted);
+  }
+  .di-hl {
+    color: var(--di-hl);
+  }
+  .di-num {
+    font-family: var(--di-mono);
+    font-variant-numeric: tabular-nums lining-nums;
+    font-size: 0.86em;
+    letter-spacing: -0.01em;
+  }
+
+  /* 图里的 SVG：线、点、范围框坐标轴、淡网格 */
+  .di-chart {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .di-svg {
+    display: block;
+    overflow: visible;
+    font-family: var(--di-serif);
+  }
+  .di-svg text {
+    fill: currentColor;
+  }
+  .di-svg .di-t-num {
+    font-family: var(--di-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: calc(var(--r) * 0.78);
+    fill: var(--di-muted);
+  }
+  .di-svg .di-t-label {
+    font-size: calc(var(--r) * 0.95);
+  }
+  .di-svg .di-t-cap {
+    font-size: calc(var(--r) * 0.95);
+    font-style: italic;
+    fill: var(--di-muted);
+  }
+  .di-line {
+    fill: none;
+    stroke: var(--di-ink);
+    stroke-width: var(--di-sw);
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .di-line[data-hl='true'] {
+    stroke: var(--di-hl);
+  }
+  .di-line[data-soft='true'] {
+    stroke: var(--di-muted);
+  }
+  .di-axis {
+    stroke: var(--di-muted);
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+  }
+  .di-grid {
+    display: none;
+    stroke: var(--di-hair);
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+  }
+  .di[data-grid='on'] .di-grid {
+    display: inline;
+  }
+  .di-dot {
+    fill: var(--di-ink);
+  }
+  .di-dot[data-hl='true'] {
+    fill: var(--di-hl);
+  }
+  .di-dot[data-soft='true'] {
+    fill: var(--di-muted);
+  }
+  .di-band {
+    fill: var(--di-band);
+  }
+  .di-svg .di-t-hl {
+    fill: var(--di-hl);
+  }
+
+  /* 句子里的迷你走势线 */
+  .di-spark {
+    display: inline-block;
+    vertical-align: -0.1em;
+    overflow: visible;
+    margin: 0 0.15em;
+  }
+  .di-spark .di-line {
+    stroke-width: calc(var(--di-sw) * 0.8);
+  }
+
+  /* 小多图：同一刻度、直接标注 */
+  .di-multiples {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+    gap: calc(var(--r) * 1.6) calc(var(--r) * 2);
+    margin: calc(var(--r) * 1.4) 0 calc(var(--r) * 1.2);
+  }
+  .di-multiple {
+    min-width: 0;
+  }
+  .di-multiple-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5em;
+    font-size: calc(var(--r) * 1.05);
+    line-height: 1.2;
+    margin-bottom: 0.35em;
+  }
+  .di-multiple-head .di-num {
+    color: var(--di-muted);
+  }
+  .di-multiple[data-hl='true'] .di-multiple-head .di-num {
+    color: var(--di-hl);
+  }
+
+  /* booktabs 表格：上下两条线、表头下一条细线、没有竖线 */
+  .di-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: calc(var(--di-sw) * 1.2) solid var(--di-ink);
+    border-bottom: calc(var(--di-sw) * 1.2) solid var(--di-ink);
+    font-size: calc(var(--r) * 1.1);
+    line-height: 1.3;
+  }
+  .di-table th {
+    font-weight: 400;
+    font-style: italic;
+    text-align: left;
+    color: var(--di-muted);
+    padding: 0.7em 0.6em 0.45em 0;
+    border-bottom: 1px solid var(--di-rule);
+  }
+  .di-table td {
+    padding: 0.42em 0.6em 0.42em 0;
+    vertical-align: baseline;
+  }
+  .di-table tbody tr:first-child td {
+    padding-top: 0.7em;
+  }
+  .di-table tbody tr:last-child td {
+    padding-bottom: 0.7em;
+  }
+  .di-table th:last-child,
+  .di-table td:last-child {
+    padding-right: 0;
+  }
+  .di-table .di-r {
+    text-align: right;
+  }
+  .di-table tbody tr {
+    transition: background-color 150ms ease;
+  }
+  .di-table tbody tr:hover {
+    background-color: var(--di-band);
+  }
+  .di-bar {
+    display: inline-block;
+    width: calc(var(--w) * 4.5em);
+    height: 0.5em;
+    background: var(--di-ink);
+    vertical-align: 0.05em;
+    margin-right: 0.5em;
+  }
+  .di-bar[data-hl='true'] {
+    background: var(--di-hl);
+  }
+
+  /* 极简的控件：文字按钮和下划线式选择 */
+  .di-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    height: 2.2em;
+    padding: 0 0.85em;
+    border: 1px solid var(--di-rule);
+    border-radius: 0;
+    background: transparent;
+    color: var(--di-ink);
+    font: inherit;
+    font-size: calc(var(--r) * 1.05);
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  }
+  .di-btn:hover {
+    border-color: var(--di-ink);
+    background: var(--di-band);
+  }
+  .di-btn[data-variant='quiet'] {
+    border-color: transparent;
+    padding: 0;
+    height: auto;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    text-decoration-thickness: 1px;
+  }
+  .di-btn[data-variant='quiet']:hover {
+    background: transparent;
+    color: var(--di-hl);
+  }
+  .di-btn:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .di-seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25em 1.1em;
+    font-size: calc(var(--r) * 1.05);
+  }
+  .di-seg-item {
+    padding: 0.15em 0;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: transparent;
+    color: var(--di-muted);
+    font: inherit;
+    font-style: italic;
+    cursor: pointer;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+  .di-seg-item:hover {
+    color: var(--di-ink);
+  }
+  .di-seg-item[aria-checked='true'] {
+    color: var(--di-ink);
+    font-style: normal;
+    border-bottom-color: var(--di-ink);
+  }
+  .di-btn:focus-visible,
+  .di-seg-item:focus-visible,
+  .di a:focus-visible {
+    outline: 2px solid var(--di-hl);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 760px) {
+    .di-wide-only {
+      display: none;
+    }
+    .di-multiples {
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 118px), 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .di-table tbody tr,
+    .di-btn,
+    .di-seg-item {
+      transition: none;
+    }
+  }
+}

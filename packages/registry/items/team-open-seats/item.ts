@@ -1,0 +1,120 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'team-open-seats',
+  status: 'published',
+  title: { 'zh-CN': '留有空位的团队', en: 'Team with Open Seats' },
+  summary: {
+    'zh-CN': '团队头像拼成一面墙，正在招的岗位就坐在大家中间：虚线空位写着岗位和地点，悬停、点按或聚焦时泛起一圈柔和的脉冲，露出一句话介绍和申请按钮；按部门筛选时，其他人淡下去。适合创业公司的关于页和招聘区块。',
+    en: 'A team mosaic where open roles sit among the people as dashed empty seats labelled with the role and location. Hover, tap or focus one and it pulses softly and reveals a one-line pitch with an Apply link; a department filter dims everyone outside it. For startup about pages and hiring sections.',
+  },
+  kind: 'section',
+  category: 'team',
+  tags: ['team', 'hiring', 'careers', 'open roles', 'about', 'avatars', 'filter'],
+  runtime: ['react', 'motion', 'css'],
+  entry: { file: 'team-open-seats.tsx', export: 'TeamOpenSeats' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'team-open-seats.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    { key: 'heading', type: 'text', label: { 'zh-CN': '标题', en: 'Heading' }, default: 'Fifteen people so far. Five seats still open.', maxLength: 64, group: 'content' },
+    {
+      key: 'accent',
+      type: 'color',
+      label: { 'zh-CN': '主色', en: 'Accent' },
+      hint: { 'zh-CN': '空位的脉冲、标签和申请按钮；太接近底色时自动提亮或压暗，文字深浅也自动适配', en: 'Colors the pulse, the Open tag and the Apply button; shifted toward the text color when too close to the background, and ink adapts automatically' },
+      default: '#ff8a5b',
+      group: 'look',
+    },
+    {
+      key: 'tone',
+      type: 'select',
+      label: { 'zh-CN': '明暗', en: 'Tone' },
+      default: 'dark',
+      options: [
+        { value: 'dark', label: { 'zh-CN': '深色', en: 'Dark' } },
+        { value: 'light', label: { 'zh-CN': '浅色', en: 'Light' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'seatStyle',
+      type: 'select',
+      label: { 'zh-CN': '空位样式', en: 'Seat style' },
+      default: 'dashed',
+      options: [
+        { value: 'dashed', label: { 'zh-CN': '虚线框', en: 'Dashed outline' } },
+        { value: 'hatched', label: { 'zh-CN': '斜线底纹', en: 'Hatched' } },
+        { value: 'ghost', label: { 'zh-CN': '剪影', en: 'Silhouette' } },
+      ],
+      group: 'look',
+    },
+    {
+      key: 'avatarShape',
+      type: 'select',
+      label: { 'zh-CN': '头像形状', en: 'Avatar shape' },
+      default: 'circle',
+      options: [
+        { value: 'circle', label: { 'zh-CN': '圆形', en: 'Circle' } },
+        { value: 'squircle', label: { 'zh-CN': '圆角方形', en: 'Squircle' } },
+        { value: 'square', label: { 'zh-CN': '方形', en: 'Square' } },
+      ],
+      group: 'look',
+    },
+    { key: 'radius', type: 'number', label: { 'zh-CN': '卡片圆角', en: 'Tile radius' }, default: 18, min: 0, max: 28, step: 1, unit: 'px', safe: [8, 24], group: 'look' },
+    {
+      key: 'columns',
+      type: 'number',
+      label: { 'zh-CN': '列数', en: 'Columns' },
+      hint: { 'zh-CN': '宽屏时的列数，窄屏自动减少；4 和 5 都能让 20 块排满每一行', en: 'Columns on wide screens; narrow screens use fewer. 4 and 5 both fill every row of the 20 tiles' },
+      default: 5,
+      min: 4,
+      max: 5,
+      step: 1,
+      group: 'layout',
+    },
+    { key: 'showDepartments', type: 'boolean', label: { 'zh-CN': '部门筛选', en: 'Department filter' }, default: true, group: 'layout' },
+  ],
+  presets: [
+    { id: 'open-house', name: { 'zh-CN': '开放日', en: 'Open House' }, values: {} },
+    {
+      id: 'drafting-table',
+      name: { 'zh-CN': '制图桌', en: 'Drafting Table' },
+      values: { tone: 'light', accent: '#2f5bea', seatStyle: 'hatched', avatarShape: 'square', radius: 6, columns: 4 },
+    },
+    {
+      id: 'understudy',
+      name: { 'zh-CN': '替补席', en: 'Understudy' },
+      values: { accent: '#b69cff', seatStyle: 'ghost', avatarShape: 'squircle', radius: 24, columns: 4 },
+    },
+    {
+      id: 'greenhouse',
+      name: { 'zh-CN': '温室', en: 'Greenhouse' },
+      values: { tone: 'light', accent: '#1f9d6b', seatStyle: 'dashed', avatarShape: 'squircle', radius: 14, columns: 5, showDepartments: false },
+    },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  fonts: ['Geist Variable', 'Geist Mono Variable', 'Instrument Serif'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  guidance: {
+    use: [
+      'Use on an About, Team or Careers page when you are hiring: open roles sit inside the team instead of on a separate list. Replace TEAM with your people and open roles; avatars are generated from initials and departments drive the filter.',
+    ],
+    rules: [
+      'Each open seat needs a role, a location ("Remote · EU", "Lisbon") and a one-sentence pitch with a concrete fact about the work. No "rockstar", "ninja" or "fast-paced environment".',
+      'Keep open seats to roughly one in four tiles; more and the mosaic reads as an empty office. Do not place them all in one row.',
+      'Point each Apply link at that role\'s real posting. The tile is a disclosure button (aria-expanded) and the department filter is a radio group with arrow-key navigation; keep both if you restyle.',
+      'Do not add photos or real company logos. Initial avatars keep the wall consistent and avoid image consent issues.',
+    ],
+  },
+  capture: { scroll: true, posterTime: 2.4, loop: 12 },
+  provenance: {
+    kind: 'original',
+    modifications: [],
+    assets: [],
+  },
+})

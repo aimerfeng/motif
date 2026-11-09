@@ -1,0 +1,77 @@
+import { defineItem } from '@motif/schema'
+
+export default defineItem({
+  schemaVersion: 1,
+  slug: 'navbar-service-status',
+  status: 'published',
+  title: { 'zh-CN': '服务状态顶栏', en: 'Service Status Header' },
+  summary: {
+    'zh-CN': '控制台顶栏：左边是概览 / 图表 / 备份标签，右边是在线、可用率、延迟状态胶囊和一个带开关图标的电源开关，关掉后胶囊变暗。适合服务器、IoT 设备和部署控制台。',
+    en: 'A console header with Overview / Graphs / Backups tabs and status pills for online, uptime and latency next to a power switch with on/off glyphs that dims the pills when off. Made for server, IoT device and deployment consoles.',
+  },
+  kind: 'section',
+  category: 'navbar',
+  tags: ['navbar', 'header', 'status', 'badge', 'switch', 'console', 'dashboard'],
+  runtime: ['react', 'motion', 'css', 'svg'],
+  entry: { file: 'navbar-service-status.tsx', export: 'NavbarServiceStatus' },
+  demo: { file: 'demo.tsx', export: 'Demo', theme: 'dark' },
+  files: [
+    { path: 'navbar-service-status.tsx', role: 'component' },
+    { path: 'demo.tsx', role: 'demo' },
+  ],
+  params: [
+    {
+      key: 'tabs',
+      type: 'text',
+      group: 'content',
+      label: { 'zh-CN': '标签', en: 'Tabs' },
+      hint: { 'zh-CN': '用英文逗号分隔，最多 5 个', en: 'Comma-separated, up to 5' },
+      default: 'Overview, Graphs, Backups',
+      maxLength: 60,
+    },
+    { key: 'uptime', type: 'text', group: 'content', label: { 'zh-CN': '可用率', en: 'Uptime' }, default: '99.9%', maxLength: 8 },
+    { key: 'latency', type: 'text', group: 'content', label: { 'zh-CN': '延迟', en: 'Latency' }, default: '45ms', maxLength: 8 },
+    { key: 'showPower', type: 'boolean', group: 'content', label: { 'zh-CN': '电源开关', en: 'Power switch' }, default: true },
+    { key: 'onlineColor', type: 'color', group: 'look', label: { 'zh-CN': '在线圆点色', en: 'Online dot' }, default: '#10b981' },
+    {
+      key: 'pillStyle',
+      type: 'select',
+      group: 'look',
+      label: { 'zh-CN': '胶囊样式', en: 'Pill style' },
+      default: 'outline',
+      options: [
+        { value: 'outline', label: { 'zh-CN': '描边', en: 'Outline' } },
+        { value: 'soft', label: { 'zh-CN': '浅底', en: 'Soft' } },
+        { value: 'pill', label: { 'zh-CN': '圆胶囊', en: 'Pill' } },
+      ],
+    },
+    { key: 'height', type: 'number', group: 'layout', label: { 'zh-CN': '高度', en: 'Height' }, default: 64, min: 48, max: 80, step: 1, unit: 'px', safe: [56, 72] },
+    { key: 'accent', type: 'color', group: 'look', label: { 'zh-CN': '强调色', en: 'Accent' }, default: '#18181b' },
+  ],
+  presets: [
+    { id: 'origin', name: { 'zh-CN': '原样', en: 'Origin' }, values: {} },
+    { id: 'soft', name: { 'zh-CN': '柔和', en: 'Soft' }, values: { pillStyle: 'soft', accent: '#6366f1', onlineColor: '#22d3ee' } },
+    { id: 'compact', name: { 'zh-CN': '紧凑', en: 'Compact' }, values: { height: 52, pillStyle: 'pill', accent: '#f59e0b', latency: '12ms' } },
+  ],
+  dependencies: ['motion/react', '@motif/runtime'],
+  perf: { webgl: false, maxDpr: 2 },
+  a11y: { reducedMotion: 'static' },
+  capture: { zoom: 1.3, posterTime: 1.2, loop: 8 },
+  provenance: {
+    kind: 'upstream',
+    upstream: {
+      source: 'coss-origin',
+      repo: 'origin-space/originui',
+      sha: 'fe6ffa81f434a4afe1c01564c13bb237564c42e2',
+      paths: ['apps/origin/registry/default/components/comp-596.tsx'],
+      spdx: 'MIT',
+      copyright: ['Copyright (c) 2025 coss.com', 'Originally Copyright (c) 2025 Origin UI'],
+    },
+    modifications: [
+      'Replaced Radix NavigationMenu, Popover and Switch with hand-rolled nav lists, a small motion/react popover and a role="switch" button; ui/badge became a span.',
+      'Replaced lucide icons with inline SVG; the power switch now dims the pills and flips Online to Offline, and the status label uses foreground ink with only the dot tinted.',
+      'Added tabs, uptime, latency, power switch, online color, pill style, height and accent params plus controlled props so the demo autoplays on the frame clock; extra pills hide on narrow screens.',
+    ],
+    assets: [],
+  },
+})
