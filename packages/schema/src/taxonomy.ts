@@ -6,11 +6,11 @@ export const KINDS = ['template', 'style', 'section', 'component', 'effect'] as 
 export type Kind = (typeof KINDS)[number]
 
 export const CATEGORIES_BY_KIND = {
-  template: ['landing', 'saas', 'portfolio', 'product', 'agency', 'blog', 'event', 'app'],
+  template: ['landing', 'saas', 'portfolio', 'product', 'agency', 'blog', 'event', 'app', 'docs', 'ecommerce'],
   style: ['minimal', 'bold', 'retro', 'glass', 'editorial', 'technical', 'playful'],
-  section: ['hero', 'navbar', 'features', 'pricing', 'testimonials', 'logos', 'stats', 'faq', 'cta', 'footer', 'team', 'changelog', 'posts', 'contact', 'showcase', 'dashboard'],
-  component: ['loader', 'skeleton', 'progress', 'toast', 'button', 'input', 'toggle', 'tabs', 'menu', 'dialog', 'tooltip', 'badge', 'avatar', 'empty-state', 'navigation', 'data', 'layout'],
-  effect: ['background', 'shader', 'text', 'card', 'cursor', 'transition', '3d'],
+  section: ['hero', 'navbar', 'features', 'pricing', 'testimonials', 'logos', 'stats', 'faq', 'cta', 'footer', 'team', 'changelog', 'posts', 'contact', 'showcase', 'dashboard', 'about', 'auth', 'banner', 'checkout', 'comparison', 'gallery', 'settings', 'shop', 'sidebar'],
+  component: ['loader', 'skeleton', 'progress', 'toast', 'button', 'input', 'select', 'checkbox', 'slider', 'date', 'toggle', 'tabs', 'menu', 'dialog', 'popover', 'tooltip', 'badge', 'avatar', 'empty-state', 'navigation', 'stepper', 'table', 'chart', 'data', 'carousel', 'chat', 'audio', 'layout'],
+  effect: ['background', 'shader', 'text', 'card', 'cursor', 'transition', 'scroll', 'image', '3d'],
 } as const satisfies Record<Kind, readonly string[]>
 
 export type Category = (typeof CATEGORIES_BY_KIND)[Kind][number]

@@ -29,11 +29,11 @@ items/<slug>/
 
 - `title` / `summary`：中英两份。中文要自然，不要像翻译腔；summary 一两句话：看起来是什么样 + 适合用在哪里。
 - `kind` 与 `category`：市场分五个层级，分类必须属于所选层级（定义在 `packages/schema/src/taxonomy.ts` 的 `CATEGORIES_BY_KIND`）：
-  - `template` 整站模板：landing、saas、portfolio、product、agency、blog、event、app
+  - `template` 整站模板：landing、saas、portfolio、product、agency、blog、event、app、docs、ecommerce
   - `style` 设计风格：minimal、bold、retro、glass、editorial、technical、playful
-  - `section` 页面区块：hero、navbar、features、pricing、testimonials、logos、stats、faq、cta、footer、team、changelog、posts、contact、showcase、dashboard
-  - `component` 功能组件：loader、skeleton、progress、toast、button、input、toggle、tabs、menu、dialog、tooltip、badge、avatar、empty-state、navigation、data、layout
-  - `effect` 视觉效果：background、shader、text、card、cursor、transition、3d
+  - `section` 页面区块：hero、navbar、features、pricing、testimonials、logos、stats、faq、cta、footer、team、changelog、posts、contact、showcase、dashboard、about、auth、banner、checkout、comparison、gallery、settings、shop、sidebar
+  - `component` 功能组件：loader、skeleton、progress、toast、button、input、select、checkbox、slider、date、toggle、tabs、menu、dialog、popover、tooltip、badge、avatar、empty-state、navigation、stepper、table、chart、data、carousel、chat、audio、layout
+  - `effect` 视觉效果：background、shader、text、card、cursor、transition、scroll、image、3d
 - `runtime`：react、motion、css、svg、canvas2d、webgl、webgl2、three 中用到的。
 - `entry.export` 是组件的导出名；`demo.export` 固定为 `Demo`；`demo.theme` 一般是 `dark`，只有为浅色设计的效果才用 `light`。
 - `params`：5–10 个真正值得调的参数。每个都有中英 `label`，必要时加 `hint`。范围要收紧到「任何值都好看」；推荐区间写在 `safe`。颜色用 `color`，多色用 `palette`，弹簧用 `spring`（`visualDuration` + `bounce`），缓动用 `easing`（cubic-bezier 四个数）。用 `group` 把参数分组（如 motion、look、layout、interaction）。
