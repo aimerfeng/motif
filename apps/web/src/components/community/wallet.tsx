@@ -1,23 +1,18 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import {
-  createPublicClient,
-  createWalletClient,
-  custom,
-  getAddress,
-  numberToHex,
-  type Address,
-  type EIP1193Provider,
-  type PublicClient,
-  type WalletClient,
-} from 'viem'
+import type * as ViemModule from 'viem'
+import type { Address, EIP1193Provider, PublicClient, WalletClient } from 'viem'
 import { chainOf, type PublicCommunityConfig } from '@/lib/community/shared'
 
 /*
  * 钱包连接：用 EIP-6963 发现浏览器里的钱包扩展（同时装了多个也能选），没有发现时退回 window.ethereum。
  * 只依赖 viem，不接 WalletConnect 之类需要外部中继服务的方案（国内访问不稳定，也违反“不依赖外部服务”的原则）。
+ * 这个 provider 包着整个站点：viem 的签名和地址校验（keccak、secp256k1，压缩后一百多 KB）按需加载，
+ * 社区没开放时（链没配置）任何页面都不下载这部分代码。
  */
+type Viem = typeof ViemModule
+const loadViem = (): Promise<Viem> => import('viem')
 
 export interface DiscoveredWallet {
   id: string
@@ -203,6 +198,7 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
   const [chainId, setChainId] = useState<number | null>(null)
   const [connecting, setConnecting] = useState(false)
   const [account, setAccount] = useState<AccountInfo | null>(null)
+  const [viem, setViem] = useState<Viem | null>(null)
   const restoring = useRef(false)
 
   useEffect(() => {
@@ -229,6 +225,7 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
   const attach = useCallback(async (wallet: DiscoveredWallet, request: 'eth_accounts' | 'eth_requestAccounts') => {
     const accounts = (await wallet.provider.request({ method: request })) as string[]
     if (accounts.length === 0) return false
+    const { getAddress } = await loadViem()
     setActive(wallet)
     setAddress(getAddress(accounts[0]!))
     setChainId(Number(await wallet.provider.request({ method: 'eth_chainId' })))
@@ -237,14 +234,15 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // 刷新页面后，如果上次连过同一个钱包，用 eth_accounts 静默恢复（不弹窗）。
+  // 社区没开放时不恢复：连上了也没有可用的操作，还要为此加载 viem。
   useEffect(() => {
-    if (restoring.current || active || wallets.length === 0) return
+    if (configState !== 'ready' || restoring.current || active || wallets.length === 0) return
     const id = remembered()
     const wallet = id ? wallets.find((entry) => entry.id === id) : undefined
     if (!wallet) return
     restoring.current = true
     attach(wallet, 'eth_accounts').catch(() => remember(null))
-  }, [wallets, active, attach])
+  }, [configState, wallets, active, attach])
 
   // 钱包里切换账户或网络时跟着变。
   useEffect(() => {
@@ -255,7 +253,7 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
         setActive(null)
         setAddress(null)
         remember(null)
-      } else setAddress(getAddress(accounts[0]!))
+      } else void loadViem().then(({ getAddress }) => setAddress(getAddress(accounts[0]!)))
     }
     const onChain = (id: string) => setChainId(Number(id))
     provider.on('accountsChanged', onAccounts)
@@ -289,6 +287,7 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
 
   const switchChain = useCallback(async () => {
     if (!active || !config) return
+    const { numberToHex } = await loadViem()
     const hexId = numberToHex(config.chainId)
     try {
       await active.provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: hexId }] })
@@ -322,8 +321,19 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
   }, [refreshAccount])
 
   const onRightChain = config !== null && chainId === config.chainId
+  useEffect(() => {
+    if (!active || viem) return
+    let cancelled = false
+    void loadViem().then((module) => {
+      if (!cancelled) setViem(module)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [active, viem])
   const clients = useMemo(() => {
-    if (!active || !address || !config || !onRightChain) return { walletClient: null, publicClient: null }
+    if (!viem || !active || !address || !config || !onRightChain) return { walletClient: null, publicClient: null }
+    const { createPublicClient, createWalletClient, custom } = viem
     const chain = chainOf(config)
     const transport = custom(active.provider)
     // 等交易回执时的轮询间隔：本地链每笔交易立即出块，按公链的默认值（4 秒）等太慢。
@@ -332,7 +342,7 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
       walletClient: createWalletClient({ account: address, chain, transport, pollingInterval }),
       publicClient: createPublicClient({ chain, transport, pollingInterval }),
     }
-  }, [active, address, config, onRightChain])
+  }, [viem, active, address, config, onRightChain])
 
   const status: WalletStatus =
     configState === 'loading'

@@ -1,6 +1,5 @@
 'use client'
 
-import { contentHash } from '@motif/contracts'
 import type { ItemSource } from '@motif/schema/core'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
@@ -31,6 +30,8 @@ export function ChainBadge({ item }: { item: ItemSource }) {
       if (!record.registered || !record.itemId) return { state: 'unregistered' }
       const base = { itemId: record.itemId, version: record.version ?? null }
       if (record.delisted) return { state: 'delisted', ...base }
+      // 哈希要用 keccak（viem）：每个条目页都有这个徽章，只在条目确实登记过、需要比对时才加载。
+      const { contentHash } = await import('@motif/contracts')
       return { state: (await contentHash(item)) === record.contentHash ? 'verified' : 'mismatch', ...base }
     }
     void verify()

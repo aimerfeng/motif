@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useRef, ViewTransition } from 'react'
+import { useRef, useState, ViewTransition } from 'react'
 import { SkillButton } from '@/components/skill-button'
 import { Link } from '@/i18n/navigation'
 import type { ItemSummary } from '@/lib/catalog'
@@ -36,11 +36,15 @@ export function ItemCard({
   morph?: boolean
 }) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  // 条目页是静态页，默认一进视口就整页预取（每个十几 KB）：市场一屏十几张卡，慢网络下会和海报抢带宽。
+  // 改成指针移上来、获得焦点（触屏按下时也会触发 pointerenter）才预取，只取用户可能点开的那一个。
+  const [intent, setIntent] = useState(false)
   const t = useTranslations('community')
   const tm = useTranslations('market')
   const tech = item.runtime.filter((r) => r !== 'react').map((r) => RUNTIME_LABELS[r] ?? r)
 
   const play = () => {
+    setIntent(true)
     const video = videoRef.current
     if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     video.play().catch(() => {
@@ -72,6 +76,7 @@ export function ItemCard({
             decoding="async"
             className="absolute inset-0 size-full object-cover"
           />
+          {/* 视频不设 poster：下面的 img 已经是海报；poster 属性会不管 srcSet 和懒加载、立刻再下一张全尺寸海报。 */}
           {(item.media.loopWebm ?? item.media.loopMp4) && (
             <video
               ref={videoRef}
@@ -79,7 +84,6 @@ export function ItemCard({
               loop
               playsInline
               preload="none"
-              poster={item.media.poster}
               className="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-(--duration-slow) group-hover:opacity-100"
             >
               {item.media.loopWebm && <source src={item.media.loopWebm} type="video/webm" />}
@@ -103,7 +107,7 @@ export function ItemCard({
 
   return (
     <div className="group relative" onPointerEnter={play} onPointerLeave={stop} data-testid={`card-${item.slug}`}>
-      <Link href={item.community ? `/community/works/${item.slug}` : `/market/${item.slug}`} className="block rounded-[var(--radius-card)]" onFocus={play} onBlur={stop}>
+      <Link href={item.community ? `/community/works/${item.slug}` : `/market/${item.slug}`} className="block rounded-[var(--radius-card)]" prefetch={intent ? null : false} onFocus={play} onBlur={stop}>
         {morph ? (
           <ViewTransition name={`item-${item.slug}`} share="morph" default="none">
             {poster}
