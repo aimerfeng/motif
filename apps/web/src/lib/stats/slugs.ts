@@ -4,7 +4,7 @@ import { getCommunity } from '@/lib/community/state'
 
 /*
  * 市场里现有的条目（目录 + 审核通过的社区作品）。统计上报只认这些 slug，随便编的不进表。
- * catalog.json 有好几 MB，路由处理里 React 的 cache 不生效，所以自己缓存一分钟。
+ * 每次上报都要问一遍，而社区作品那一半要走链上索引，所以这张表自己缓存一分钟（目录本身在 lib/catalog 里已经只解析一次）。
  */
 
 const TTL_MS = 60_000
