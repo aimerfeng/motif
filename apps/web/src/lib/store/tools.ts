@@ -4,6 +4,7 @@ import type { Evaluation } from '@motif/agent'
 import { defaultsOf, type ItemManifest, type ItemSource, type ParamValues } from '@motif/schema'
 import { z } from 'zod'
 import { marketSource } from '@/lib/community/market-source'
+import { cliCommand } from '@/lib/cli'
 import { HttpError } from '@/lib/community/http'
 import { dailyCap, rateLimit } from '@/lib/community/rate-limit'
 import { applyCredit, balanceOf, isUnlocked, unlock, unlocksOf } from '@/lib/credits/ledger'
@@ -42,6 +43,8 @@ export interface StoreTool<Shape extends z.ZodRawShape = z.ZodRawShape> {
   name: string
   title: string
   description: string
+  /** 不改任何状态（不扣积分、不下单）：MCP 里标成 readOnlyHint，客户端可以不逐次询问；HTTP 接口也接受 GET（参数写在查询串里）。 */
+  readOnly: boolean
   input: Shape
   run: (input: z.infer<z.ZodObject<Shape>>, context: ToolContext) => Promise<ToolResult>
 }
@@ -77,12 +80,12 @@ async function requireItem(name: string) {
   return item
 }
 
-/** 拿代码、拿 Skill、下定制单都要花积分，所以要知道是谁：没带 API 密钥就告诉 agent 去哪里拿。 */
+/** 拿代码、拿 Skill、下定制单要花积分，查订单和余额要看账号，所以要知道是谁：没带 API 密钥就告诉 agent 怎么拿——最省事的是 CLI 的 login（浏览器里点一下确认）。 */
 function requireBuyer(context: ToolContext): string {
   if (context.userId) return context.userId
   throw new HttpError(
     401,
-    `this needs a Motif API key (it spends credits). Create one at ${context.origin}/account/keys and reconnect with the header "Authorization: Bearer <key>", e.g. claude mcp add --transport http motif ${context.origin}/mcp --header "Authorization: Bearer <key>"`,
+    `this needs a Motif API key (it reads or spends an account's credits). Easiest: ask the user to run "${cliCommand(context.origin, 'setup')}" in a terminal (signs in through the browser and connects this agent). Or create a key at ${context.origin}/account/keys and reconnect with the header "Authorization: Bearer <key>", e.g. claude mcp add --transport http motif ${context.origin}/mcp --header "Authorization: Bearer <key>"`,
   )
 }
 
@@ -122,6 +125,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'search_ui',
     title: 'Search UI',
+    readOnly: true,
     description:
       'Search the Motif catalogue of production-quality UI: whole-site templates, design styles, page sections, components (loaders, toasts, inputs, toggles, tabs, dialogs …) and visual effects (shaders, text, backgrounds). Describe what you need in a few words. Returns slugs, prices in credits and poster images.',
     input: {
@@ -149,6 +153,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'get_ui',
     title: 'Get UI details',
+    readOnly: true,
     description: 'Everything about one item: what it is for, its tunable parameters (types, defaults, ranges), presets, usage rules, dependencies, license and price in credits.',
     input: { slug },
     async run({ slug: name }, { origin, userId }) {
@@ -183,6 +188,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'preview_ui',
     title: 'Preview UI',
+    readOnly: true,
     description: 'Render the item with your parameter values (or a preset) in a headless browser and return screenshots, so you can check it fits before ordering.',
     input: {
       slug,
@@ -213,6 +219,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'get_quote',
     title: 'Get a quote',
+    readOnly: true,
     description:
       'Price an order before placing it: either an existing item (slug) or a custom UI built to your brief. Orders are paid in Motif credits from the account of your API key; an item, once bought, stays free for that account.',
     input: {
@@ -234,6 +241,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'place_order',
     title: 'Place an order',
+    readOnly: false,
     description:
       'Order an existing item (slug, optionally tuned with preset/values) or a custom UI (brief, optionally starting from an existing item as base). Needs an API key: the price is paid in credits. Items are delivered immediately with code (an item you bought before costs nothing again); custom orders are built by an agent, poll get_order until delivered. Keep the returned order id: it is the only way to get the order back.',
     input: {
@@ -264,7 +272,8 @@ export const STORE_TOOLS = [
         // agent 通过 MCP 拿走了代码：排行榜的「拿走」（按账号去重）。
         void track({ userId: buyer }, item.manifest.slug, 'take')
         const price = itemPrice(pricing)
-        const order = await saveOrder({ ...base, kind: 'item', price, status: price.free ? 'delivered' : 'awaiting_payment', slug: item.manifest.slug, values })
+        // 记下是哪个账号、这次扣了多少（买过的是 0）：后台的订单列表要对得上积分流水。
+        const order = await saveOrder({ ...base, kind: 'item', price, status: price.free ? 'delivered' : 'awaiting_payment', slug: item.manifest.slug, values, buyerId: buyer, credits: paid.charged })
         return { data: { ...(await orderView(order, origin)), credits: { charged: paid.charged, balance: paid.balance } } }
       }
       rateLimit(request, 'store-custom-order', 3)
@@ -290,6 +299,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'get_order',
     title: 'Get an order',
+    readOnly: true,
     description: 'Status of an order. Once delivered it includes the code: shadcn registry JSON with every file (path + content), an install command, the shared runtime and a skill URL.',
     input: { orderId: z.string().max(40).describe('The id returned by place_order') },
     async run({ orderId }, { origin }) {
@@ -302,6 +312,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'list_skills',
     title: 'List skills',
+    readOnly: true,
     description:
       'Every agent skill Motif offers: general design skills (motion, typography, shaders, scroll, 3D …) and one skill per catalogue item with its tuned parameters. Returns names, descriptions and prices in credits; call get_skill to get one.',
     input: {
@@ -328,6 +339,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'get_skill',
     title: 'Get a skill',
+    readOnly: false,
     description:
       'Download one skill: every file (SKILL.md, references, assets) as path + content. Needs an API key; the first download costs credits, later ones are free. Save the files under .claude/skills/<name>/.',
     input: { name: z.string().min(1).max(80).describe('Skill name from list_skills, e.g. motif-design or motif-mesh-gradient') },
@@ -344,6 +356,7 @@ export const STORE_TOOLS = [
   tool({
     name: 'get_balance',
     title: 'Get credit balance',
+    readOnly: true,
     description: 'The credit balance of the account behind your API key, and what things cost.',
     input: {},
     async run(_input, context) {
@@ -364,7 +377,7 @@ export const STORE_INSTRUCTIONS = `Motif is a market of production-quality UI fo
 
 Typical flow: search_ui → get_ui → preview_ui (optional, returns screenshots) → place_order → get_order for the code. If nothing fits, place_order with a brief and an agent builds a custom item (poll get_order).
 Skills: list_skills → get_skill.
-Browsing (search, details, previews, quotes) is free. Getting code, skills and custom builds is paid in Motif credits and needs an API key from /account/keys, sent as "Authorization: Bearer <key>". Something you bought once stays free for your account. get_balance shows what is left.`
+Browsing (search, details, previews, quotes) is free. Getting code, skills and custom builds is paid in Motif credits and needs an API key (from /account/keys, or the motif CLI: "login"), sent as "Authorization: Bearer <key>". Something you bought once stays free for your account. get_balance shows what is left.`
 
 export function findTool(name: string): StoreTool | undefined {
   return STORE_TOOLS.find((entry) => entry.name === name) as StoreTool | undefined

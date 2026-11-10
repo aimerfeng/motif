@@ -2,12 +2,14 @@ import { getTranslations } from 'next-intl/server'
 import { EmptyState } from '@/components/community/ui'
 import type { Locale } from '@/i18n/routing'
 import type { LedgerEntry } from '@/lib/credits/ledger'
+import { SITE_TIME_ZONE } from '@/lib/site'
 
 /** 积分流水：时间、事由、变动、余额。 */
 export async function LedgerTable({ entries, locale }: { entries: LedgerEntry[]; locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'credits.ledger' })
   if (entries.length === 0) return <EmptyState title={t('empty')} compact />
-  const date = new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' })
+  // 时区写死（表头也写着）：不然同一笔流水在线上（UTC 容器）和开发机上是两个钟点。
+  const date = new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short', timeZone: SITE_TIME_ZONE })
   return (
     <div className="overflow-x-auto rounded-[var(--radius-card)] border border-line">
       <table className="w-full min-w-[560px] text-left text-[13.5px]">

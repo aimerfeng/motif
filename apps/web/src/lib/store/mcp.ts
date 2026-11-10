@@ -12,9 +12,11 @@ function toContent(result: ToolResult) {
  * 工具出错时作为工具结果返回（isError），agent 能看到原因并换个做法，而不是整个请求失败。
  */
 export function createStoreServer(context: ToolContext): McpServer {
-  const server = new McpServer({ name: 'motif', title: 'Motif UI market', version: '1.0.0' }, { instructions: STORE_INSTRUCTIONS })
+  const server = new McpServer({ name: 'motif', title: 'Motif UI market', version: '1.1.0' }, { instructions: STORE_INSTRUCTIONS })
   for (const tool of STORE_TOOLS) {
-    server.registerTool(tool.name, { title: tool.title, description: tool.description, inputSchema: tool.input }, async (input: unknown) => {
+    // 标注让客户端知道哪些工具只是查询（可以不逐次确认）；下单是新增、不是破坏性操作，也只和 Motif 自己打交道。
+    const annotations = { readOnlyHint: tool.readOnly, destructiveHint: false, idempotentHint: tool.readOnly, openWorldHint: false }
+    server.registerTool(tool.name, { title: tool.title, description: tool.description, inputSchema: tool.input, annotations }, async (input: unknown) => {
       try {
         return { content: toContent(await tool.run(input as never, context)) }
       } catch (error) {

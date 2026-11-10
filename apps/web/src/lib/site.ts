@@ -2,6 +2,12 @@ import type { Metadata } from 'next'
 import { getPathname } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 
+/**
+ * 给人看的时刻一律按这个时区显示（后台的表格、积分流水）。不跟服务器走：线上容器是 UTC，
+ * 开发机各不相同，同一条记录在两边显示成不同的钟点会让人对不上账。统计的「一天」也是按它切的。
+ */
+export const SITE_TIME_ZONE = 'Asia/Shanghai'
+
 /** 站点的公开地址：社交卡片和多语言链接要用绝对地址。部署前默认本地。 */
 export const SITE_URL = process.env.MOTIF_SITE_URL ?? 'http://localhost:3000'
 

@@ -130,6 +130,13 @@
     font-feature-settings: 'ss01', 'cv11';
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* 滚动条的颜色跟主题走（这个属性会继承，页面里所有滚动区都用它）。 */
+    scrollbar-color: color-mix(in oklab, var(--color-ink) 22%, transparent) transparent;
+  }
+
+  /* 页面里面的小滚动区（命令、代码、表格）用细滚动条：系统默认的那种在小盒子里比内容还抢眼。整页的滚动条不变。 */
+  :where(body *) {
+    scrollbar-width: thin;
   }
 
   ::selection {

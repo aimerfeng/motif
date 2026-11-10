@@ -42,7 +42,7 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
   }, [pathname])
 
   return (
-    <nav ref={nav} className="relative hidden items-center gap-1 text-[14px] text-ink-muted sm:flex">
+    <nav ref={nav} className="relative hidden items-center gap-1 text-[14px] text-ink-muted lg:flex">
       <span
         aria-hidden
         className="absolute top-1/2 left-0 h-8 origin-left rounded-md bg-ink/[0.07] transition-[transform,opacity] duration-(--duration-base) ease-(--ease-in-out-soft) motion-reduce:transition-none"
@@ -54,7 +54,7 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
           href={link.href}
           aria-current={isActive(pathname, link.href) ? 'page' : undefined}
           // relative：链接画在滑动的底色上面（定位元素按文档顺序叠放）。
-          className="relative flex items-baseline gap-1.5 rounded-md px-3 py-1.5 transition-colors duration-150 hover:bg-ink/5 hover:text-ink aria-[current=page]:text-ink aria-[current=page]:hover:bg-transparent"
+          className="relative flex items-baseline gap-1.5 rounded-md px-2.5 py-1.5 whitespace-nowrap transition-colors duration-150 hover:bg-ink/5 hover:text-ink aria-[current=page]:text-ink aria-[current=page]:hover:bg-transparent xl:px-3"
         >
           {link.label}
           {link.badge && <span className="text-[10.5px] text-ink-faint">{link.badge}</span>}
@@ -64,7 +64,7 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
   )
 }
 
-/** 手机上的导航：右上角一个按钮，展开成全宽的下拉面板。 */
+/** 窄屏（lg 以下）的导航：右上角一个按钮，展开成全宽的下拉面板。 */
 export function MobileNav({ links, label }: { links: NavLink[]; label: string }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
@@ -80,7 +80,7 @@ export function MobileNav({ links, label }: { links: NavLink[]; label: string })
   }, [open])
 
   return (
-    <div className="sm:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         aria-label={label}

@@ -39,7 +39,10 @@ export interface Order {
   /** 定制单交付时的条目快照：之后工作台会话再被改动或清理，交付物都不变。 */
   delivered?: { item: ItemSource; values: ParamValues }
   error?: string
-  /** 付积分的站点用户和扣了多少（docs/decisions/0009）：订单做失败时原样退回。 */
+  /**
+   * 付积分的站点用户和这张单扣了多少（docs/decisions/0009）。定制单做失败时原样退回；
+   * 现成条目的单只是记账：买过的条目再下单是 0。早期的条目单没记这两项。
+   */
   buyerId?: string | null
   credits?: number
 }
@@ -130,7 +133,8 @@ async function failOrder(order: Order, error: string): Promise<Order> {
 
 /** 没做成的定制单退回积分。流水关联订单号，同一张单只退一次。 */
 function refund(order: Order): void {
-  if (!order.buyerId || !order.credits) return
+  // 只有定制单会做失败；条目单的代码已经交付，记下的积分不是待退的。
+  if (order.kind !== 'custom' || !order.buyerId || !order.credits) return
   try {
     applyCredit({ userId: order.buyerId, delta: order.credits, kind: 'refund', ref: order.id, note: 'custom order failed' })
   } catch (error) {
@@ -196,6 +200,18 @@ async function allOrders(): Promise<Order[]> {
   const names = await readdir(ORDERS_DIR).catch(() => [] as string[])
   const orders = await Promise.all(names.filter((name) => name.endsWith('.json')).map((name) => loadOrder(name.slice(0, -'.json'.length))))
   return orders.filter((order): order is Order => order !== null)
+}
+
+/**
+ * 管理后台的订单列表：最新的 limit 张（按下单时间），外加总数和各状态的张数。
+ * 订单号是随机的，排序只能把文件都读一遍；旧订单会定期清掉（pruneOrders），目录不会一直变大。
+ * 只读文件，不像 orderView 那样生成交付内容、也不改订单状态，列表页刷新多少次都没有副作用。
+ */
+export async function listOrders(limit = 200): Promise<{ orders: Order[]; total: number; counts: Record<OrderStatus, number> }> {
+  const orders = (await allOrders()).sort((a, b) => b.createdAt - a.createdAt)
+  const counts: Record<OrderStatus, number> = { awaiting_payment: 0, queued: 0, in_progress: 0, delivered: 0, failed: 0 }
+  for (const order of orders) if (order.status in counts) counts[order.status] += 1
+  return { orders: orders.slice(0, limit), total: orders.length, counts }
 }
 
 /**

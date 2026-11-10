@@ -45,18 +45,18 @@ export function WalletButton() {
     }
   }
 
-  // 手机上头部很挤：只显示头像或钱包图标，文字留给读屏。
+  // 窄屏上头部很挤（xl 以下导航和按钮排不开）：只显示头像或钱包图标，文字留给读屏。
   const trigger =
     status === 'connected' || status === 'wrong-chain' ? (
       <>
         <Avatar address={address!} className="size-5" />
-        <span className={`max-sm:sr-only ${account?.handle ? '' : 'font-mono text-[12.5px]'}`}>{account?.handle ? `@${account.handle}` : shortAddress(address!)}</span>
+        <span className={`max-xl:sr-only ${account?.handle ? '' : 'font-mono text-[12.5px]'}`}>{account?.handle ? `@${account.handle}` : shortAddress(address!)}</span>
         {status === 'wrong-chain' && <span className="size-1.5 rounded-full bg-danger" aria-label={t('wrongChain')} />}
       </>
     ) : (
       <>
-        <WalletIcon className="size-4 sm:hidden" />
-        <span className="max-sm:sr-only">{status === 'connecting' ? t('connecting') : t('connect')}</span>
+        <WalletIcon className="size-4 xl:hidden" />
+        <span className="max-xl:sr-only">{status === 'connecting' ? t('connecting') : t('connect')}</span>
       </>
     )
 
@@ -68,7 +68,7 @@ export function WalletButton() {
         aria-controls={panelId}
         onClick={() => setOpen((value) => !value)}
         data-testid="wallet-button"
-        className="flex h-8 items-center gap-2 rounded-full border border-line px-3 text-[13px] whitespace-nowrap text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink aria-expanded:border-line-strong aria-expanded:text-ink max-sm:w-8 max-sm:justify-center max-sm:px-0"
+        className="flex h-8 items-center gap-2 rounded-full border border-line px-3 text-[13px] whitespace-nowrap text-ink-muted transition-colors duration-150 hover:border-line-strong hover:text-ink aria-expanded:border-line-strong aria-expanded:text-ink max-xl:w-8 max-xl:justify-center max-xl:px-0"
       >
         {trigger}
       </button>

@@ -132,4 +132,23 @@ export const MIGRATIONS: string[] = [
     PRIMARY KEY (day, slug, event, visitor)
   ) WITHOUT ROWID;
   `,
+  // CLI 登录请求（docs/decisions/0011-cli-and-agent-onboarding.md）：CLI 在本机生成密钥，这里只存它的哈希，
+  // 等用户在浏览器里同意后登记成 api_key。id 只有发起请求的 CLI 知道（轮询用），user_code 是给人核对、给人输的。
+  `
+  CREATE TABLE cli_login (
+    id TEXT PRIMARY KEY,
+    user_code TEXT NOT NULL UNIQUE,
+    key_hash TEXT NOT NULL,
+    key_prefix TEXT NOT NULL,
+    name TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    user_id TEXT REFERENCES "user"(id) ON DELETE CASCADE,
+    created_at INTEGER NOT NULL,
+    expires_at INTEGER NOT NULL
+  );
+  `,
+  // 管理员下架仓库（docs/decisions/0009 第 7 节）：记下下架的时间。下架期间仓库是私有的，主人不能自己改回公开。
+  `
+  ALTER TABLE repo ADD COLUMN taken_down_at INTEGER;
+  `,
 ]

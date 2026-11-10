@@ -8,6 +8,7 @@ import { ItemCard } from '@/components/market/item-card'
 import { Link } from '@/i18n/navigation'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { getPublishedItems, summarize } from '@/lib/catalog'
+import { cliCommand } from '@/lib/cli'
 import { FEATURED, HERO } from '@/lib/featured'
 import { mediaFor } from '@/lib/media'
 import { SITE_URL } from '@/lib/site'
@@ -136,14 +137,15 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
       </section>
 
       <section className="mx-auto mt-28 grid max-w-[1400px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16">
-        <div>
+        {/* min-w-0：里面那行命令不换行，网格项默认不肯比内容窄，手机上会把整页撑宽。 */}
+        <div className="min-w-0">
           <h2 className="font-display text-[32px] leading-tight font-semibold tracking-[-0.03em] text-balance">{t('agents.title')}</h2>
           <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-pretty text-ink-muted">{t('agents.lead')}</p>
           <div className="mt-6 max-w-xl">
-            <CopyCommand text={`claude mcp add --transport http motif ${SITE_URL}/mcp`} />
+            <CopyCommand text={cliCommand(new URL(SITE_URL).origin, 'setup')} />
           </div>
           <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[13.5px]">
-            <Link href="/docs#mcp" className="text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
+            <Link href="/agents" className="text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
               {t('agents.docs')} →
             </Link>
             <a href="/llms.txt" className="text-ink-muted underline decoration-line-strong underline-offset-4 hover:text-ink hover:decoration-ink">

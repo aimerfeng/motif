@@ -25,6 +25,7 @@
     "@modelcontextprotocol/sdk": "^1.32.1",
     "@motif/agent": "workspace:*",
     "@motif/checker": "workspace:*",
+    "@motif/cli": "workspace:*",
     "@motif/compiler": "workspace:*",
     "@motif/contracts": "workspace:*",
     "@motif/export": "workspace:*",

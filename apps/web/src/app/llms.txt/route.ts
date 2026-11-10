@@ -1,4 +1,6 @@
+import { CLIENTS } from '@motif/cli/clients'
 import { KINDS } from '@motif/schema/core'
+import { cliCommand } from '@/lib/cli'
 import { storeListings } from '@/lib/store/listings'
 import { creditCosts } from '@/lib/credits/pricing'
 import { STORE_INSTRUCTIONS, STORE_TOOLS } from '@/lib/store/tools'
@@ -6,6 +8,7 @@ import { publicOrigin } from '@/lib/site'
 
 /**
  * /llms.txt：用自然语言告诉 agent 这个站点是什么、怎么接入、怎么下单（docs/decisions/0008-agent-store.md）。
+ * 接入方式的顺序和 /agents 一致：先是一条命令的自动配置，再是手动的几种（docs/decisions/0011-cli-and-agent-onboarding.md）。
  * 目录的规模和价格按当前数据生成。
  */
 export async function GET(request: Request) {
@@ -21,8 +24,11 @@ Catalogue: ${listings.length} items (${counts}). Every item has tunable paramete
 
 ## Connect
 
-- MCP (Streamable HTTP): ${origin}/mcp
+- One command (recommended): \`${cliCommand(origin, 'setup')}\`. It finds the coding agents on this machine (${CLIENTS.map((client) => client.label).join(', ')}), adds Motif to each as an MCP server and signs the user in from the browser. Needs Node.js 18+. No key is written into the agent's config.
+- MCP over stdio, set up by hand: the server command is \`${cliCommand(origin, 'mcp')}\`; sign in once with \`${cliCommand(origin, 'login')}\`. Per-agent config files: ${origin}/agents
+- MCP (Streamable HTTP), for hosted agents with no shell: ${origin}/mcp with the header \`Authorization: Bearer <api key>\`
   - Claude Code: \`claude mcp add --transport http motif ${origin}/mcp --header "Authorization: Bearer <api key>"\`
+- Command line: the same package is a CLI (\`${cliCommand(origin, 'search pricing')}\`, \`add <slug>\`, \`custom "<brief>"\`, \`--help\` for the rest). In CI set MOTIF_API_KEY instead of signing in.
 - API key: a signed-in user creates one at ${origin}/account/keys. Browsing works without it; code, skills and custom orders need it.
 - Plain HTTP: GET ${origin}/api/agent lists the tools with JSON Schemas; call one with POST ${origin}/api/agent/<tool>, a JSON body and the same Authorization header.
 
@@ -46,6 +52,7 @@ Keep order ids: they are the only way to fetch an order again.
 
 - Market: ${origin}/market
 - Studio (the same agent, interactive): ${origin}/studio
+- Connect an agent: ${origin}/agents
 - Docs: ${origin}/docs
 `
   return new Response(text, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=300' } })

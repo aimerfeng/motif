@@ -5,6 +5,8 @@ const { result } = concurrently(
   [
     { name: 'preview', command: 'pnpm --filter @motif/preview dev', prefixColor: 'magenta' },
     { name: 'web', command: 'pnpm --filter @motif/web dev', prefixColor: 'green' },
+    // 站点自己分发 motif 命令行（/cli/…）：开发时跟着源码重新打包。
+    { name: 'cli', command: 'pnpm --filter @motif/cli dev', prefixColor: 'cyan' },
   ],
   { killOthersOn: ['failure'], restartTries: 0 },
 )

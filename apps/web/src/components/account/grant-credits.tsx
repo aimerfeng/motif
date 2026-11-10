@@ -8,11 +8,11 @@ import { api, errorText } from '@/lib/api-client'
 import { field } from './auth-forms'
 import { refreshMe } from './me'
 
-/** 管理员加减积分：用户（handle 或邮箱）、数量（负数是扣）、原因。 */
-export function GrantCredits() {
+/** 管理员加减积分：用户（handle 或邮箱）、数量（负数是扣）、原因。defaultUser 是用户详情页预先填好的那个人。 */
+export function GrantCredits({ defaultUser = '' }: { defaultUser?: string }) {
   const t = useTranslations('admin.grant')
   const router = useRouter()
-  const [user, setUser] = useState('')
+  const [user, setUser] = useState(defaultUser)
   const [delta, setDelta] = useState('')
   const [note, setNote] = useState('')
   const [busy, setBusy] = useState(false)

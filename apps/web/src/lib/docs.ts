@@ -1,5 +1,7 @@
 import { REPO, REPO_URL } from '@motif/export'
 import type { Locale } from '@/i18n/routing'
+import { CLIENTS } from '@motif/cli/clients'
+import { cliCommand } from './cli'
 import { SITE_URL } from './site'
 
 /**
@@ -36,8 +38,9 @@ export interface DocStart {
 const AUTHORING = `${REPO_URL}/blob/main/docs/authoring-items.md`
 const REGISTRY_EXAMPLE = `npx shadcn@latest add "${SITE_URL}/r/border-beam.json"`
 const SKILL_EXAMPLE = `npx skills add ${REPO} --skill motif-border-beam`
-const MCP_EXAMPLE = `claude mcp add --transport http motif ${SITE_URL}/mcp --header "Authorization: Bearer <你的 API 密钥>"`
-const MCP_EXAMPLE_EN = `claude mcp add --transport http motif ${SITE_URL}/mcp --header "Authorization: Bearer <your API key>"`
+/** 接入 agent 的那一条命令，和 /agents 页最上面的是同一条（docs/decisions/0011-cli-and-agent-onboarding.md）。 */
+const SETUP_EXAMPLE = cliCommand(new URL(SITE_URL).origin, 'setup')
+const CLIENT_NAMES = CLIENTS.map((client) => client.label)
 
 export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: DocSection[] }> = {
   'zh-CN': {
@@ -133,7 +136,9 @@ export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: D
         title: 'Agent 接入（MCP）',
         blocks: [
           { type: 'p', text: 'Motif 也是给 agent 用的商店：你的 agent 可以自己搜索条目、看预览、按参数取回代码，找不到合适的就下定制单。' },
-          { type: 'command', text: MCP_EXAMPLE },
+          { type: 'p', text: `在终端里运行下面这条命令：它会找出这台机器上的 agent（${CLIENT_NAMES.join('、')}），把 Motif 加成 MCP 服务，再打开浏览器让你登录。配置里不写密钥。` },
+          { type: 'command', text: SETUP_EXAMPLE },
+          { type: 'p', text: '每个 agent 的手动配置、远程 MCP、HTTP 接口和命令行的用法都在 [接入 Agent](/agents) 页。' },
           {
             type: 'steps',
             items: [
@@ -144,7 +149,7 @@ export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: D
             ],
           },
           { type: 'p', text: '不用 MCP 的 agent 读 [llms.txt](/llms.txt)，或者直接 `POST /api/agent/<工具名>`。' },
-          { type: 'note', text: '搜索、详情、截图预览、报价都免费，不需要密钥。拿代码、拿 Skill 和定制单要在 [API 密钥](/account/keys) 页建一个密钥，按 [积分价格](/pricing) 扣积分。' },
+          { type: 'note', text: '搜索、详情、截图预览、报价都免费，不用登录。拿代码、拿 Skill 和定制单要登录（上面的命令会带你登录；不能开浏览器的环境在 [API 密钥](/account/keys) 页建一个密钥），按 [积分价格](/pricing) 扣积分。' },
         ],
       },
       {
@@ -277,7 +282,9 @@ export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: D
         title: 'Connecting agents (MCP)',
         blocks: [
           { type: 'p', text: 'Motif is also a store for agents: yours can search the catalogue, see previews, fetch code with your values, and place a custom order when nothing fits.' },
-          { type: 'command', text: MCP_EXAMPLE_EN },
+          { type: 'p', text: `Run this in a terminal: it finds the agents on this machine (${CLIENT_NAMES.join(', ')}), adds Motif to each as an MCP server and opens the browser to sign you in. No key is written into the config.` },
+          { type: 'command', text: SETUP_EXAMPLE },
+          { type: 'p', text: 'Manual config for each agent, remote MCP, the HTTP API and the command line are on the [Agents](/agents) page.' },
           {
             type: 'steps',
             items: [
@@ -288,7 +295,7 @@ export const DOCS: Record<Locale, { lead: string; start: DocStart[]; sections: D
             ],
           },
           { type: 'p', text: 'Agents without MCP can read [llms.txt](/llms.txt) or call `POST /api/agent/<tool>` directly.' },
-          { type: 'note', text: 'Searching, details, previews and quotes are free and need no key. Code, skills and custom orders need a key from [API keys](/account/keys) and spend [credits](/pricing).' },
+          { type: 'note', text: 'Searching, details, previews and quotes are free and need no sign-in. Code, skills and custom orders need one (the command above signs you in; where no browser can open, create a key on [API keys](/account/keys)) and spend [credits](/pricing).' },
         ],
       },
       {

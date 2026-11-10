@@ -11,7 +11,7 @@ import { formatBytes } from '@/components/repos/repo-card'
 import { resolveRouteLocale } from '@/i18n/locale'
 import { Link } from '@/i18n/navigation'
 import { pageUser } from '@/lib/auth/page'
-import { authReady } from '@/lib/auth/server'
+import { authReady, isAdmin } from '@/lib/auth/server'
 import { fileContent, fileList, itemFromRepo, repoById, visibleRepo } from '@/lib/repos/repos'
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/u/[handle]/[repo]'>): Promise<Metadata> {
@@ -30,7 +30,7 @@ export default async function RepoPage({ params, searchParams }: PageProps<'/[lo
   const locale = resolveRouteLocale(raw)
   const query = await searchParams
   const viewer = await pageUser()
-  const repo = visibleRepo(handle, slug, viewer?.id ?? null)
+  const repo = visibleRepo(handle, slug, viewer?.id ?? null, viewer ? isAdmin(viewer) : false)
   if (!repo) notFound()
   const t = await getTranslations({ locale, namespace: 'repos' })
   const isOwner = viewer?.id === repo.owner_id
@@ -84,6 +84,12 @@ export default async function RepoPage({ params, searchParams }: PageProps<'/[lo
           </h1>
           <span className="rounded-full border border-line px-2.5 py-0.5 text-[12px] text-ink-muted">{repo.visibility === 'private' ? t('private') : t('public')}</span>
         </div>
+        {/* 下架中：只有主人和管理员走得到这里。说清楚现在是什么状态，免得主人以为是自己设成了私有。 */}
+        {repo.taken_down_at !== null && (
+          <p role="status" className="max-w-2xl rounded-[var(--radius-card)] border border-pending/40 bg-pending/[0.06] px-4 py-3 text-[13.5px] leading-relaxed text-ink">
+            {isOwner ? t('takenDown') : t('takenDownModerator')}
+          </p>
+        )}
         {repo.description && <p className="max-w-2xl text-[14px] leading-relaxed text-ink-muted">{repo.description}</p>}
         <p className="flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-ink-faint">
           {origin}
@@ -105,6 +111,7 @@ export default async function RepoPage({ params, searchParams }: PageProps<'/[lo
             slug: repo.slug,
             description: repo.description,
             visibility: repo.visibility,
+            takenDown: repo.taken_down_at !== null,
             ownerHandle: repo.owner_handle,
             githubRepo: repo.github_repo,
             pushedRepo: repo.pushed_repo,

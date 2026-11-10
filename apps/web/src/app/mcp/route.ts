@@ -2,6 +2,7 @@ import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/
 import { userFromApiKey } from '@/lib/accounts/api-keys'
 import { authReady } from '@/lib/auth/server'
 import { errorResponse } from '@/lib/community/http'
+import { cors, preflight } from '@/lib/store/cors'
 import { createStoreServer } from '@/lib/store/mcp'
 import { publicOrigin } from '@/lib/site'
 
@@ -16,13 +17,13 @@ async function handle(request: Request): Promise<Response> {
     await authReady()
     userId = userFromApiKey(request)
   } catch (error) {
-    return errorResponse(error)
+    return cors(errorResponse(error))
   }
   const server = createStoreServer({ request, origin: publicOrigin(request), userId })
   const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true })
   await server.connect(transport)
   try {
-    return await transport.handleRequest(request)
+    return cors(await transport.handleRequest(request))
   } finally {
     void server.close()
   }
@@ -31,3 +32,4 @@ async function handle(request: Request): Promise<Response> {
 export const POST = handle
 export const GET = handle
 export const DELETE = handle
+export const OPTIONS = preflight

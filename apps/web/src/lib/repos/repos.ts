@@ -36,7 +36,12 @@ export interface Repo {
   fork_count: number
   created_at: number
   updated_at: number
+  /** 管理员下架的时间（没下架是 null）。下架期间仓库是私有的，主人不能改回公开，也不能 fork 出一份新的。 */
+  taken_down_at: number | null
 }
+
+/** 被下架的仓库想再公开时给主人看的话。 */
+const TAKEN_DOWN = 'a moderator took this repository down, so it stays private; contact support if you think that was a mistake'
 
 /** 仓库所在的地址：主人的 handle + slug。 */
 export interface RepoWithOwner extends Repo {
@@ -49,7 +54,9 @@ export const REPO_NAME = /^(?!\.+$)[A-Za-z0-9._-]{1,64}$/
 /** 条目仓库的清单文件：有它就能「在工作台打开」。 */
 export const MANIFEST_FILE = 'motif.manifest.json'
 
-const WITH_OWNER = `SELECT r.*, p.handle AS owner_handle, u.name AS owner_name FROM repo r JOIN profile p ON p.user_id = r.owner_id JOIN "user" u ON u.id = r.owner_id`
+/** 仓库连上主人（profile 的 handle、user 的名字）。explore.ts 的统计和列表也用这一段，两边数出来的才是同一批仓库。 */
+export const OWNER_JOIN = `repo r JOIN profile p ON p.user_id = r.owner_id JOIN "user" u ON u.id = r.owner_id`
+export const WITH_OWNER = `SELECT r.*, p.handle AS owner_handle, u.name AS owner_name FROM ${OWNER_JOIN}`
 
 export function checkRepoName(name: string): string {
   const trimmed = name.trim()
@@ -123,10 +130,14 @@ export function repoById(id: string): RepoWithOwner | undefined {
   return one<RepoWithOwner>(`${WITH_OWNER} WHERE r.id = ?`, id)
 }
 
-/** 别人能看到的仓库：私有的只有主人能看到，对别人和不存在一样。 */
-export function visibleRepo(handle: string, slug: string, viewerId: string | null): RepoWithOwner | undefined {
+/**
+ * 别人能看到的仓库：私有的只有主人能看到，对别人和不存在一样。
+ * 例外是下架中的仓库，管理员（moderator）也能看：处理申诉要看内容。主人自己设成私有的，管理员一样看不到。
+ */
+export function visibleRepo(handle: string, slug: string, viewerId: string | null, moderator = false): RepoWithOwner | undefined {
   const repo = one<RepoWithOwner>(`${WITH_OWNER} WHERE p.handle = ? AND r.slug = ?`, handle, slug.toLowerCase())
-  if (!repo || (repo.visibility === 'private' && repo.owner_id !== viewerId)) return undefined
+  if (!repo) return undefined
+  if (repo.visibility === 'private' && repo.owner_id !== viewerId && !(moderator && repo.taken_down_at !== null)) return undefined
   return repo
 }
 
@@ -194,6 +205,8 @@ export function updateRepo(repo: Repo, changes: { name?: string; description?: s
     const description = changes.description === undefined ? repo.description : changes.description.trim().slice(0, 300)
     const visibility = changes.visibility ?? repo.visibility
     if (visibility !== 'public' && visibility !== 'private') throw new HttpError(400, 'visibility must be public or private')
+    // 现查一遍，不信传进来的那份：下架可能就发生在主人打开设置页之后。
+    if (visibility === 'public' && one('SELECT 1 AS yes FROM repo WHERE id = ? AND taken_down_at IS NOT NULL', repo.id)) throw new HttpError(403, TAKEN_DOWN)
     run('UPDATE repo SET name = ?, slug = ?, description = ?, visibility = ?, updated_at = ? WHERE id = ?', name, name.toLowerCase(), description, visibility, Date.now(), repo.id)
     return repoById(repo.id)!
   })
@@ -206,6 +219,8 @@ export function deleteRepo(repo: Repo): void {
 /** Fork 站内的公开仓库（或自己的私有仓库）：复制一份到自己名下。 */
 export function forkRepo(source: RepoWithOwner, userId: string): RepoWithOwner {
   if (source.visibility === 'private' && source.owner_id !== userId) throw new HttpError(404, 'no such repository')
+  // fork 出来的是一个新仓库，不带下架的标记：不拦的话，主人 fork 一份再公开就绕过去了。
+  if (source.taken_down_at) throw new HttpError(403, TAKEN_DOWN)
   return transaction(() => {
     const fork = createRepo({
       ownerId: userId,

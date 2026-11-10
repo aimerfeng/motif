@@ -45,7 +45,8 @@ export default async function CreditsPage({ params }: PageProps<'/[locale]/accou
       </section>
 
       <section className="grid gap-10 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-5">
+        {/* min-w-0：流水表有最小宽度，网格项默认不肯比它窄；加上才是表格自己横向滚，而不是整页被撑宽。 */}
+        <div className="min-w-0 space-y-5">
           <SectionHeader title={t('ledger.title')} />
           <LedgerTable entries={ledgerOf(user.id, 100)} locale={locale} />
         </div>

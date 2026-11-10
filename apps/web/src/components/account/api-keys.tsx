@@ -4,13 +4,17 @@ import { useTranslations } from 'next-intl'
 import { useState, type FormEvent } from 'react'
 import { CopyCommand } from '@/components/copy-command'
 import { buttonPrimary, EmptyState, SectionHeader } from '@/components/community/ui'
-import { useRouter } from '@/i18n/navigation'
+import { ArrowIcon } from '@/components/icons'
+import { Link, useRouter } from '@/i18n/navigation'
 import type { ApiKeyView } from '@/lib/accounts/api-keys'
 import { api, errorText } from '@/lib/api-client'
 import { field } from './auth-forms'
 
-/** API 密钥：新建（明文只显示这一次）、吊销，以及带密钥的 MCP 接入命令。 */
-export function ApiKeys({ keys, origin, locale }: { keys: ApiKeyView[]; origin: string; locale: string }) {
+/**
+ * API 密钥：新建（明文只显示这一次）、吊销，以及接入 agent 的做法。
+ * setup：命令行的一条命令（服务端算好传进来），它自己登录建密钥，所以排在手动复制密钥的做法前面。
+ */
+export function ApiKeys({ keys, origin, setup, locale }: { keys: ApiKeyView[]; origin: string; setup: string; locale: string }) {
   const t = useTranslations('account.keys')
   const router = useRouter()
   const [name, setName] = useState('')
@@ -67,8 +71,17 @@ export function ApiKeys({ keys, origin, locale }: { keys: ApiKeyView[]; origin: 
 
       <section className="space-y-5">
         <SectionHeader title={t('connect')} />
-        <p className="max-w-2xl text-[13.5px] leading-relaxed text-ink-muted">{t('connectLead')}</p>
         <div className="space-y-3">
+          <p className="max-w-2xl text-[13.5px] leading-relaxed text-ink-muted">{t('cliLead')}</p>
+          <CopyCommand text={setup} />
+          <Link href="/agents" className="inline-flex items-center gap-1 text-[13.5px] text-ink underline-offset-4 hover:underline">
+            {t('cliMore')}
+            <ArrowIcon className="size-3.5" />
+          </Link>
+        </div>
+        <div className="space-y-3 pt-4">
+          <h3 className="text-[13.5px] font-medium">{t('byKey')}</h3>
+          <p className="max-w-2xl text-[13.5px] leading-relaxed text-ink-muted">{t('connectLead')}</p>
           <p className="text-[12.5px] text-ink-faint">Claude Code</p>
           <CopyCommand text={`claude mcp add --transport http motif ${origin}/mcp --header "Authorization: Bearer ${key}"`} />
           <p className="pt-2 text-[12.5px] text-ink-faint">{t('otherClients')}</p>

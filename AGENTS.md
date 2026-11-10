@@ -13,9 +13,11 @@
 | `packages/agent` | 工作台（Studio）的 agent：工具（zod 定义一次）、运行器（AI SDK / 脚本）、系统提示词、工作区操作；设计见 `docs/decisions/0006-studio.md` |
 | `packages/agent-claude-cli` | 开发期运行器：本机 Claude Code CLI。Agent SDK 是专有许可证，站点只在运行时原生加载它，不打包、不部署 |
 | `apps/web/src/lib/store` | 给 agent 的商店：工具（zod 定义一次，MCP `/mcp` 和 HTTP `/api/agent/<工具>` 共用）、订单、定制单队列、价格；设计见 `docs/decisions/0008-agent-store.md` |
+| `packages/cli` | `motif` 命令行：一条命令把 Motif 接进各个 coding agent（MCP stdio）、设备登录、搜索和取代码。打成一个没有依赖的文件，由站点自己分发（`/cli/…`）；各 agent 的配置写法只在 `src/clients.ts` 一处，接入页 `app/[locale]/agents` 也用它。设计见 `docs/decisions/0011-cli-and-agent-onboarding.md` |
 | `apps/web/src/lib/auth`、`lib/credits`、`lib/repos`、`lib/db` | 账号（Better Auth：GitHub + 邮箱）、积分账本和套餐、用户仓库（GitHub 导入 / fork / 推送），数据在 SQLite（`node:sqlite`）；设计见 `docs/decisions/0009-accounts-credits-repos.md` |
 | `apps/web/src/lib/stats` | 排行榜：使用统计（浏览、复制、收藏、拿走、改编，按访客每天去重、不存 IP）和排名，页面在 `app/[locale]/rank`；设计见 `docs/decisions/0010-motion-cursor-ranking.md` |
-| `apps/web/src/lib/community` | 社区的服务端：链配置、事件同步、源码存储、投稿检查（编译在子进程里）；页面在 `app/[locale]/community` |
+| `apps/web/src/lib/community` | 社区的服务端：链配置、事件同步、源码存储、投稿检查（编译在子进程里）；页面在 `app/[locale]/community`。首页、发现、创作者三页不依赖链，查询在 `lib/repos/explore.ts`（`docs/decisions/0012-admin-community-and-load-speed.md`） |
+| `apps/web/src/lib/accounts/admin.ts`、`components/admin` | 管理后台（`app/[locale]/admin`：概览、用户、积分订单、商店订单、内容）的查询和共用界面；时间一律按 `lib/site.ts` 的 `SITE_TIME_ZONE`。设计见 0012 |
 | `e2e` | Playwright，本地用已安装的 Edge |
 
 ## 常用命令

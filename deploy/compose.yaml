@@ -9,6 +9,7 @@ services:
       dockerfile: deploy/Dockerfile
       args:
         NEXT_PUBLIC_MOTIF_PREVIEW_URL: https://${PREVIEW_HOST:?set PREVIEW_HOST}
+        MOTIF_SITE_URL: https://${SITE_HOST:?set SITE_HOST}
     image: motif:latest
     command: ['pnpm', '--filter', '@motif/web', 'start']
     restart: unless-stopped

@@ -14,7 +14,7 @@
     "dev:web": "pnpm --filter @motif/web dev",
     "dev:preview": "pnpm --filter @motif/preview dev",
     "dev:chain": "node scripts/dev-chain.mjs",
-    "build": "pnpm --filter @motif/preview build && pnpm --filter @motif/web build",
+    "build": "pnpm --filter @motif/cli build && pnpm --filter @motif/preview build && pnpm --filter @motif/web build",
     "lint": "pnpm lint:types && pnpm lint:eslint",
     "lint:types": "pnpm -r --workspace-concurrency=1 lint && tsc --noEmit -p e2e/tsconfig.json && tsc --noEmit -p scripts/tsconfig.json",
     "lint:eslint": "eslint . --max-warnings=0",

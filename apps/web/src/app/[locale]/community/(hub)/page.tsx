@@ -1,31 +1,149 @@
 import { motifCurationAbi } from '@motif/contracts'
 import type { Metadata } from 'next'
+import { connection } from 'next/server'
 import { getTranslations } from 'next-intl/server'
-import { CommunityOffline } from '@/components/community/offline'
+import { Suspense } from 'react'
+import { ActiveCreators, LatestRepos, TakePart, Trending } from '@/components/community/hub-sections'
 import { Avatar, PersonLink } from '@/components/community/people'
-import { buttonPrimary, buttonSecondary, EmptyState, linkMuted, PageHeader, SectionHeader, Stat, StatGrid, VoteMeter } from '@/components/community/ui'
-import { CoinsIcon, LayersIcon, ReviewIcon, UploadIcon, UsersIcon } from '@/components/icons'
+import { buttonPrimary, buttonSecondary, EmptyState, linkMuted, PageHeader, SectionHeader, Stat, StatGrid, StatLink, VoteMeter } from '@/components/community/ui'
+import { CoinsIcon, LayersIcon, PlusIcon, ReviewIcon, UploadIcon, UsersIcon } from '@/components/icons'
 import { ItemCard } from '@/components/market/item-card'
 import { Link } from '@/i18n/navigation'
 import { resolveRouteLocale } from '@/i18n/locale'
+import type { Locale } from '@/i18n/routing'
+import { profileOf } from '@/lib/accounts/profile'
+import { pageUser } from '@/lib/auth/page'
+import { authReady } from '@/lib/auth/server'
+import { getPublishedItems } from '@/lib/catalog'
 import { formatMotif, formatMotifCompact } from '@/lib/community/shared'
-import { getCommunity, openReviews } from '@/lib/community/state'
+import { getCommunity, openReviews, type Community } from '@/lib/community/state'
 import { communitySummaries } from '@/lib/community/summaries'
 import { relativeTime } from '@/lib/community/time'
 import { itemLink, personOf } from '@/lib/community/views'
+import { communityStats, topCreators, weeklyUses } from '@/lib/repos/explore'
+import { recentPublicRepos } from '@/lib/repos/repos'
 import { alternatesFor } from '@/lib/site'
+import { leaderboard } from '@/lib/stats/board'
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/community'>): Promise<Metadata> {
   const locale = resolveRouteLocale((await params).locale)
-  const t = await getTranslations({ locale, namespace: 'community.hub' })
-  return { title: t('title'), alternates: alternatesFor('/community') }
+  const t = await getTranslations({ locale, namespace: 'community.home' })
+  return { title: t('title'), description: t('description'), alternates: alternatesFor('/community') }
 }
 
+/** 概览页上各放几张卡：三列排两行。 */
+const LATEST_REPOS = 6
+const TOP_CREATORS = 6
+
+/**
+ * 社区概览。栏目有两部分，这一页两种情况都要像一张完整的页面：
+ * - 没连社区链：公开仓库、创作者、本周热门和「怎么参与」就是全部内容，数据都在站点自己的数据库里。
+ * - 连了链：链上的概览（投稿、审核、贡献者）和原来一样排在前面，站内的几个分区接在后面。
+ *
+ * 放在路由组 (hub) 里只是为了给这一页单独配骨架（loading.tsx），不影响地址，也不影响其他社区子页面的骨架。
+ */
 export default async function CommunityPage({ params }: PageProps<'/[locale]/community'>) {
+  // 按请求渲染：下面要读数据库和链。放在最前面，构建时不会先去碰它们。
+  await connection()
   const locale = resolveRouteLocale((await params).locale)
   const community = await getCommunity()
-  if (!community) return <CommunityOffline locale={locale} />
+  if (!community) return <SiteHub locale={locale} />
+  return (
+    <div className="space-y-16">
+      <ChainOverview community={community} locale={locale} />
+      {/* 站内的分区单独流式输出：链上内容和原来一样快地出来，不用等数据库和排行榜。 */}
+      <Suspense fallback={null}>
+        <SiteSections locale={locale} />
+      </Suspense>
+    </div>
+  )
+}
 
+/** 站内分区要的数据：公开仓库的几个合计、最新的仓库、榜上前几位创作者、本周综合榜。 */
+async function siteData(locale: Locale) {
+  await authReady()
+  const stats = communityStats()
+  // 一个公开仓库都没有时，列表和创作者榜必然是空的，不用再查。
+  const repos = stats.repos > 0 ? recentPublicRepos(LATEST_REPOS) : []
+  const creators = stats.repos > 0 ? topCreators(TOP_CREATORS) : []
+  const board = await leaderboard({ period: '7d', board: 'score', kind: null, locale, limit: 6 })
+  return { stats, repos, creators, board }
+}
+
+/** 没连社区链时的概览：整页都是站内的内容。 */
+async function SiteHub({ locale }: { locale: Locale }) {
+  const t = await getTranslations({ locale, namespace: 'community.home' })
+  const [{ stats, repos, creators, board }, items, user] = await Promise.all([siteData(locale), getPublishedItems(), pageUser()])
+  const uses = weeklyUses()
+  // 只读，不在这里补建资料：没有资料的账号由「怎么参与」里的链接带去账号页处理。
+  const viewer = user ? { handle: profileOf(user.id)?.handle ?? null } : null
+  const number = new Intl.NumberFormat(locale)
+  const fresh = stats.repos === 0
+  const takePart = <TakePart viewer={viewer} />
+
+  return (
+    <div className="space-y-16" data-testid="community-home">
+      <PageHeader title={t('title')} lead={t('lead')}>
+        <Link href="/community/explore" className={buttonSecondary}>
+          {t('cta.explore')}
+        </Link>
+        <Link href="/repos/new" className={buttonPrimary}>
+          <PlusIcon className="size-4" />
+          {t('cta.new')}
+        </Link>
+      </PageHeader>
+
+      {/* 每个数字都能点进它背后的那张列表。 */}
+      <StatGrid className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+        <StatLink label={t('stats.creators')} value={number.format(stats.creators)} href="/community/creators" />
+        <StatLink label={t('stats.repos')} value={number.format(stats.repos)} href="/community/explore" />
+        <StatLink label={t('stats.forks')} value={number.format(stats.forks)} href="/community/explore?sort=forks" />
+        <StatLink label={t('stats.items')} value={number.format(items.length)} href="/market" />
+        <StatLink label={t('stats.uses')} value={number.format(uses)} href="/rank" hint={t('stats.usesHint')} className="col-span-2 sm:col-span-1" />
+      </StatGrid>
+
+      {/* 还没有人公开仓库时，「怎么参与」提到最前面：这时候页面最该回答的是「我能做什么」，而不是「大家做了什么」。 */}
+      {fresh && takePart}
+      <LatestRepos repos={repos} total={stats.repos} />
+      <ActiveCreators creators={creators} total={stats.creators} />
+      <Trending entries={board.entries} picks={board.picks} />
+      {!fresh && takePart}
+
+      {/* 只在本地开发时出现：链上的投稿、审核、治理要另外起一条本地链才有。 */}
+      {process.env.NODE_ENV === 'development' && (
+        <p className="max-w-2xl rounded-[var(--radius-card)] border border-line bg-sunken p-4 text-[13.5px] leading-relaxed text-ink-muted">
+          {t.rich('dev', { code: (chunks) => <code className="font-mono text-[12.5px] text-ink">{chunks}</code> })}
+        </p>
+      )}
+    </div>
+  )
+}
+
+/**
+ * 连了链时接在链上概览后面的站内分区。
+ * 这里出错（数据库、排行榜）只是少这几个分区，不能把链上的概览也带成错误页，所以接住、记日志、什么都不渲染。
+ */
+async function SiteSections({ locale }: { locale: Locale }) {
+  let data: Awaited<ReturnType<typeof siteData>>
+  try {
+    data = await siteData(locale)
+  } catch (error) {
+    console.error('[community] site sections unavailable', error)
+    return null
+  }
+  const { stats, repos, creators, board } = data
+  return (
+    <>
+      <LatestRepos repos={repos} total={stats.repos} />
+      <ActiveCreators creators={creators} total={stats.creators} />
+      {/* 上面的「社区作品」里可能已经有同一个条目的卡片：这里的不参与变形过渡（过渡用的名字一页只能有一个）。 */}
+      <Trending entries={board.entries} picks={board.picks} morph={false} />
+    </>
+  )
+}
+
+/** 链上的概览：投稿入口、链上的数字和规则、社区作品、进行中的审核、贡献者。 */
+async function ChainOverview({ community, locale }: { community: Community; locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'community.hub' })
   const tm = await getTranslations({ locale, namespace: 'market' })
   const { state, client, config, now } = community
@@ -64,7 +182,7 @@ export default async function CommunityPage({ params }: PageProps<'/[locale]/com
     : []
 
   return (
-    <div className="space-y-16">
+    <>
       <PageHeader title={t('title')} lead={t('lead')}>
         <Link href="/community/submit" className={buttonPrimary}>
           <UploadIcon className="size-4" />
@@ -190,6 +308,6 @@ export default async function CommunityPage({ params }: PageProps<'/[locale]/com
           )}
         </section>
       </div>
-    </div>
+    </>
   )
 }

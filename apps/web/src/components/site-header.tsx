@@ -16,6 +16,7 @@ export function SiteHeader() {
     { href: '/rank', label: t('rank') },
     { href: '/community', label: t('community') },
     { href: '/studio', label: t('studio') },
+    { href: '/agents', label: t('agents') },
     { href: '/pricing', label: t('pricing') },
     { href: '/docs', label: t('docs') },
   ]
@@ -26,15 +27,17 @@ export function SiteHeader() {
       data-site-header
       className="sticky top-0 z-40 border-b border-line bg-canvas/80 text-ink backdrop-blur-xl transition-[background-color,border-color,backdrop-filter] duration-(--duration-base) ease-(--ease-out-soft) data-[over-hero]:border-transparent data-[over-hero]:bg-transparent data-[over-hero]:backdrop-blur-none"
     >
-      <div className="relative mx-auto flex h-14 max-w-[1400px] items-center gap-8 px-5 sm:px-8">
-        <Link href="/" aria-label={t('home')} className="flex items-center gap-2.5 rounded-md">
+      {/* 七个栏目加右边的按钮，英文下要 1000px 才排得开：lg 以下收进菜单，lg 到 xl 之间间距收紧（宽度是在浏览器里量的）。 */}
+      <div className="relative mx-auto flex h-14 max-w-[1400px] items-center gap-4 px-5 sm:px-8 xl:gap-8">
+        <Link href="/" aria-label={t('home')} className="flex shrink-0 items-center gap-2.5 rounded-md whitespace-nowrap">
           <MotifMark className="size-6" />
           <span className="font-display text-[17px] font-semibold tracking-[-0.02em]">
-            Motif <span className="font-sans text-[15px] font-normal text-ink-muted">母题</span>
+            {/* 400px 以下的手机放不下中文名：折成两行比不显示难看。 */}
+            Motif <span className="font-sans text-[15px] font-normal text-ink-muted max-[400px]:hidden">母题</span>
           </span>
         </Link>
         <DesktopNav links={links} />
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           <WalletButton />
           <ThemeToggle labels={{ light: t('themeLight'), dark: t('themeDark') }} />
           <LocaleSwitcher label={t('language')} />
@@ -43,8 +46,8 @@ export function SiteHeader() {
             target="_blank"
             rel="noreferrer"
             aria-label={t('github')}
-            // 手机上头部放不下；页脚里也有仓库链接。
-            className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink max-sm:hidden"
+            // 窄屏上头部放不下；页脚里也有仓库链接。
+            className="grid size-8 place-items-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink max-xl:hidden"
           >
             <GitHubIcon className="size-[18px]" />
           </a>

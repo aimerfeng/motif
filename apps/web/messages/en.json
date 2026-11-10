@@ -16,7 +16,8 @@
     "themeLight": "Switch to light",
     "themeDark": "Switch to dark",
     "pricing": "Credits",
-    "rank": "Leaderboard"
+    "rank": "Leaderboard",
+    "agents": "Agents"
   },
   "home": {
     "headline": "Beautiful motion, ready to take home",
@@ -268,6 +269,8 @@
     "nav": {
       "label": "Community navigation",
       "overview": "Overview",
+      "explore": "Repos",
+      "creators": "Creators",
       "submit": "Submit",
       "review": "Review",
       "governance": "Governance",
@@ -311,6 +314,107 @@
       "title": "Community",
       "lead": "The community chain is not connected yet. Once it is, community works, reviews and governance show up here.",
       "dev": "Local development: run <code>pnpm dev:chain</code> in another terminal and the site connects to it automatically."
+    },
+    "home": {
+      "title": "Community",
+      "description": "Public repositories, active creators and this week's most used items on Motif. Fork what you like and keep building.",
+      "lead": "Everything people have made public lives here. Fork what you like and keep building, then share your own.",
+      "dev": "Local development: submissions, review and governance live on chain, which is not connected. Run <code>pnpm dev:chain</code> in another terminal and the site connects to the local chain on its own.",
+      "cta": {
+        "explore": "Browse repos",
+        "new": "New repository"
+      },
+      "stats": {
+        "creators": "Creators",
+        "repos": "Public repos",
+        "forks": "Forks",
+        "items": "Market items",
+        "uses": "Uses this week",
+        "usesHint": "Copies, takes and remixes of market items over the last 7 days"
+      },
+      "repos": {
+        "title": "Latest public repos",
+        "all": "All repos",
+        "empty": "Nobody has published a repository yet. Yours can be the first.",
+        "import": "Import from GitHub",
+        "market": "Pick one in the market"
+      },
+      "creators": {
+        "title": "Active creators",
+        "all": "All creators"
+      },
+      "trending": {
+        "title": "Trending this week",
+        "picks": "Featured items",
+        "all": "Full leaderboard",
+        "market": "Browse the market"
+      },
+      "how": {
+        "title": "How to take part",
+        "signIn": {
+          "title": "Sign in",
+          "body": "Sign in with GitHub or email and you get a page of your own.",
+          "link": "Sign in",
+          "done": "Signed in",
+          "profile": "My page"
+        },
+        "repo": {
+          "title": "Start a repository",
+          "body": "Hit “Save to my repos” on any market item, or import a project you already have on GitHub.",
+          "link": "Import from GitHub",
+          "alt": "Browse the market"
+        },
+        "publish": {
+          "title": "Edit it, keep it public",
+          "body": "Edit files online; item repos also open in the Studio. Repos are public by default and show up here once they have files.",
+          "link": "Open the Studio"
+        },
+        "share": {
+          "title": "Share it",
+          "body": "Send people the repo link: they can fork it or download a zip, and you can push it to your own GitHub.",
+          "link": "See what others made"
+        }
+      }
+    },
+    "explore": {
+      "title": "Public repos",
+      "description": "Every public repository on Motif. Search by name, description or owner, and sort by recent updates or forks.",
+      "lead": "Everything people have made public. Search by name, description or owner, and fork whatever fits.",
+      "new": "New repository",
+      "search": {
+        "label": "Search public repos",
+        "placeholder": "Search name, description or owner",
+        "submit": "Search",
+        "clear": "Clear search"
+      },
+      "sort": {
+        "label": "Sort",
+        "recent": "Recently updated",
+        "forks": "Most forked"
+      },
+      "count": "{count, plural, one {# repository} other {# repositories}}",
+      "found": "{count, plural, one {# repository} other {# repositories}} for “{q}”",
+      "empty": "No public repositories yet. Yours can be the first.",
+      "noMatch": "Nothing matches “{q}”. Try another word, or browse everything.",
+      "all": "See all repos"
+    },
+    "creators": {
+      "title": "Creators",
+      "description": "People who have published repositories on Motif, ranked by forks received and public repos.",
+      "lead": "Everyone with a public repository, ranked by forks received, then by number of repos.",
+      "new": "New repository",
+      "count": "{count, plural, one {# creator} other {# creators}}",
+      "repos": "{count, plural, one {# repo} other {# repos}}",
+      "forks": "{count, plural, one {forked # time} other {forked # times}}",
+      "active": "updated {date}",
+      "rank": "Rank {rank}",
+      "empty": "No creators yet. Publish a repository and you are the first."
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "status": "Page {page} of {pages}"
     },
     "hub": {
       "title": "Community",
@@ -1091,8 +1195,11 @@
       "creating": "Creating…",
       "createButton": "Create",
       "createdOnce": "Here is your new key. It is shown only once, so copy it now:",
-      "connect": "Connect over MCP",
-      "connectLead": "Replace the key in the command with yours (it fills in after you create one). Searching, previews and quotes are free; getting code or a skill spends credits, and anything you bought before is free again.",
+      "connect": "Connect an agent",
+      "cliLead": "Recommended: this command sets Motif up in the agents on this machine and signs you in from the browser. The key it creates appears in the list below; nothing to copy.",
+      "cliMore": "Setup for each agent",
+      "byKey": "With a key (remote MCP)",
+      "connectLead": "For agents that cannot run a local command: connect to the remote MCP with a key. Replace the key in the command with yours (it fills in after you create one). Searching, previews and quotes are free; getting code or a skill spends credits, and anything you bought before is free again.",
       "otherClients": "Other MCP clients (JSON config)",
       "list": "My keys",
       "none": "No keys yet",
@@ -1199,7 +1306,7 @@
     "ledger": {
       "title": "Credit history",
       "empty": "No credit changes yet",
-      "when": "When",
+      "when": "When (UTC+8)",
       "what": "What",
       "change": "Change",
       "balance": "Balance",
@@ -1316,7 +1423,8 @@
       "saving": "Saving…",
       "save": "Save",
       "confirmDelete": "This cannot be undone. Type the repository name \"{name}\" to delete it:",
-      "delete": "Delete repository"
+      "delete": "Delete repository",
+      "takenDownHint": "Taken down by a moderator; it cannot be made public"
     },
     "editor": {
       "pathRequired": "Enter a file path",
@@ -1364,27 +1472,88 @@
       "open": "Open repository →",
       "busy": "Saving…",
       "failed": "Not saved; try again"
-    }
+    },
+    "takenDown": "A moderator took this repository down: only you can see it now, and it cannot be made public or forked. If you think that was a mistake, contact us.",
+    "takenDownModerator": "This repository is taken down: only its owner and moderators can see it. Restore it from Content in the admin area."
   },
   "admin": {
     "title": "Admin",
-    "lead": "Confirm payments for credit orders and adjust user credits.",
+    "lead": "Users, orders and content across the site. Confirm payments, adjust credits and hide repositories from here.",
+    "timezone": "Trends and rankings are split into days by Beijing time (UTC+8); times in these tables are shown in Beijing time as well.",
+    "nav": {
+      "overview": "Overview",
+      "users": "Users",
+      "orders": "Credit orders",
+      "store": "Store orders",
+      "content": "Content"
+    },
     "totals": {
       "users": "Users",
-      "repos": "Repositories",
+      "verified": "Verified emails",
+      "publicRepos": "Public repos",
+      "privateRepos": "Private repos",
       "credits": "Credits in circulation",
-      "revenue": "Received"
+      "revenue": "Received",
+      "paidOrders": "Paid orders",
+      "unlocks": "Unlocks",
+      "apiKeys": "Active API keys",
+      "storeOrders": "Store orders"
     },
     "pending": "Orders awaiting confirmation",
     "noPending": "No orders to confirm",
-    "recentOrders": "Recently handled orders",
-    "users": "Newest users",
+    "allOrders": "All orders",
+    "pendingMore": "Showing the newest {shown} of {total}. Handle the rest on the credit orders page.",
+    "trends": {
+      "title": "Last {days} days",
+      "newUsers": "New users",
+      "revenue": "Received",
+      "events": "Item activity",
+      "table": "Exact numbers per day",
+      "day": "Date"
+    },
+    "events": {
+      "view": "Views",
+      "copy": "Copies",
+      "favorite": "Favorites",
+      "take": "Takes",
+      "remix": "Remixes"
+    },
+    "orderStatus": {
+      "pending": "Awaiting confirmation",
+      "paid": "Paid",
+      "cancelled": "Cancelled"
+    },
     "unverified": "unverified",
     "columns": {
       "user": "User",
       "email": "Email",
       "balance": "Credits",
-      "joined": "Joined"
+      "joined": "Joined",
+      "order": "Order",
+      "package": "Package",
+      "credits": "Credits",
+      "amount": "Amount",
+      "status": "Status",
+      "created": "Created",
+      "paid": "Paid at",
+      "note": "Note",
+      "actions": "Actions",
+      "repo": "Repository",
+      "owner": "Owner",
+      "visibility": "Visibility",
+      "source": "Source",
+      "files": "Files",
+      "size": "Size",
+      "forks": "Forks",
+      "updated": "Updated",
+      "name": "Name",
+      "lastUsed": "Last used",
+      "kind": "Type",
+      "content": "Content",
+      "buyer": "Buyer",
+      "cost": "Price",
+      "item": "Item",
+      "takenDown": "Taken down"
     },
     "grant": {
       "title": "Adjust credits",
@@ -1393,6 +1562,119 @@
       "note": "Reason (goes in the history)",
       "submit": "Apply",
       "done": "Done; the balance is now {balance}"
+    },
+    "health": {
+      "title": "System health",
+      "mail": "Outgoing mail",
+      "mailOff": "Email sign-up stays closed in production until mail is set up",
+      "github": "GitHub sign-in",
+      "runner": "Studio agent",
+      "vision": "vision",
+      "capture": "Studio screenshots",
+      "chain": "Community chain",
+      "database": "Database file",
+      "catalog": "Catalog items",
+      "admins": "Admin emails",
+      "configured": "Configured",
+      "notConfigured": "Not configured",
+      "on": "Available",
+      "off": "Off"
+    },
+    "usersPage": {
+      "lead": "Find people by email, name, handle or GitHub login. Open a name to see everything on that account.",
+      "search": "Search",
+      "placeholder": "Email, name, handle or GitHub login",
+      "clear": "Clear",
+      "count": "{count, plural, one {# user} other {# users}}",
+      "empty": "No users yet",
+      "noMatch": "No users match “{q}”"
+    },
+    "user": {
+      "back": "All users",
+      "verification": "Email verification",
+      "verified": "Verified",
+      "handle": "Profile",
+      "id": "User ID",
+      "repos": "Repositories",
+      "reposHint": "{open} public, {closed} private",
+      "unlocks": "Unlocks",
+      "keys": "Active API keys",
+      "ledger": "Credit history",
+      "latestOnly": "Only the latest {count} are shown.",
+      "orders": "Credit orders",
+      "noOrders": "No credit orders",
+      "noUnlocks": "No items or skills unlocked yet",
+      "unlockedItems": "Items ({count})",
+      "unlockedSkills": "Skills ({count})",
+      "noRepos": "No repositories",
+      "public": "Public",
+      "private": "Private",
+      "apiKeys": "API keys",
+      "noKeys": "No API keys created",
+      "keyActive": "Active",
+      "keyRevoked": "Revoked {date}",
+      "neverUsed": "Never used"
+    },
+    "sources": {
+      "empty": "New",
+      "github": "From GitHub",
+      "fork": "Fork",
+      "item": "From the market",
+      "studio": "From the Studio"
+    },
+    "ordersPage": {
+      "lead": "Orders people place to buy credits. Once the money has arrived, mark the order as paid and the credits land right away.",
+      "all": "All",
+      "empty": "No orders here"
+    },
+    "storePage": {
+      "lead": "Orders that agents place in the store over MCP and the HTTP API: catalog items and custom work. Read-only.",
+      "total": "All orders",
+      "kinds": {
+        "item": "Catalog item",
+        "skill": "Skill",
+        "custom": "Custom"
+      },
+      "statuses": {
+        "awaiting_payment": "Awaiting payment",
+        "queued": "Queued",
+        "in_progress": "In progress",
+        "delivered": "Delivered",
+        "failed": "Failed"
+      },
+      "credits": "{count, plural, one {# credit} other {# credits}}",
+      "free": "Free",
+      "base": "Based on:",
+      "agent": "Agent says:",
+      "more": "Show all",
+      "less": "Show less",
+      "showing": "Showing the newest {shown} of {total}.",
+      "empty": "No store orders yet",
+      "owned": "Already owned"
+    },
+    "contentPage": {
+      "lead": "Which items are being used, which repositories people made public recently, and which are taken down.",
+      "topTitle": "Most used items",
+      "period": "Period",
+      "days": "{days} days",
+      "sortBy": "Sort by",
+      "noStats": "No data for this period yet",
+      "removed": "Removed",
+      "reposTitle": "Latest public repositories",
+      "reposLead": "Taking a repository down makes it private: nobody else can see it, its files stay untouched, and the owner can still open it but cannot make it public again until you restore it below.",
+      "noRepos": "No public repositories yet",
+      "hide": "Take down",
+      "confirmHide": "Take “{name}” down? Nobody else will be able to see it; the owner keeps access but cannot make it public again.",
+      "takenDownTitle": "Taken-down repositories",
+      "takenDownLead": "Restoring undoes the takedown: the repository is public again and the owner can change its visibility.",
+      "restore": "Restore",
+      "confirmRestore": "Restore “{name}”? It becomes public again."
+    },
+    "pagination": {
+      "nav": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "summary": "Page {page} of {pages} · {total} in total"
     }
   },
   "rank": {
@@ -1434,6 +1716,111 @@
     "picks": "Featured, not ranked yet",
     "howTitle": "How it's ranked",
     "how": "Score = views × 1 + copies × 3 + saves × 4 + taken × 6 + remixes × 5. Taken covers shadcn installs, project downloads and MCP deliveries; remixes are opening an item in the Studio or forking it into your own repository. One visitor counts once per item, action and day, and no IP addresses are stored."
+  },
+  "connect": {
+    "title": "Connect a device",
+    "lead": "The motif command line on a device is asking to sign in to your account. Approve only if the code matches the one in your terminal.",
+    "codeLabel": "Confirmation code",
+    "device": "Device",
+    "key": "Key",
+    "started": "Started",
+    "account": "Signing in to",
+    "warning": "Once approved, this device can spend your credits on items and custom orders. Approve only if you just ran the command yourself; you can revoke the key any time under API keys.",
+    "approve": "Approve",
+    "deny": "Deny",
+    "approvedTitle": "Connected",
+    "approvedLead": "Go back to your terminal; the command line carries on by itself. You can close this page.",
+    "deniedTitle": "Denied",
+    "deniedLead": "This device did not get a key. If you did not start this, there is nothing else to do.",
+    "manage": "Manage API keys",
+    "enterTitle": "Enter the confirmation code",
+    "enterLead": "Run motif login in a terminal and enter the code it shows.",
+    "invalid": "This code is invalid or has expired. Run motif login again and enter the new code.",
+    "continue": "Continue"
+  },
+  "agents": {
+    "title": "Connect your agent",
+    "metaTitle": "Connect an agent",
+    "lead": "One command adds Motif to Claude Code, Cursor, Codex and other coding agents. Once connected, they search the market, preview the result and put the code into your project by themselves.",
+    "quick": {
+      "title": "One command",
+      "lead": "Run it in your project folder. It finds the agents installed on this machine, signs you in once and adds Motif to their MCP configs.",
+      "requires": "Needs Node.js 18 or later. Nothing to install: the package comes straight from this site, not from the npm registry.",
+      "steps": {
+        "run": {
+          "title": "Run the command",
+          "text": "The terminal shows a confirmation code and opens your browser."
+        },
+        "approve": {
+          "title": "Approve in the browser",
+          "text": "Sign in, check the code, approve. The key stays on this machine and is never written into an agent's config."
+        },
+        "ask": {
+          "title": "Ask your agent",
+          "text": "Restart the agent, then just say: \"Use Motif to find a pricing section and add it to this project.\""
+        }
+      }
+    },
+    "clients": {
+      "title": "Per agent",
+      "lead": "For connecting just one of them, or editing the config file yourself.",
+      "os": "Operating system",
+      "unix": "macOS / Linux",
+      "windows": "Windows",
+      "auto": "Automatic",
+      "autoLead": "Let the command line write the config (it signs you in first if needed):",
+      "manual": "Manual",
+      "manualFile": "Merge this into the config file below (create it if it does not exist):",
+      "manualCommand": "Run this command:",
+      "manualLogin": "Then sign in once. The config holds no key; the agent pays with the key saved on this machine:",
+      "project": "Add --project after setup to write only this project's config. It holds no key, so you can commit it; teammates pull it and sign in themselves."
+    },
+    "remote": {
+      "title": "Remote MCP (HTTP)",
+      "lead": "Clients that cannot run a local command (agents on the web, cloud environments) connect to the HTTP endpoint directly and authenticate with an API key.",
+      "keys": "Create an API key",
+      "note": "For agents on your own machine, prefer the setup above: no key ends up in a config file, so none gets committed by accident."
+    },
+    "cli": {
+      "title": "Command line",
+      "lead": "The same tool works directly in a terminal, without an agent.",
+      "install": "Install it globally to type motif directly:",
+      "commands": {
+        "search": "Search the market",
+        "info": "Parameters, presets, dependencies, license and price",
+        "preview": "Render with your parameters and save screenshots",
+        "add": "Buy it (once) and write the code into this project",
+        "custom": "Order a custom build, wait for it and save it",
+        "skills": "List agent skills",
+        "whoami": "The signed-in account and its credit balance"
+      },
+      "ci": "In CI, skip the browser sign-in: put a key in the MOTIF_API_KEY environment variable."
+    },
+    "http": {
+      "title": "HTTP API",
+      "lead": "Every tool is also a plain HTTP endpoint, for agents without MCP and for your own scripts. Read-only tools accept GET; the rest take POST.",
+      "listing": "Every tool with its JSON Schema",
+      "llms": "Instructions for models (llms.txt)"
+    },
+    "tools": {
+      "title": "What a connected agent can do",
+      "lead": "The agent gets these {count} tools. Searching, reading, previewing and quoting are free; only taking code and custom orders spend credits.",
+      "free": "Free",
+      "paid": "Spends credits",
+      "items": {
+        "search_ui": "Describe what you need in a few words and search site templates, design styles, page sections, components and visual effects.",
+        "get_ui": "Everything about one item: tunable parameters, presets, usage rules, dependencies, license and price.",
+        "preview_ui": "Render an item with your parameters and return screenshots, to check it fits before ordering.",
+        "get_quote": "Price an order before placing it: an existing item, or a custom build.",
+        "place_order": "Buy an item and get its code immediately, or submit a custom order. An item you already bought costs nothing again.",
+        "get_order": "Status of an order; once delivered it carries all the code and an install command.",
+        "list_skills": "The agent skills Motif offers: general design skills, plus one per item.",
+        "get_skill": "Download every file of one skill. The first download spends credits; later ones are free.",
+        "get_balance": "The account's credit balance, and what things cost."
+      }
+    },
+    "pricingNote": "Items and skills are bought once and stay yours; new accounts start with free credits.",
+    "pricingLink": "How credits work"
   },
   "cursor": {
     "view": "View",

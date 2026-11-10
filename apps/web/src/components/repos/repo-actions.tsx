@@ -17,6 +17,8 @@ interface RepoInfo {
   slug: string
   description: string
   visibility: 'public' | 'private'
+  /** 被管理员下架了：不能改回公开。 */
+  takenDown: boolean
   ownerHandle: string
   githubRepo: string | null
   pushedRepo: string | null
@@ -56,6 +58,9 @@ export function RepoActions({ repo, isOwner }: { repo: RepoInfo; isOwner: boolea
 
   const loginHref = { pathname: '/login', query: { next: pathname } }
   const signedIn = me !== null && me !== undefined
+
+  // 下架中的仓库，不是主人还能走到这里的只有管理员：只让看，fork 和下载的接口对他一样是 404，不摆出来。
+  if (repo.takenDown && !isOwner) return null
 
   return (
     <div className="space-y-3">
@@ -207,10 +212,11 @@ function RepoSettings({ repo, busy, run }: { repo: RepoInfo; busy: Busy; run: (k
       </label>
       <label className="block">
         <span className="text-[13px] font-medium">{t('visibility')}</span>
-        <select value={visibility} onChange={(event) => setVisibility(event.target.value as 'public' | 'private')} className={`mt-2 ${field}`}>
+        <select value={visibility} disabled={repo.takenDown} onChange={(event) => setVisibility(event.target.value as 'public' | 'private')} className={`mt-2 ${field} disabled:opacity-60`}>
           <option value="public">{t('public')}</option>
           <option value="private">{t('private')}</option>
         </select>
+        {repo.takenDown && <span className="mt-1.5 block text-[12px] text-ink-faint">{t('takenDownHint')}</span>}
       </label>
       <label className="block sm:col-span-2">
         <span className="text-[13px] font-medium">{t('description')}</span>
